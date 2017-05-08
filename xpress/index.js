@@ -2,11 +2,12 @@ import {createServer as createHttpsServer} from 'https';
 import {METHODS,createServer as createHttpServer} from 'http';
 import {parse as parseUrl} from 'url';
 import {parse as parseQuerystring} from 'querystring';
+import AJSON from '@meteor-it/ajson';
 
 import {Server} from 'uws';
 
 import Logger from '@meteor-it/logger';
-import {arrayKVObject} from '@meteor-it/utils';
+import {arrayKVObject} from '@meteor-it/utils-common';
 
 const URL_START_REPLACER=/^\/+/;
 const PATH_INDEX_SYM=Symbol('XPress#Request.middlewareIndex');
@@ -123,7 +124,11 @@ export class Router{
         }
         // Found handler, gogogo!
         req.props=arrayKVObject(props,matched.slice(1));
-        found(req,res,nextCb);
+        try{
+            found(req,res,nextCb);
+        }catch(e){
+            res.end(getErrorPage(500,'Internal Server Error: '+e.message,process.env.ENV==='development'?e.stack:undefined));
+        }
         //this.middlewares[req[this.routeIndexKey]].handle(req,res,nextCb);
     }
 }
@@ -158,21 +163,31 @@ export default class XPress extends Router{
     }
     populateResHeader(res){
         res.header={};
+        res.__getHeader=res.getHeader;
+        res.__setHeader=res.setHeader;
+        res.__removeHeader=res.removeHeader;
         res.set=(key,value)=>{
-            res.header[key]=value;
-            //return res;
+            this.logger.debug('Set header %s to %s',key,value);
+            res.__setHeader(key,value);
         };
         res.get=(key)=>{
-            return res.header[key];
+            this.logger.debug('Get value of header %s',key);
+            return res.__getHeader(key);
+        };
+        res.getHeader=(key)=>{
+            return res.get(key);
+        };
+        res.setHeader=(key,value)=>{
+            res.set(key,value);
         };
         res.removeHeader=(key)=>{
-            delete res.header[key];
+            res.__removeHeader(key);
         };
     }
     populateResponse(res){
         this.populateResHeader(res);
-        res._writeHead=res.writeHead;
-        res._end=res.end;
+        res.__writeHead=res.writeHead;
+        res.__end=res.end;
         res.sent=false;
         // TODO: Use primary closure
         res.writeHead=(...args)=>{
@@ -180,14 +195,15 @@ export default class XPress extends Router{
                 this.logger.warn('Direct call to writeHead detected, make sure you know what are you doing');
                 directLowLevelCallingWarned=true;
             }
-            return res._writeHead(...args);
+            return res.__writeHead(...args);
         };
         res.end=(...args)=>{
             if(!directLowLevelCallingWarned){
                 this.logger.warn('Direct call to writeHead detected, make sure you know what are you doing');
                 directLowLevelCallingWarned=true;
             }
-            return res._end(...args);
+            //res.writeHead(res.statusCode?res.statusCode:200,res.header);
+            return res.__end(...args);
         };
         res.status=(code)=>{
             res.statusCode=code;
@@ -196,17 +212,19 @@ export default class XPress extends Router{
             if(res.sent)
                 throw new Error('Data is already sent!');
             res.sent=true;
-            res._writeHead(307,{
-                Location:url,
+            res.writeHead(307,{
+                Location:url
             });
-            res._end('307 Redirect to '+url);
+            res.end('307 Redirect to '+url);
         };
         res.send=(body)=>{
             if(res.sent)
                 throw new Error('Data is already sent!');
             res.sent=true;
-            res._writeHead(res.statusCode?res.statusCode:200,res.header);
-            res._end(body);
+            res.writeHead(res.statusCode?res.statusCode:200,res.headers);
+            if(typeof body==='object')
+                body=AJSON.stringify(body);
+            res.end(body);
         };
     }
     httpHandler(req,res){
@@ -215,15 +233,19 @@ export default class XPress extends Router{
         this.populateRequest(req);
         this.populateResponse(res);
         // Execute Router handler, the first in the handlers chain
-        this.handle(req,res,err=>{
-            // Next here = all routes ends, so thats = 404
-            this.logger.warn('404 Page not found at '+req.url);
-            // Allow only HttpError to be thrown
-            if(!(err instanceof HttpError))
-                err=new HttpError(404,'Page not found: '+escapeHtml(req.url));
-            // TODO: status, content type
-            res.end(getErrorPage(err.code,err.message,process.env.ENV==='development'?err.stack:undefined));
-        }, req.originalUrl);
+        try{
+            this.handle(req,res,err=>{
+                // Next here = all routes ends, so thats = 404
+                this.logger.warn('404 Page not found at '+req.url);
+                // Allow only HttpError to be thrown
+                if(!(err instanceof HttpError))
+                    err=new HttpError(404,'Page not found: '+escapeHtml(req.url));
+                // TODO: status, content type
+                res.end(getErrorPage(err.code,err.message,process.env.ENV==='development'?err.stack:undefined));
+            }, req.originalUrl);
+        }catch(e){
+            res.end(getErrorPage(500,'Internal Server Error: '+e.message,process.env.ENV==='development'?e.stack:undefined));
+        }
     }
     wsHandler(socket){
         // Websocket request handler, acts similar to httpHandler()

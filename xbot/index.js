@@ -2,7 +2,7 @@ import Logger from '@meteor-it/logger';
 import {EventEmitter} from 'events';
 import {getReadStream,stat,isFile} from '@meteor-it/fs';
 import {emit} from '@meteor-it/xrest';
-import {readStream,createReadStream} from '@meteor-it/nodeUtils';
+import {readStream,createReadStream} from '@meteor-it/utils-node';
 
 const POSSIBLE_ACTIONS=['writing'];
 

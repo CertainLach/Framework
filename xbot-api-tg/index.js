@@ -1,11 +1,8 @@
 import {Api,User,Chat,MessageEvent,ForwardedMessage,Gender,Location,Image,File,Audio,TitleChangeEvent,JoinEvent,LeaveEvent,ActionEvent} from "@meteor-it/xbot";
-import {queue} from "@meteor-it/queue";
-import XRest,{emit} from "@meteor-it/xrest";
+import XRest from "@meteor-it/xrest";
 import * as multipart from '@meteor-it/xrest/multipart';
-import AntiCaptcha from '@meteor-it/anticaptcha';
 import Cache from '@meteor-it/cache';
-import {asyncEach} from '@meteor-it/async';
-import {readStream,createReadStream} from '@meteor-it/nodeUtils';
+import {readStream} from '@meteor-it/utils-node';
 
 export default class TGApi extends Api{
     logged=false;
@@ -26,7 +23,7 @@ export default class TGApi extends Api{
         let res=await this.xrest.emit(`POST /bot${token}/${method}`,{multipart,data:{
             ...params
         }});
-        res=res.body
+        res=res.body;
         if(res.ok){
             return res.result;
         }else{

@@ -2,9 +2,8 @@ import {Api,User,Chat,MessageEvent,ForwardedMessage,Gender,Location,Image,File,A
 import {queue} from "@meteor-it/queue";
 import XRest,{emit} from "@meteor-it/xrest";
 import * as multipart from '@meteor-it/xrest/multipart';
-import AntiCaptcha from '@meteor-it/anticaptcha';
 import Cache from '@meteor-it/cache';
-import {asyncEach} from '@meteor-it/async';
+import {asyncEach} from '@meteor-it/utils-common';
 
 const OFFICIAL_SCOPES=['audio'];
 
@@ -13,12 +12,10 @@ export default class VKApi extends Api{
     constructor(){
         super('VKAPI');
     }
-    async auth(token,officialToken,captchaToken){
+    async auth(token,officialToken){
         this.logged=true;
         this.token=token;
         this.officialToken=officialToken;
-        this.captchaToken=captchaToken;
-        this.antiCaptcha=new AntiCaptcha(captchaToken);
         this.xrest=new XRest('https://api.vk.com/',{});
         
         this.logger.log('Starting always online mode...');
@@ -45,12 +42,13 @@ export default class VKApi extends Api{
         }});
         if(res.error)
             if(res.error.error_code==14) {
-                if(solved)
-                    solved.reportWrong();
-                let captcha=this.bпot.anticaptcha.processURL(res.error.captcha_img);
-                params.captcha_sid=res.error.captcha_sid;
-                params.captcha_key=captcha.value;
-                res = await this.execute(method, params,postData, captcha);
+                this.logger.error('Captcha! Wait a few seconds, or commit a captcha solver in our repo');
+                // if(solved)
+                //     solved.reportWrong();
+                // let captcha=this.bot.anticaptcha.processURL(res.error.captcha_img);
+                // params.captcha_sid=res.error.captcha_sid;
+                // params.captcha_key=captcha.value;
+                //res = await this.execute(method, params,postData, captcha);
             }else{
                 this.logger.error('Error: '+res.error.error_code);
             }

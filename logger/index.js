@@ -1,6 +1,6 @@
 import './colors';
 import {isBrowser,isNode} from '@meteor-it/platform';
-import {createPrivateEnum} from '@meteor-it/utils';
+import {createPrivateEnum} from '@meteor-it/utils-common';
 
 const LOG_TRACE = (isBrowser ? window.localStorage.getItem('LOG_TRACE') : process.env.LOG_TRACE)||false;
 const DEBUG = (isBrowser ? window.localStorage.getItem('DEBUG') : process.env.DEBUG)||'-';

@@ -1,7 +1,7 @@
 import {format} from 'util';
 import Logger,{LOGGER_ACTIONS,BasicReceiver} from '@meteor-it/logger';
 import {clearScreen, writeStdout, save, restore, writeEscape} from '@meteor-it/terminal';
-import {fixLength} from '@meteor-it/utils';
+import {fixLength} from '@meteor-it/utils-common';
 import emojiMap from '@meteor-it/emoji';
 
 const ansiColors = {
