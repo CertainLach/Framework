@@ -46,7 +46,10 @@ class Request extends EventEmitter {
         this.prepare(url,options);
     }
     prepare(url,options){
+        logger.debug('prepare(%s)',url);
         this.url = parseUrl(url);
+        if(!this.url.hostname)
+            console.log(this.url);
         this.options = options;
         this.headers = {
             'Accept': '*/*',

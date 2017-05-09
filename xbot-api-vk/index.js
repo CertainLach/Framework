@@ -13,19 +13,24 @@ export default class VKApi extends Api{
         super('VKAPI');
     }
     async auth(token,officialToken){
-        this.logged=true;
-        this.token=token;
-        this.officialToken=officialToken;
-        this.xrest=new XRest('https://api.vk.com/',{});
-        
-        this.logger.log('Starting always online mode...');
-        await this.execute('account.setOnline');
-        setInterval(async()=>{
+        try{
+            this.logged=true;
+            this.token=token;
+            this.officialToken=officialToken;
+            this.xrest=new XRest('https://api.vk.com/',{});
+            
+            this.logger.log('Starting always online mode...');
             await this.execute('account.setOnline');
-            this.logger.log('Updated online mode!');
-        },60*1000*5);
-        this.logger.log('Done!');
-        await this.startReceiver();
+            setInterval(async()=>{
+                await this.execute('account.setOnline');
+                this.logger.log('Updated online mode!');
+            },60*1000*5);
+            this.logger.log('Done!');
+            await this.startReceiver();
+        }catch(e){
+            this.logger.error(e.stack);
+            throw new Error('Error at auth()!');
+        }
     }
     @queue(500)
     async execute(method,params={},postData=null,solved=null){
@@ -55,7 +60,7 @@ export default class VKApi extends Api{
         if(res.body)
             return res.body.response||res.body;
         else if(res.error)
-            throw new Error(JSON.stringify(res.error));
+            throw new Error(res.error);
         else
             this.logger.error('>_<');
     }

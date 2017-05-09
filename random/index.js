@@ -4,7 +4,9 @@ export default class Random{
     m_w;
     m_z=987654321;
     mask=0xffffffff;
-    constructor(seed=Math.round(Math.random()*100000)) {
+    constructor(seed) {
+        if(!seed)
+            seed=Math.round(Math.random()*100000);
         if(typeof seed==='string')
             seed=hashCode(seed);
         this.m_w  = seed;
@@ -21,7 +23,9 @@ export default class Random{
             max=min;
             min=0;
         }
-        return Math.floor(this.nextFloat() * (max - min + 1)) + min;
+        min=+min;
+        max=+max;
+        return Math.floor(min + Math.random() * (max + 1 - min));
     }
     randomArrayElement(array){
         return array[Math.floor(this.nextFloat()*array.length)];
