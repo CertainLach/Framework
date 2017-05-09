@@ -153,9 +153,17 @@ export default class VKApi extends Api{
             photoUrl:data.photo_200});
         return chatConv;
     }
+    stopReceiver=false;
     async startReceiver(){
+        if(this.stopReceiver)
+            return;
         try {
-            let data = await this.execute('messages.getLongPollServer');
+            let data = await this.execute('messages.getLongPollServer',{});
+            if(!data.server){
+                this.stopReceiver=true;
+                this.logger.log(data);
+                throw new Error('Can\'t get server!');
+            }
             let {key, server, ts} = data;
             this.logger.log('Got receiver data');
             setTimeout(()=>this.receive(key,server,ts),1);

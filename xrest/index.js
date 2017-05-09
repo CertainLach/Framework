@@ -47,6 +47,10 @@ class Request extends EventEmitter {
     }
     prepare(url,options){
         logger.debug('prepare(%s)',url);
+        if(url.indexOf('undefined')+1){
+            logger.warn('undefined found in request url! Stack for reference:');
+            logger.warn(new Error('reference stack').stack);
+        }
         this.url = parseUrl(url);
         if(!this.url.hostname)
             console.log(this.url);
