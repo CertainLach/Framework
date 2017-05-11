@@ -1,6 +1,6 @@
 import Logger from '@meteor-it/logger';
 import {readDir} from '@meteor-it/fs';
-import {asyncEach} from '@meteor-it/async';
+import {asyncEach} from '@meteor-it/utils-common';
 
 const PLUGIN_REQUIRED_FIELDS = ['name', 'author', 'description', 'dependencies', 'init'];
 

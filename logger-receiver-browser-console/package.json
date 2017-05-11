@@ -1,0 +1,25 @@
+{
+  "name": "@meteor-it/logger-receiver-browser-console",
+  "version": "0.1.1",
+  "description": "I",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "meteor-it"
+  ],
+  "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "@meteor-it/logger": "0.0.1",
+    "@meteor-it/utils": "^1.0.0"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "repository": "gitlab:Creeplays/meteor-it-framework",
+  "engines": {
+    "node": "^7.8.0"
+  }
+}

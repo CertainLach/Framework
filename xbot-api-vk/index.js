@@ -275,12 +275,16 @@ export default class VKApi extends Api{
                         }
                         case 61: {//Start writing in PM
                             [user_id,flags]=update;
-                            let [user]=await this.getUser(user_id);
-                            this.emit('action',new ActionEvent({
-                                user,
-                                action:'writing',
-                                data:flags
-                            }));
+                            try{
+                                let [user]=await this.getUser(user_id);
+                                this.emit('action',new ActionEvent({
+                                    user,
+                                    action:'writing',
+                                    data:flags
+                                }));
+                            }catch(e){
+                                this.logger.error('Strange error... Again.');
+                            }
                             break;
                         }
                         case 62: {//Start writing in Chat

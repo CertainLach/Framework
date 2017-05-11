@@ -64,7 +64,7 @@ export class Router{
             };
         }
         if(nhandler.length!==2&&nhandler.length!==3)
-            throw new Error('Invalid handler method! Possible methods: \n   (req,res,next)=>{...} \n   (req,res)=>{...}');
+            this.logger.warn('Possible invalid handler method! Possible methods: \n   (req,res,next)=>{...} \n   (req,res)=>{...}\nBut passed handler accepts %d arguments!',nhandler.length);
         if(MULTI_EVENTS[event])
             for(let cEvent of MULTI_EVENTS[event])
                 middleware.handlers[cEvent]=nhandler;

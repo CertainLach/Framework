@@ -3,8 +3,8 @@ import Logger from "@meteor-it/logger";
 let logger=new Logger('Queuer');
 
 export let allQueuesTasks=0;
-export function queue(time){
-    return function (target, key, descriptor) {
+export function queue(time,fn){
+    function queueDecorator(target, key, descriptor) {
         let queued=[];
         let origFun=descriptor.value;
         let stopped=true;
@@ -49,5 +49,11 @@ export function queue(time){
             });
         };
         return descriptor;
+    }
+    if(!fn)
+        return queueDecorator;
+    let kostyl={
+        value: fn
     };
+    return queueDecorator({},fn.name||'<anonymous>',kostyl).value;
 }

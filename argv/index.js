@@ -1,6 +1,6 @@
 // Nomnom by harthur, will be maintained by meteor-it
 
-import {objectMap,firstUppercase} from '@meteor-it/utils';
+import {objectMap,firstUppercase} from '@meteor-it/utils-common';
 import Logger from '@meteor-it/logger';
 
 import {basename} from 'path';

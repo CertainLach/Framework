@@ -1,0 +1,121 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/bin/node',
+1 verbose cli   '/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/bin/npm',
+1 verbose cli   'unpublish',
+1 verbose cli   '-f',
+1 verbose cli   '@meteor-it/scrub' ]
+2 info using npm@4.1.2
+3 info using node@v8.0.0-nightly20170312efec14a7d1
+4 warn using --force I sure hope you know what you are doing.
+5 silly unpublish args[0] @meteor-it/scrub
+6 silly unpublish thing Result {
+6 silly unpublish   raw: '@meteor-it/scrub',
+6 silly unpublish   scope: '@meteor-it',
+6 silly unpublish   escapedName: '@meteor-it%2fscrub',
+6 silly unpublish   name: '@meteor-it/scrub',
+6 silly unpublish   rawSpec: '',
+6 silly unpublish   spec: 'latest',
+6 silly unpublish   type: 'tag' }
+7 verbose getPublishConfig null
+8 silly ls normalized @meteor-it/scrub
+9 silly gentlyRm /home/f6cf/.npm/@meteor-it/scrub is being purged
+10 verbose gentlyRm don't care about contents; nuking /home/f6cf/.npm/@meteor-it/scrub
+11 silly vacuum-fs purging /home/f6cf/.npm/@meteor-it/scrub
+12 silly vacuum-fs quitting because other entries in /home/f6cf/.npm/@meteor-it
+13 silly mapToRegistry name @meteor-it/scrub
+14 silly mapToRegistry scope (from package name) @meteor-it
+15 verbose mapToRegistry no registry URL found in name for scope @meteor-it
+16 silly mapToRegistry using default registry
+17 silly mapToRegistry registry https://registry.npmjs.org/
+18 silly mapToRegistry data Result {
+18 silly mapToRegistry   raw: '@meteor-it/scrub',
+18 silly mapToRegistry   scope: '@meteor-it',
+18 silly mapToRegistry   escapedName: '@meteor-it%2fscrub',
+18 silly mapToRegistry   name: '@meteor-it/scrub',
+18 silly mapToRegistry   rawSpec: '',
+18 silly mapToRegistry   spec: 'latest',
+18 silly mapToRegistry   type: 'tag' }
+19 silly mapToRegistry uri https://registry.npmjs.org/@meteor-it%2fscrub
+20 verbose get GET as part of write; not caching result
+21 verbose request uri https://registry.npmjs.org/@meteor-it%2fscrub?write=true
+22 verbose request no auth needed
+23 info attempt registry request try #1 at 6:11:20 PM
+24 verbose request using bearer token for auth
+25 verbose request id de3b792e3d68f23b
+26 http request GET https://registry.npmjs.org/@meteor-it%2fscrub?write=true
+27 http 200 https://registry.npmjs.org/@meteor-it%2fscrub?write=true
+28 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+28 verbose headers   'content-type': 'application/json',
+28 verbose headers   etag: '"59148ac6-d29"',
+28 verbose headers   'content-encoding': 'gzip',
+28 verbose headers   'cache-control': 'max-age=0',
+28 verbose headers   'transfer-encoding': 'chunked',
+28 verbose headers   'accept-ranges': 'bytes',
+28 verbose headers   date: 'Thu, 11 May 2017 18:11:21 GMT',
+28 verbose headers   via: '1.1 varnish',
+28 verbose headers   connection: 'keep-alive',
+28 verbose headers   'x-served-by': 'cache-hhn1541-HHN',
+28 verbose headers   'x-cache': 'MISS',
+28 verbose headers   'x-cache-hits': '0',
+28 verbose headers   'x-timer': 'S1494526281.365402,VS0,VE628',
+28 verbose headers   vary: 'Accept-Encoding' }
+29 silly get cb [ 200,
+29 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+29 silly get     'content-type': 'application/json',
+29 silly get     etag: '"59148ac6-d29"',
+29 silly get     'content-encoding': 'gzip',
+29 silly get     'cache-control': 'max-age=0',
+29 silly get     'transfer-encoding': 'chunked',
+29 silly get     'accept-ranges': 'bytes',
+29 silly get     date: 'Thu, 11 May 2017 18:11:21 GMT',
+29 silly get     via: '1.1 varnish',
+29 silly get     connection: 'keep-alive',
+29 silly get     'x-served-by': 'cache-hhn1541-HHN',
+29 silly get     'x-cache': 'MISS',
+29 silly get     'x-cache-hits': '0',
+29 silly get     'x-timer': 'S1494526281.365402,VS0,VE628',
+29 silly get     vary: 'Accept-Encoding' } ]
+30 verbose get saving @meteor-it/scrub to /home/f6cf/.npm/registry.npmjs.org/_40meteor-it_252fscrub_3Fwrite_3Dtrue/.cache.json
+31 verbose correctMkdir /home/f6cf/.npm correctMkdir not in flight; initializing
+32 info unpublish No version specified, removing all
+33 verbose request uri https://registry.npmjs.org/@meteor-it%2fscrub/-rev/4-89dda84064e1a681d654bc879b3a5ac9
+34 verbose request sending authorization for write operation
+35 info attempt registry request try #1 at 6:11:22 PM
+36 verbose request using bearer token for auth
+37 http request DELETE https://registry.npmjs.org/@meteor-it%2fscrub/-rev/4-89dda84064e1a681d654bc879b3a5ac9
+38 http 400 https://registry.npmjs.org/@meteor-it%2fscrub/-rev/4-89dda84064e1a681d654bc879b3a5ac9
+39 verbose headers { 'content-type': 'application/json',
+39 verbose headers   'cache-control': 'max-age=0',
+39 verbose headers   'content-length': '17',
+39 verbose headers   'accept-ranges': 'bytes',
+39 verbose headers   date: 'Thu, 11 May 2017 18:11:23 GMT',
+39 verbose headers   via: '1.1 varnish',
+39 verbose headers   connection: 'keep-alive',
+39 verbose headers   'x-served-by': 'cache-hhn1541-HHN',
+39 verbose headers   'x-cache': 'MISS',
+39 verbose headers   'x-cache-hits': '0',
+39 verbose headers   'x-timer': 'S1494526282.244818,VS0,VE989' }
+40 verbose request invalidating /home/f6cf/.npm/registry.npmjs.org/_40meteor-it_252fscrub on DELETE
+41 verbose stack Error: Registry returned 400 for DELETE on https://registry.npmjs.org/@meteor-it%2fscrub/-rev/4-89dda84064e1a681d654bc879b3a5ac9
+41 verbose stack     at makeError (/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:304:12)
+41 verbose stack     at CachingRegistryClient.<anonymous> (/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:282:14)
+41 verbose stack     at Request._callback (/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:212:14)
+41 verbose stack     at Request.self.callback (/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/lib/node_modules/npm/node_modules/request/request.js:186:22)
+41 verbose stack     at emitTwo (events.js:127:13)
+41 verbose stack     at Request.emit (events.js:215:7)
+41 verbose stack     at Request.<anonymous> (/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/lib/node_modules/npm/node_modules/request/request.js:1081:10)
+41 verbose stack     at emitOne (events.js:117:13)
+41 verbose stack     at Request.emit (events.js:212:7)
+41 verbose stack     at IncomingMessage.<anonymous> (/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/lib/node_modules/npm/node_modules/request/request.js:1001:12)
+42 verbose statusCode 400
+43 verbose pkgid @meteor-it/scrub
+44 verbose cwd /home/f6cf/workspace/packages
+45 error Linux 4.9.13-v7.1.el7
+46 error argv "/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/bin/node" "/home/f6cf/.nvs/nightly/8.0.0-nightly20170312efec14a7d1/armv6l/bin/npm" "unpublish" "-f" "@meteor-it/scrub"
+47 error node v8.0.0-nightly20170312efec14a7d1
+48 error npm  v4.1.2
+49 error code E400
+50 error Registry returned 400 for DELETE on https://registry.npmjs.org/@meteor-it%2fscrub/-rev/4-89dda84064e1a681d654bc879b3a5ac9
+51 error If you need help, you may report this error at:
+51 error     <https://github.com/npm/npm/issues>
+52 verbose exit [ 1, true ]

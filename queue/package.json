@@ -1,0 +1,24 @@
+{
+  "name": "@meteor-it/queue",
+  "version": "0.2.0",
+  "description": "I",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "meteor-it"
+  ],
+  "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "@meteor-it/logger": "0.0.1"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "repository": "gitlab:Creeplays/meteor-it-framework",
+  "engines": {
+    "node": "^7.8.0"
+  }
+}

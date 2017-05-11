@@ -3,6 +3,8 @@ import {EventEmitter} from 'events';
 import {getReadStream,stat,isFile} from '@meteor-it/fs';
 import {emit} from '@meteor-it/xrest';
 import {readStream,createReadStream} from '@meteor-it/utils-node';
+import {Image as CanvasImage} from 'canvas';
+
 const POSSIBLE_ACTIONS = ['writing'];
 export default class XBot extends EventEmitter {
     constructor(name) {
@@ -159,6 +161,14 @@ export class Image extends File {
         });
         let buffer = await readStream(fullStream);
         return new Image(createReadStream(buffer), buffer.length, 'a.jpg');
+    }
+    async toCanvasImage(){
+        let stream=this.stream;
+        let res = new CanvasImage();
+        res.src = await readStream(stream);
+        return new Promise((resolve,rej)=>{
+            res.onload=resolve(res);    
+        });
     }
 }
 export class Audio extends File {
