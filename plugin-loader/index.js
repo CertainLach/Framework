@@ -1,8 +1,11 @@
 import Logger from '@meteor-it/logger';
 import {readDir} from '@meteor-it/fs';
 import {asyncEach} from '@meteor-it/utils-common';
+import {queue} from '@meteor-it/queue';
+import {resolve} from 'path';
+import * as chokidar from 'chokidar';
 
-const PLUGIN_REQUIRED_FIELDS = ['name', 'author', 'description', 'dependencies', 'init'];
+const PLUGIN_REQUIRED_FIELDS = ['name', 'author', 'description', 'dependencies'];
 
 function isAllDepsResolved(plugin) {
     // console.log(plugin.resolved);
@@ -13,20 +16,22 @@ function isAllDepsResolved(plugin) {
     return false;
 }
 
-function validatePlugin(plugin) {
+function validatePlugin(plugin,isHard) {
     for (let field of PLUGIN_REQUIRED_FIELDS) {
-        if (!plugin[field]) {
+        if (!plugin.constructor[field]) {
             if (field === 'name') {
-                throw new Error('No ' + field + ' is defined for plugin in plugins/' + plugin.file + '!');
+                throw new Error('No name is defined for plugin in "' + plugin.file + '"!\nIf this plugin is defined in ES6 style, please write class name');
             }
             else {
-                throw new Error('No ' + field + ' is defined for "' + plugin.name + '" in plugins/' + plugin.file + '!');
+                if(field==='dependencies'&&!isHard)
+                    continue; // Since soft plugins doesn't supports it
+                throw new Error('No ' + field + ' is defined for "' + plugin.name + '" in "' + plugin.file + '"!');
             }
         }
     }
 }
 
-export default class PluginLoader {
+export class HardPluginLoader {
     logger;
     name;
     folder;
@@ -38,7 +43,7 @@ export default class PluginLoader {
     }
     async load() {
         try {
-            this.logger.log('Started plugin loader...');
+            this.logger.log('Started hard plugin loader...');
             this.logger.log('Listening plugin dir');
             let files = await readDir(this.folder);
             this.logger.log('Found {blue}%d{/blue} candidats', files.length);
@@ -46,6 +51,10 @@ export default class PluginLoader {
             const plugins = files.map(file => {
                 this.logger.log('Loading {magenta}%s{/magenta}', file);
                 let plugin = require(`${this.folder}/${file}`);
+                if(plugin.default){
+                    this.logger.log('Assuming that %s is a ES6 plugin (.default found)');
+                    plugin=plugin.default;
+                }
                 plugin.file = file;
                 return plugin;
             });
@@ -53,7 +62,7 @@ export default class PluginLoader {
             this.logger.deent();
             this.logger.ident('Validating and displaying copyrights');
             await asyncEach(plugins,plugin => {
-                validatePlugin(plugin);
+                validatePlugin(plugin,true);
                 this.logger.ident(plugin.name);
                 this.logger.log('Name:         {blue}%s{/blue}', plugin.name);
                 this.logger.log('Author:       {blue}%s{/blue}', plugin.author);
@@ -128,5 +137,208 @@ export default class PluginLoader {
             this.logger.deentAll();
             throw e;
         }
+    }
+}
+export class SoftPluginLoader {
+    logger;
+    name;
+    folder;
+    watcher;
+    autoData;
+
+    constructor(name, folder) {
+        this.name = name;
+        this.logger = new Logger(name);
+        this.folder = folder;
+    }
+    async load(data) {
+        this.autoData = data;
+        try {
+            this.logger.log('Started soft plugin loader...');
+            this.logger.log('Listening plugin dir');
+            let files = await readDir(this.folder);
+            this.logger.log('Found {blue}%d{/blue} candidats', files.length);
+            this.logger.ident('Requiring them');
+            const plugins = files.map(file => {
+                this.logger.log('Loading {magenta}%s{/magenta}', file);
+                let plugin = require(resolve(this.folder, file));
+                if (plugin.default) {
+                    this.logger.log('Assuming that %s is a ES6 plugin (.default found)', file);
+                    plugin = plugin.default;
+                }
+                plugin = new plugin();
+                Object.keys(this.autoData).forEach(key => {
+                    plugin[key] = data[key];
+                });
+                plugin.file = resolve(this.folder, file);
+                return plugin;
+            });
+            this.logger.log('All plugins are loaded.');
+            this.logger.deent();
+            this.logger.ident('Validating and displaying copyrights');
+            await asyncEach(plugins, plugin => {
+                validatePlugin(plugin, false);
+                this.logger.ident(plugin.constructor.name);
+                this.logger.log('Name:         {blue}%s{/blue}', plugin.constructor.name);
+                this.logger.log('Author:       {blue}%s{/blue}', plugin.constructor.author);
+                this.logger.log('Description:  {blue}%s{/blue}', plugin.constructor.description);
+                this.logger.deent();
+            });
+            this.logger.deent();
+            this.logger.ident('Init');
+            for (let plugin of plugins) {
+                //await asyncEach(plugins,async plugin=>{
+                if (plugin.init) {
+                    this.logger.ident(plugin.constructor.name + '.init()');
+                    await plugin.init();
+                    this.logger.deent();
+                }
+                else {
+                    this.logger.log('%s doesn\'t have init() method, skipping', plugin.constructor.name);
+                }
+                //});
+            }
+            this.logger.deent();
+            this.logger.log('Plugin loader finished thier work, starting watcher');
+            this.plugins = plugins;
+            this.watch();
+            return this.plugins;
+        }
+        catch (e) {
+            this.logger.deentAll();
+            throw e;
+        }
+    }
+    findPluginAtPath(pluginPath) {
+        let found = null;
+        let foundId = -1;
+        this.plugins.forEach((plugin, id) => {
+            if (plugin.file === pluginPath) {
+                found = plugin;
+                foundId = id;
+            }
+        });
+        return [found, foundId];
+    }
+    unloadPlugin(pluginPath) {
+        this.logger.log('Unloading...');
+        let [found, foundId] = this.findPluginAtPath(pluginPath);
+        var name = require.resolve(pluginPath);
+        this.logger.log('Full name = %s', name);
+        this.logger.log('In cache: ' + !!require.cache[name]);
+        if (!!require.cache[name]) {
+            this.logger.log('Forgetting about them...');
+            delete require.cache[name];
+            delete this.plugins[foundId];
+            this.plugins.splice(foundId, 1);
+        }
+    }
+    loadPlugin(pluginPath) {
+        this.logger.log('Loading...');
+        let plugin = require(pluginPath);
+        if (plugin.default)
+            plugin = plugin.default;
+        plugin = new plugin();
+        Object.keys(this.autoData).forEach(key => {
+            plugin[key] = this.autoData[key];
+        });
+        return plugin;
+    }
+    validatePlugin(plugin) {
+        this.logger.log('Revalidating...');
+        validatePlugin(plugin, false);
+        this.logger.ident(plugin.constructor.name);
+        this.logger.log('Name:         {blue}%s{/blue}', plugin.constructor.name);
+        this.logger.log('Author:       {blue}%s{/blue}', plugin.constructor.author);
+        this.logger.log('Description:  {blue}%s{/blue}', plugin.constructor.description);
+        this.logger.deent();
+    }
+    async callInit(plugin) {
+        this.logger.log('Recalling init()...');
+        if (plugin.init) {
+            this.logger.ident(plugin.constructor.name + '.init()');
+            await plugin.init();
+            this.logger.deent();
+        }
+        else {
+            this.logger.log('%s doesn\'t have init() method, skipping', plugin.constructor.name);
+        }
+    }
+    @queue
+    async onChange(pluginPath) {
+        let [found, foundId] = this.findPluginAtPath(pluginPath);
+        if (found) {
+            this.logger.log('Plugin changed: %s (%d,%s)', found.constructor.name, foundId, found.file);
+            this.unloadPlugin(pluginPath);
+            let plugin = this.loadPlugin(pluginPath);
+            this.validatePlugin(plugin);
+            await this.callInit(plugin);
+
+            this.logger.log('Returning to the plugin list...');
+            this.plugins.push(plugin);
+        }
+        else {
+            this.logger.error('Unknown change! %s', pluginPath);
+        }
+    }
+    watcherReady = false;
+    @queue
+    async onAdd(pluginPath) {
+        let [found, foundId] = this.findPluginAtPath(pluginPath);
+        if (found) {
+            this.logger.error('Plugin already added! %s', pluginPath);
+        }
+        else {
+            this.logger.log('Plugin added: %s', pluginPath);
+            let plugin = this.loadPlugin(pluginPath);
+            this.validatePlugin(plugin);
+            await this.callInit(plugin);
+
+            this.logger.log('Returning to the plugin list...');
+            this.plugins.push(plugin);
+        }
+    }
+    @queue
+    async onRemove(pluginPath) {
+        let [found, foundId] = this.findPluginAtPath(pluginPath);
+        if (found) {
+            this.logger.log('Plugin removed: %s (%d,%s)', found.constructor.name, foundId, found.file);
+            this.unloadPlugin(pluginPath);
+        }
+        else {
+            this.logger.error('Unknown remove! %s', pluginPath);
+        }
+    }
+    async watch() {
+        this.logger.log('Watching plugins dir for changes...');
+        this.watcher = chokidar.watch(this.folder, {
+            ignored: /(^|[\/\\])\../,
+            persistent: true,
+            depth: 1
+        });
+        this.watcher
+            .on('add', path => {
+                if (!this.watcherReady) // To prevent adding files from initial scan
+                    return;
+                this.logger.log(`File ${path} has been added, loading plugins...`);
+                this.onAdd(path);
+            })
+            .on('change', path => {
+                this.logger.log(`File ${path} has been changed, reloading plugins...`);
+                this.onChange(path);
+            })
+            .on('unlink', path => {
+                this.logger.log(`File ${path} has been removed, removing plugins...`);
+                this.onRemove(path);
+            });
+
+        // More possible events.
+        this.watcher
+            .on('error', error => this.logger.err(`Watcher error: ${error}`))
+            .on('ready', () => {
+                this.logger.log('Initial scan completed, ready to look at plugin changes');
+                this.watcherReady = true;
+            });
+
     }
 }

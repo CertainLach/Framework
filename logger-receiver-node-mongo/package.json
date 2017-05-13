@@ -1,5 +1,5 @@
 {
-  "name": "@meteor-it/random",
+  "name": "@meteor-it/logger-receiver-node-mongo",
   "version": "0.1.1",
   "description": "I",
   "main": "index.js",
@@ -13,8 +13,8 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/utils-common": "0.0.1",
-    "seedrandom": "^2.4.3"
+    "@meteor-it/logger": "latest",
+    "mongodb": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

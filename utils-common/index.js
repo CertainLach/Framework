@@ -158,3 +158,27 @@ export function hashCode(s){
     }
     return hash;
 }
+export function djb2Code(str){
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+        let char = str.charCodeAt(i);
+        hash = ((hash << 5) + hash) + char; /* hash * 33 + c */
+    }
+    return hash;
+}
+export function sdbmCode(str){
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        let char = str.charCodeAt(i);
+        hash = char + (hash << 6) + (hash << 16) - hash;
+    }
+    return hash;
+}
+export function loseCode(str){
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        let char = str.charCodeAt(i);
+        hash += char;
+    }
+    return hash;
+}

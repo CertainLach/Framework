@@ -17,7 +17,6 @@ const MULTI_EVENTS={
 };
 
 let xpressLogger=new Logger('xpress');
-let directLowLevelCallingWarned=false;
 
 class HttpError extends Error{
     code;
@@ -191,17 +190,9 @@ export default class XPress extends Router{
         res.sent=false;
         // TODO: Use primary closure
         res.writeHead=(...args)=>{
-            if(!directLowLevelCallingWarned){
-                this.logger.warn('Direct call to writeHead detected, make sure you know what are you doing');
-                directLowLevelCallingWarned=true;
-            }
             return res.__writeHead(...args);
         };
         res.end=(...args)=>{
-            if(!directLowLevelCallingWarned){
-                this.logger.warn('Direct call to writeHead detected, make sure you know what are you doing');
-                directLowLevelCallingWarned=true;
-            }
             //res.writeHead(res.statusCode?res.statusCode:200,res.header);
             return res.__end(...args);
         };
@@ -303,8 +294,6 @@ function getErrorPage (title,desc, stack = undefined) {
     // Minimalistic error page, as in express.js
 	return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack ? `<code>${stack.replace(/\n/g, '<br>')}</code>` : ''}<hr><h2>uFramework xPress</h2></body></html>`;
 }
-let doubleStarUnsafeWarned=false;
-let questionUnsafeWarned=false;
 function escapeHtml(r) {
     return r.replace(/[\x26\x0A\x3c\x3e\x22\x27]/g, r=> "&#" + r.charCodeAt(0) + ";");
 }
@@ -333,10 +322,6 @@ function parsePath(path) {
             return '([^\/]+)';
         }
         if(part==='**'){
-            if(!doubleStarUnsafeWarned){
-                xpressLogger.warn('Double star in pathes are possible security risc!\nMake sure you know what are u doing!');
-                doubleStarUnsafeWarned=true;
-            }
             if(starCount===0){
                 result.props.push('star');
                 starCount++;
@@ -346,10 +331,6 @@ function parsePath(path) {
             return '(.+)';
         }
         if(part==='*?'){
-            if(!questionUnsafeWarned){
-                xpressLogger.warn('Question in pathes are possible security risc!\nMake sure you know what are u doing!');
-                questionUnsafeWarned=true;
-            }
             if(starCount===0){
                 result.props.push('star');
                 starCount++;
@@ -359,14 +340,6 @@ function parsePath(path) {
             return '([^\/]*)';
         }
         if(part==='**?'){
-            if(!questionUnsafeWarned){
-                xpressLogger.warn('Question in pathes are possible security risc!\nMake sure you know what are u doing!');
-                questionUnsafeWarned=true;
-            }
-            if(!doubleStarUnsafeWarned){
-                xpressLogger.warn('Double star in pathes are possible security risc!\nMake sure you know what are u doing!');
-                doubleStarUnsafeWarned=true;
-            }
             if(starCount===0){
                 result.props.push('star');
                 starCount++;
