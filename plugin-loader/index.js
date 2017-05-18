@@ -25,6 +25,7 @@ function validatePlugin(plugin,isHard) {
             else {
                 if(field==='dependencies'&&!isHard)
                     continue; // Since soft plugins doesn't supports it
+                console.log(plugin.constructor);
                 throw new Error('No ' + field + ' is defined for "' + plugin.name + '" in "' + plugin.file + '"!');
             }
         }
@@ -161,42 +162,18 @@ export class SoftPluginLoader {
             this.logger.ident('Requiring them');
             const plugins = files.map(file => {
                 this.logger.log('Loading {magenta}%s{/magenta}', file);
-                let plugin = require(resolve(this.folder, file));
-                if (plugin.default) {
-                    this.logger.log('Assuming that %s is a ES6 plugin (.default found)', file);
-                    plugin = plugin.default;
-                }
-                plugin = new plugin();
-                Object.keys(this.autoData).forEach(key => {
-                    plugin[key] = data[key];
-                });
-                plugin.file = resolve(this.folder, file);
-                return plugin;
+                return this.loadPlugin(resolve(this.folder, file));
             });
             this.logger.log('All plugins are loaded.');
             this.logger.deent();
             this.logger.ident('Validating and displaying copyrights');
             await asyncEach(plugins, plugin => {
-                validatePlugin(plugin, false);
-                this.logger.ident(plugin.constructor.name);
-                this.logger.log('Name:         {blue}%s{/blue}', plugin.constructor.name);
-                this.logger.log('Author:       {blue}%s{/blue}', plugin.constructor.author);
-                this.logger.log('Description:  {blue}%s{/blue}', plugin.constructor.description);
-                this.logger.deent();
+                this.validatePlugin(plugin);
             });
             this.logger.deent();
             this.logger.ident('Init');
             for (let plugin of plugins) {
-                //await asyncEach(plugins,async plugin=>{
-                if (plugin.init) {
-                    this.logger.ident(plugin.constructor.name + '.init()');
-                    await plugin.init();
-                    this.logger.deent();
-                }
-                else {
-                    this.logger.log('%s doesn\'t have init() method, skipping', plugin.constructor.name);
-                }
-                //});
+                await this.callInit(plugin);
             }
             this.logger.deent();
             this.logger.log('Plugin loader finished thier work, starting watcher');
@@ -242,11 +219,17 @@ export class SoftPluginLoader {
         Object.keys(this.autoData).forEach(key => {
             plugin[key] = this.autoData[key];
         });
+        plugin.file=pluginPath;
         return plugin;
     }
     validatePlugin(plugin) {
         this.logger.log('Revalidating...');
-        validatePlugin(plugin, false);
+        if(!plugin.constructor.name)
+            throw new Error('name is required for plugin!');
+        if(!plugin.constructor.author)
+            plugin.constructor.author='Anonymous';
+        if(!plugin.constructor.description)
+            plugin.constructor.description='Empty description';
         this.logger.ident(plugin.constructor.name);
         this.logger.log('Name:         {blue}%s{/blue}', plugin.constructor.name);
         this.logger.log('Author:       {blue}%s{/blue}', plugin.constructor.author);

@@ -48,6 +48,7 @@ export default class VKApi extends Api{
         if(res.error)
             if(res.error.error_code==14) {
                 this.logger.error('Captcha! Wait a few seconds, or commit a captcha solver in our repo');
+                await new Promise((res,rej)=>setTimeout(()=>res(),10000));
                 // if(solved)
                 //     solved.reportWrong();
                 // let captcha=this.bot.anticaptcha.processURL(res.error.captcha_img);
@@ -153,6 +154,28 @@ export default class VKApi extends Api{
             photoUrl:data.photo_200});
         return chatConv;
     }
+    async uGetUser(uid){
+        if(!uid.startsWith('VK.'))
+            return null;
+        let id=uid.substr(3);
+        if(!id)
+            return null;
+        id=+id;
+        if(isNaN(id))
+            return null;
+        return await this.getUser(id);
+    }
+    async uGetChat(cid){
+        if(!cid.startsWith('VKC.'))
+            return null;
+        let id=cid.substr(4);
+        if(!id)
+            return null;
+        id=+id;
+        if(isNaN(id))
+            return null;
+        return await this.getChat(id);
+    }
     stopReceiver=false;
     async startReceiver(){
         if(this.stopReceiver)
@@ -229,6 +252,7 @@ export default class VKApi extends Api{
             let user=null;
             let chat=null;
             result.updates.forEach(async update=> {
+                let that=this;
                 try {
                     let type = update.shift();
                     let [flags,user_id,from_id,timestamp,subject,text,attachments,chat_id,message_id,peer_id,local_id,count,extra,mask]=
@@ -273,20 +297,21 @@ export default class VKApi extends Api{
                             }));
                             break;
                         }
-                        case 61: {//Start writing in PM
-                            [user_id,flags]=update;
-                            try{
-                                let [user]=await this.getUser(user_id);
-                                this.emit('action',new ActionEvent({
-                                    user,
-                                    action:'writing',
-                                    data:flags
-                                }));
-                            }catch(e){
-                                this.logger.error('Strange error... Again.');
-                            }
-                            break;
-                        }
+                        // case 61: {//Start writing in PM
+                        //     [user_id,flags]=update;
+                        //     try{
+                        //         let [user]=await that.getUser(user_id);
+                        //         that.emit('action',new ActionEvent({
+                        //             user,
+                        //             action:'writing',
+                        //             data:flags
+                        //         }));
+                        //     }catch(e){
+                        //         this.logger.error(e.stack);
+                        //         this.logger.error('Strange error... Again.');
+                        //     }
+                        //     break;
+                        // }
                         case 62: {//Start writing in Chat
                             [user_id,chat_id]=update;
                             let [user,chat]=await Promise.all([

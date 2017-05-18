@@ -45,6 +45,39 @@ export default class TGApi extends Api{
             size:res.file_size
         };
     }
+    async uGetUser(uid){
+        if(!uid.startsWith('TGC.'))
+            return null;
+        let id=uid.substr(3);
+        if(!id)
+            return null;
+        id=+id;
+        if(isNaN(id))
+            return null;
+        return await this.getUserFromApiData({
+            id,
+            username:'I',
+            first_name:'Hate',
+            last_name:'Telegram API',
+        });
+    }
+    async uGetChat(cid){
+        if(!cid.startsWith('TGC.'))
+            return null;
+        let id=cid.substr(4);
+        if(!id)
+            return null;
+        id=+id;
+        if(isNaN(id))
+            return null;
+        return await this.getChat(id);
+    }
+    async getChat(id){
+        let res=await this.execute('getChat',{
+            chat_id:id
+        });
+        return await this.getChatFromApiData(res);
+    }
     async getUserFromApiData(data){
         let photoFile=await Cache.get('TG:PHOTO:'+data.id);
         if(!photoFile){

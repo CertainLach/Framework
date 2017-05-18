@@ -7,6 +7,7 @@ import {Image as CanvasImage} from 'canvas';
 
 const POSSIBLE_ACTIONS = ['writing'];
 export default class XBot extends EventEmitter {
+    apiList=[];
     constructor(name) {
         super();
         this.name = name;
@@ -23,6 +24,7 @@ export default class XBot extends EventEmitter {
         api.on('join', msg => this.onJoin(msg, api));
         api.on('leave', msg => this.onLeave(msg, api));
         api.on('action', msg => this.onAction(msg, api));
+        this.apiList.push(api);
     }
     onMessage(message, sourceApi) {
         message.sourceApi = sourceApi;
@@ -60,6 +62,28 @@ export default class XBot extends EventEmitter {
         this.logger.log(title.oldTitle.red + ' -> ' + title.newTitle.green + ' by ' + title.initiator.firstName + ' ' + title.initiator.lastName);
         this.emit('title', title);
     }
+    async uGetUser(uid){
+        let found=null;
+        for(let i=0;i<this.apiList.length;i++){
+            try{
+                found=await this.apiList[i].uGetUser(uid);
+                if(found)
+                    break;
+            }catch(e){}
+        }
+        return found;
+    }
+    async uGetChat(cid){
+        let found=null;
+        for(let i=0;i<this.apiList.length;i++){
+            try{
+                found=await this.apiList[i].uGetChat(cid);
+                if(found)
+                    break;
+            }catch(e){}
+        }
+        return found;
+    }
 }
 
 export class Api extends EventEmitter {
@@ -77,11 +101,13 @@ export class Api extends EventEmitter {
     }
 
     uGetUser(uid) {
-        throw new Error('uGetUser() not implemented!');
+        this.logger.error('uGetUser() is not implemented!');
+        return null;
     }
 
     uGetChat(cid) {
-        throw new Error('uGetChat() not implemented!');
+        this.logger.error('uGetUser() is not implemented!');
+        return null;
     }
 
     sendLocation(targetId, answer, caption, location, options) {

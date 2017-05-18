@@ -1,6 +1,7 @@
 import './colors';
 import {isBrowser,isNode} from '@meteor-it/platform';
 import {createPrivateEnum} from '@meteor-it/utils-common';
+import {getCaller} from '@meteor-it/reflection';
 
 const LOG_TRACE = (isBrowser ? window.localStorage.getItem('LOG_TRACE') : process.env.LOG_TRACE)||false;
 const DEBUG = (isBrowser ? window.localStorage.getItem('DEBUG') : process.env.DEBUG)||'-';
@@ -101,8 +102,12 @@ export default class Logger {
 			params: params
 		});
 	}
-	info(...args) {
-		this.log(...args);
+	info(...params) {
+		this.write({
+			type: LOGGER_ACTIONS.LOG,
+			line: params.shift(),
+			params: params
+		});
 	}
 	// WARNING
 	warning(...params) {
@@ -112,12 +117,9 @@ export default class Logger {
 			params: params
 		});
 	}
-	warn(...args) {
-		this.warning(...args);
-	}
-	deprecationWarning(...params) {
+	warn(...params) {
 		this.write({
-			type: LOGGER_ACTIONS.DEPRECATED,
+			type: LOGGER_ACTIONS.WARNING,
 			line: params.shift(),
 			params: params
 		});
@@ -129,8 +131,12 @@ export default class Logger {
 			params: params
 		});
 	}
-	err(...args) {
-		this.error(...args);
+	err(...params) {
+		this.write({
+			type: LOGGER_ACTIONS.ERROR,
+			line: params.shift(),
+			params: params
+		});
 	}
 	// DEBUG
 	debug(...params) {
@@ -145,6 +151,8 @@ export default class Logger {
 	}
 	static noReceiversWarned = false;
 	write(data) {
+		if(LOG_TRACE&&data.line)
+			data.line=getCaller(3).toReadable()+'\n'+data.line;
 		if (!data.time)
 			data.time = new Date().getTime();
 		if (!data.name)
