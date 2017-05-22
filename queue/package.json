@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/queue",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "I",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/logger": "0.0.1"
+    "@meteor-it/logger": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

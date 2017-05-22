@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/logger",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "I",
   "main": "index.js",
   "scripts": {
@@ -13,14 +13,14 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/emoji": "0.0.1",
-    "@meteor-it/platform": "0.0.1",
-    "@meteor-it/utils-common": "0.0.1"
+    "@meteor-it/emoji": "latest",
+    "@meteor-it/platform": "latest",
+    "@meteor-it/utils-common": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {
-    "@meteor-it/logger-receiver-browser-console": "0.0.1",
-    "@meteor-it/logger-receiver-node-console": "0.0.1"
+    "@meteor-it/logger-receiver-browser-console": "latest",
+    "@meteor-it/logger-receiver-node-console": "latest"
   },
   "repository": "gitlab:Creeplays/meteor-it-framework",
   "engines": {

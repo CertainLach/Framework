@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/random",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "I",
   "main": "index.js",
   "scripts": {
@@ -13,8 +13,8 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/utils-common": "0.0.1",
-    "seedrandom": "^2.4.3"
+    "@meteor-it/utils-common": "latest",
+    "seedrandom": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

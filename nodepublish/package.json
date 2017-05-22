@@ -1,7 +1,6 @@
 {
   "name": "@meteor-it/nodepublish",
-  "version": "0.1.1",
-  "description": "I",
+  "version": "0.1.2",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,15 +8,19 @@
   "keywords": [
     "meteor-it"
   ],
+  "bin": { 
+    "nodepublish": "./index.js",
+    "multiscotch": "./index.js"
+  },
   "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/ajson": "0.0.1",
-    "@meteor-it/argv": "0.0.1",
-    "@meteor-it/fs": "0.0.1",
-    "@meteor-it/logger": "0.0.1",
-    "@meteor-it/utils-common": "0.0.1"
+    "@meteor-it/ajson": "latest",
+    "@meteor-it/argv": "latest",
+    "@meteor-it/fs": "latest",
+    "@meteor-it/logger": "latest",
+    "@meteor-it/utils-common": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

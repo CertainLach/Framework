@@ -1,6 +1,6 @@
 {
-    "name": "@meteor-it/reflection",
-    "version": "0.1.2",
+    "name": "@meteor-it/templato",
+    "version": "0.1.4",
     "description": "I",
     "main": "index.js",
     "scripts": {

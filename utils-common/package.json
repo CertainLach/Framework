@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/utils-common",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "I",
     "main": "index.js",
     "scripts": {

@@ -4,14 +4,12 @@ import {parse as parseUrl} from 'url';
 import {parse as parseQuerystring} from 'querystring';
 import AJSON from '@meteor-it/ajson';
 
-import {Server} from 'uws';
-
 import Logger from '@meteor-it/logger';
 import {arrayKVObject} from '@meteor-it/utils-common';
 
 const URL_START_REPLACER=/^\/+/;
 const PATH_INDEX_SYM=Symbol('XPress#Request.middlewareIndex');
-const POSSIBLE_EVENTS=[...METHODS,'ALL','WS'];
+const POSSIBLE_EVENTS=[...METHODS,'ALL'];
 const MULTI_EVENTS={
     'ALL':METHODS.filter(e=>e!='OPTIONS')
 };
@@ -238,34 +236,20 @@ export default class XPress extends Router{
             res.end(getErrorPage(500,'Internal Server Error: '+e.message,process.env.ENV==='development'?e.stack:undefined));
         }
     }
-    wsHandler(socket){
-        // Websocket request handler, acts similar to httpHandler()
-        // TODO: Provide own req object, instead of upgradeReq
-        this.parseReqUrl(socket.upgradeReq);
-        socket.upgradeReq.method='WS'; // Because upgrade req is a get
-        // Socket will be transfered over handlers chain as http response 
-        this.handle(socket.upgradeReq,socket,err=>{
-            // No handlers? Close socket. 404 as in http
-            if(process.env.ENV==='development')
-                socket.close(404,err?err.stack:new Error('next() called, but no next handlers are found').stack);
-            else
-                socket.close();
-            this.logger.warn('404 Socket url not found at '+socket.upgradeReq.url);
-            // Handle any error here
-            if(err instanceof Error)
-                // We can throw there, but then error will be filled with http internals
-                // So, just log
-                this.logger.error(err);
-            else if(err!==undefined)
-                // String/something other thrown? I dont like that...
-                // But anyway, lets log them
-                this.logger.error(new Error(err));
-        }, socket.upgradeReq.originalUrl);
+    listenListeners=[];
+    onListen(func){
+        this.listenListeners.push(func);
+    }
+    addPossible(event){
+        if(POSSIBLE_EVENTS.indexOf(event)+1)
+            return;
+        POSSIBLE_EVENTS.push(event);
     }
     listenHttp(host='0.0.0.0',port,silent=false){
         let httpServer=createHttpServer(this.httpHandler.bind(this));
-        const ws = new Server({server: httpServer});
-        ws.on('connection', this.wsHandler.bind(this));
+        this.logger.log('Before listening, executing listeners (to add support providers)...');
+        this.listenListeners.forEach(listener=>{listener(httpServer,this)});
+        this.logger.log('Done adding %d support providers, listening...',this.listenListeners.length);
         return new Promise((res,rej)=>{
             httpServer.listen(port,host,()=>{
                 if(!silent)
@@ -276,8 +260,9 @@ export default class XPress extends Router{
     }
     listenHttps(host='0.0.0.0',port,certs,silent=false){
         let httpsServer=createHttpsServer(certs,this.httpHandler.bind(this));
-        const wss = new Server({server: httpsServer});
-        wss.on('connection', this.wsHandler.bind(this));
+        this.logger.log('Before listening, executing listeners (to add support providers)...');
+        this.listenListeners.forEach(listener=>{listener(httpsServer,this)});
+        this.logger.log('Done adding %d support providers, listening...',this.listenListeners.length);
         return new Promise((res,rej)=>{
             httpsServer.listen(port,host,()=>{
                 if(!silent)

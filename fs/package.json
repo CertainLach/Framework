@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/fs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "I",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/utils-common": "0.0.1"
+    "@meteor-it/utils-common": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

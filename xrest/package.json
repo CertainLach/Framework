@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/xrest",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "I",
   "main": "index.js",
   "scripts": {
@@ -13,9 +13,9 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/fs": "0.0.1",
-    "@meteor-it/logger": "0.0.1",
-    "iconv-lite": "^0.4.17"
+    "@meteor-it/fs": "latest",
+    "@meteor-it/logger": "latest",
+    "iconv-lite": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

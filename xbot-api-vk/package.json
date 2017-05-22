@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/xbot-api-vk",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "I",
   "main": "index.js",
   "scripts": {
@@ -13,11 +13,11 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/cache": "0.0.1",
-    "@meteor-it/queue": "^0.1.0",
-    "@meteor-it/utils-common": "0.0.1",
-    "@meteor-it/xbot": "0.0.1",
-    "@meteor-it/xrest": "^0.2.1"
+    "@meteor-it/cache": "latest",
+    "@meteor-it/queue": "latest",
+    "@meteor-it/utils-common": "latest",
+    "@meteor-it/xbot": "latest",
+    "@meteor-it/xrest": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

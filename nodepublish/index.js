@@ -46,7 +46,7 @@ argParser.command('msc-init')
                 "optionalDependencies":{},
                 "repository": res.repo,
                 "engines":{ "node" : '^7.8.0'}
-            }));
+            },null,4));
             let readmeMd=resolve(fullPath,'README.MD');
             if(!await exists(readmeMd))
                 await writeFile(readmeMd,'# '+dir+'\n'+res.defaultDescription);
@@ -90,5 +90,54 @@ argParser.command('msc-init')
         required: false,
         help: 'Namespace for all packages',
         default: '@meteor-it'
+    });
+    
+argParser.command('update-all')
+    .help('Update package versions')
+    .callback(async res => {
+        publishLogger.ident('Initializing npm...');
+        const rootDir = resolve(process.env.PWD, res.dir);
+        publishLogger.log('In %s', rootDir);
+        await asyncEach(await readDir(rootDir),async dir=>{
+            publishLogger.log('Started initializing %s...',dir);  
+            let fullPath=resolve(rootDir,dir);
+            if(!await isDirectory(fullPath))
+                return publishLogger.warn('%s is not a directory! Skipping.',dir);
+            let packageJson=resolve(fullPath,'package.json');
+            if(await exists(packageJson))
+                return publishLogger.warn('%s is already initialized, skipping.',dir);
+            await writeFile(packageJson,AJSON.stringify({
+                "name": `${res.namespace}/${dir}`,
+                "version": res.defaultVersion,
+                "description": res.defaultDescription,
+                "main": "index.js",
+                "scripts": {
+                    "test": "echo \"Error: no test specified\" && exit 1"
+                },
+                keywords:['meteor-it'],
+                "author": res.author,
+                "license": res.license,
+                "devDependencies": {},
+                "dependencies": {},
+                "peerDependencies":{},
+                "optionalDependencies":{},
+                "repository": res.repo,
+                "engines":{ "node" : '^7.8.0'}
+            },null,4));
+            let readmeMd=resolve(fullPath,'README.MD');
+            if(!await exists(readmeMd))
+                await writeFile(readmeMd,'# '+dir+'\n'+res.defaultDescription);
+            let authorsMd=resolve(fullPath,'AUTHORS.MD');
+            if(!await exists(authorsMd))
+                await writeFile(authorsMd,'# Authors\n\n'+res.author);
+            let licenseMd=resolve(fullPath,'LICENSE.MD');
+            if(!await exists(licenseMd))
+                await writeFile(licenseMd,licenses[res.license].licenseText);
+        });
+    })
+    .option('type', {
+        required: true,
+        help: 'Update type',
+        choices: ['minor','major','patch']
     });
 argParser.parse();
