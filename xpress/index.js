@@ -9,6 +9,7 @@ import {arrayKVObject} from '@meteor-it/utils-common';
 
 const URL_START_REPLACER=/^\/+/;
 const PATH_INDEX_SYM=Symbol('XPress#Request.middlewareIndex');
+const TEMP_URL=Symbol('XPress#Request.currentUrl');
 const POSSIBLE_EVENTS=[...METHODS,'ALL'];
 const MULTI_EVENTS={
     'ALL':METHODS.filter(e=>e!='OPTIONS')
@@ -138,9 +139,9 @@ export default class XPress extends Router{
         this.logger=new Logger(name);
     }
     parseReqUrl(req){
-        // Set req.rawUrl, req.url, req.query, req.querystring and req.originalUrl
+        // Set req.rawUrl, req[TEMP_URL], req.query, req.querystring and req.originalUrl
         let parsed=parseUrl(req.rawUrl=req.url);
-        req.originalUrl=req.url=parsed.pathname;
+        req.originalUrl=req[TEMP_URL]=parsed.pathname;
         req.query=parseQuerystring(req.querystring=parsed.query);
     }
     populateReqHeader(req){
@@ -225,10 +226,10 @@ export default class XPress extends Router{
         try{
             this.handle(req,res,err=>{
                 // Next here = all routes ends, so thats = 404
-                this.logger.warn('404 Page not found at '+req.url);
+                this.logger.warn('404 Page not found at '+req[TEMP_URL]);
                 // Allow only HttpError to be thrown
                 if(!(err instanceof HttpError))
-                    err=new HttpError(404,'Page not found: '+escapeHtml(req.url));
+                    err=new HttpError(404,'Page not found: '+escapeHtml(req[TEMP_URL]));
                 // TODO: status, content type
                 res.end(getErrorPage(err.code,err.message,process.env.ENV==='development'?err.stack:undefined));
             }, req.originalUrl);
