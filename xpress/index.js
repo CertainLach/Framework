@@ -84,7 +84,7 @@ export class Router{
             this.handle(req,res,next,fakeUrl);
         };
         let matched=null; // regex.match result
-        let props=[];
+        let params=[];
         let found=null; // handle() function for method
         let currentMiddlewareIndex=req[this.routeIndexKey]; // Quick access
         while(!found){
@@ -109,7 +109,7 @@ export class Router{
             }
             // Found middleware
             found=this.middlewares[currentMiddlewareIndex].handlers[req.method];
-            props=this.middlewares[currentMiddlewareIndex].props;
+            params=this.middlewares[currentMiddlewareIndex].params;
             // Dont match again, since we already have matches assigned to 'matched'
             //matched=(fakeUrl||req.originalUrl).match(this.middlewares[currentMiddlewareIndex]);
         }
@@ -121,7 +121,7 @@ export class Router{
             return;
         }
         // Found handler, gogogo!
-        req.props=arrayKVObject(props,matched.slice(1));
+        req.params=arrayKVObject(params,matched.slice(1));
         try{
             found(req,res,nextCb);
         }catch(e){
@@ -139,9 +139,13 @@ export default class XPress extends Router{
         this.logger=new Logger(name);
     }
     parseReqUrl(req){
-        // Set req.rawUrl, req[TEMP_URL], req.query, req.querystring and req.originalUrl
-        let parsed=parseUrl(req.rawUrl=req.url);
-        req.originalUrl=req[TEMP_URL]=parsed.pathname;
+        // Set 
+        let parsed=parseUrl(req.url);
+        req.originalUrl=req.url;
+        req.app=this;
+        req.body=req.cookie=undefined;
+        req.path=parsed.pathname;
+        req.secure='https' == req.protocol;
         req.query=parseQuerystring(req.querystring=parsed.query);
     }
     populateReqHeader(req){
@@ -288,49 +292,49 @@ function parsePath(path) {
     // We can use path-to-regexp, but why, if it is soo big module with a lot of dependencies?
     let result={
         regex:null,
-        props:[],
+        params:[],
         handlers:{}
     };
     path=path.replace(URL_START_REPLACER,'');
     let starCount=0;
     result.regex=new RegExp('^/'+path.split('/').map(part=>{
         if(part.indexOf(':')!==-1&&part.length>=1){
-            result.props.push(part.substr(part.indexOf(':')+1));
+            result.params.push(part.substr(part.indexOf(':')+1));
             return part.substr(0,part.indexOf(':'))+'([^/]+)';
         }
         if(part==='*'){
             if(starCount===0){
-                result.props.push('star');
+                result.params.push('star');
                 starCount++;
             }else{
-                result.props.push('star_'+ ++starCount);
+                result.params.push('star_'+ ++starCount);
             }
             return '([^\/]+)';
         }
         if(part==='**'){
             if(starCount===0){
-                result.props.push('star');
+                result.params.push('star');
                 starCount++;
             }else{
-                result.props.push('star_'+ ++starCount);
+                result.params.push('star_'+ ++starCount);
             }
             return '(.+)';
         }
         if(part==='*?'){
             if(starCount===0){
-                result.props.push('star');
+                result.params.push('star');
                 starCount++;
             }else{
-                result.props.push('star_'+ ++starCount);
+                result.params.push('star_'+ ++starCount);
             }
             return '([^\/]*)';
         }
         if(part==='**?'){
             if(starCount===0){
-                result.props.push('star');
+                result.params.push('star');
                 starCount++;
             }else{
-                result.props.push('star_'+ ++starCount);
+                result.params.push('star_'+ ++starCount);
             }
             return '(.*)';
         }
