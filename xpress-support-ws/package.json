@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/xpress-support-ws",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "XPress WS Support",
   "main": "index.js",
   "scripts": {

@@ -140,12 +140,13 @@ export default class XPress extends Router{
     }
     parseReqUrl(req){
         // Set 
+        //console.log(req);
         let parsed=parseUrl(req.url);
         req.originalUrl=req.url;
         req.app=this;
         req.body=req.cookie=undefined;
         req.path=parsed.pathname;
-        req.secure='https' == req.protocol;
+        req.secure='https' === req.protocol;
         req.query=parseQuerystring(req.querystring=parsed.query);
     }
     populateReqHeader(req){
@@ -230,10 +231,10 @@ export default class XPress extends Router{
         try{
             this.handle(req,res,err=>{
                 // Next here = all routes ends, so thats = 404
-                this.logger.warn('404 Page not found at '+req[TEMP_URL]);
+                this.logger.warn('404 Page not found at '+escapeHtml(req.url));
                 // Allow only HttpError to be thrown
                 if(!(err instanceof HttpError))
-                    err=new HttpError(404,'Page not found: '+escapeHtml(req[TEMP_URL]));
+                    err=new HttpError(404,'Page not found: '+escapeHtml(req.url));
                 // TODO: status, content type
                 res.end(getErrorPage(err.code,err.message,process.env.ENV==='development'?err.stack:undefined));
             }, req.originalUrl);

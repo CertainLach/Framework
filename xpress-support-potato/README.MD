@@ -22,3 +22,4 @@ server.on('POTATO /a',async(req, socket, next)=>{
     await socket.remoteFunc(params)
 });
 ```
+Also see the [potato.socket docs](https://github.com/Meteor-DEV/Potato.Socket)

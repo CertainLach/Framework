@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/logger",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "I",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,8 @@
   "dependencies": {
     "@meteor-it/emoji": "latest",
     "@meteor-it/platform": "latest",
-    "@meteor-it/utils-common": "latest"
+    "@meteor-it/utils-common": "latest",
+    "@meteor-it/reflection": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {

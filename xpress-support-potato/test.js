@@ -16,6 +16,6 @@ server.on('POTATO /',(req,potato)=>{
     potato.emit('test',{
         a:'123412124'
     });
-    potato.getData();
+    potato.getData('123','242',[444,222,'22',{d:new Date()}]);
 });
 server.listenHttp('0.0.0.0',8081);
