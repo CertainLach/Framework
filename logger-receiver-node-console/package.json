@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/logger-receiver-node-console",
-  "version": "0.1.2",
+  "version": "1.0.1",
   "description": "I",
   "main": "index.js",
   "scripts": {

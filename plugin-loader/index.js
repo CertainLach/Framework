@@ -161,21 +161,40 @@ export class SoftPluginLoader {
             this.logger.log('Found {blue}%d{/blue} candidats', files.length);
             this.logger.ident('Requiring them');
             const plugins = files.map(file => {
-                this.logger.log('Loading {magenta}%s{/magenta}', file);
-                return this.loadPlugin(resolve(this.folder, file));
-            });
+                try{
+                    this.logger.log('Loading {magenta}%s{/magenta}', file);
+                    return this.loadPlugin(resolve(this.folder, file));
+                }catch(e){
+                    this.logger.error('Error loading %s! Plugin will load at change!',file);
+                    this.logger.error(e.stack);
+                    return null;
+                }
+            }).filter(plugin=>plugin!==null);
             this.logger.log('All plugins are loaded.');
             this.logger.deent();
             this.logger.ident('Validating and displaying copyrights');
             await asyncEach(plugins, plugin => {
-                this.validatePlugin(plugin);
+                try{
+                    this.validatePlugin(plugin);
+                }catch(e){
+                    this.logger.error('Error at plugin validation! Plugin will load at change!');
+                    this.logger.error(e.stack);
+                    plugins.splice(plugins.indexOf(plugin), 1);
+                }
             });
             this.logger.deent();
             this.logger.ident('Init');
             for (let plugin of plugins) {
-                await this.callInit(plugin);
+                try{
+                    await this.callInit(plugin);
+                }catch(e){
+                    this.logger.error('Error at plugin init call! Plugin will load at change!');
+                    this.logger.error(e.stack);
+                    plugins.splice(plugins.indexOf(plugin), 1);
+                }
             }
             this.logger.deent();
+            this.logger.log('Total added plugins: %d',plugins.length);
             this.logger.log('Plugin loader finished thier work, starting watcher');
             this.plugins = plugins;
             this.watch();
@@ -262,6 +281,7 @@ export class SoftPluginLoader {
         }
         else {
             this.logger.error('Unknown change! %s', pluginPath);
+            setTimeout(()=>this.onAdd(pluginPath),1);
         }
     }
     watcherReady = false;
@@ -304,15 +324,15 @@ export class SoftPluginLoader {
                 if (!this.watcherReady) // To prevent adding files from initial scan
                     return;
                 this.logger.log(`File ${path} has been added, loading plugins...`);
-                this.onAdd(path);
+                setTimeout(()=>this.onAdd(path),1);
             })
             .on('change', path => {
                 this.logger.log(`File ${path} has been changed, reloading plugins...`);
-                this.onChange(path);
+                setTimeout(()=>this.onChange(path),1);
             })
             .on('unlink', path => {
                 this.logger.log(`File ${path} has been removed, removing plugins...`);
-                this.onRemove(path);
+                setTimeout(()=>this.onRemove(path),1);
             });
 
         // More possible events.
