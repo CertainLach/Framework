@@ -216,9 +216,10 @@ export class SoftPluginLoader {
         });
         return [found, foundId];
     }
-    unloadPlugin(pluginPath) {
+    async unloadPlugin(pluginPath) {
         this.logger.log('Unloading...');
         let [found, foundId] = this.findPluginAtPath(pluginPath);
+        this.logger.log('Calling uninit()...');
         if(found.uninit){
             this.logger.ident(found.constructor.name + '.uninit()');
             await found.uninit();
@@ -264,7 +265,7 @@ export class SoftPluginLoader {
         this.logger.deent();
     }
     async callInit(plugin) {
-        this.logger.log('Recalling init()...');
+        this.logger.log('Calling init()...');
         if (plugin.init) {
             this.logger.ident(plugin.constructor.name + '.init()');
             await plugin.init();
@@ -279,7 +280,7 @@ export class SoftPluginLoader {
         let [found, foundId] = this.findPluginAtPath(pluginPath);
         if (found) {
             this.logger.log('Plugin changed: %s (%d,%s)', found.constructor.name, foundId, found.file);
-            this.unloadPlugin(pluginPath);
+            await this.unloadPlugin(pluginPath);
             let plugin = this.loadPlugin(pluginPath);
             this.validatePlugin(plugin);
             await this.callInit(plugin);
@@ -314,7 +315,7 @@ export class SoftPluginLoader {
         let [found, foundId] = this.findPluginAtPath(pluginPath);
         if (found) {
             this.logger.log('Plugin removed: %s (%d,%s)', found.constructor.name, foundId, found.file);
-            this.unloadPlugin(pluginPath);
+            await this.unloadPlugin(pluginPath);
         }
         else {
             this.logger.error('Unknown remove! %s', pluginPath);
