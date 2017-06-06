@@ -219,6 +219,14 @@ export class SoftPluginLoader {
     unloadPlugin(pluginPath) {
         this.logger.log('Unloading...');
         let [found, foundId] = this.findPluginAtPath(pluginPath);
+        if(found.uninit){
+            this.logger.ident(found.constructor.name + '.uninit()');
+            await found.uninit();
+            this.logger.deent();
+        }
+        else {
+            this.logger.log('%s doesn\'t have uninit() method, skipping', found.constructor.name);
+        }
         var name = require.resolve(pluginPath);
         this.logger.log('Full name = %s', name);
         this.logger.log('In cache: ' + !!require.cache[name]);
