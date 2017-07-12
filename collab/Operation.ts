@@ -1,4 +1,6 @@
-export default interface Operation {
+import SegmentBuffer from './SegmentBuffer';
+
+export interface Operation {
     requiresCID: boolean;
     position?: number;
 

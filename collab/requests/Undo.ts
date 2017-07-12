@@ -1,4 +1,4 @@
-import Vector from '../vector';
+import Vector from '../Vector';
 
 /** Instantiates a new undo request.
  *  @class Represents an undo request made by an user at a certain time.

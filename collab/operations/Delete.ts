@@ -1,7 +1,11 @@
-import Operation from '../Operation';
+import {Operation} from '../Operation';
 import SegmentBuffer from "../SegmentBuffer";
 import Split from "./Split";
+import NoOp from "./NoOp";
+import Insert from "./Insert";
 import Recon from "../Recon";
+import ReconSegment from "../ReconSegment";
+import State from "../State";
 
 /** Instantiates a new Delete operation object.
  *  Delete operations can be reversible or not, depending on how they are

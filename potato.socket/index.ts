@@ -4,6 +4,10 @@ import {Component} from 'react';
 // Autoreconnection socket
 class WebSocketClient {
     number = 0; // Message id
+    autoReconnectInterval;
+    url;
+    instance;
+    safeClose = false;
     constructor(url, reconnectInterval=100) {
         this.autoReconnectInterval = reconnectInterval; // ms
         this.url=url;
@@ -28,7 +32,7 @@ class WebSocketClient {
                         this.onclose(e);
                         break;
                     default:	// Abnormal closure
-                        this.reconnect(e);
+                        this.reconnect();
                         break;
                 }
             }else{
@@ -39,7 +43,7 @@ class WebSocketClient {
             switch (e.code) {
                 case 'ECONNREFUSED':
                     if (!this.safeClose)
-                        this.reconnect(e);
+                        this.reconnect();
                     else
                         this.onclose(e);
                     break;
@@ -66,15 +70,14 @@ class WebSocketClient {
     reconnect() {
         if (!this.safeClose) {
             console.log(`WebSocket: retry in ${this.autoReconnectInterval}ms`);
-            const that = this;
             setTimeout(() => {
                 console.log("WebSocket: reconnection...");
-                that.open(that.url);
+                this.open();
             }, this.autoReconnectInterval);
         }
     }
 
-    onopen(e) {
+    onopen() {
     }
 
     onmessage(data, flags, number) {
@@ -94,14 +97,16 @@ export function connectSocket(packetDeclaration, socketUrl, reconnectInterval){
         state={
             socketState: 'connection',
             socket: new PotatoSocketClient(WrappedComponent.name,packetDeclaration, socketUrl, reconnectInterval)
-        }
+        };
         componentDidMount() {
             this.state.socket.on('open',()=>this.setState({socketState:'open'}));
             this.state.socket.on('close',()=>this.setState({socketState:'close'}));
             this.state.socket.on('error',e=>{throw e});
         }
         render(){
-            return <WrappedComponent {...this.props} socketState={this.state.socketState} socket={this.state.socket} />;
+            return (<WrappedComponent {...this.props} socketState={this.state.socketState} socket={this.state.socket}>
+
+            <WrappedComponent/>);
         }
     };
 }
@@ -155,7 +160,7 @@ export class PotatoSocketClient {
         // Unsafe because we know exact length of resulting buffer.
         let buffer = Buffer.allocUnsafe(bufLength);
         this.packetDeclaration.serialize(fullData,buffer,0);
-        this.realSocket.send(buffer);
+        this.websocket.send(buffer);
     }
 }
 export class PotatoSocketServer {
@@ -164,7 +169,6 @@ export class PotatoSocketServer {
     sockets={};
     eventHandlers={};
     constructor(name, packetDeclaration){
-        super();
         this.logger=new Logger(name);
         this.packetDeclaration=packetDeclaration;
     }

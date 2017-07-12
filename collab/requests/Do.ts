@@ -1,5 +1,5 @@
 import Vector from '../Vector';
-import Operation from '../Operation';
+import {Operation} from '../Operation';
 import State from '../State';
 import NoOp from '../operations/NoOp';
 import Delete from '../operations/Delete';

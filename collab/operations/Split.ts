@@ -1,4 +1,4 @@
-import Operation from '../Operation';
+import {Operation} from '../Operation';
 import SegmentBuffer from '../SegmentBuffer';
 
 /** Instantiates a new Split operation object.
