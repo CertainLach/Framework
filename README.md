@@ -1,1 +1,1 @@
-# meteor-it-framework
+# Meteor.IT Framework

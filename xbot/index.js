@@ -2,7 +2,7 @@ import Logger from '@meteor-it/logger';
 import {EventEmitter} from 'events';
 import {getReadStream,stat,isFile} from '@meteor-it/fs';
 import {emit} from '@meteor-it/xrest';
-import {readStream,createReadStream} from '@meteor-it/utils-node';
+import {readStream,createReadStream} from '@meteor-it/utils';
 import {Image as CanvasImage} from 'canvas';
 
 const POSSIBLE_ACTIONS = ['writing'];
@@ -28,6 +28,7 @@ export default class XBot extends EventEmitter {
     }
     onMessage(message, sourceApi) {
         message.sourceApi = sourceApi;
+        message.xbot=this;
         let inChat = message.chat ? (` [${message.chat.title.red}]`) : '';
         let attachment = message.attachment ? (`A`.magenta) : ' ';
         let reply = message.replyTo ? (`R`.magenta) : ' ';
@@ -36,29 +37,34 @@ export default class XBot extends EventEmitter {
     }
     onLeave(leave, sourceApi) {
         leave.sourceApi = sourceApi;
+        leave.xbot=this;
         let initiator = leave.initiator ? ` (by ${leave.initiator.firstName.blue} ${leave.initiator.lastName.blue})` : '';
         this.logger.log(`${leave.user.firstName.blue} ${leave.user.lastName.blue} {red}leaved{/red} ${leave.chat.title.red}${initiator}`);
         this.emit('leave', leave);
     }
     onJoin(join, sourceApi) {
         join.sourceApi = sourceApi;
+        join.xbot=this;
         let initiator = join.initiator ? ` (by ${join.initiator.firstName.blue} ${join.initiator.lastName.blue})` : '';
         this.logger.log(`${join.user.firstName.blue} ${join.user.lastName.blue} {green}joined{/green} ${join.chat.title.red}${initiator}`);
         this.emit('join', join);
     }
     onAction(action, sourceApi) {
         action.sourceApi = sourceApi;
+        action.xbot=this;
         let inChat = action.chat ? (` [${action.chat.title.red}]`) : '';
         this.logger.log(`${action.user.firstName.blue} ${action.user.lastName.blue}${inChat} - ${action.action.yellow}`);
         this.emit('action', action);
     }
     onPhoto(photo, sourceApi) {
         photo.sourceApi = sourceApi;
+        photo.xbot=this;
         this.logger.log(`Changed photo in ${photo.chat.title.red} -> ${photo.newPhotoUrl} by ${photo.initiator.firstName} ${photo.initiator.lastName}`);
         this.emit('photo', photo);
     }
     onTitle(title, sourceApi) {
         title.sourceApi = sourceApi;
+        title.xbot=this;
         this.logger.log(title.oldTitle.red + ' -> ' + title.newTitle.green + ' by ' + title.initiator.firstName + ' ' + title.initiator.lastName);
         this.emit('title', title);
     }
@@ -193,7 +199,7 @@ export class Image extends File {
         let res = new CanvasImage();
         res.src = await readStream(stream);
         return new Promise((resolve,rej)=>{
-            res.onload=resolve(res);    
+            res.onload=resolve(res);
         });
     }
 }
@@ -278,28 +284,58 @@ class Conversation {
     async sendLocation(answer, caption, location, options = {}) {
         if (!(location instanceof Location))
             throw new Error('"location" is not a instance of Location!');
+        if(this.xbot){
+            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
+            let attachment = true ? (`A`.magenta) : ' ';
+            let reply = answer ? (`R`.magenta) : ' ';
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${(caption||'').green}`);
+        }
         return await this.api.sendLocation(this.targetId, answer, caption, location, options);
     }
 
     async sendText(answer, text, options = {}) {
+        if(this.xbot){
+            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
+            let attachment = false ? (`A`.magenta) : ' ';
+            let reply = answer ? (`R`.magenta) : ' ';
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${text.green}`);
+        }
         return await this.api.sendText(this.targetId, answer ? this.messageId : undefined, text, options);
     }
 
     async sendImage(answer, caption, image, options = {}) {
         if (!(image instanceof Image))
             throw new Error('"image" is not a instance of Image!');
+        if(this.xbot){
+            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
+            let attachment = true ? (`A`.magenta) : ' ';
+            let reply = answer ? (`R`.magenta) : ' ';
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${(caption||'').green}`);
+        }
         return await this.api.sendImageStream(this.targetId, answer ? this.messageId : undefined, caption, image, options);
     }
 
     async sendFile(answer, caption, file, options = {}) {
         if (!(file instanceof File))
             throw new Error('"file" is not a instance of File!');
+        if(this.xbot){
+            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
+            let attachment = true ? (`A`.magenta) : ' ';
+            let reply = answer ? (`R`.magenta) : ' ';
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${(caption||'').green}`);
+        }
         return await this.api.sendFileStream(this.targetId, answer, caption, file, options);
     }
 
     async sendAudio(answer, caption, audio, options = {}) {
         if (!(audio instanceof Audio))
             throw new Error('"audio" is not a instance of Audio!');
+        if(this.xbot){
+            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
+            let attachment = true ? (`A`.magenta) : ' ';
+            let reply = answer ? (`R`.magenta) : ' ';
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${(caption||'').green}`);
+        }
         return await this.api.sendAudioStream(this.targetId, answer, caption, audio, options);
     }
     async sendCustom(answer, options = {}) {

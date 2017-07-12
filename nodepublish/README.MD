@@ -1,2 +1,0 @@
-# nodepublish
-I

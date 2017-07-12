@@ -1,7 +1,7 @@
 {
-  "name": "@meteor-it/xpress",
-  "version": "3.0.1",
-  "description": "The most powerfull express.js alternative",
+  "name": "@meteor-it/potato.socket",
+  "version": "0.0.1",
+  "description": "Websocket wrapper with serialization support via protodef",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,10 +13,8 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/ajson": "latest",
     "@meteor-it/logger": "latest",
-    "@meteor-it/utils-common": "latest",
-    "uws": "latest"
+    "react": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

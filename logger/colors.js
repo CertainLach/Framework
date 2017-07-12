@@ -26,6 +26,8 @@ String.prototype.resetStyles = function() {
 };
 
 function defineDecorator(color) {
+	if('abc'[color])
+		return;
 	Object.defineProperty(String.prototype, color, {
 		get: function() {
 			return this.addStyle(color);

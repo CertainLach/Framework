@@ -17,7 +17,9 @@
     "@meteor-it/logger": "latest",
     "@meteor-it/utils-node": "latest",
     "@meteor-it/xrest": "latest",
-    "canvas": "latest"
+    "canvas": "latest",
+    "@meteor-it/queue": "latest",
+    "@meteor-it/utils": "latest"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

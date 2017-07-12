@@ -1,2 +1,0 @@
-# xbot-api-vk
-I

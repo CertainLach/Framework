@@ -1,7 +1,7 @@
 {
   "name": "@meteor-it/logger",
   "version": "1.0.1",
-  "description": "I",
+  "description": "Powerfull logger for node.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,20 +9,17 @@
   "keywords": [
     "meteor-it"
   ],
-  "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
     "@meteor-it/emoji": "latest",
     "@meteor-it/platform": "latest",
-    "@meteor-it/utils-common": "latest",
-    "@meteor-it/reflection": "latest"
+    "@meteor-it/reflection": "latest",
+    "@meteor-it/terminal": "latest",
+    "@meteor-it/utils": "latest"
   },
   "peerDependencies": {},
-  "optionalDependencies": {
-    "@meteor-it/logger-receiver-browser-console": "latest",
-    "@meteor-it/logger-receiver-node-console": "latest"
-  },
   "repository": "gitlab:Creeplays/meteor-it-framework",
   "engines": {
     "node": "^7.8.0"

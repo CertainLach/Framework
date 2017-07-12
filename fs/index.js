@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import {cb2promise, asyncEach} from '@meteor-it/utils-common';
+import {cb2promise, asyncEach} from '@meteor-it/utils';
 import {sep} from 'path';
 
 /**

@@ -1,6 +1,6 @@
 import './colors';
 import {isBrowser,isNode} from '@meteor-it/platform';
-import {createPrivateEnum} from '@meteor-it/utils-common';
+import {createPrivateEnum} from '@meteor-it/utils';
 import {getCaller} from '@meteor-it/reflection';
 
 const LOG_TRACE = (isBrowser ? window.localStorage.getItem('LOG_TRACE') : process.env.LOG_TRACE)||false;
@@ -15,9 +15,13 @@ LOGGER_ACTIONS.ERR = LOGGER_ACTIONS.ERROR;
 let consoleLogger;
 let loggerLogger;
 
+if(global.__LOGGER)
+	throw new Error('You have more than 1 logger installed! Make sure you use only latest versions of it, and/or reinstall dependencies');
+global.__LOGGER=1;
+
 export class BasicReceiver {
 	logger;
-	
+
 	setLogger(logger){
 		this.logger=logger;
 	}
@@ -93,7 +97,7 @@ export default class Logger {
 			this.deent();
 		}
 	}
-	
+
 	// LOG
 	log(...params) {
 		this.write({
@@ -162,21 +166,21 @@ export default class Logger {
 		Logger._write(data);
 	}
 	static _write(what) {
-		if (this.receivers.length === 0) {
-			if(!this.noReceiversWarned){
+		if (Logger.receivers.length === 0) {
+			if(!Logger.noReceiversWarned){
 				console._log('No receivers are defined for logger!');
-				this.noReceiversWarned = true;
+				Logger.noReceiversWarned = true;
 			}
 			console._log(what);
 		}
-		if(this.isRepeating(what.name,what.line,what.type))
-			this.repeatCount++;
+		if(Logger.isRepeating(what.name,what.line,what.type))
+			Logger.repeatCount++;
 		else
-			this.resetRepeating(what.name,what.line,what.type);
+			Logger.resetRepeating(what.name,what.line,what.type);
 		if(REPEATABLE_ACTIONS.indexOf(what.type)===-1)
-			what.repeats=this.repeatCount;
+			what.repeats=Logger.repeatCount;
 		what.repeated=what.repeats&&what.repeats>0;
-		this.receivers.forEach(receiver => receiver.write(what));
+		Logger.receivers.forEach(receiver => receiver.write(what));
 	}
 	static resetRepeating(provider, message, type) {
 		Logger.lastProvider = provider;
@@ -188,10 +192,10 @@ export default class Logger {
 		return Logger.lastProvider === provider && Logger.lastMessage === message && Logger.lastType === type;
 	}
 	static addReceiver(receiver) {
-		if (this.receivers.length === 4)
+		if (Logger.receivers.length === 4)
 			loggerLogger.warn('Possible memory leak detected: 4 or more receivers are added.');
 		receiver.setLogger(Logger);
-		this.receivers.push(receiver);
+		Logger.receivers.push(receiver);
 	}
 }
 
@@ -202,18 +206,18 @@ for (let method of['log', 'error', 'warn']) {
 	console[method] = (...args) => consoleLogger[method](...args);
 }
 
-if(isBrowser){
-	try{
-		Logger.addReceiver(new (require('@meteor-it/logger'+'-receiver-browser-console').default)());
-	}catch(e){
-		console.error('Logger receiver for browser is not installed!');
-	}
-}
-if(isNode){
-	try{
-		Logger.addReceiver(new (require('@meteor-it/logger'+'-receiver-node-console').default)());
-	}catch(e){
-		console.log(e.stack);
-		console.error('Logger receiver for node is not installed!');
-	}
-}
+// if(isBrowser){
+// 	try{
+// 		Logger.addReceiver(new (require('@meteor-it/logger'+'-receiver-browser-console').default)());
+// 	}catch(e){
+// 		console.error('Logger receiver for browser is not installed!');
+// 	}
+// }
+// if(isNode){
+// 	try{
+// 		Logger.addReceiver(new (require('@meteor-it/logger'+'-receiver-node-console').default)());
+// 	}catch(e){
+// 		console.log(e.stack);
+// 		console.error('Logger receiver for node is not installed!');
+// 	}
+// }

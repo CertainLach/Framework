@@ -9,7 +9,7 @@ import * as https from 'https';
 import {parse as parseUrl,resolve} from 'url';
 import {stringify} from 'querystring';
 import * as zlib from 'zlib';
-import iconv from 'iconv-lite';
+import iconv from 'iconv';
 
 export * from './multipart';
 
@@ -40,7 +40,7 @@ class Request extends EventEmitter {
     url;
     options;
     headers;
-    
+
     constructor(url, options) {
         super();
         this.prepare(url,options);
@@ -64,11 +64,11 @@ class Request extends EventEmitter {
         };
 
         // set port and method defaults
-        if (!this.url.port) 
+        if (!this.url.port)
             this.url.port = (this.url.protocol == 'https:') ? '443' : '80';
-        if (!this.options.method) 
+        if (!this.options.method)
             this.options.method = (this.options.data) ? 'POST' : 'GET';
-        if (typeof this.options.followRedirects == 'undefined') 
+        if (typeof this.options.followRedirects == 'undefined')
             this.options.followRedirects = true;
         if(this.options.timeout===undefined)
             this.options.timeout=12000;
