@@ -93,10 +93,11 @@ class WebSocketClient {
 // To connect react component to PotatoSocker
 export function connectSocket(packetDeclaration, socketUrl, reconnectInterval){
     return (WrappedComponent)=>class SocketConnectedComponent extends Component {
+        static displayName = `SocketWrapped${WrappedComponent.name}`;
         socket;
         state={
             socketState: 'connection',
-            socket: new PotatoSocketClient(WrappedComponent.name,packetDeclaration, socketUrl, reconnectInterval)
+            socket: new PotatoSocketClient(WrappedComponent.name, packetDeclaration, socketUrl, reconnectInterval)
         };
         componentDidMount() {
             this.state.socket.on('open',()=>this.setState({socketState:'open'}));
@@ -104,9 +105,7 @@ export function connectSocket(packetDeclaration, socketUrl, reconnectInterval){
             this.state.socket.on('error',e=>{throw e});
         }
         render(){
-            return (<WrappedComponent {...this.props} socketState={this.state.socketState} socket={this.state.socket}>
-
-            <WrappedComponent/>);
+            return (<WrappedComponent {...this.props} socketState={this.state.socketState} socket={this.state.socket}/>);
         }
     };
 }

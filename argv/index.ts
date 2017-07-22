@@ -1,6 +1,6 @@
 // Nomnom by harthur, will be maintained by meteor-it
 
-import {objectMap,firstUppercase} from '@meteor-it/utils-common';
+import {objectMap,firstUppercase} from '@meteor-it/utils';
 import Logger from '@meteor-it/logger';
 
 import {basename} from 'path';
@@ -16,7 +16,7 @@ export default class ArgParser {
         this.name=name;
         this.logger=new Logger(name);
     }
-    
+
     command(name) {
         let command;
         if (name) {
@@ -161,7 +161,7 @@ export default class ArgParser {
                 }
             }
         }
-        
+
         if (this.specs.length === undefined) {
             // specs is a hash not an array
             this.specs = objectMap(this.specs, (opt, name) => {
@@ -252,12 +252,12 @@ export default class ArgParser {
         // exit if required arg isn't present
         this.specs.forEach(opt=>{
             if (opt.required && options[opt.name] === undefined) {
-                let msg = `"${opt.name}" argument is required`.red.bold;
+                let msg = `"${opt.name}" argument is required`.bold.red;
 
                 this.print(`\n${msg}\n${this.getUsage()}`, 1);
             }
         });
-        
+
         if (command && command.cb) {
             command.cb(options);
         }
@@ -489,5 +489,5 @@ function Opt(opt){
                 opt.name == arg || (opt.list && arg >= opt.position);
         }
     };
-    return opt;    
+    return opt;
 }

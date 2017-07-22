@@ -7,17 +7,16 @@ import Recon from "../Recon";
 import ReconSegment from "../ReconSegment";
 import State from "../State";
 
-/** Instantiates a new Delete operation object.
- *  Delete operations can be reversible or not, depending on how they are
- *  constructed. Delete operations constructed with a SegmentBuffer object know which
- *  text they are removing from the buffer and can therefore be mirrored,
- *  whereas Delete operations knowing only the amount of characters to be
- *  removed are non-reversible.
- *  @class An operation that removes a range of characters in the target
- *  buffer.
- *  @param position The offset of the first character to remove.
- *  @param what The data to be removed. This can be either a numeric value
- *  or a SegmentBuffer object.
+/**
+ * Instantiates a new Delete operation object.
+ * Delete operations can be reversible or not, depending on how they are
+ * constructed. Delete operations constructed with a SegmentBuffer object know which
+ * text they are removing from the buffer and can therefore be mirrored,
+ * whereas Delete operations knowing only the amount of characters to be
+ * removed are non-reversible.
+ * Delete - an operation that removes a range of characters in the target buffer.
+ * @param position The offset of the first character to remove.
+ * @param what The data to be removed. This can be either a numeric value or a SegmentBuffer object.
  */
 export default class Delete implements Operation {
     requiresCID = false;
@@ -44,15 +43,16 @@ export default class Delete implements Operation {
         return `Delete(${this.position}, ${this.what instanceof SegmentBuffer ? this.what.toHTML() : this.what})`;
     }
 
-    /** Determines whether this Delete operation is reversible.
-     *  @type Boolean
+    /**
+     * Determines whether this Delete operation is reversible.
      */
-    isReversible() {
+    isReversible():boolean {
         return (this.what instanceof SegmentBuffer);
     }
 
-    /** Applies this Delete operation to a buffer.
-     *  @param {SegmentBuffer} buffer The buffer to which the operation is to be applied.
+    /**
+     * Applies this Delete operation to a buffer.
+     * @param buffer The buffer to which the operation is to be applied.
      */
     apply(buffer: SegmentBuffer) {
         buffer.splice(this.position, this.getLength());
@@ -61,8 +61,8 @@ export default class Delete implements Operation {
     cid(other) {
     }
 
-    /** Returns the number of characters that this Delete operation removes.
-     *  @type number
+    /**
+     * Returns the number of characters that this Delete operation removes.
      */
     getLength(): number {
         if (this.isReversible())
@@ -71,14 +71,14 @@ export default class Delete implements Operation {
             return <number>this.what;
     }
 
-    /** Splits this Delete operation into two Delete operations at the given
-     *  offset. The resulting Split operation will consist of two Delete
-     *  operations which, when combined, affect the same range of text as the
-     *  original Delete operation.
-     *  @param {number} at Offset at which to split the Delete operation.
-     *  @type Split
+    /**
+     * Splits this Delete operation into two Delete operations at the given
+     * offset. The resulting Split operation will consist of two Delete
+     * operations which, when combined, affect the same range of text as the
+     * original Delete operation.
+     * @param at Offset at which to split the Delete operation.
      */
-    split(at) {
+    split(at):Split {
         if (this.isReversible()) {
             // This is a reversible Delete operation. No need to to any
             // processing for recon data.
@@ -110,13 +110,13 @@ export default class Delete implements Operation {
         }
     }
 
-    /** Returns the range of text in a buffer that this Delete or Split-Delete
-     *  operation removes.
-     *  @param operation A Split-Delete or Delete operation
-     *  @param {SegmentBuffer} buffer
-     *  @type SegmentBuffer
+    /**
+     * Returns the range of text in a buffer that this Delete or Split-Delete
+     * operation removes.
+     * @param operation A Split-Delete or Delete operation
+     * @param buffer
      */
-    static getAffectedString(operation, buffer) {
+    static getAffectedString(operation, buffer):SegmentBuffer {
         if (operation instanceof Split) {
             // The other operation is a Split operation. We call this function
             // again recursively for each component.
@@ -141,13 +141,12 @@ export default class Delete implements Operation {
         }
     }
 
-    /** Makes this Delete operation reversible, given a transformed version of
-     *  this operation in a buffer matching its state. If this Delete operation is
-     *  already reversible, this function simply returns a copy of it.
-     *  @param {Delete} transformed A transformed version of this
-     *  operation.
-     *  @param {State} state The state in which the transformed operation could be
-     *  applied.
+    /**
+     * Makes this Delete operation reversible, given a transformed version of
+     * this operation in a buffer matching its state. If this Delete operation is
+     * already reversible, this function simply returns a copy of it.
+     * @param transformed A transformed version of this operation.
+     * @param state The state in which the transformed operation could be applied.
      */
     makeReversible(transformed: Delete, state: State) {
         if (this.what instanceof SegmentBuffer)
@@ -159,13 +158,13 @@ export default class Delete implements Operation {
         }
     }
 
-    /** Merges a Delete operation with another one. The resulting Delete operation
-     *  removes the same range of text as the two separate Delete operations would
-     *  when executed sequentially.
-     *  @param {Delete} other
-     *  @type Delete
+    /**
+     * Merges a Delete operation with another one. The resulting Delete operation
+     * removes the same range of text as the two separate Delete operations would
+     * when executed sequentially.
+     * @param other
      */
-    merge(other) {
+    merge(other):Delete {
         if (this.isReversible()) {
             if (!other.isReversible())
                 throw "Cannot merge reversible operations with non-reversible ones";
@@ -180,8 +179,8 @@ export default class Delete implements Operation {
     }
 
     /** Transforms this Delete operation against another operation.
-     *  @param {Operation} other
-     *  @param {Operation} [cid]
+     *  @param other
+     *  @param cid
      */
     transform(other: Operation, cid?: Operation) {
         if (other instanceof NoOp)
@@ -283,12 +282,12 @@ export default class Delete implements Operation {
         }
     }
 
-    /** Mirrors this Delete operation. Returns an operation which inserts the text
-     *  that this Delete operation would remove. If this Delete operation is not
-     *  reversible, the return value is undefined.
-     *  @type Insert
+    /**
+     * Mirrors this Delete operation. Returns an operation which inserts the text
+     * that this Delete operation would remove. If this Delete operation is not
+     * reversible, the return value is undefined.
      */
-    mirror() {
+    mirror():Insert {
         if (this.isReversible())
             return new Insert(this.position, (<SegmentBuffer>this.what).copy());
     }

@@ -26,13 +26,13 @@ String.prototype.resetStyles = function() {
 };
 
 function defineDecorator(color) {
-	if('abc'[color])
-		return;
-	Object.defineProperty(String.prototype, color, {
-		get: function() {
-			return this.addStyle(color);
-		}
-	});
+	try{
+		Object.defineProperty(String.prototype, color, {
+			get: function() {
+				return this.addStyle(color);
+			}
+		});
+	}catch(e){}
 }
 
 ["reset", "bold", "dim", "italic", "underline", "inverse", "hidden", "strikethrough", "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white", "gray", "bgBlack", "bgRed", "bgGreen", "bgYellow", "bgBlue", "bgMagenta", "bgCyan", "bgWhite"].forEach(defineDecorator);

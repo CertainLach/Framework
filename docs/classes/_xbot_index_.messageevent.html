@@ -963,6 +963,9 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="_xbot_index_.messageevent.html#chat" class="tsd-kind-icon">chat</a>
 				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="_xbot_index_.messageevent.html#isuser" class="tsd-kind-icon">is<wbr>User</a>
+				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a href="_xbot_index_.messageevent.html#messageid" class="tsd-kind-icon">message<wbr>Id</a>
 				</li>
@@ -981,6 +984,12 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="_xbot_index_.messageevent.html#user" class="tsd-kind-icon">user</a>
 				</li>
+				<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+					<a href="_xbot_index_.messageevent.html#ischat" class="tsd-kind-icon">is<wbr>Chat</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="_xbot_index_.messageevent.html#attachxbot" class="tsd-kind-icon">attachXBot</a>
+				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a href="_xbot_index_.messageevent.html#sendaudio" class="tsd-kind-icon">send<wbr>Audio</a>
 				</li>
@@ -998,6 +1007,9 @@ img { max-width: 100%; }
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a href="_xbot_index_.messageevent.html#sendtext" class="tsd-kind-icon">send<wbr>Text</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a href="_xbot_index_.messageevent.html#sendvoice" class="tsd-kind-icon">send<wbr>Voice</a>
 				</li>
 			</ul>
 		</li>
@@ -1055,6 +1067,7 @@ img { max-width: 100%; }
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#api" class="tsd-kind-icon">api</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_index_.messageevent.html#attachment" class="tsd-kind-icon">attachment</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_index_.messageevent.html#chat" class="tsd-kind-icon">chat</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_index_.messageevent.html#isuser" class="tsd-kind-icon">is<wbr>User</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#messageid" class="tsd-kind-icon">message<wbr>Id</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_index_.messageevent.html#replyto" class="tsd-kind-icon">reply<wbr>To</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#sourceapi" class="tsd-kind-icon">source<wbr>Api</a></li>
@@ -1063,15 +1076,23 @@ img { max-width: 100%; }
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_index_.messageevent.html#user" class="tsd-kind-icon">user</a></li>
 						</ul>
 					</section>
-					<section class="tsd-index-section tsd-is-inherited">
+					<section class="tsd-index-section ">
+						<h3>Accessors</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_xbot_index_.messageevent.html#ischat" class="tsd-kind-icon">is<wbr>Chat</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_xbot_index_.messageevent.html#attachxbot" class="tsd-kind-icon">attachXBot</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#sendaudio" class="tsd-kind-icon">send<wbr>Audio</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#sendcustom" class="tsd-kind-icon">send<wbr>Custom</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#sendfile" class="tsd-kind-icon">send<wbr>File</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#sendimage" class="tsd-kind-icon">send<wbr>Image</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#sendlocation" class="tsd-kind-icon">send<wbr>Location</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#sendtext" class="tsd-kind-icon">send<wbr>Text</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_xbot_index_.messageevent.html#sendvoice" class="tsd-kind-icon">send<wbr>Voice</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1090,7 +1111,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#constructor">constructor</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L421">xbot/index.ts:421</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L455">xbot/index.ts:455</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1136,7 +1157,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#api">api</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L273">xbot/index.ts:273</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L270">xbot/index.ts:270</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1146,7 +1167,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">attachment<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L417">xbot/index.ts:417</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L447">xbot/index.ts:447</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1156,7 +1177,17 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">chat<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L420">xbot/index.ts:420</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L450">xbot/index.ts:450</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="isuser" class="tsd-anchor"></a>
+				<h3>is<wbr>User</h3>
+				<div class="tsd-signature tsd-kind-icon">is<wbr>User<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L455">xbot/index.ts:455</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1167,7 +1198,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#messageid">messageId</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L275">xbot/index.ts:275</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L272">xbot/index.ts:272</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1177,7 +1208,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">reply<wbr>To<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L421">xbot/index.ts:421</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L451">xbot/index.ts:451</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1188,7 +1219,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#sourceapi">sourceApi</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L272">xbot/index.ts:272</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L269">xbot/index.ts:269</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1199,7 +1230,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#targetid">targetId</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L274">xbot/index.ts:274</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L271">xbot/index.ts:271</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1209,7 +1240,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L418">xbot/index.ts:418</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L448">xbot/index.ts:448</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1219,13 +1250,49 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L419">xbot/index.ts:419</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L449">xbot/index.ts:449</a></li>
 					</ul>
 				</aside>
 			</section>
 		</section>
-		<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Accessors</h2>
+			<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+				<a name="ischat" class="tsd-anchor"></a>
+				<h3>is<wbr>Chat</h3>
+				<div class="tsd-signature tsd-kind-icon">is<wbr>Chat<span class="tsd-signature-symbol">:</span> </div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L452">xbot/index.ts:452</a></li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="attachxbot" class="tsd-anchor"></a>
+				<h3>attachXBot</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">attachXBot<span class="tsd-signature-symbol">(</span>xbot<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L473">xbot/index.ts:473</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>xbot: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 				<a name="sendaudio" class="tsd-anchor"></a>
 				<h3>send<wbr>Audio</h3>
@@ -1237,7 +1304,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#sendaudio">sendAudio</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L330">xbot/index.ts:330</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L323">xbot/index.ts:323</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1265,20 +1332,23 @@ img { max-width: 100%; }
 				<a name="sendcustom" class="tsd-anchor"></a>
 				<h3>send<wbr>Custom</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<li class="tsd-signature tsd-kind-icon">send<wbr>Custom<span class="tsd-signature-symbol">(</span>answer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">send<wbr>Custom<span class="tsd-signature-symbol">(</span>answer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, caption<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#sendcustom">sendCustom</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L341">xbot/index.ts:341</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L345">xbot/index.ts:345</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
 								<h5>answer: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>caption: <span class="tsd-signature-type">any</span></h5>
 							</li>
 							<li>
 								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
@@ -1301,7 +1371,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#sendfile">sendFile</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L318">xbot/index.ts:318</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L312">xbot/index.ts:312</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1336,7 +1406,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#sendimage">sendImage</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L306">xbot/index.ts:306</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L301">xbot/index.ts:301</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1371,7 +1441,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#sendlocation">sendLocation</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L284">xbot/index.ts:284</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L281">xbot/index.ts:281</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1406,7 +1476,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#sendtext">sendText</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/5d67396/xbot/index.ts#L296">xbot/index.ts:296</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L292">xbot/index.ts:292</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1416,6 +1486,41 @@ img { max-width: 100%; }
 							</li>
 							<li>
 								<h5>text: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+								<ul class="tsd-parameters">
+								</ul>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<a name="sendvoice" class="tsd-anchor"></a>
+				<h3>send<wbr>Voice</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">send<wbr>Voice<span class="tsd-signature-symbol">(</span>answer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, caption<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="_xbot_index_.conversation.html">Conversation</a>.<a href="_xbot_index_.conversation.html#sendvoice">sendVoice</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/index.ts#L334">xbot/index.ts:334</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>answer: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>caption: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>file: <span class="tsd-signature-type">any</span></h5>
 							</li>
 							<li>
 								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>

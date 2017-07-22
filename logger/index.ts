@@ -1,10 +1,9 @@
 import './colors';
-import {isBrowser,isNode} from '@meteor-it/platform';
 import {createPrivateEnum} from '@meteor-it/utils';
 import {getCaller} from '@meteor-it/reflection';
 
-const LOG_TRACE = (isBrowser ? window.localStorage.getItem('LOG_TRACE') : process.env.LOG_TRACE)||false;
-const DEBUG = (isBrowser ? window.localStorage.getItem('DEBUG') : process.env.DEBUG)||'-';
+const LOG_TRACE = process.env.LOG_TRACE||'';
+const DEBUG = process.env.DEBUG||'';
 
 export const LOGGER_ACTIONS = createPrivateEnum('IDENT', 'DEENT', 'LOG', 'WARNING', 'DEPRECATED', 'ERROR', 'DEBUG', 'TIME_START','TIME_END');
 const REPEATABLE_ACTIONS=[LOGGER_ACTIONS.IDENT,LOGGER_ACTIONS.DEENT,LOGGER_ACTIONS.TIME_START,LOGGER_ACTIONS.TIME_END];

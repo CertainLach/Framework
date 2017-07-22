@@ -2,21 +2,24 @@ import {Api,User,Chat,MessageEvent,ForwardedMessage,Gender,Location,Image,File,A
 import queue from "@meteor-it/queue";
 import XRest,{emit} from "@meteor-it/xrest";
 import * as multipart from '@meteor-it/xrest/multipart';
-import Cache from '@meteor-it/cache';
 import {asyncEach} from '@meteor-it/utils';
 
 const OFFICIAL_SCOPES=['audio'];
 
 export default class VKApi extends Api{
     logged=false;
+    tokens=[];
     constructor(){
         super('VKAPI');
     }
-    async auth(token,officialToken){
+    async auth(tokens){
         try{
+            if(!(tokens) instanceof Array){
+                this.logger.log('Use multiple tokens, luke!');
+                tokens=[tokens];
+            }
             this.logged=true;
-            this.token=token;
-            this.officialToken=officialToken;
+            this.tokens=tokens;
             this.xrest=new XRest('https://api.vk.com/',{});
 
             this.logger.log('Starting always online mode...');
@@ -33,8 +36,9 @@ export default class VKApi extends Api{
         }
     }
     // execute - dummy method for typescript support
-    @queue(500,5,'executeMulti')
+    @queue(1000,2,'executeMulti')
     async execute(method,params={}){}
+    tokenId=0;
     // executeMulti - wraps multiple calls into single execute method call
     async executeMulti(tasks){
         let code='return [';
@@ -45,16 +49,37 @@ export default class VKApi extends Api{
         code+=tasksCodes.join(',');
         code+='];';
         // return tasks.map(task=>'');
+        let token=this.tokens[this.tokenId];
+        this.tokenId++;
+        if(this.tokenId===this.tokens.length)
+            this.tokenId=0;
         let res=await this.xrest.emit(`POST /method/execute`,{data:{
             code
         },query:{
             v:'5.63',
-            access_token:this.token
+            access_token:token
         }});
         let responses=res.body.response;
-        return tasks.map((task,id)=>{
-            return responses[id];
-        });
+        if(res.body.error||!responses){
+            if(res.body.error.error_code===14){
+                // Process captcha
+                console.log(res.body.error.captcha_sid,res.body.error.captcha_img);
+                // this.logger.warn('Waiting 15s for captcha skip...');
+                // await new Promise(res=>setTimeout(()=>res(),15000));
+                // return await this.executeMulti(tasks);
+                // Add tasks to end
+                return tasks.map(([method,params])=>{
+                    return this.execute(method,params);
+                });
+            }else{
+                return tasks.map((task,id)=>{
+                    return new Error(res.body.error.error_msg);
+                });
+            }
+        }else
+            return tasks.map((task,id)=>{
+                return responses[id];
+            });
     }
     async getUser(user,onlyCached=false){
         return (await this.getUsers([user]))[0];
@@ -80,6 +105,7 @@ export default class VKApi extends Api{
         });
         return userConv;
     }
+    cache=new Map();
     @queue()
     async getUsers(users_orig) {
         let users = users_orig.slice(0);
@@ -96,7 +122,7 @@ export default class VKApi extends Api{
             }
             this.logger.debug('Getting cached');
             await asyncEach(curDep, async cur=> {
-                let res = await Cache.get('VK:USER:'+cur);
+                let res = this.cache.get('VK:USER:'+cur);
                 if (res) {
                     curDep.delete(cur);
                     result.push(this.getUserFromApiData(res));
@@ -109,7 +135,7 @@ export default class VKApi extends Api{
                     fields: "photo_id,verified,sex,bdate,city,country,home_town,has_photo,photo_50,photo_100,photo_200_orig,photo_200,photo_400_orig,photo_max,photo_max_orig,online,lists,domain,has_mobile,contacts,site,education,universities,schools,status,last_seen,followers_count,common_count,occupation,nickname,relatives,relation,personal,connections,exports,wall_comments,activities,interests,music,movies,tv,books,games,about,quotes,can_post,can_see_all_posts,can_see_audio,can_write_private_message,can_send_friend_request,is_favorite,is_hidden_from_feed,timezone,screen_name,maiden_name,crop_photo,is_friend,friend_status,career,military,blacklisted,blacklisted_by_me"
                 });
                 await asyncEach(res, async r=> {
-                    await Cache.set('VK:USER:' + r.id, r);
+                    this.cache.set('VK:USER:' + r.id, r);
                 });
                 //result.push(...(await asyncEach(res,r=>this.getUserFromApiData(res))));
                 result.push(...res.map(res=>{
@@ -126,13 +152,13 @@ export default class VKApi extends Api{
     async getChat(chat){
         chat=chat.toString();
         let key='VK:CHAT:'+chat;
-        let res = await Cache.get(key);
+        let res = this.cache.get(key);
         if (!res) {
             this.logger.log('Uncached get chat... (%s)',chat);
             res = await this.execute('messages.getChat', {
                 chat_id: +chat
             });
-            await Cache.set(key, res);
+            this.cache.set(key, res);
         }
         let data=res;
         const chatConv=new Chat({
@@ -167,14 +193,10 @@ export default class VKApi extends Api{
             return null;
         return await this.getChat(id);
     }
-    stopReceiver=false;
     async startReceiver(){
-        if(this.stopReceiver)
-            return;
         try {
             let data = await this.execute('messages.getLongPollServer',{});
             if(!data.server){
-                this.stopReceiver=true;
                 this.logger.log(data);
                 throw new Error('Can\'t get server!');
             }
@@ -426,11 +448,15 @@ export default class VKApi extends Api{
         return Math.round(Math.random() * 30000000);
     }
 
+    static processText(text){
+        return text.replace(/ /g,' ');
+    }
+
     //Implementing Api class methods
     async sendLocation(targetId,answer,caption,location,options){
         await this.execute("messages.send", {
             peer_id: targetId,
-            message: caption,
+            message: VKApi.processText(caption),
             forward_messages: answer ? answer : "",
             random_id: this.randomId(),
             lat: location.lat,
@@ -441,7 +467,7 @@ export default class VKApi extends Api{
         await this.execute('messages.send', {
             peer_id: targetId,
             forward_messages: answer ? answer : "",
-            message: text,
+            message: VKApi.processText(text),
             random_id: this.randomId()
         });
     }
@@ -450,7 +476,7 @@ export default class VKApi extends Api{
         await this.execute("messages.send", {
             peer_id: targetId,
             forward_messages: answer ? answer : "",
-            message: caption,
+            message: VKApi.processText(caption),
             attachment: attachmentId,
             random_id: this.randomId()
         });
@@ -471,7 +497,7 @@ export default class VKApi extends Api{
         });
         if(!res2[0])
             console.log(res2,res.body);
-        await this.sendCommonAttachment(targetId,answer,caption,`photo${res2[0].owner_id}_${res2[0].id}`,options);
+        await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`photo${res2[0].owner_id}_${res2[0].id}`,options);
     }
     async sendFileStream(targetId,answer,caption,file,options){
         let server = await this.execute('docs.getUploadServer', {});
@@ -486,13 +512,38 @@ export default class VKApi extends Api{
             photo: res.body.file,
             title: file.name
         });
-        await this.sendCommonAttachment(targetId,answer,caption,`doc${res2[0].owner_id}_${res2[0].id}`,options);
+        await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`doc${res2[0].owner_id}_${res2[0].id}`,options);
+    }
+    async sendVoiceStream(targetId,answer,caption,file,options){
+        let server = await this.execute('docs.getUploadServer', {
+            type:'audio_message'
+        });
+        let res=await emit(`POST ${server.upload_url}`,{
+            multipart: true,
+            timeout:20000,
+            data: {
+                file: new multipart.FileStream(file.stream, '123.ogg', file.size, 'binary', 'text/plain')
+            }
+        });
+        let res2=await this.execute('docs.save',{
+            file: res.body.file,
+            title:''
+        });
+        await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`doc${res2[0].owner_id}_${res2[0].id}`,options);
     }
     sendAudioStream(targetId,answer,caption,audio,options){
         throw new Error('sendAudioStream() not implemented!');
     }
-    sendCustom(targetId,answer,options){
-        throw new Error('sendCustom() not implemented!');
+    async sendCustom(targetId,answer,caption,options){
+        if(options.ytVideo){
+            let res1=await this.execute('video.save',{
+                link: options.ytVideo
+            });
+            let res2=await emit('POST '+res1.upload_url);
+            console.log(res2.body);
+            console.log(res1);
+            await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`video${res1.owner_id}_${res1.video_id}`,options);
+        }
     }
 }
 function decodeText(text) {

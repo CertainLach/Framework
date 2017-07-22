@@ -1,3 +1,6 @@
+import Logger from '@meteor-it/logger';
+const queueLogger=new Logger('queue');
+
 export default function queue(time: number, maxCalls: number=1, collapser: string=null){
     return function queueDecorator(target, key, descriptor) {
         let queued=[];
@@ -15,7 +18,7 @@ export default function queue(time: number, maxCalls: number=1, collapser: strin
             if(collapser!==null){
                 // Collapsed task
                 if(maxCalls===1)
-                    throw new Error('Collapser is for multiple running tasks in time!');
+                    queueLogger('Collapser is for multiple running tasks in time, but you specified only 1.');
                 let willBeExecuted=queued.slice(0,maxCalls);
                 queued=queued.slice(maxCalls);
                 let multiExecuted=willBeExecuted.map(task=>task.args);

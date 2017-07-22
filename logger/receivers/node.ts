@@ -215,15 +215,15 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 	}
 }
 
-// let terminalLogger=new Logger('terminal');
+let terminalLogger=new Logger('terminal');
 
-// process.on('uncaughtException', e => {
-// 	terminalLogger.err(e.stack);
-// });
+process.on('uncaughtException', e => {
+	terminalLogger.err(e.stack);
+});
 
-// process.on('unhandledRejection', e => {
-// 	terminalLogger.err(e.stack);
-// });
+process.on('unhandledRejection', e => {
+	terminalLogger.err(e.stack);
+});
 
 // process.on('warning', e => {
 // 	terminalLogger.warn(e.stack);

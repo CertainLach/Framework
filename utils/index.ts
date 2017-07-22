@@ -187,6 +187,21 @@ export function loseCode(str){
     return hash;
 }
 
+export function encodeHtmlSpecials(str){
+    let i = str.length;
+    let aRet = [];
+
+    while (i--) {
+        let iC = str[i].charCodeAt();
+        if (iC < 65 || iC > 127 || (iC>90 && iC<97)) {
+            aRet[i] = '&#'+iC+';';
+        } else {
+            aRet[i] = str[i];
+        }
+    }
+    return aRet.join('');
+}
+
 export function createReadStream(object, options = {}) {
     return new MultiStream(object, options);
 }

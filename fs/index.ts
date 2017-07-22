@@ -10,6 +10,7 @@ export async function readDir (dir) {
 }
 /**
  * Read file
+ * @param file Path to file to read
  */
 export async function readFile (file) {
 	return cb2promise(fs.readFile)(file);
