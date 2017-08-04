@@ -250,9 +250,9 @@ export class Gender {
 }
 
 export class ForwardedMessage {
-    text;
-    sender;
-    attachment;
+    text: string;
+    sender: User;
+    attachment: Audio|Image|File;
 
     constructor({
         text,
@@ -266,10 +266,10 @@ export class ForwardedMessage {
 }
 
 class Conversation {
-    sourceApi;
-    api;
-    targetId;
-    messageId;
+    sourceApi:Api;
+    api:any;
+    targetId:any;
+    messageId:any;
 
     constructor(api, targetId, messageId) {
         //assertAllIsDefined(api,targetId);
@@ -347,18 +347,19 @@ class Conversation {
     }
 }
 export class User extends Conversation {
-    uid;
-    nickName;
-    firstName;
-    lastName;
-    gender;
-    photoUrl;
-    role;
-    config;
-    state;
-    profileUrl;
+    uid:string;
+    nickName:string;
+    firstName:string;
+    lastName:string;
+    gender: Gender;
+    photoUrl: string;
+    role: Role;
+    config: any;
+    state: any;
+    profileUrl: string;
     isUser=true;
     isChat=false;
+    xbot: XBot;
 
     constructor({
         api,
@@ -407,13 +408,14 @@ export class User extends Conversation {
     }
 }
 export class Chat extends Conversation {
-    cid;
-    users;
-    title;
-    admins;
-    photoUrl;
+    cid:string;
+    users:User[];
+    title:string;
+    admins:User[];
+    photoUrl:string;
     isUser=false;
     isChat=true;
+    xbot: XBot;
 
     constructor({
         api,
@@ -444,11 +446,12 @@ export class Chat extends Conversation {
     }
 }
 export class MessageEvent extends Conversation {
-    attachment;
-    text;
-    user;
-    chat;
-    replyTo;
+    attachment: File|Audio|Image;
+    text: string;
+    user: User;
+    chat: Chat;
+    replyTo: ForwardedMessage;
+    xbot: XBot;
     get isChat(){
         return !!this.chat;
     }
@@ -478,10 +481,11 @@ export class MessageEvent extends Conversation {
     }
 }
 export class JoinEvent {
-    sourceApi;
-    user;
-    chat;
-    initiator;
+    sourceApi: Api;
+    user: User;
+    chat: Chat;
+    initiator: User;
+    xbot: XBot;
 
     constructor({
         user,
@@ -502,11 +506,12 @@ export class JoinEvent {
     }
 }
 export class ActionEvent {
-    sourceApi;
-    user;
-    chat;
-    action;
-    data;
+    sourceApi: Api;
+    user: User;
+    chat: Chat;
+    action: string;
+    data: any;
+    xbot: XBot;
 
     constructor({
         user,
@@ -528,10 +533,11 @@ export class ActionEvent {
     }
 }
 export class LeaveEvent {
-    sourceApi;
-    user;
-    chat;
-    initiator;
+    sourceApi: Api;
+    user: User;
+    chat: Chat;
+    initiator: User;
+    xbot: XBot;
 
     constructor({
         user,
@@ -551,11 +557,12 @@ export class LeaveEvent {
 }
 
 export class TitleChangeEvent {
-    sourceApi;
-    newTitle;
-    oldTitle;
-    initiator;
-    chat;
+    sourceApi: Api;
+    newTitle: string;
+    oldTitle: string;
+    initiator: User;
+    chat: Chat;
+    xbot: XBot;
 
     constructor({
         oldTitle,
@@ -576,10 +583,11 @@ export class TitleChangeEvent {
     }
 }
 export class PhotoChangeEvent {
-    sourceApi;
-    newPhotoUrl;
-    initiator;
-    chat;
+    sourceApi: Api;
+    newPhotoUrl: string;
+    initiator: User;
+    chat: Chat;
+    xbot: XBot;
 
     constructor({
         newPhotoUrl,

@@ -1,22 +1,48 @@
 import './colors';
-import {createPrivateEnum} from '@meteor-it/utils';
-import {getCaller} from '@meteor-it/reflection';
 
-const LOG_TRACE = process.env.LOG_TRACE||'';
 const DEBUG = process.env.DEBUG||'';
 
-export const LOGGER_ACTIONS = createPrivateEnum('IDENT', 'DEENT', 'LOG', 'WARNING', 'DEPRECATED', 'ERROR', 'DEBUG', 'TIME_START','TIME_END');
-const REPEATABLE_ACTIONS=[LOGGER_ACTIONS.IDENT,LOGGER_ACTIONS.DEENT,LOGGER_ACTIONS.TIME_START,LOGGER_ACTIONS.TIME_END];
-LOGGER_ACTIONS.INFO = LOGGER_ACTIONS.LOG;
-LOGGER_ACTIONS.WARN = LOGGER_ACTIONS.WARNING;
-LOGGER_ACTIONS.ERR = LOGGER_ACTIONS.ERROR;
+export enum LOGGER_ACTIONS{
+    IDENT,
+    DEENT,
+    LOG,
+    WARNING,
+    DEPRECATED,
+    ERROR,
+    DEBUG,
+    TIME_START,
+    TIME_END,
+    INFO=LOGGER_ACTIONS.LOG,
+    WARN=LOGGER_ACTIONS.WARNING,
+    ERR=LOGGER_ACTIONS.ERR
+}
+
+const REPEATABLE_ACTIONS=[
+    LOGGER_ACTIONS.IDENT,
+    LOGGER_ACTIONS.DEENT,
+    LOGGER_ACTIONS.TIME_START,
+    LOGGER_ACTIONS.TIME_END
+];
 
 let consoleLogger;
 let loggerLogger;
 
-if(global.__LOGGER)
+declare global {
+    interface Global {
+        __LOGGER:any;
+    }
+    interface Console {
+        _log(...pars:any[]):any;
+        _warn(...pars:any[]):any;
+        _err(...pars:any[]):any;
+        _error(...pars:any[]):any;
+        _warning(...pars:any[]):any;
+    }
+}
+
+if((<any>global).__LOGGER)
 	throw new Error('You have more than 1 logger installed! Make sure you use only latest versions of it, and/or reinstall dependencies');
-global.__LOGGER=1;
+(<any>global).__LOGGER=1;
 
 export class BasicReceiver {
 	logger;
@@ -154,8 +180,6 @@ export default class Logger {
 	}
 	static noReceiversWarned = false;
 	write(data) {
-		if(LOG_TRACE&&data.line)
-			data.line=getCaller(3).toReadable()+'\n'+data.line;
 		if (!data.time)
 			data.time = new Date().getTime();
 		if (!data.name)
@@ -204,19 +228,3 @@ for (let method of['log', 'error', 'warn']) {
 	console['_' + method] = console[method];
 	console[method] = (...args) => consoleLogger[method](...args);
 }
-
-// if(isBrowser){
-// 	try{
-// 		Logger.addReceiver(new (require('@meteor-it/logger'+'-receiver-browser-console').default)());
-// 	}catch(e){
-// 		console.error('Logger receiver for browser is not installed!');
-// 	}
-// }
-// if(isNode){
-// 	try{
-// 		Logger.addReceiver(new (require('@meteor-it/logger'+'-receiver-node-console').default)());
-// 	}catch(e){
-// 		console.log(e.stack);
-// 		console.error('Logger receiver for node is not installed!');
-// 	}
-// }
