@@ -1,32 +1,28 @@
-import {
-    basename
-}
-from 'path';
-import {
-    open,
-    read,
-    close
-}
-from '@meteor-it/fs';
+import {basename} from 'path';
+import {close, open, read} from '@meteor-it/fs';
+import {Readable as ReadableStream} from 'stream';
 
 export const DEFAULT_BOUNDARY = '84921024METEORITXREST74819204';
 
 export class Stream {
     stream;
     string;
+
     constructor(stream) {
-    	if (this._isString(stream)) {
-    		this.string = '';
-    	}
-    	this.stream = stream;
+        if (this._isString(stream)) {
+            this.string = '';
+        }
+        this.stream = stream;
     }
+
     write(data) {
-    	if (this.string != undefined) {
-    		this.string += data;
-    	} else {
-    		this.stream.write(data, 'binary');
-    	}
+        if (this.string !== undefined) {
+            this.string += data;
+        } else {
+            this.stream.write(data, 'binary');
+        }
     }
+
     _isString(obj) {
         return !!(obj === '' || (obj && obj.charCodeAt && obj.substr));
     }
@@ -38,6 +34,7 @@ export class File {
     fileSize;
     encoding;
     contentType;
+
     constructor(path, filename, fileSize, encoding, contentType) {
         this.path = path;
         this.filename = filename || basename(path);
@@ -53,10 +50,12 @@ export class FileStream {
     fileSize;
     encoding;
     contentType;
+    stream: ReadableStream;
+
     constructor(stream, filename, dataLength, encoding, contentType) {
-        if(!dataLength || dataLength!==dataLength)
+        if (!dataLength || dataLength !== dataLength)
             throw new Error('Building FileStream without dataLength!');
-        this.stream=stream;
+        this.stream = stream;
         this.filename = filename;
         this.fileSize = dataLength;
         this.encoding = encoding || 'binary';
@@ -80,6 +79,7 @@ export class Part {
     name;
     value;
     boundary;
+
     constructor(name, value, boundary) {
         this.name = name;
         this.value = value;
@@ -96,7 +96,7 @@ export class Part {
         else if (this.value instanceof File) {
             header = `Content-Disposition: form-data; name='${this.name}'; filename='${this.value.filename}'\r\nContent-Length: ${this.value.fileSize}\r\nContent-Type: ${this.value.contentType}`;
         }
-        else if(this.value instanceof FileStream) {
+        else if (this.value instanceof FileStream) {
             header = `Content-Disposition: form-data; name='${this.name}'; filename='${this.value.filename}'\r\nContent-Length: ${this.value.fileSize}\r\nContent-Type: ${this.value.contentType}`;
         }
         else {
@@ -129,10 +129,10 @@ export class Part {
 
     // Writes the Part out to a writable stream that supports the write(data) method
     write(stream) {
-        return new Promise(async (resolve,reject)=>{
-            if(!stream.on)
-            if(stream.stream)
-                stream=stream.stream;
+        return new Promise(async (resolve, reject) => {
+            if (!stream.on)
+                if (stream.stream)
+                    stream = stream.stream;
             //first write the Content-Disposition
             stream.write(this.header());
 
@@ -155,15 +155,15 @@ export class Part {
                         resolve();
                     }
                 }
-            } else if(this.value instanceof FileStream){
+            } else if (this.value instanceof FileStream) {
 
-                this.value.stream.on('end', () =>{
+                this.value.stream.on('end', () => {
                     stream.write('\r\n');
                     resolve();
                 });
 
-                let s=this.value.stream.pipe(stream,{
-                    end:false // Do not end writing streams, may be there is more data incoming
+                let s = this.value.stream.pipe(stream, {
+                    end: false // Do not end writing streams, may be there is more data incoming
                 });
             } else if (this.value instanceof Data) {
                 stream.write(this.value.data);
@@ -183,6 +183,7 @@ export class MultiPartRequest {
     boundary;
     data;
     partNames;
+
     constructor(data, boundary) {
         this.encoding = 'binary';
         this.boundary = boundary || DEFAULT_BOUNDARY;
@@ -219,13 +220,14 @@ export class MultiPartRequest {
 }
 
 
-export function sizeOf(parts, boundary=DEFAULT_BOUNDARY) {
+export function sizeOf(parts, boundary = DEFAULT_BOUNDARY) {
     let totalSize = 0;
-  	for (let name in parts)
-  	    totalSize += new Part(name, parts[name], boundary).sizeOf();
-  	return totalSize + boundary.length + 6;
+    for (let name in parts)
+        totalSize += new Part(name, parts[name], boundary).sizeOf();
+    return totalSize + boundary.length + 6;
 }
-export async function write(stream, data, callback, boundary) {
+
+export async function write(stream, data, callback, boundary?) {
     let r = new MultiPartRequest(data, boundary);
     await r.write(stream);
     return r;

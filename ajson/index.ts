@@ -101,16 +101,22 @@ function processNumber (number, reverse) {
 export default class AJSON {
     /**
      * Same as JSON.stringify(), but adds new argument: advancedTypes
-     * @param advancedTypes custom types to serialize
+     * @param object Object to stringify
+     * @param replacer Replacer function
+     * @param space Spaces
+     * @param advancedTypes Custom types to serialize
      */
-	static stringify (object, replacer, space = undefined, advancedTypes = {}) {
+	static stringify (object:any, replacer?, space?, advancedTypes = {}) {
 		return JSON.stringify(processAny(object, false, advancedTypes), replacer, space);
 	}
+
     /**
      * Same as JSON.parse(), but adds new argument: advancedTypes
-     * @param advancedTypes custom types to deserialize
+     * @param string
+     * @param reviver
+     * @param advancedTypes
      */
-	static parse (string, reviver = undefined, advancedTypes = {}) {
+	static parse (string?: string, reviver?, advancedTypes = {}) {
 		return processAny(JSON.parse(string, reviver), true, advancedTypes);
 	}
     /**

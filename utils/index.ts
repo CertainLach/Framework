@@ -1,4 +1,3 @@
-import util from 'util';
 import {Readable} from 'stream';
 
 // hello, world => Hello, world!
@@ -63,15 +62,18 @@ export function mix(array1, array2) {
     if (array1 instanceof Array) {
         out = [];
         for (let index in array1) {
+            // noinspection JSUnfilteredForInLoop
             out.push([array1[index], array2[index]]);
         }
         return out;
     }else if(array1 instanceof Object){
         out={};
         for(let key in array1){
+            // noinspection JSUnfilteredForInLoop
             out[key]=array1[key];
         }
         for(let key in array2){
+            // noinspection JSUnfilteredForInLoop
             out[key]=array2[key];
         }
         return out;
@@ -100,6 +102,13 @@ export function fixLength(string, length, insertPre = false, symbol = ' ') {
     }
     return string;
 }
+
+declare global {
+    // noinspection JSUnusedGlobalSymbols
+    interface ObjectConstructor {
+        values(object:any):any;
+    }
+}
 export function objectMap(object,cb){
     let ret = [];
     let keys=Object.keys(object);
@@ -118,7 +127,7 @@ export function arrayKVObject(keys,values){
     return result;
 }
 export function sleep (time) {
-	return new Promise((res, rej) => {
+	return new Promise((res) => {
 		setTimeout(res, time);
 	});
 }
@@ -129,7 +138,7 @@ export function sleep (time) {
  * @param iterable Array to process
  * @param cb Function to do with each element
  */
-export function asyncEach (iterable, cb) {
+export function asyncEach(iterable, cb) {
 	let waitings = [];
 	iterable.forEach(iter => {
 		waitings.push(cb(iter));
@@ -154,7 +163,7 @@ export function cb2promise (cbFunction) {
 
 export function hashCode(s){
     let hash = 0;
-    if (s.length == 0) return hash;
+    if (s.length === 0) return hash;
     for (let i = 0; i < s.length; i++) {
         let character = s.charCodeAt(i);
         hash = ((hash<<5)-hash)+character;
@@ -181,8 +190,7 @@ export function sdbmCode(str){
 export function loseCode(str){
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
-        let char = str.charCodeAt(i);
-        hash += char;
+        hash += str.charCodeAt(i);
     }
     return hash;
 }
@@ -208,7 +216,7 @@ export function createReadStream(object, options = {}) {
 
 export function readStream(stream) {
     return new Promise((res, rej) => {
-        var bufs = [];
+        const bufs = [];
         stream.on('data', function(d) {
             bufs.push(d);
         });
@@ -220,8 +228,14 @@ export function readStream(stream) {
     });
 }
 
+interface IMultiStreamOptions {
+    highWaterMark?: number;
+    encoding?: string;
+}
+
 export class MultiStream extends Readable {
-    constructor(object, options = {}) {
+    _object;
+    constructor(object, options:IMultiStreamOptions = {}) {
         if (object instanceof Buffer || typeof object === 'string') {
             super({
                 highWaterMark: options.highWaterMark,

@@ -21,7 +21,7 @@ export function writeStdout (string) {
 export function writeEscape(args){
     writeStdout('\u001B[' + args);
 }
-export function moveCursor(line, col) {
+export function moveCursor(line, col?) {
 	writeEscape(line + ';' + (col || 1) + 'f');
 }
 export function hideCursor(){

@@ -15,6 +15,39 @@ export function resetStyles(string) {
 	return string.replace(/{[^}]+}[^{]+{\/[^}]+}/g, '');
 }
 
+declare global {
+    interface String {
+        addStyle(style: string) : string
+        emojify(style: string) : string;
+        resetStyles(style: string) : string;
+        reset:string;
+        bold: string;
+        dim: string;
+        italic: string;
+        underline: string;
+        inverse: string;
+        hidden: string;
+        strikethrough: string;
+        black: string;
+        red: string;
+        green: string;
+        yellow: string;
+        blue: string;
+        magenta: string;
+        cyan: string;
+        white: string;
+        gray: string;
+        bgBlack: string;
+        bgRed: string;
+        bgGreen: string;
+        bgYellow: string;
+        bgBlue: string;
+        bgMagenta: string;
+        bgCyan: string;
+        bgWhite: string;
+    }
+}
+
 String.prototype.addStyle = function(style) {
 	return addStyle(this, style);
 };

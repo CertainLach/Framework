@@ -1,5 +1,5 @@
 import {LOGGER_ACTIONS,BasicReceiver} from '../';
-import {fixLength} from '@meteor-it/utils-common';
+import {fixLength} from '@meteor-it/utils';
 import * as nodeUtil from 'util';
 
 const colors = {
@@ -55,30 +55,29 @@ export default class BrowserConsoleReceiver extends BasicReceiver {
 	}
 
 	write(data) {
-		let line=nodeUtil.format(data.line,...data.params);
-		let colors=extractColors(line);
-		line=colors[1];
-		colors=colors[0];
+		let line=[data.line,...data.params];
+		//line=colors[1];
+		//colors=colors[0];
 		let name=fixLength(data.name, this.nameLimit, true, ' ');
-		line='%c'+name+'%c '+line;
+		//line='%c'+name+'%c '+line;
 		switch (data.type) {
 			case LOGGER_ACTIONS.IDENT:
-				console._log('%cIDENT',data.name);
+				console.group('%cIDENT',data.name);
 				break;
 			case LOGGER_ACTIONS.DEENT:
-				console._log('DEENT',data.name);
+				console.groupEnd()
 				break;
 			case LOGGER_ACTIONS.LOG:
-				console._log(line,'color:blue','',...colors);
+				console._log(...line);
 				break;
 			case LOGGER_ACTIONS.ERROR:
-				console._log(line,'color:red','',...colors);
+				console._error(...line);
 				break;
 			case LOGGER_ACTIONS.WARNING:
-				console._log(line,'color:orange','',...colors);
+				console._error(...line);
 				break;
 			case LOGGER_ACTIONS.DEBUG:
-				console._log(line,'color:gray','',...colors);
+				console._log(...line);
 				break;
 			case LOGGER_ACTIONS.TIME_START:
 				console._log('TIME_START');
@@ -87,7 +86,7 @@ export default class BrowserConsoleReceiver extends BasicReceiver {
 				console._log('TIME_END');
 				break;
 			default:
-				console._log('ERROR',data.type,LOGGER_ACTIONS);
+				console._error('ERROR',data.type,LOGGER_ACTIONS);
 		}
 		//console._log(data);
 	}
