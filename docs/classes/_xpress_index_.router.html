@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;potato.socket/index&quot; | Meteor.Framework</title>
+	<title>Router | Meteor.Framework</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -909,71 +909,253 @@ img { max-width: 100%; }
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
-		<li class=" tsd-kind-class tsd-parent-kind-external-module">
-			<a href="../classes/_potato_socket_index_.potatosocketclient.html" class="tsd-kind-icon">Potato<wbr>Socket<wbr>Client</a>
-		</li>
-		<li class=" tsd-kind-class tsd-parent-kind-external-module">
-			<a href="../classes/_potato_socket_index_.potatosocketserver.html" class="tsd-kind-icon">Potato<wbr>Socket<wbr>Server</a>
-		</li>
 		<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-			<a href="../classes/_potato_socket_index_.websocketclient.html" class="tsd-kind-icon">Web<wbr>Socket<wbr>Client</a>
+			<a href="_xpress_index_.httperror.html" class="tsd-kind-icon">Http<wbr>Error</a>
+		</li>
+		<li class="current tsd-kind-class tsd-parent-kind-external-module">
+			<a href="_xpress_index_.router.html" class="tsd-kind-icon">Router</a>
+			<ul>
+				<li class=" tsd-kind-constructor tsd-parent-kind-class">
+					<a href="_xpress_index_.router.html#constructor" class="tsd-kind-icon">constructor</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="_xpress_index_.router.html#logger" class="tsd-kind-icon">logger</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="_xpress_index_.router.html#middlewares" class="tsd-kind-icon">middlewares</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="_xpress_index_.router.html#routeindexkey" class="tsd-kind-icon">route<wbr>Index<wbr>Key</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="_xpress_index_.router.html#handle" class="tsd-kind-icon">handle</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="_xpress_index_.router.html#on" class="tsd-kind-icon">on</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="_xpress_index_.router.html#use" class="tsd-kind-icon">use</a>
+				</li>
+			</ul>
+		</li>
+		<li class=" tsd-kind-class tsd-parent-kind-external-module">
+			<a href="_xpress_index_.xpress.html" class="tsd-kind-icon">XPress</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xpress_index_.html#path_index_sym" class="tsd-kind-icon">PATH_<wbr>INDEX_<wbr>SYM</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xpress_index_.html#possible_events" class="tsd-kind-icon">POSSIBLE_<wbr>EVENTS</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xpress_index_.html#temp_url" class="tsd-kind-icon">TEMP_<wbr>URL</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xpress_index_.html#url_start_replacer" class="tsd-kind-icon">URL_<wbr>START_<wbr>REPLACER</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xpress_index_.html#routerindex" class="tsd-kind-icon">router<wbr>Index</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xpress_index_.html#xpresslogger" class="tsd-kind-icon">xpress<wbr>Logger</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
-			<a href="_potato_socket_index_.html#connectsocket" class="tsd-kind-icon">connect<wbr>Socket</a>
+			<a href="../modules/_xpress_index_.html#developererrorpagehandler" class="tsd-kind-icon">developer<wbr>Error<wbr>Page<wbr>Handler</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xpress_index_.html#parsepath" class="tsd-kind-icon">parse<wbr>Path</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="../modules/_xpress_index_.html#usererrorpagehandler" class="tsd-kind-icon">user<wbr>Error<wbr>Page<wbr>Handler</a>
+		</li>
+		<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xpress_index_.html#multi_events" class="tsd-kind-icon">MULTI_<wbr>EVENTS</a>
 		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-hierarchy">
+			<h3>Hierarchy</h3>
+			<ul class="tsd-hierarchy">
+				<li>
+					<span class="target">Router</span>
+					<ul class="tsd-hierarchy">
+						<li>
+							<a href="_xpress_index_.xpress.html" class="tsd-signature-type">XPress</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</section>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
 					<section class="tsd-index-section ">
-						<h3>Classes</h3>
+						<h3>Constructors</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_potato_socket_index_.potatosocketclient.html" class="tsd-kind-icon">Potato<wbr>Socket<wbr>Client</a></li>
-							<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_potato_socket_index_.potatosocketserver.html" class="tsd-kind-icon">Potato<wbr>Socket<wbr>Server</a></li>
-							<li class="tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported"><a href="../classes/_potato_socket_index_.websocketclient.html" class="tsd-kind-icon">Web<wbr>Socket<wbr>Client</a></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_xpress_index_.router.html#constructor" class="tsd-kind-icon">constructor</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
-						<h3>Functions</h3>
+						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_potato_socket_index_.html#connectsocket" class="tsd-kind-icon">connect<wbr>Socket</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xpress_index_.router.html#logger" class="tsd-kind-icon">logger</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xpress_index_.router.html#middlewares" class="tsd-kind-icon">middlewares</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xpress_index_.router.html#routeindexkey" class="tsd-kind-icon">route<wbr>Index<wbr>Key</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Methods</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_xpress_index_.router.html#handle" class="tsd-kind-icon">handle</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_xpress_index_.router.html#on" class="tsd-kind-icon">on</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_xpress_index_.router.html#use" class="tsd-kind-icon">use</a></li>
 						</ul>
 					</section>
 				</div>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
-			<h2>Functions</h2>
-			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-				<a name="connectsocket" class="tsd-anchor"></a>
-				<h3>connect<wbr>Socket</h3>
-				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-					<li class="tsd-signature tsd-kind-icon">connect<wbr>Socket<span class="tsd-signature-symbol">(</span>packetDeclaration<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, socketUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, reconnectInterval<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+			<h2>Constructors</h2>
+			<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<a name="constructor" class="tsd-anchor"></a>
+				<h3>constructor</h3>
+				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Router<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_xpress_index_.router.html" class="tsd-signature-type">Router</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/potato.socket/index.ts#L94">potato.socket/index.ts:94</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xpress/index.ts#L32">xpress/index.ts:32</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>packetDeclaration: <span class="tsd-signature-type">any</span></h5>
-							</li>
-							<li>
-								<h5>socketUrl: <span class="tsd-signature-type">any</span></h5>
-							</li>
-							<li>
-								<h5>reconnectInterval: <span class="tsd-signature-type">any</span></h5>
+								<h5>name: <span class="tsd-signature-type">any</span></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						<h4 class="tsd-returns-title">Returns <a href="_xpress_index_.router.html" class="tsd-signature-type">Router</a></h4>
+					</li>
+				</ul>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Properties</h2>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="logger" class="tsd-anchor"></a>
+				<h3>logger</h3>
+				<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xpress/index.ts#L30">xpress/index.ts:30</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="middlewares" class="tsd-anchor"></a>
+				<h3>middlewares</h3>
+				<div class="tsd-signature tsd-kind-icon">middlewares<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xpress/index.ts#L31">xpress/index.ts:31</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="routeindexkey" class="tsd-anchor"></a>
+				<h3>route<wbr>Index<wbr>Key</h3>
+				<div class="tsd-signature tsd-kind-icon">route<wbr>Index<wbr>Key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;Symbol(&#x27;XPress#Request.middlewareIndex(Router#&#x27;+(routerIndex++)+&#x27;)&#x27;)</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xpress/index.ts#L32">xpress/index.ts:32</a></li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="handle" class="tsd-anchor"></a>
+				<h3>handle</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, fakeUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xpress/index.ts#L74">xpress/index.ts:74</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>req: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>res: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>next: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>fakeUrl: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="on" class="tsd-anchor"></a>
+				<h3>on</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>eventString<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, handler<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xpress/index.ts#L40">xpress/index.ts:40</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>eventString: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>handler: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="use" class="tsd-anchor"></a>
+				<h3>use</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">use<span class="tsd-signature-symbol">(</span>handler<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xpress/index.ts#L36">xpress/index.ts:36</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>handler: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 					</li>
 				</ul>
 			</section>

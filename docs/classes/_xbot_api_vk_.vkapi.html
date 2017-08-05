@@ -927,6 +927,12 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="_xbot_api_vk_.vkapi.html#tokens" class="tsd-kind-icon">tokens</a>
 				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="_xbot_api_vk_.vkapi.html#uploadtoken" class="tsd-kind-icon">upload<wbr>Token</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="_xbot_api_vk_.vkapi.html#xrest" class="tsd-kind-icon">xrest</a>
+				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="_xbot_api_vk_.vkapi.html#auth" class="tsd-kind-icon">auth</a>
 				</li>
@@ -996,6 +1002,9 @@ img { max-width: 100%; }
 			</ul>
 		</li>
 		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../modules/_xbot_api_vk_.html#execute_in_single" class="tsd-kind-icon">EXECUTE_<wbr>IN_<wbr>SINGLE</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 			<a href="../modules/_xbot_api_vk_.html#official_scopes" class="tsd-kind-icon">OFFICIAL_<wbr>SCOPES</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
@@ -1040,6 +1049,8 @@ img { max-width: 100%; }
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_api_vk_.vkapi.html#logged" class="tsd-kind-icon">logged</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_api_vk_.vkapi.html#tokenid" class="tsd-kind-icon">token<wbr>Id</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_api_vk_.vkapi.html#tokens" class="tsd-kind-icon">tokens</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_api_vk_.vkapi.html#uploadtoken" class="tsd-kind-icon">upload<wbr>Token</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xbot_api_vk_.vkapi.html#xrest" class="tsd-kind-icon">xrest</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
@@ -1084,7 +1095,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L11">xbot/api/vk.ts:11</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L20">xbot/api/vk.ts:20</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <a href="_xbot_api_vk_.vkapi.html" class="tsd-signature-type">VKApi</a></h4>
@@ -1100,7 +1111,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">cache<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;new Map()</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L108">xbot/api/vk.ts:108</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L127">xbot/api/vk.ts:127</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1110,7 +1121,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">logged<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L10">xbot/api/vk.ts:10</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L17">xbot/api/vk.ts:17</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1120,7 +1131,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">token<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L41">xbot/api/vk.ts:41</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L54">xbot/api/vk.ts:54</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1130,7 +1141,27 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">tokens<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L11">xbot/api/vk.ts:11</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L18">xbot/api/vk.ts:18</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="uploadtoken" class="tsd-anchor"></a>
+				<h3>upload<wbr>Token</h3>
+				<div class="tsd-signature tsd-kind-icon">upload<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L20">xbot/api/vk.ts:20</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="xrest" class="tsd-anchor"></a>
+				<h3>xrest</h3>
+				<div class="tsd-signature tsd-kind-icon">xrest<span class="tsd-signature-symbol">:</span> <a href="_xrest_index_.xrest.html" class="tsd-signature-type">XRest</a></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L19">xbot/api/vk.ts:19</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1147,7 +1178,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L15">xbot/api/vk.ts:15</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L24">xbot/api/vk.ts:24</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1164,13 +1195,13 @@ img { max-width: 100%; }
 				<a name="execute" class="tsd-anchor"></a>
 				<h3>execute</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">execute<span class="tsd-signature-symbol">(</span>method<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">execute<span class="tsd-signature-symbol">(</span>method<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, params<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L40">xbot/api/vk.ts:40</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L53">xbot/api/vk.ts:53</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1184,7 +1215,7 @@ img { max-width: 100%; }
 								</ul>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -1198,7 +1229,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L43">xbot/api/vk.ts:43</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L56">xbot/api/vk.ts:56</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1221,7 +1252,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L152">xbot/api/vk.ts:152</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L171">xbot/api/vk.ts:171</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1244,7 +1275,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L84">xbot/api/vk.ts:84</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L102">xbot/api/vk.ts:102</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1270,7 +1301,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L87">xbot/api/vk.ts:87</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L105">xbot/api/vk.ts:105</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1293,7 +1324,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L110">xbot/api/vk.ts:110</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L129">xbot/api/vk.ts:129</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1316,7 +1347,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L211">xbot/api/vk.ts:211</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L231">xbot/api/vk.ts:231</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1339,7 +1370,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L447">xbot/api/vk.ts:447</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L468">xbot/api/vk.ts:468</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -1356,7 +1387,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L234">xbot/api/vk.ts:234</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L253">xbot/api/vk.ts:253</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1379,13 +1410,13 @@ img { max-width: 100%; }
 				<a name="sendaudiostream" class="tsd-anchor"></a>
 				<h3>send<wbr>Audio<wbr>Stream</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">send<wbr>Audio<wbr>Stream<span class="tsd-signature-symbol">(</span>targetId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, answer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, caption<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, audio<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">send<wbr>Audio<wbr>Stream<span class="tsd-signature-symbol">(</span>targetId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, answer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, caption<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, audio<span class="tsd-signature-symbol">: </span><a href="_xbot_index_.audio.html" class="tsd-signature-type">Audio</a>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L534">xbot/api/vk.ts:534</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L555">xbot/api/vk.ts:555</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1397,16 +1428,16 @@ img { max-width: 100%; }
 								<h5>answer: <span class="tsd-signature-type">any</span></h5>
 							</li>
 							<li>
-								<h5>caption: <span class="tsd-signature-type">any</span></h5>
+								<h5>caption: <span class="tsd-signature-type">string</span></h5>
 							</li>
 							<li>
-								<h5>audio: <span class="tsd-signature-type">any</span></h5>
+								<h5>audio: <a href="_xbot_index_.audio.html" class="tsd-signature-type">Audio</a></h5>
 							</li>
 							<li>
 								<h5>options: <span class="tsd-signature-type">any</span></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -1420,7 +1451,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L475">xbot/api/vk.ts:475</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L496">xbot/api/vk.ts:496</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1455,7 +1486,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L537">xbot/api/vk.ts:537</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L558">xbot/api/vk.ts:558</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1487,7 +1518,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L502">xbot/api/vk.ts:502</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L523">xbot/api/vk.ts:523</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1522,7 +1553,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L484">xbot/api/vk.ts:484</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L505">xbot/api/vk.ts:505</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1557,7 +1588,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L456">xbot/api/vk.ts:456</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L477">xbot/api/vk.ts:477</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1592,7 +1623,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L466">xbot/api/vk.ts:466</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L487">xbot/api/vk.ts:487</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1624,7 +1655,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L517">xbot/api/vk.ts:517</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L538">xbot/api/vk.ts:538</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1659,7 +1690,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L196">xbot/api/vk.ts:196</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L216">xbot/api/vk.ts:216</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1676,7 +1707,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L185">xbot/api/vk.ts:185</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L205">xbot/api/vk.ts:205</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1699,7 +1730,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L174">xbot/api/vk.ts:174</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L194">xbot/api/vk.ts:194</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1722,7 +1753,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xbot/api/vk.ts#L451">xbot/api/vk.ts:451</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xbot/api/vk.ts#L472">xbot/api/vk.ts:472</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
