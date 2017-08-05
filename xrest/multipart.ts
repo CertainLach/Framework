@@ -49,6 +49,7 @@ export class File {
 
 export class FileStream {
     filename;
+    stream;
     fileSize;
     encoding;
     contentType;
@@ -85,7 +86,7 @@ export class Part {
         this.boundary = boundary;
     }
 
-    //returns the Content-Disposition header		
+    //returns the Content-Disposition header
     header() {
         let header;
 
@@ -134,7 +135,7 @@ export class Part {
                 stream=stream.stream;
             //first write the Content-Disposition
             stream.write(this.header());
-    
+
             //Now write out the body of the Part
             if (this.value instanceof File) {
                 let fd = await open(this.value.path, 'r', '0666');
@@ -160,7 +161,7 @@ export class Part {
                     stream.write('\r\n');
                     resolve();
                 });
-                
+
                 let s=this.value.stream.pipe(stream,{
                     end:false // Do not end writing streams, may be there is more data incoming
                 });
@@ -172,7 +173,7 @@ export class Part {
             else {
                 stream.write(`${this.value}\r\n`);
                 resolve();
-            }  
+            }
         })
     }
 }
@@ -220,7 +221,7 @@ export class MultiPartRequest {
 
 export function sizeOf(parts, boundary=DEFAULT_BOUNDARY) {
     let totalSize = 0;
-  	for (let name in parts) 
+  	for (let name in parts)
   	    totalSize += new Part(name, parts[name], boundary).sizeOf();
   	return totalSize + boundary.length + 6;
 }

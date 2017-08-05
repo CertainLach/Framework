@@ -5,20 +5,32 @@ import * as multipart from '@meteor-it/xrest/multipart';
 import {asyncEach} from '@meteor-it/utils';
 
 const OFFICIAL_SCOPES=['audio'];
+const EXECUTE_IN_SINGLE=[
+    'docs.save',
+    'video.save',
+    'docs.getUploadServer',
+    'photos.saveMessagesPhoto',
+    'photos.getMessagesUploadServer'
+];
 
 export default class VKApi extends Api{
     logged=false;
     tokens=[];
+    uploadToken='';
     constructor(){
         super('VKAPI');
     }
     async auth(tokens){
         try{
-            if(!(tokens) instanceof Array){
-                this.logger.log('Use multiple tokens, luke!');
+            if(!(tokens instanceof Array)){
+                this.logger.warn('Use multiple tokens, luke!');
                 tokens=[tokens];
             }
+            if(tokens.length<2){
+                throw new Error('Minimal token count is 2');
+            }
             this.logged=true;
+            this.uploadToken=tokens.pop();
             this.tokens=tokens;
             this.xrest=new XRest('https://api.vk.com/',{});
 
@@ -43,7 +55,10 @@ export default class VKApi extends Api{
     async executeMulti(tasks){
         let code='return [';
         let tasksCodes=[];
+        let needsToBeExecutedInSingle=false;
         tasks.forEach(([method,params])=>{
+            if(EXECUTE_IN_SINGLE.includes(method))
+                needsToBeExecutedInSingle=true;
             tasksCodes.push(`API.${method}(${JSON.stringify(params||{})})`);
         });
         code+=tasksCodes.join(',');
@@ -53,6 +68,8 @@ export default class VKApi extends Api{
         this.tokenId++;
         if(this.tokenId===this.tokens.length)
             this.tokenId=0;
+        if(needsToBeExecutedInSingle)
+            token=this.uploadToken;
         let res=await this.xrest.emit(`POST /method/execute`,{data:{
             code
         },query:{
@@ -63,7 +80,7 @@ export default class VKApi extends Api{
         if(res.body.error||!responses){
             if(res.body.error.error_code===14){
                 // Process captcha
-                console.log(res.body.error.captcha_sid,res.body.error.captcha_img);
+                // console.log(res.body.error.captcha_sid,res.body.error.captcha_img);
                 // this.logger.warn('Waiting 15s for captcha skip...');
                 // await new Promise(res=>setTimeout(()=>res(),15000));
                 // return await this.executeMulti(tasks);
