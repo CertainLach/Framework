@@ -15,7 +15,8 @@
   "dependencies": {
     "@meteor-it/fs": "latest",
     "@meteor-it/logger": "latest",
-    "@meteor-it/utils-common": "latest"
+    "@meteor-it/utils-common": "latest",
+    "chokidar": "^1.7.0"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

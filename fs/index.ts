@@ -25,8 +25,8 @@ export async function open (file,mode,access){
 	return await promisify(fs.open)(file,mode,access);
 }
 
-export async function read(fd, size, position, encoding){
-	return await promisify(fs.read)(fd,size,position,encoding);
+export async function read(fd, buffer, offset, length, position){
+	return await promisify(fs.read)(fd, buffer, offset, length, position);
 }
 
 export async function close(fd){
@@ -45,7 +45,7 @@ export async function writeFile (filename, text) {
  * @param dir Directory to walk
  * @param cb If provided, found files will returned realtime. If not - function will return all found files
  */
-export async function walkDir (dir, cb) {
+export async function walkDir (dir, cb?) {
 	if (!await exists(dir)) { throw new Error('No such file or directory: ' + dir); }
 	let returnValue;
 	let shouldReturn = false;
@@ -105,13 +105,13 @@ export async function isDirectory (path) {
 /**
  * Wrapper to fs function
  */
-export function getReadStream (path, options) {
+export function getReadStream (path, options = {}) {
 	return fs.createReadStream(path, options);
 }
 
 /**
  * Wrapper to fs function
  */
-export function getWriteStream (path, options) {
+export function getWriteStream (path, options = {}) {
 	return fs.createWriteStream(path, options);
 }

@@ -146,6 +146,7 @@ export class SoftPluginLoader {
     folder;
     watcher;
     autoData;
+    plugins: any[];
 
     constructor(name, folder) {
         this.name = name;
@@ -275,7 +276,7 @@ export class SoftPluginLoader {
             this.logger.log('%s doesn\'t have init() method, skipping', plugin.constructor.name);
         }
     }
-    @queue
+    @queue(1)
     async onChange(pluginPath) {
         let [found, foundId] = this.findPluginAtPath(pluginPath);
         if (found) {
@@ -294,7 +295,7 @@ export class SoftPluginLoader {
         }
     }
     watcherReady = false;
-    @queue
+    @queue(1)
     async onAdd(pluginPath) {
         let [found] = this.findPluginAtPath(pluginPath);
         if (found) {
@@ -310,7 +311,7 @@ export class SoftPluginLoader {
             this.plugins.push(plugin);
         }
     }
-    @queue
+    @queue(1)
     async onRemove(pluginPath) {
         let [found, foundId] = this.findPluginAtPath(pluginPath);
         if (found) {
@@ -358,7 +359,9 @@ export class SoftPluginLoader {
 export class WebpackPluginLoader {
     plugins = [];
     acceptor;
+    logger: Logger;
     requireContextGetter;
+    pluginContext:any;
     constructor(name, requireContextGetter, acceptor) {
         this.logger = new Logger(name);
         this.requireContextGetter = requireContextGetter;
@@ -453,5 +456,11 @@ export class WebpackPluginLoader {
         }
 
         return this.plugins;
+    }
+}
+
+declare global {
+    interface NodeModule {
+        hot:any
     }
 }

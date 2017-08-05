@@ -6,6 +6,7 @@ import TelegramBot from 'node-telegram-bot-api';
 
 export default class TGApi extends Api{
     logged=false;
+    bot: TelegramBot;
     constructor(){
         super('TGAPI');
     }
@@ -65,38 +66,34 @@ export default class TGApi extends Api{
             this.emit('message', message);
         });
     }
-    async uGetUser(uid){
-        if(!uid.startsWith('TGC.'))
-            return null;
-        let id=uid.substr(3);
-        if(!id)
-            return null;
-        id=+id;
-        if(isNaN(id))
-            return null;
-        return await this.getUserFromApiData({
-            id,
-            username:'I',
-            first_name:'Hate',
-            last_name:'Telegram API',
-        });
+    async uGetUser(uid:string):Promise<User>{
+        throw new Error('WIP');
+        // if(!uid.startsWith('TGC.'))
+        //     return null;
+        // let id=uid.substr(3);
+        // if(!id)
+        //     return null;
+        // id=+id;
+        // if(isNaN(id))
+        //     return null;
+        // return await this.getUserFromApiData({
+        //     id,
+        //     username:'I',
+        //     first_name:'Hate',
+        //     last_name:'Telegram API',
+        // });
     }
-    async uGetChat(cid){
-        if(!cid.startsWith('TGC.'))
-            return null;
-        let id=cid.substr(4);
-        if(!id)
-            return null;
-        id=+id;
-        if(isNaN(id))
-            return null;
-        return await this.getChat(id);
-    }
-    async getChat(id){
-        let res=await this.execute('getChat',{
-            chat_id:id
-        });
-        return await this.getChatFromApiData(res);
+    async uGetChat(cid:string):Promise<Chat>{
+        throw new Error('WIP');
+        // if(!cid.startsWith('TGC.'))
+        //     return null;
+        // let id=cid.substr(4);
+        // if(!id)
+        //     return null;
+        // id=+id;
+        // if(isNaN(id))
+        //     return null;
+        // return await this.getChat(id);
     }
     photoCache=new Map();
     async getUserFromApiData(data){
@@ -109,6 +106,7 @@ export default class TGApi extends Api{
             this.photoCache.set('TG:PHOTO:'+data.id,photoFile);
         }
         return new User({
+            messageId:null,
             api:this,
             uid:'TG.'+data.id,
             targetId:data.id,
@@ -122,6 +120,7 @@ export default class TGApi extends Api{
     }
     async getChatFromApiData(data){
         return new Chat({
+            messageId:null,
             api:this,
             cid:'TGC.'+data.id,
             targetId:data.id,
@@ -135,7 +134,7 @@ export default class TGApi extends Api{
 
     }
     async sendText(targetId,answer,text,options){
-        let opts={};
+        let opts:any={};
         if(options.keyboard){
             opts.reply_markup={
                 inline_keyboard:options.keyboard.map(row=>row.map(btn=>({text:btn[0],callback_data:btn[1]})))

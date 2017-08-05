@@ -16,6 +16,7 @@ const EXECUTE_IN_SINGLE=[
 export default class VKApi extends Api{
     logged=false;
     tokens=[];
+    xrest: XRest;
     uploadToken='';
     constructor(){
         super('VKAPI');
@@ -49,7 +50,7 @@ export default class VKApi extends Api{
     }
     // execute - dummy method for typescript support
     @queue(1000,2,'executeMulti')
-    async execute(method,params={}){}
+    execute(method,params={}):Promise<any>{throw new Error('execute() was called, WTF?!')}
     tokenId=0;
     // executeMulti - wraps multiple calls into single execute method call
     async executeMulti(tasks){
@@ -108,8 +109,9 @@ export default class VKApi extends Api{
             case 2: gender=Gender.MAN;break;
             default:gender=Gender.OTHER;
         }
-        //TODO: Roles, config and state
+        // Roles, config and state are managed by plugins
         let userConv=new User({
+            messageId:null,
             api:this,
             uid:'VK.'+data.id,
             targetId:data.id,
@@ -156,7 +158,7 @@ export default class VKApi extends Api{
                 });
                 //result.push(...(await asyncEach(res,r=>this.getUserFromApiData(res))));
                 result.push(...res.map(res=>{
-                    let tres=this.getUserFromApiData(res, this);
+                    let tres=this.getUserFromApiData(res);
                     return tres;
                 }));
             }
@@ -179,6 +181,7 @@ export default class VKApi extends Api{
         }
         let data=res;
         const chatConv=new Chat({
+            messageId: null,
             api:this,
             cid:'VKC.'+data.id,
             targetId:2e9+data.id,
@@ -229,9 +232,8 @@ export default class VKApi extends Api{
         let result;
         switch(attachment.type){
             case 'photo':
-                let max=Object.keys(attachment.photo).filter(a=>a.startsWith('photo_')).map(a=>a.replace('photo_','')*1);
-                max=max[max.length-1];
-                result= await Image.fromUrl(attachment.photo['photo_'+max]);
+                let max=Object.keys(attachment.photo).filter(a=>a.startsWith('photo_')).map(a=>+a.replace('photo_',''));
+                result= await Image.fromUrl(attachment.photo['photo_'+max[max.length-1]]);
                 break;
             case 'doc':
                 result=await File.fromUrl(attachment.doc.url,attachment.doc.title);
@@ -250,7 +252,7 @@ export default class VKApi extends Api{
     }
     async receive(key,server,ts){
         try {
-            let result = await emit(`GET https://${server}`,{
+            let result = (await emit(`GET https://${server}`,{
                 query:{
                     act:'a_check',
                     key,
@@ -259,8 +261,7 @@ export default class VKApi extends Api{
                     mode:66
                 },
                 timeout:0
-            });
-            result=result.body;
+            })).body;
             if (result.failed) {
                 switch (result.failed) {
                     case 1:
@@ -311,6 +312,7 @@ export default class VKApi extends Api{
                             let user=await this.getUser(user_id);
                             this.emit('action',new ActionEvent({
                                 user,
+                                chat:null,
                                 action:'offline',
                                 data:extra
                             }));
@@ -322,6 +324,7 @@ export default class VKApi extends Api{
                             let user=await this.getUser(user_id);
                             this.emit('action',new ActionEvent({
                                 user,
+                                chat:null,
                                 action:'online',
                                 data:flags
                             }));
@@ -353,7 +356,8 @@ export default class VKApi extends Api{
                             this.emit('action',new ActionEvent({
                                 user,
                                 chat,
-                                action:'writing'
+                                action:'writing',
+                                data:null
                             }));
                             break;
                         }
@@ -548,7 +552,7 @@ export default class VKApi extends Api{
         });
         await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`doc${res2[0].owner_id}_${res2[0].id}`,options);
     }
-    sendAudioStream(targetId,answer,caption,audio,options){
+    async sendAudioStream(targetId:any,answer:any,caption:string,audio: Audio,options:any){
         throw new Error('sendAudioStream() not implemented!');
     }
     async sendCustom(targetId,answer,caption,options){

@@ -38,7 +38,7 @@ const ansiColors = {
 if(!process.env.NODE_CONSOLE_DONT_CLEAR)
 	clearScreen();
 
-function writeIdent(count, symbolNeeded = false) {
+function writeIdent(count, symbolNeeded?) {
 	writeStdout('  '.repeat(symbolNeeded ? count - 1 : count) + ' ' + (symbolNeeded ? symbolNeeded : ''));
 }
 function writeDate(date) {
