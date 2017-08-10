@@ -16,7 +16,7 @@
     "@meteor-it/ajson": "latest",
     "@meteor-it/logger": "latest",
     "@meteor-it/utils-common": "latest",
-    "uws": "latest"
+    "uws": "^8.14.1"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

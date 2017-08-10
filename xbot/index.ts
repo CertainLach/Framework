@@ -164,22 +164,24 @@ class BaseFile {
 }
 
 export class File extends BaseFile {
-    constructor(stream, size, name) {
-        super(stream, size, name);
+    mime;
+    constructor(stream, size, name, mime) {
+        super(stream, size, name = 'text/plain');
+        this.mime=mime;
     }
     static async fromBuffer(buffer, name) {
         return new File(createReadStream(buffer), buffer.length, name);
     }
-    static async fromUrl(url, name) {
+    static async fromUrl(url, name, mime) {
         let res = await emit(`GET ${url} STREAM`);
         let size = res.headers['content-length'];
-        return new File(res, size, name);
+        return new File(res, size, name, mime);
     }
-    static async fromFilePath(path, name) {
+    static async fromFilePath(path, name, mime) {
         if (!await isFile(path))
             throw new Error('This is not a file! ' + path);
         let size = (await stat(path)).size;
-        return new File(getReadStream(path), size, name);
+        return new File(getReadStream(path), size, name, mime);
     }
 }
 

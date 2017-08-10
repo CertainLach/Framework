@@ -470,7 +470,7 @@ export default class VKApi extends Api{
     }
 
     static processText(text){
-        return text.replace(/ /g,' ');
+        return text.replace(/ /g,String.fromCharCode(8201));
     }
 
     //Implementing Api class methods
@@ -526,12 +526,12 @@ export default class VKApi extends Api{
             multipart: true,
             timeout:20000,
             data: {
-                file: new multipart.FileStream(file.stream, file.name, file.size, 'binary', 'text/plain')
+                file: new multipart.FileStream(file.stream, file.name, file.size, 'binary', file.mime)
             }
         });
         let res2=await this.execute('docs.save',{
-            photo: res.body.file,
-            title: file.name
+            file: res.body.file,
+            title: ''
         });
         await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`doc${res2[0].owner_id}_${res2[0].id}`,options);
     }
@@ -561,8 +561,6 @@ export default class VKApi extends Api{
                 link: options.ytVideo
             });
             let res2=await emit('POST '+res1.upload_url);
-            console.log(res2.body);
-            console.log(res1);
             await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`video${res1.owner_id}_${res1.video_id}`,options);
         }
     }

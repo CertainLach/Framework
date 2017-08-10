@@ -250,7 +250,7 @@ export default class XPress extends Router{
     }
     listenHttp(host='0.0.0.0',port,silent=false){
         let httpServer=createHttpServer(this.httpHandler.bind(this));
-        this.logger.log('Before listening, executing listeners (to add support providers)...');
+        this.logger.log('Before listening, executing listeners (to add support providers)...',this.listenListeners.length);
         this.listenListeners.forEach(listener=>{listener(httpServer,this)});
         this.logger.log('Done adding %d support providers, listening...',this.listenListeners.length);
         return new Promise((res,rej)=>{
