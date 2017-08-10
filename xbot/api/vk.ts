@@ -49,7 +49,7 @@ export default class VKApi extends Api{
         }
     }
     // execute - dummy method for typescript support
-    @queue(1000,2,'executeMulti')
+    @queue(600,3,'executeMulti')
     execute(method,params={}):Promise<any>{throw new Error('execute() was called, WTF?!')}
     tokenId=0;
     // executeMulti - wraps multiple calls into single execute method call
