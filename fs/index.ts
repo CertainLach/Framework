@@ -105,13 +105,13 @@ export async function isDirectory (path) {
 /**
  * Wrapper to fs function
  */
-export function getReadStream (path, options) {
+export function getReadStream (path, options={}) {
 	return fs.createReadStream(path, options);
 }
 
 /**
  * Wrapper to fs function
  */
-export function getWriteStream (path, options) {
+export function getWriteStream (path, options={}) {
 	return fs.createWriteStream(path, options);
 }
