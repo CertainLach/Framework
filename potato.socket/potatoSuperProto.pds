@@ -1,0 +1,30 @@
+@type integer("u8")
+def_native("u8");
+@type integer("u32")
+def_native("u32");
+
+
+def("event_data") => container {
+    field("event_id") => ::u8;
+    field("body") => container(virtual: "true") {
+        virtual_field("count", value: "data/@length") => u32;
+        field("data") => array(length: "../count") => u8;
+    };
+};
+def("rpc_data") => container {
+    field("random") => ::u32;
+    field("body") => ::event_data;
+};
+
+@export "potato_socket"
+def("potato_socket") => container(virtual: "true") {
+    virtual_field("tag", value: "data/@tag") => ::u8;
+    field("data") => union("data", tag: "../tag") {
+        variant("event", match: "0") => ::event_data;
+        variant("rpc_call", match: "2") => ::rpc_data;
+        variant("rpc_ok", match: "3") => ::rpc_data;
+        variant("rpc_err", match: "4") => ::rpc_data;
+        variant("ping", match: "6") => ::u32;
+        variant("pong", match: "7") => ::u32;
+    };
+};

@@ -18,8 +18,8 @@ export function resetStyles(string) {
 declare global {
     interface String {
         addStyle(style: string) : string
-        emojify(style: string) : string;
-        resetStyles(style: string) : string;
+        emojify() : string;
+        resetStyles() : string;
         reset:string;
         bold: string;
         dim: string;

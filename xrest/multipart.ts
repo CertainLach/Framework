@@ -51,25 +51,23 @@ export class FileStream {
     contentType;
     stream: ReadableStream;
 
-    constructor(stream, filename, dataLength, encoding, contentType) {
-        if (!dataLength || dataLength !== dataLength)
-            throw new Error('Building FileStream without dataLength!');
+    constructor(stream:ReadableStream, filename:string, dataLength:number, encoding:string = 'binary', contentType:string = 'application/octet-stream') {
         this.stream = stream;
         this.filename = filename;
         this.fileSize = dataLength;
-        this.encoding = encoding || 'binary';
-        this.contentType = contentType || 'application/octet-stream';
+        this.encoding = encoding;
+        this.contentType = contentType;
     }
 }
 
 export class Data {
-    filename;
-    contentType;
-    data;
+    filename:string;
+    contentType:string;
+    data:any;
 
-    constructor(filename, contentType, data) {
+    constructor(filename:string, contentType:string = 'application/octet-stream', data:any) {
         this.filename = filename;
-        this.contentType = contentType || 'application/octet-stream';
+        this.contentType = contentType;
         this.data = data;
     }
 }
@@ -85,7 +83,7 @@ export class Part {
         this.boundary = boundary;
     }
 
-    //returns the Content-Disposition header		
+    //returns the Content-Disposition header
     header() {
         let header;
 
@@ -141,7 +139,8 @@ export class Part {
                 let position = 0;
                 let moreData = true;
                 while (moreData) {
-                    let chunk = await read(fd, 4096, position, 'binary');
+                    let chunk = new Buffer(4096);
+                    await read(fd, chunk, 0, 4096, position);
                     stream.write(chunk);
                     position += 4096;
                     if (chunk) {

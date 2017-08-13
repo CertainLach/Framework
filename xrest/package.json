@@ -15,6 +15,7 @@
   "dependencies": {
     "@meteor-it/fs": "latest",
     "@meteor-it/logger": "latest",
+    "iconv": "^2.3.0",
     "iconv-lite": "latest"
   },
   "peerDependencies": {},

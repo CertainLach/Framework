@@ -35,6 +35,8 @@ declare global {
         _log(...pars:any[]):any;
         _warn(...pars:any[]):any;
         _err(...pars:any[]):any;
+        err(...pars:any[]):any;
+        warning(...pars:any[]):any;
         _error(...pars:any[]):any;
         _warning(...pars:any[]):any;
     }
@@ -224,7 +226,7 @@ export default class Logger {
 
 consoleLogger = new Logger('console');
 loggerLogger = new Logger('logger'); // Like in java :D
-for (let method of['log', 'error', 'warn']) {
+for (let method of['log', 'error', 'warn', 'err','warning']) {
 	console['_' + method] = console[method];
 	console[method] = (...args) => consoleLogger[method](...args);
 }

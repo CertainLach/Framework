@@ -915,6 +915,9 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-class tsd-parent-kind-external-module">
 			<a href="../classes/_xrest_index_.xrest.html" class="tsd-kind-icon">XRest</a>
 		</li>
+		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+			<a href="../interfaces/_xrest_index_.ixresponse.html" class="tsd-kind-icon">IXResponse</a>
+		</li>
 		<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 			<a href="_xrest_index_.html#possible_events" class="tsd-kind-icon">POSSIBLE_<wbr>EVENTS</a>
 		</li>
@@ -952,6 +955,12 @@ img { max-width: 100%; }
 						</ul>
 					</section>
 					<section class="tsd-index-section tsd-is-not-exported">
+						<h3>Interfaces</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_xrest_index_.ixresponse.html" class="tsd-kind-icon">IXResponse</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section tsd-is-not-exported">
 						<h3>Variables</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_xrest_index_.html#possible_events" class="tsd-kind-icon">POSSIBLE_<wbr>EVENTS</a></li>
@@ -984,7 +993,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">POSSIBLE_<wbr>EVENTS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[...METHODS]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L16">xrest/index.ts:16</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L16">xrest/index.ts:16</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -994,7 +1003,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">POSSIBLE_<wbr>MIDDLEWARES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;STREAM&#x27;]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L17">xrest/index.ts:17</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L17">xrest/index.ts:17</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1004,7 +1013,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">USER_<wbr>AGENT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"Meteor-IT XRest"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Meteor-IT XRest&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L19">xrest/index.ts:19</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L19">xrest/index.ts:19</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1014,7 +1023,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;new Logger(&#x27;xrest&#x27;)</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L353">xrest/index.ts:353</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L378">xrest/index.ts:378</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1025,27 +1034,25 @@ img { max-width: 100%; }
 				<a name="emit" class="tsd-anchor"></a>
 				<h3>emit</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-					<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>eventString<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>eventString<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_xrest_index_.ixresponse.html" class="tsd-signature-type">IXResponse</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L355">xrest/index.ts:355</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L386">xrest/index.ts:386</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>eventString: <span class="tsd-signature-type">any</span></h5>
+								<h5>eventString: <span class="tsd-signature-type">string</span></h5>
 							</li>
 							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
-								<ul class="tsd-parameters">
-								</ul>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_xrest_index_.ixresponse.html" class="tsd-signature-type">IXResponse</a><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -1058,20 +1065,20 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">decoders<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L21">xrest/index.ts:21</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L21">xrest/index.ts:21</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
 					<a name="decoders.deflate" class="tsd-anchor"></a>
 					<h3>deflate</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">deflate<span class="tsd-signature-symbol">(</span>buf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">deflate<span class="tsd-signature-symbol">(</span>buf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L25">xrest/index.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L27">xrest/index.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1083,7 +1090,7 @@ img { max-width: 100%; }
 									<h5>callback: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1091,13 +1098,13 @@ img { max-width: 100%; }
 					<a name="decoders.gzip" class="tsd-anchor"></a>
 					<h3>gzip</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">gzip<span class="tsd-signature-symbol">(</span>buf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">gzip<span class="tsd-signature-symbol">(</span>buf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L22">xrest/index.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L22">xrest/index.ts:22</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1105,11 +1112,8 @@ img { max-width: 100%; }
 								<li>
 									<h5>buf: <span class="tsd-signature-type">any</span></h5>
 								</li>
-								<li>
-									<h5>callback: <span class="tsd-signature-type">any</span></h5>
-								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1120,7 +1124,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">parsers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L29">xrest/index.ts:29</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L33">xrest/index.ts:33</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
@@ -1133,7 +1137,7 @@ img { max-width: 100%; }
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/index.ts#L30">xrest/index.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/index.ts#L34">xrest/index.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>

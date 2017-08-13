@@ -5,20 +5,33 @@ import * as multipart from '@meteor-it/xrest/multipart';
 import {asyncEach} from '@meteor-it/utils';
 
 const OFFICIAL_SCOPES=['audio'];
+const EXECUTE_IN_SINGLE=[
+    'docs.save',
+    'video.save',
+    'docs.getUploadServer',
+    'photos.saveMessagesPhoto',
+    'photos.getMessagesUploadServer'
+];
 
 export default class VKApi extends Api{
     logged=false;
     tokens=[];
+    xrest: XRest;
+    uploadToken='';
     constructor(){
         super('VKAPI');
     }
     async auth(tokens){
         try{
-            if(!(tokens) instanceof Array){
-                this.logger.log('Use multiple tokens, luke!');
+            if(!(tokens instanceof Array)){
+                this.logger.warn('Use multiple tokens, luke!');
                 tokens=[tokens];
             }
+            if(tokens.length<2){
+                throw new Error('Minimal token count is 2');
+            }
             this.logged=true;
+            this.uploadToken=tokens.pop();
             this.tokens=tokens;
             this.xrest=new XRest('https://api.vk.com/',{});
 
@@ -36,14 +49,17 @@ export default class VKApi extends Api{
         }
     }
     // execute - dummy method for typescript support
-    @queue(1000,2,'executeMulti')
-    async execute(method,params={}){}
+    @queue(600,3,'executeMulti')
+    execute(method,params={}):Promise<any>{throw new Error('execute() was called, WTF?!')}
     tokenId=0;
     // executeMulti - wraps multiple calls into single execute method call
     async executeMulti(tasks){
         let code='return [';
         let tasksCodes=[];
+        let needsToBeExecutedInSingle=false;
         tasks.forEach(([method,params])=>{
+            if(EXECUTE_IN_SINGLE.includes(method))
+                needsToBeExecutedInSingle=true;
             tasksCodes.push(`API.${method}(${JSON.stringify(params||{})})`);
         });
         code+=tasksCodes.join(',');
@@ -53,6 +69,8 @@ export default class VKApi extends Api{
         this.tokenId++;
         if(this.tokenId===this.tokens.length)
             this.tokenId=0;
+        if(needsToBeExecutedInSingle)
+            token=this.uploadToken;
         let res=await this.xrest.emit(`POST /method/execute`,{data:{
             code
         },query:{
@@ -63,7 +81,7 @@ export default class VKApi extends Api{
         if(res.body.error||!responses){
             if(res.body.error.error_code===14){
                 // Process captcha
-                console.log(res.body.error.captcha_sid,res.body.error.captcha_img);
+                // console.log(res.body.error.captcha_sid,res.body.error.captcha_img);
                 // this.logger.warn('Waiting 15s for captcha skip...');
                 // await new Promise(res=>setTimeout(()=>res(),15000));
                 // return await this.executeMulti(tasks);
@@ -91,8 +109,9 @@ export default class VKApi extends Api{
             case 2: gender=Gender.MAN;break;
             default:gender=Gender.OTHER;
         }
-        //TODO: Roles, config and state
+        // Roles, config and state are managed by plugins
         let userConv=new User({
+            messageId:null,
             api:this,
             uid:'VK.'+data.id,
             targetId:data.id,
@@ -139,7 +158,7 @@ export default class VKApi extends Api{
                 });
                 //result.push(...(await asyncEach(res,r=>this.getUserFromApiData(res))));
                 result.push(...res.map(res=>{
-                    let tres=this.getUserFromApiData(res, this);
+                    let tres=this.getUserFromApiData(res);
                     return tres;
                 }));
             }
@@ -162,6 +181,7 @@ export default class VKApi extends Api{
         }
         let data=res;
         const chatConv=new Chat({
+            messageId: null,
             api:this,
             cid:'VKC.'+data.id,
             targetId:2e9+data.id,
@@ -212,9 +232,8 @@ export default class VKApi extends Api{
         let result;
         switch(attachment.type){
             case 'photo':
-                let max=Object.keys(attachment.photo).filter(a=>a.startsWith('photo_')).map(a=>a.replace('photo_','')*1);
-                max=max[max.length-1];
-                result= await Image.fromUrl(attachment.photo['photo_'+max]);
+                let max=Object.keys(attachment.photo).filter(a=>a.startsWith('photo_')).map(a=>+a.replace('photo_',''));
+                result= await Image.fromUrl(attachment.photo['photo_'+max[max.length-1]]);
                 break;
             case 'doc':
                 result=await File.fromUrl(attachment.doc.url,attachment.doc.title);
@@ -233,7 +252,7 @@ export default class VKApi extends Api{
     }
     async receive(key,server,ts){
         try {
-            let result = await emit(`GET https://${server}`,{
+            let result = (await emit(`GET https://${server}`,{
                 query:{
                     act:'a_check',
                     key,
@@ -242,8 +261,7 @@ export default class VKApi extends Api{
                     mode:66
                 },
                 timeout:0
-            });
-            result=result.body;
+            })).body;
             if (result.failed) {
                 switch (result.failed) {
                     case 1:
@@ -294,6 +312,7 @@ export default class VKApi extends Api{
                             let user=await this.getUser(user_id);
                             this.emit('action',new ActionEvent({
                                 user,
+                                chat:null,
                                 action:'offline',
                                 data:extra
                             }));
@@ -305,6 +324,7 @@ export default class VKApi extends Api{
                             let user=await this.getUser(user_id);
                             this.emit('action',new ActionEvent({
                                 user,
+                                chat:null,
                                 action:'online',
                                 data:flags
                             }));
@@ -336,7 +356,8 @@ export default class VKApi extends Api{
                             this.emit('action',new ActionEvent({
                                 user,
                                 chat,
-                                action:'writing'
+                                action:'writing',
+                                data:null
                             }));
                             break;
                         }
@@ -449,7 +470,7 @@ export default class VKApi extends Api{
     }
 
     static processText(text){
-        return text.replace(/ /g,' ');
+        return text.replace(/ /g,String.fromCharCode(8201));
     }
 
     //Implementing Api class methods
@@ -505,12 +526,12 @@ export default class VKApi extends Api{
             multipart: true,
             timeout:20000,
             data: {
-                file: new multipart.FileStream(file.stream, file.name, file.size, 'binary', 'text/plain')
+                file: new multipart.FileStream(file.stream, file.name, file.size, 'binary', file.mime)
             }
         });
         let res2=await this.execute('docs.save',{
-            photo: res.body.file,
-            title: file.name
+            file: res.body.file,
+            title: ''
         });
         await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`doc${res2[0].owner_id}_${res2[0].id}`,options);
     }
@@ -531,7 +552,7 @@ export default class VKApi extends Api{
         });
         await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`doc${res2[0].owner_id}_${res2[0].id}`,options);
     }
-    sendAudioStream(targetId,answer,caption,audio,options){
+    async sendAudioStream(targetId:any,answer:any,caption:string,audio: Audio,options:any){
         throw new Error('sendAudioStream() not implemented!');
     }
     async sendCustom(targetId,answer,caption,options){
@@ -540,8 +561,6 @@ export default class VKApi extends Api{
                 link: options.ytVideo
             });
             let res2=await emit('POST '+res1.upload_url);
-            console.log(res2.body);
-            console.log(res1);
             await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`video${res1.owner_id}_${res1.video_id}`,options);
         }
     }

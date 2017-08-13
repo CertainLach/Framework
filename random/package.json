@@ -14,7 +14,7 @@
   "devDependencies": {},
   "dependencies": {
     "@meteor-it/utils-common": "latest",
-    "seedrandom": "latest"
+    "seedrandom": "^2.4.3"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

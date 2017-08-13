@@ -933,6 +933,9 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="_xrest_multipart_.filestream.html#filename" class="tsd-kind-icon">filename</a>
 				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="_xrest_multipart_.filestream.html#stream" class="tsd-kind-icon">stream</a>
+				</li>
 			</ul>
 		</li>
 		<li class=" tsd-kind-class tsd-parent-kind-external-module">
@@ -982,6 +985,7 @@ img { max-width: 100%; }
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xrest_multipart_.filestream.html#encoding" class="tsd-kind-icon">encoding</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xrest_multipart_.filestream.html#filesize" class="tsd-kind-icon">file<wbr>Size</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xrest_multipart_.filestream.html#filename" class="tsd-kind-icon">filename</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="_xrest_multipart_.filestream.html#stream" class="tsd-kind-icon">stream</a></li>
 						</ul>
 					</section>
 				</div>
@@ -993,31 +997,31 @@ img { max-width: 100%; }
 				<a name="constructor" class="tsd-anchor"></a>
 				<h3>constructor</h3>
 				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">new <wbr>File<wbr>Stream<span class="tsd-signature-symbol">(</span>stream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, dataLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, encoding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, contentType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_xrest_multipart_.filestream.html" class="tsd-signature-type">FileStream</a></li>
+					<li class="tsd-signature tsd-kind-icon">new <wbr>File<wbr>Stream<span class="tsd-signature-symbol">(</span>stream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReadableStream</span>, filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, dataLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, contentType<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_xrest_multipart_.filestream.html" class="tsd-signature-type">FileStream</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/multipart.ts#L54">xrest/multipart.ts:54</a></li>
+								<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/multipart.ts#L52">xrest/multipart.ts:52</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>stream: <span class="tsd-signature-type">any</span></h5>
+								<h5>stream: <span class="tsd-signature-type">ReadableStream</span></h5>
 							</li>
 							<li>
-								<h5>filename: <span class="tsd-signature-type">any</span></h5>
+								<h5>filename: <span class="tsd-signature-type">string</span></h5>
 							</li>
 							<li>
-								<h5>dataLength: <span class="tsd-signature-type">any</span></h5>
+								<h5>dataLength: <span class="tsd-signature-type">number</span></h5>
 							</li>
 							<li>
-								<h5>encoding: <span class="tsd-signature-type">any</span></h5>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> encoding: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;binary&quot;</span></h5>
 							</li>
 							<li>
-								<h5>contentType: <span class="tsd-signature-type">any</span></h5>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> contentType: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;application/octet-stream&quot;</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <a href="_xrest_multipart_.filestream.html" class="tsd-signature-type">FileStream</a></h4>
@@ -1033,7 +1037,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">content<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/multipart.ts#L54">xrest/multipart.ts:54</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/multipart.ts#L51">xrest/multipart.ts:51</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1043,7 +1047,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">encoding<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/multipart.ts#L53">xrest/multipart.ts:53</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/multipart.ts#L50">xrest/multipart.ts:50</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1053,7 +1057,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">file<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/multipart.ts#L52">xrest/multipart.ts:52</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/multipart.ts#L49">xrest/multipart.ts:49</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1063,7 +1067,17 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">filename<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/d4c4a49/xrest/multipart.ts#L51">xrest/multipart.ts:51</a></li>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/multipart.ts#L48">xrest/multipart.ts:48</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="stream" class="tsd-anchor"></a>
+				<h3>stream</h3>
+				<div class="tsd-signature tsd-kind-icon">stream<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadableStream</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Meteor-DEV/Meteor.Framework/blob/f651f09/xrest/multipart.ts#L52">xrest/multipart.ts:52</a></li>
 					</ul>
 				</aside>
 			</section>

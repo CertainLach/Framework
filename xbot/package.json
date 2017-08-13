@@ -15,11 +15,12 @@
   "dependencies": {
     "@meteor-it/fs": "latest",
     "@meteor-it/logger": "latest",
+    "@meteor-it/queue": "latest",
+    "@meteor-it/utils": "latest",
     "@meteor-it/utils-node": "latest",
     "@meteor-it/xrest": "latest",
     "canvas": "latest",
-    "@meteor-it/queue": "latest",
-    "@meteor-it/utils": "latest"
+    "node-telegram-bot-api": "^0.27.1"
   },
   "peerDependencies": {},
   "optionalDependencies": {},

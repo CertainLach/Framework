@@ -214,13 +214,13 @@ export function createReadStream(object, options = {}) {
     return new MultiStream(object, options);
 }
 
-export function readStream(stream) {
+export function readStream(stream): Promise<Buffer> {
     return new Promise((res, rej) => {
         const bufs = [];
-        stream.on('data', function(d) {
+        stream.on('data', d => {
             bufs.push(d);
         });
-        stream.on('end', function() {
+        stream.on('end', () => {
             let buf = Buffer.concat(bufs);
             res(buf);
         });

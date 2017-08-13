@@ -4,7 +4,7 @@ import * as multipart from './multipart';
 
 import {EventEmitter} from 'events';
 import * as http from 'http';
-import {METHODS} from 'http';
+import {METHODS,IncomingMessage} from 'http';
 import * as https from 'https';
 import {parse as parseUrl, resolve} from 'url';
 import {stringify} from 'querystring';
@@ -377,7 +377,13 @@ class Request extends EventEmitter {
 
 const logger = new Logger('xrest');
 
-export function emit(eventString, options: any = {}) {
+interface IXResponse extends IncomingMessage {
+    body: any;
+    raw: Buffer;
+    headers: any;
+}
+
+export function emit(eventString: string, options: any = {}): Promise<IXResponse> {
     let [event, path, ...middlewares] = eventString.split(' ');
     let middleFunctions = [];
     for (let middleware of middlewares) {
