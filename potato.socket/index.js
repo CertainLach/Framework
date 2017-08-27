@@ -1,6 +1,6 @@
 import Logger from '@meteor-it/logger';
 import React from 'react';
-import potatoSuperProto from './potatoSuperProto.pds';
+import potatoSuperProto from './potatoSuperProto.js';
 import proxyDeep from 'proxy-deep';
 
 // Autoreconnection socket
@@ -346,6 +346,46 @@ export class PotatoSocketUniversal{
         });
     }
 
+    get local(){
+        return {
+            get rpc(){
+                let self=this;
+                return proxyDeep({},{
+                    get(target, path, receiver, nest){
+                        let methodName=path.join('.');
+                        if(!self.rpcToId[methodName])
+                            return nest();
+                        return (...data)=>{
+                            if(data.length!==1)
+                                throw new Error('Wrong method call argument count: '+data.length);
+                            if(!(data[0] instanceof Object))
+                                throw new Error('Argument is not a object');
+                            return self.callRemoteMethod(self.rpcToId[methodName],data[0]);
+                        }
+                    },
+                    set(target, path, value){
+                        return false;
+                    }
+                });
+            }
+        }
+    }
+
+    get remote(){
+        let self=this;
+        return {
+            get rpc(){
+                return self.rpc;
+            },
+            get emit(){
+                return self.emit;
+            },
+            get on(){
+                return self.on;
+            }
+        }
+    }
+
     /**
      * Random emulation
      * @type {number}
@@ -563,14 +603,18 @@ export class PotatoSocketUniversal{
             this.logger.error('Received packet with wrong data!');
             return;
         }
-        this.eventHandlers[eventId].forEach(handler=>{
-            try {
-                handler(data)
-            }catch(e){
-                this.logger.error('Error thrown from socket event handler!');
-                this.logger.error(e.stack);
-            }
-        });
+        // This one
+        if(this.eventHandlers[eventId]) {
+            this.eventHandlers[eventId].forEach(handler => {
+                try {
+                    handler(data)
+                } catch (e) {
+                    this.logger.error('Error thrown from socket event handler!');
+                    this.logger.error(e.stack);
+                }
+            });
+        }
+        // Server
         if(this.isThisNeeded&&this.isServant&&this.server.eventHandlers[eventId]){
             this.server.eventHandlers[eventId].forEach(handler=> {
                 try {
@@ -593,13 +637,15 @@ export class PotatoSocketUniversal{
             throw new Error('Trying to emit not existing packet!');
         try{
             let body=this.serializeByDeclaration(eventData,this._events[eventId]);
-            this.sendBufferToRemote(this.serializeByDeclaration({
+            let data={
                 tag:'event',
                 data:{
                     eventId,
                     body
                 }
-            },potatoSuperProto.potatoSocket));
+            };
+            let buffer=this.serializeByDeclaration(data,potatoSuperProto.potatoSocket);
+            this.sendBufferToRemote(buffer);
         }catch(e){
             this.logger.error(JSON.stringify(eventData));
             this.logger.error(`Data serialization error for "${eventName}"`);
@@ -878,6 +924,9 @@ export class PotatoSocketServer extends PotatoSocketUniversal {
         let wrappedSocket=new PotatoSocketServerInternalClient(this,websocket);
         let id=Math.random().toString(32).substr(2);
         wrappedSocket.id=id;
+        console.log(req,req.session);
+        if(req.session)
+            wrappedSocket.session=req.session;
         this.clients[id]=wrappedSocket;
         websocket.on('close',()=>{
             delete this.clients[id];

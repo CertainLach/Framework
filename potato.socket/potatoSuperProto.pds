@@ -1,15 +1,24 @@
+@doc """
+This is only the reference, actual protocol is much faster
+You can see it in potatoSuperProto.js
+"""
 @type integer("u8")
 def_native("u8");
 @type integer("u32")
 def_native("u32");
 
+@type binary("raw")
+def_native("sized_string") {
+    argument("size", stage: "read") => integer("usize");
+};
+def("u_string") => container(virtual: "true") {
+    virtual_field("size", value: "string/@size") => u32;
+    field("string") => sized_string(size: "../size");
+};
 
 def("event_data") => container {
     field("event_id") => ::u8;
-    field("body") => container(virtual: "true") {
-        virtual_field("count", value: "data/@length") => u32;
-        field("data") => array(length: "../count") => u8;
-    };
+    field("body") => ::u_string;
 };
 def("rpc_data") => container {
     field("random") => ::u32;

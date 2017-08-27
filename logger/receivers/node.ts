@@ -1,6 +1,6 @@
 import {format} from 'util';
 import Logger,{LOGGER_ACTIONS,BasicReceiver} from '../';
-import {clearScreen, writeStdout, save, restore, writeEscape} from '@meteor-it/terminal';
+import {clearScreen, writeStdout, save, restore, writeEscape, moveCursor, clearLine} from '@meteor-it/terminal';
 import {fixLength} from '@meteor-it/utils';
 import emojiMap from '@meteor-it/emoji';
 
@@ -163,10 +163,52 @@ function writeDebugData(provider, data) {
 	writeCommonData('90m', provider, data);
 }
 
+interface IProgressItem {
+	name: string,
+	progress: number
+}
+const progresses={};
+function progressStart(provider,data){
+	progresses[data.name]=<IProgressItem>{
+		name:data.name,
+		progress:0,
+		time:data.time
+	};
+}
+function progressEnd(provider,data){
+	delete progresses[data.name];
+}
+function progress(provider,data){
+	if(!progresses[data.name])
+		return;
+    progresses[data.name].time=data.time;
+    progresses[data.name].progress=data.progress;
+}
+function renderProgress(){
+	save();
+	let i=0;
+	for(let progress of Object.values(progresses)) {
+        moveCursor(i);
+        clearLine();
+        writeEscape('34m');
+        writeStdout((<IProgressItem>progress).name.padStart(18,' '));
+        writeStdout(' ');
+        writeDate(progress.time);
+        writeStdout(' ');
+        let percent=Math.ceil(progress.progress);
+        writeStdout((percent+'%').padStart(4,' '));
+        writeStdout(' ');
+        writeStdout('|'.repeat(Math.ceil(((<any>process.stdout).columns-1-3-1-8-1-18)/100*percent)));
+        i++;
+    }
+
+	restore();
+}
+
 export default class NodeConsoleReceiver extends BasicReceiver {
 	nameLimit;
 
-	constructor(nameLimit = 8) {
+	constructor(nameLimit = 18) {
 		super();
 		this.nameLimit = nameLimit;
 	}
@@ -205,12 +247,22 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 			case LOGGER_ACTIONS.TIME_END:
 				writeTimeEndData(this, data);
 				break;
+			case LOGGER_ACTIONS.PROGRESS_START:
+				progressStart(this, data);
+				break;
+			case LOGGER_ACTIONS.PROGRESS_END:
+				progressEnd(this,data);
+				break;
+			case LOGGER_ACTIONS.PROGRESS:
+				progress(this,data);
+				break;
 			default:
 				console._log(data);
 		}
 		if (data.repeated) {
 			if(!process.env.NO_COLLAPSE)restore();
 		}
+        renderProgress();
 		// console._log(data);
 	}
 }
