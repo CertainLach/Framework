@@ -12,7 +12,7 @@ const PATH_INDEX_SYM=Symbol('XPress#Request.middlewareIndex');
 const TEMP_URL=Symbol('XPress#Request.currentUrl');
 const POSSIBLE_EVENTS=[...METHODS,'ALL','WS'];
 const MULTI_EVENTS={
-    'ALL':METHODS.filter(e=>e!='OPTIONS')
+    'ALL':[...METHODS.filter(e=>e!='OPTIONS'),'WS']
 };
 
 let xpressLogger=new Logger('xpress');
@@ -34,7 +34,7 @@ export class Router{
         this.logger=new Logger(name);
     }
     use(handler){
-        this.on('GET /**?',handler);
+        this.on('ALL /**?',handler);
     }
     //event===GET /, WS /*
     on(eventString,handler){

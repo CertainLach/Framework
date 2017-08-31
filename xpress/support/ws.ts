@@ -15,7 +15,13 @@ export function addSupport(nativeServer, xpress) {
         socket.__RAW = true;
         socket.upgradeReq.method = 'WS'; // Because upgrade req is a get
         // Socket will be transfered over handlers chain as http response
-        xpress.handle(socket.upgradeReq,socket,err=> {
+        console.log(socket.upgradeReq.session);
+        xpress.handle({
+            url:socket.upgradeReq.url,
+            session:socket.upgradeReq.session||{save(){}},
+            headers:socket.upgradeReq.headers,
+            method:'WS'
+        },socket,err=> {
             // No handlers? Close socket. 404 as in http
             socket.close(1001);
             if(!err)

@@ -1,5 +1,18 @@
 import './colors';
 
+let cluster=null;
+/*global __NODE__*/
+if(__NODE__){
+	cluster=require('cluster'); //cluster
+}else{
+	cluster={
+		isMaster:true,
+		isWorker:false,
+		on(){},
+		emit(){}
+	};
+}
+
 const DEBUG = process.env.DEBUG||'';
 
 export enum LOGGER_ACTIONS{
@@ -12,6 +25,9 @@ export enum LOGGER_ACTIONS{
     DEBUG,
     TIME_START,
     TIME_END,
+	PROGRESS,
+	PROGRESS_START,
+	PROGRESS_END,
     INFO=LOGGER_ACTIONS.LOG,
     WARN=LOGGER_ACTIONS.WARNING,
     ERR=LOGGER_ACTIONS.ERR
@@ -21,7 +37,10 @@ const REPEATABLE_ACTIONS=[
     LOGGER_ACTIONS.IDENT,
     LOGGER_ACTIONS.DEENT,
     LOGGER_ACTIONS.TIME_START,
-    LOGGER_ACTIONS.TIME_END
+    LOGGER_ACTIONS.TIME_END,
+	LOGGER_ACTIONS.PROGRESS,
+	LOGGER_ACTIONS.PROGRESS_START,
+	LOGGER_ACTIONS.PROGRESS_END
 ];
 
 let consoleLogger;
@@ -180,6 +199,27 @@ export default class Logger {
 				params: params
 			});
 	}
+	// Progress
+	progress(name,progress:boolean|number,info?:string){
+		if(progress===true) {
+            this.write({
+                type: LOGGER_ACTIONS.PROGRESS_START,
+				name
+            });
+        }else if(progress===false){
+            this.write({
+                type: LOGGER_ACTIONS.PROGRESS_END,
+				name
+            });
+		}else{
+            this.write({
+                type: LOGGER_ACTIONS.PROGRESS,
+                name,
+				progress,
+				info
+            });
+		}
+	}
 	static noReceiversWarned = false;
 	write(data) {
 		if (!data.time)
@@ -191,21 +231,27 @@ export default class Logger {
 		Logger._write(data);
 	}
 	static _write(what) {
-		if (Logger.receivers.length === 0) {
-			if(!Logger.noReceiversWarned){
-				console._log('No receivers are defined for logger!');
-				Logger.noReceiversWarned = true;
-			}
-			console._log(what);
-		}
-		if(Logger.isRepeating(what.name,what.line,what.type))
-			Logger.repeatCount++;
-		else
-			Logger.resetRepeating(what.name,what.line,what.type);
-		if(REPEATABLE_ACTIONS.indexOf(what.type)===-1)
-			what.repeats=Logger.repeatCount;
-		what.repeated=what.repeats&&what.repeats>0;
-		Logger.receivers.forEach(receiver => receiver.write(what));
+		if(cluster.isWorker){
+            process.send({
+				loggerAction: what
+            });
+		}else {
+            if (Logger.receivers.length === 0) {
+                if (!Logger.noReceiversWarned) {
+                    console._log('No receivers are defined for logger!');
+                    Logger.noReceiversWarned = true;
+                }
+                console._log(what);
+            }
+            if (Logger.isRepeating(what.name, what.line, what.type))
+                Logger.repeatCount++;
+            else
+                Logger.resetRepeating(what.name, what.line, what.type);
+            if (REPEATABLE_ACTIONS.indexOf(what.type) === -1)
+                what.repeats = Logger.repeatCount;
+            what.repeated = what.repeats && what.repeats > 0;
+            Logger.receivers.forEach(receiver => receiver.write(what));
+        }
 	}
 	static resetRepeating(provider, message, type) {
 		Logger.lastProvider = provider;
@@ -222,6 +268,13 @@ export default class Logger {
 		receiver.setLogger(Logger);
 		Logger.receivers.push(receiver);
 	}
+}
+if(cluster.isMaster){
+    cluster.on('message', (worker,msg)=>{
+        if(!(msg as any).loggerAction)
+            return;
+        Logger._write((msg as any).loggerAction);
+    });
 }
 
 consoleLogger = new Logger('console');

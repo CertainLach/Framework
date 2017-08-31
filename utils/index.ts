@@ -89,18 +89,7 @@ export function createPrivateEnum(...values) {
     return returnObj;
 }
 export function fixLength(string, length, insertPre = false, symbol = ' ') {
-    if (string.length < length) {
-        while (string.length < length) {
-            string = insertPre ? symbol + string : string + symbol;
-        }
-    }
-    else if (string.length > length) {
-        try {
-            string = string.match(insertPre ? new RegExp(`.*(.{${length}})`) : new RegExp(`(.{${length}})`))[0];
-        }
-        catch (e) {}
-    }
-    return string;
+    return insertPre?string.padStart(length,symbol):string.padEnd(length,symbol);
 }
 
 declare global {

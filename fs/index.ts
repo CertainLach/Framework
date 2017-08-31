@@ -112,6 +112,6 @@ export function getReadStream (path, options = {}) {
 /**
  * Wrapper to fs function
  */
-export function getWriteStream (path, options = {}) {
+export function getWriteStream (path, options={}) {
 	return fs.createWriteStream(path, options);
 }

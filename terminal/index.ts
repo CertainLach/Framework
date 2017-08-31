@@ -30,7 +30,7 @@ export function hideCursor(){
 export function showCursor(){
     writeEscape('?25h');
 }
-export function clearLine(line) {
+export function clearLine(line?) {
 	if(line){
 		save();
 		moveCursor(line);

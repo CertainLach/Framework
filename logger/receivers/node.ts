@@ -1,6 +1,6 @@
 import {format} from 'util';
 import Logger,{LOGGER_ACTIONS,BasicReceiver} from '../';
-import {clearScreen, writeStdout, writeEscape} from '@meteor-it/terminal';
+import {clearScreen, writeStdout, writeEscape, moveCursor, clearLine, save, restore} from '@meteor-it/terminal';
 import emojiMap from '@meteor-it/emoji';
 
 const ansiColors = {
@@ -93,8 +93,7 @@ function stringifyCommonData(escapeCode, provider, data) {
 	// writeRepeats(data.repeats, false);
 	// writeDate(data.time);
 	const strings = data.string.split('\n');
-	let ret = ` \u001B[40m${stringifyName(provider.nameLimit, data.name, escapeCode)}\u001B[0m${stringifyIdent(data.identationLength)}`+
-	`${strings.shift()}\n`;
+	let ret = ` \u001B[40m${stringifyName(provider.nameLimit, data.name, escapeCode)}\u001B[0m${stringifyIdent(data.identationLength)}${strings.shift()}\n`;
 	for(let string of strings){
 		ret += `${stringifyIdent(data.identationLength)}${stringifyName(provider.nameLimit,'|',escapeCode)} ${string}\n`;
 	}
@@ -113,10 +112,54 @@ function writeDebugData(provider, data) {
 	writeStdout(stringifyCommonData('90m',provider,data));
 }
 
+interface IProgressItem {
+	name: string,
+	progress: number
+}
+const progresses={};
+function progressStart(provider,data){
+	progresses[data.name]=<IProgressItem>{
+		name:data.name,
+		progress:0,
+		time:data.time
+	};
+}
+function progressEnd(provider,data){
+	delete progresses[data.name];
+}
+function progress(provider,data){
+	if(!progresses[data.name])
+		return;
+    progresses[data.name].time=data.time;
+    progresses[data.name].progress=data.progress;
+}
+function renderProgress(){
+	save();
+	let i=0;
+	for(let progress of Object.values(progresses)) {
+        moveCursor(i);
+        clearLine();
+        let percent=Math.ceil(progress.progress);
+        // TODO: Unhardcode "18"
+        writeStdout(`\u001B[34m${progress.name.padStart(18)} ${(percent + '%').padStart(4, ' ')} ${'|'.repeat(Math.ceil(((<any>process.stdout).columns - 1 - 3 - 1 - 1 - 18) / 100 * percent))}`);
+        // writeEscape('34m');
+        // writeStdout((<IProgressItem>progress).name.padStart(18,' '));
+        // writeStdout(' ');
+        // writeDate(progress.time);
+        // writeStdout(' ');
+        // writeStdout((percent+'%').padStart(4,' '));
+        // writeStdout(' ');
+        // writeStdout('|'.repeat(Math.ceil(((<any>process.stdout).columns-1-3-1-8-1-18)/100*percent)));
+        i++;
+    }
+
+	restore();
+}
+
 export default class NodeConsoleReceiver extends BasicReceiver {
 	nameLimit;
 
-	constructor(nameLimit = 16) {
+	constructor(nameLimit = 18) {
 		super();
 		this.nameLimit = nameLimit;
 	}
@@ -155,13 +198,23 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 			case LOGGER_ACTIONS.TIME_END:
 				writeStdout(stringifyTimeEndData(this, data));
 				break;
+			case LOGGER_ACTIONS.PROGRESS_START:
+				progressStart(this, data);
+				break;
+			case LOGGER_ACTIONS.PROGRESS_END:
+				progressEnd(this,data);
+				break;
+			case LOGGER_ACTIONS.PROGRESS:
+				progress(this,data);
+				break;
 			default:
 				console._log(data);
 		}
 		// if (data.repeated) {
 		// 	if(!process.env.NO_COLLAPSE)restore();
 		// }
-		// console._log(data);
+        // TODO: Support for non-tty terminals
+        renderProgress();
 	}
 }
 
