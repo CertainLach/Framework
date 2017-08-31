@@ -3,6 +3,7 @@ import queue from "@meteor-it/queue";
 import XRest,{emit} from "@meteor-it/xrest";
 import * as multipart from '@meteor-it/xrest/multipart';
 import {asyncEach} from '@meteor-it/utils';
+import TimingData from '../TimingData.js';
 
 const OFFICIAL_SCOPES=['audio'];
 const EXECUTE_IN_SINGLE=[
@@ -12,6 +13,7 @@ const EXECUTE_IN_SINGLE=[
     'photos.saveMessagesPhoto',
     'photos.getMessagesUploadServer'
 ];
+const SPACE_REPLACE=String.fromCharCode(8194);
 
 export default class VKApi extends Api{
     logged=false;
@@ -365,6 +367,7 @@ export default class VKApi extends Api{
                             [message_id,flags,from_id,timestamp,subject,text,attachments]=update;
                             //noinspection JSBitwiseOperatorUsage
                             //messages.getById?params[message_ids
+                            let timing=new TimingData();
                             if(attachments.source_act){
                                 let event,user,chat,initiator,initiatorP,userP,chatP;
                                 switch(attachments.source_act){
@@ -408,24 +411,34 @@ export default class VKApi extends Api{
                             let realMessage;
                             let forwarded;
                             let attachment;
-                            if(realMessageNeeded)
+                            if(realMessageNeeded){
+                                timing.start('Get real msg');
                                 realMessage=(await this.execute('messages.getById',{
                                     message_ids:message_id
                                 })).items[0];
+                                timing.stop();
+                            }
                             if(attachments.fwd){
+                                timing.start('Parse forwarded')
                                 let fwd=realMessage.fwd_messages[0];
                                 forwarded=new ForwardedMessage({
                                     text:fwd.body,
                                     sender:await this.getUser(fwd.user_id),
                                     attachment:fwd.attachments?(await this.parseAttachment(fwd.attachments[0])):undefined
                                 });
+                                timing.stop();
                             }
                             if(attachments.geo){
+                                timing.start('GeoDB');
                                 let [lat,long] = realMessage.geo.coordinates.split(' ');
                                 attachment=new Location(lat,long);
+                                timing.stop();
                             }else if(realMessage&&realMessage.attachments){
+                                timing.start('Real msg attachment')
                                 attachment=await this.parseAttachment(realMessage.attachments[0]);
+                                timing.stop();
                             }
+                            timing.start('Getting sender');
                             //console.log(JSON.stringify(realMessage,null,4));
                             let sender_id=from_id>2e9?attachments.from:from_id;
                             // let sender=await this.getUser(sender_id);
@@ -435,6 +448,7 @@ export default class VKApi extends Api{
                                 this.logger.warn('NullUser');
                                 return;
                             }
+                            timing.stop();
                             let message=new MessageEvent({
                                 api:this,
                                 attachment,
@@ -442,11 +456,13 @@ export default class VKApi extends Api{
                                 user,
                                 chat:isChat?(await this.getChat(from_id-2e9)):undefined,
                                 replyTo:forwarded,
-                                messageId:message_id
+                                messageId:message_id,
+                                timing
                             });
                             message.user.messageId=message_id;
                             if(isChat)
                                 message.chat.messageId=message_id;
+                            timing.start('Adapter <=> Xbot transfer');
                             this.emit('message',message);
                             break;
                         }
@@ -470,7 +486,7 @@ export default class VKApi extends Api{
     }
 
     static processText(text){
-        return text.replace(/ /g,String.fromCharCode(8201));
+        return text.replace(/ /g,SPACE_REPLACE);
     }
 
     //Implementing Api class methods
@@ -506,7 +522,7 @@ export default class VKApi extends Api{
         let server = await this.execute('photos.getMessagesUploadServer', {});
         let res=await emit(`POST ${server.upload_url}`,{
             multipart: true,
-            timeout:20000,
+            timeout:50000,
             data: {
                 photo: new multipart.FileStream(image.stream, image.name, image.size, 'binary', 'image/jpeg')
             }
@@ -524,14 +540,14 @@ export default class VKApi extends Api{
         let server = await this.execute('docs.getUploadServer', {});
         let res=await emit(`POST ${server.upload_url}`,{
             multipart: true,
-            timeout:20000,
+            timeout:50000,
             data: {
-                file: new multipart.FileStream(file.stream, file.name, file.size, 'binary', file.mime)
+                file: new multipart.FileStream(file.stream, file.name, file.size, 'binary', 'text/plain')
             }
         });
         let res2=await this.execute('docs.save',{
             file: res.body.file,
-            title: ''
+            title: file.name
         });
         await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`doc${res2[0].owner_id}_${res2[0].id}`,options);
     }
@@ -539,9 +555,10 @@ export default class VKApi extends Api{
         let server = await this.execute('docs.getUploadServer', {
             type:'audio_message'
         });
+        console.log(file.size,server);
         let res=await emit(`POST ${server.upload_url}`,{
             multipart: true,
-            timeout:20000,
+            timeout:50000,
             data: {
                 file: new multipart.FileStream(file.stream, '123.ogg', file.size, 'binary', 'text/plain')
             }

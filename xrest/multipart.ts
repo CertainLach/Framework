@@ -1,6 +1,7 @@
 import {basename} from 'path';
 import {close, open, read} from '@meteor-it/fs';
 import {Readable as ReadableStream} from 'stream';
+import {createReadStream} from '@meteor-it/utils';
 
 export const DEFAULT_BOUNDARY = '84921024METEORITXREST74819204';
 
@@ -60,15 +61,9 @@ export class FileStream {
     }
 }
 
-export class Data {
-    filename:string;
-    contentType:string;
-    data:any;
-
+export class Data extends FileStream {
     constructor(filename:string, contentType:string = 'application/octet-stream', data:any) {
-        this.filename = filename;
-        this.contentType = contentType;
-        this.data = data;
+        super(createReadStream(data), filename, data.length, 'binary', contentType);
     }
 }
 
@@ -87,10 +82,7 @@ export class Part {
     header() {
         let header;
 
-        if (this.value.data) {
-            header = `Content-Disposition: form-data; name='${this.name}'; filename='${this.value.filename}'\r\nContent-Length: ${this.value.data.length}\r\nContent-Type: ${this.value.contentType}`;
-        }
-        else if (this.value instanceof File) {
+        if (this.value instanceof File) {
             header = `Content-Disposition: form-data; name='${this.name}'; filename='${this.value.filename}'\r\nContent-Length: ${this.value.fileSize}\r\nContent-Type: ${this.value.contentType}`;
         }
         else if (this.value instanceof FileStream) {
@@ -111,9 +103,6 @@ export class Part {
         }
         else if (this.value instanceof FileStream) {
             valueSize = this.value.fileSize;
-        }
-        else if (this.value.data) {
-            valueSize = this.value.data.length;
         }
         else if (typeof this.value === 'number') {
             valueSize = this.value.toString().length;
@@ -154,7 +143,6 @@ export class Part {
                     }
                 }
             } else if (this.value instanceof FileStream) {
-
                 this.value.stream.on('end', () => {
                     stream.write('\r\n');
                     resolve();
@@ -163,12 +151,7 @@ export class Part {
                 let s = this.value.stream.pipe(stream, {
                     end: false // Do not end writing streams, may be there is more data incoming
                 });
-            } else if (this.value instanceof Data) {
-                stream.write(this.value.data);
-                stream.write('\r\n');
-                resolve();
-            }
-            else {
+            } else {
                 stream.write(`${this.value}\r\n`);
                 resolve();
             }
@@ -199,7 +182,6 @@ export class MultiPartRequest {
 
     async write(stream) {
         let partCount = 0;
-
         // wrap the stream in our own Stream object
         // See the Stream function above for the benefits of this
         stream = new Stream(stream);
@@ -210,7 +192,6 @@ export class MultiPartRequest {
             partCount++;
             if (partCount >= this.partNames.length) {
                 stream.write(`--${this.boundary}--\r\n`);
-
                 return stream.string || '';
             }
         }
@@ -225,7 +206,7 @@ export function sizeOf(parts, boundary = DEFAULT_BOUNDARY) {
     return totalSize + boundary.length + 6;
 }
 
-export async function write(stream, data, callback, boundary?) {
+export async function write(stream, data, callback, boundary=DEFAULT_BOUNDARY) {
     let r = new MultiPartRequest(data, boundary);
     await r.write(stream);
     return r;

@@ -1,7 +1,6 @@
 import {format} from 'util';
 import Logger,{LOGGER_ACTIONS,BasicReceiver} from '../';
-import {clearScreen, writeStdout, save, restore, writeEscape} from '@meteor-it/terminal';
-import {fixLength} from '@meteor-it/utils';
+import {clearScreen, writeStdout, writeEscape} from '@meteor-it/terminal';
 import emojiMap from '@meteor-it/emoji';
 
 const ansiColors = {
@@ -35,89 +34,52 @@ const ansiColors = {
 	bgWhite: [47, 49]
 };
 
-if(!process.env.NODE_CONSOLE_DONT_CLEAR)
-	clearScreen();
+// if(!process.env.NODE_CONSOLE_DONT_CLEAR)
+// 	clearScreen();
 
-function writeIdent(count, symbolNeeded?) {
-	writeStdout('  '.repeat(symbolNeeded ? count - 1 : count) + ' ' + (symbolNeeded ? symbolNeeded : ''));
+function stringifyIdent(count, symbolNeeded = undefined) {
+	return `${'  '.repeat(symbolNeeded ? count - 1 : count)} ${symbolNeeded ? symbolNeeded : ''}`;
 }
-function writeDate(date) {
-	writeEscape('36m');
-	writeStdout((new Date(date)).toLocaleTimeString());
-	writeEscape('0m');
+// function writeDate(date) {
+// 	// writeEscape('36m');
+// 	// writeStdout((new Date(date)).toLocaleTimeString());
+// 	// writeEscape('0m');
+// }
+function stringifyName(limit, name, escapeCode = '44m') {
+	return `\u001B[${escapeCode}\u001B[1m${name.toString().padStart(16,' ')}\u001B[0m`;
 }
-function writeName(limit, name, escapeCode = '44m') {
-	writeEscape(escapeCode);
-	writeEscape('1m');
-	writeStdout(fixLength(name.toString(), limit, true, ' '));
-	writeEscape('0m');
-	// writeEscape(ansiColors[color][1]);
+// function writeRepeats(count, none = false) {
+// 	// if(process.env.NO_COLLAPSE)none=true;
+// 	// if (none) {
+// 	// 	writeStdout('      ');
+// 	// } else {
+// 	// 	count += 1;
+// 	// 	if (count >= 20) writeEscape('31m'); else if (count >= 5) writeEscape('33m'); else if (count >= 2) writeEscape('32m'); else
+// 	// 		writeEscape('90m');
+// 	// 	if (count >= 999) writeStdout('x999+ '); else if (count === 1) writeStdout('      '); else
+// 	// 		writeStdout('x' + fixLength(count.toString(10), 3, false, ' ') + '  ');
+// 	// 	writeEscape('0m');
+// 	// }
+// }
+function stringifyIdentData(provider, data) {
+	// writeRepeats(0, true);
+	// writeDate(data.time);
+	return ` ${stringifyName(provider.nameLimit,data.name)} \u001B[35m${stringifyIdent(data.identationLength,'>')}\u001B[1m ${data.identName}\u001B[0m\n`;
 }
-function writeRepeats(count, none = false) {
-	if(process.env.NO_COLLAPSE)none=true;
-	if (none) {
-		writeStdout('      ');
-	} else {
-		count += 1;
-		if (count >= 20) writeEscape('31m'); else if (count >= 5) writeEscape('33m'); else if (count >= 2) writeEscape('32m'); else
-			writeEscape('90m');
-		if (count >= 999) writeStdout('x999+ '); else if (count === 1) writeStdout('      '); else
-			writeStdout('x' + fixLength(count.toString(10), 3, false, ' ') + '  ');
-		writeEscape('0m');
-	}
+function stringifyDeentData(provider, data) {
+	// writeRepeats(0, true);
+	// writeDate(data.time);
+	return ` ${stringifyName(provider.nameLimit,data.name)} \u001B[35m${stringifyIdent(data.identationLength+1,'<')}\u001B[1m ${data.identName}\u001B[22m (Done in ${data.identTime}ms)\u001B[0m\n`;
 }
-function writeIdentData(provider, data) {
-	writeRepeats(0, true);
-	writeDate(data.time);
-	writeStdout(' ');
-	writeName(provider.nameLimit, data.name);
-	writeEscape('35m');
-	writeIdent(data.identationLength, '>');
-	writeEscape('1m');
-	writeStdout(' ' + data.identName);
-	writeEscape('0m');
-	writeStdout('\n');
+function stringifyTimeStartData(provider, data) {
+	// writeRepeats(0, true);
+	// writeDate(data.time);
+	return ` \u001B[35m${stringifyName(provider.nameLimit,data.name,'1m')}\u001B[33m${stringifyIdent(data.identationLength)}${emojiMap['clock face one oclock']} Started ${data.timeName}\n`;
 }
-function writeDeentData(provider, data) {
-	writeRepeats(0, true);
-	writeDate(data.time);
-	writeStdout(' ');
-	writeName(provider.nameLimit, data.name);
-	writeEscape('35m');
-	writeIdent(data.identationLength + 1, '<');
-	writeEscape('1m');
-	writeStdout(' ' + data.identName);
-	writeEscape('22m');
-	writeStdout(' (Done in ' + data.identTime + 'ms)');
-	writeEscape('0m');
-	writeStdout('\n');
-}
-function writeTimeStartData(provider, data) {
-	writeRepeats(0, true);
-	writeDate(data.time);
-	writeStdout(' ');
-	writeEscape('35m');
-	writeName(provider.nameLimit, data.name, '1m');
-	writeEscape('33m');
-	writeIdent(data.identationLength);
-	writeStdout(emojiMap['clock face one oclock']);
-	writeStdout(' Started '+data.timeName);
-	writeStdout('\n');
-}
-function writeTimeEndData(provider, data) {
-	writeRepeats(0, true);
-	writeDate(data.time);
-	writeStdout(' ');
-	writeEscape('35m');
-	writeName(provider.nameLimit, data.name, '1m');
-	writeEscape('34m');
-	writeIdent(data.identationLength);
-	writeStdout(emojiMap['clock face six oclock']);
-	writeStdout(' Finished '+data.timeName);
-	writeEscape('1m');
-	writeStdout(' in '+data.timeTime+'ms');
-	writeEscape('0m');
-	writeStdout('\n');
+function stringifyTimeEndData(provider, data) {
+	// writeRepeats(0, true);
+	// writeDate(data.time);
+	return ` \u001B[35m${stringifyName(provider.nameLimit,data.name,'1m')}\u001B[34m${stringifyIdent(data.identationLength)}${emojiMap['clock face six oclock']} Finished ${data.timeName}\u001B[1m in ${data.timeTime}ms\u001B[0m\n`;
 }
 function stringifyData(data) {
 	let uncolored = format(data.line, ...data.params || []).emojify();
@@ -126,66 +88,54 @@ function stringifyData(data) {
 		return '\u001B[' + ansiColors[d[2]][d[1] === '/' ? 1 : 0] + 'm';
 	});
 }
-function writeCommonData(escapeCode, provider, data) {
-	writeRepeats(data.repeats, false);
-	writeDate(data.time);
-	writeStdout(' ');
-	writeEscape('40m');
-	writeName(provider.nameLimit, data.name, escapeCode);
-	writeEscape('0m');
-	writeIdent(data.identationLength);
-
-	let strings = data.string.split('\n');
-	writeStdout(strings.shift());
-	writeStdout('\n');
-	let dateStrip = (new Date(data.date)).toLocaleTimeString().replace(/./g, ' ');
-	strings.forEach(string => {
-		writeStdout('     ');
-		writeIdent(data.identationLength);
-		writeStdout(' '.repeat(provider.nameLimit));
-		writeStdout(dateStrip);
-		writeStdout(string);
-		writeStdout('\n');
-	});
-	// writeStdout(data.string);
-	// writeStdout('\n');
+const STRIPPED_DATE=(new Date()).toLocaleTimeString().replace(/./g, ' ');
+function stringifyCommonData(escapeCode, provider, data) {
+	// writeRepeats(data.repeats, false);
+	// writeDate(data.time);
+	const strings = data.string.split('\n');
+	let ret = ` \u001B[40m${stringifyName(provider.nameLimit, data.name, escapeCode)}\u001B[0m${stringifyIdent(data.identationLength)}`+
+	`${strings.shift()}\n`;
+	for(let string of strings){
+		ret += `${stringifyIdent(data.identationLength)}${stringifyName(provider.nameLimit,'|',escapeCode)} ${string}\n`;
+	}
+	return ret;
 }
 function writeLogData(provider, data) {
-	writeCommonData('34m', provider, data);
+	writeStdout(stringifyCommonData('34m',provider,data));
 }
 function writeErrorData(provider, data) {
-	writeCommonData('31m', provider, data);
+	writeStdout(stringifyCommonData('31m',provider,data));
 }
 function writeWarningData(provider, data) {
-	writeCommonData('33m', provider, data);
+	writeStdout(stringifyCommonData('33m',provider,data));
 }
 function writeDebugData(provider, data) {
-	writeCommonData('90m', provider, data);
+	writeStdout(stringifyCommonData('90m',provider,data));
 }
 
 export default class NodeConsoleReceiver extends BasicReceiver {
 	nameLimit;
 
-	constructor(nameLimit = 8) {
+	constructor(nameLimit = 16) {
 		super();
 		this.nameLimit = nameLimit;
 	}
 
 	write(data) {
 		data.string = stringifyData(data);
-		if (data.repeated) {
-			if(!process.env.NO_COLLAPSE){
-				save();
-				writeEscape(data.string.split('\n').length + 'A');
-				//data.repeats
-			}
-		}
+		// if (data.repeated) {
+		// 	if(!process.env.NO_COLLAPSE){
+		// 		save();
+		// 		writeEscape(data.string.split('\n').length + 'A');
+		// 		//data.repeats
+		// 	}
+		// }
 		switch (data.type) {
 			case LOGGER_ACTIONS.IDENT:
-				writeIdentData(this, data);
+				writeStdout(stringifyIdentData(this, data));
 				break;
 			case LOGGER_ACTIONS.DEENT:
-				writeDeentData(this, data);
+				writeStdout(stringifyDeentData(this, data));
 				break;
 			case LOGGER_ACTIONS.LOG:
 				writeLogData(this, data);
@@ -200,17 +150,17 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 				writeDebugData(this, data);
 				break;
 			case LOGGER_ACTIONS.TIME_START:
-				writeTimeStartData(this, data);
+				writeStdout(stringifyTimeStartData(this, data));
 				break;
 			case LOGGER_ACTIONS.TIME_END:
-				writeTimeEndData(this, data);
+				writeStdout(stringifyTimeEndData(this, data));
 				break;
 			default:
 				console._log(data);
 		}
-		if (data.repeated) {
-			if(!process.env.NO_COLLAPSE)restore();
-		}
+		// if (data.repeated) {
+		// 	if(!process.env.NO_COLLAPSE)restore();
+		// }
 		// console._log(data);
 	}
 }

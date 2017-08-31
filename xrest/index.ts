@@ -60,8 +60,6 @@ class Request extends EventEmitter {
             logger.warn(new Error('reference stack').stack);
         }
         this.url = parseUrl(url);
-        if (!this.url.hostname)
-            console.log(this.url);
         this.options = options;
         this.headers = {
             'Accept': '*/*',
@@ -126,7 +124,6 @@ class Request extends EventEmitter {
             rejectUnauthorized: this.options.rejectUnauthorized,
             agent: this.options.agent
         });
-
         this.makeRequest();
     }
 

@@ -1,9 +1,10 @@
 import Logger from '@meteor-it/logger';
-import {EventEmitter} from 'events';
+import EventEmitter from './EventEmitter';
 import {getReadStream,stat,isFile} from '@meteor-it/fs';
 import {emit} from '@meteor-it/xrest';
 import {readStream,createReadStream} from '@meteor-it/utils';
 import {Readable} from 'stream';
+import TimingData from './TimingData.js';
 
 const POSSIBLE_ACTIONS = ['writing'];
 export default class XBot extends EventEmitter {
@@ -27,45 +28,59 @@ export default class XBot extends EventEmitter {
         this.apiList.push(api);
     }
     onMessage(message: MessageEvent, sourceApi: Api) {
+        let timing=message.timing;
+        timing.stop();
         message.sourceApi = sourceApi;
+        timing.start('Xbot extension')
         message.attachXBot(this);
+        timing.stop();
+        timing.start('Console log');
         let inChat = message.chat ? (` [${message.chat.title.red}]`) : '';
         let attachment = message.attachment ? (`A`.magenta) : ' ';
         let reply = message.replyTo ? (`R`.magenta) : ' ';
-        this.logger.log(`<${message.user.firstName.blue} ${message.user.lastName.blue}${inChat}>[${attachment}${reply}] ${message.text.green}`);
+        let lastName=message.user.lastName?` ${message.user.lastName.blue}`:'';
+
+        this.logger.log(`<${message.user.firstName.blue}${lastName}${inChat}>[${attachment}${reply}]\n${message.text}`);
+        timing.stop();
+        timing.start('XBot <=> Ayzek transfer');
         this.emit('message', message);
     }
     onLeave(leave: LeaveEvent, sourceApi: Api) {
         leave.sourceApi = sourceApi;
         leave.attachXBot(this);
         let initiator = leave.initiator ? ` (by ${leave.initiator.firstName.blue} ${leave.initiator.lastName.blue})` : '';
-        this.logger.log(`${leave.user.firstName.blue} ${leave.user.lastName.blue} {red}leaved{/red} ${leave.chat.title.red}${initiator}`);
+        let lastName=leave.user.lastName?` ${leave.user.lastName.blue}`:'';
+        this.logger.log(`${leave.user.firstName.blue}${lastName} {red}leaved{/red} ${leave.chat.title.red}${initiator}`);
         this.emit('leave', leave);
     }
     onJoin(join: JoinEvent, sourceApi: Api) {
         join.sourceApi = sourceApi;
         join.attachXBot(this);
         let initiator = join.initiator ? ` (by ${join.initiator.firstName.blue} ${join.initiator.lastName.blue})` : '';
-        this.logger.log(`${join.user.firstName.blue} ${join.user.lastName.blue} {green}joined{/green} ${join.chat.title.red}${initiator}`);
+        let lastName=join.user.lastName?` ${join.user.lastName.blue}`:'';
+        this.logger.log(`${join.user.firstName.blue}${lastName} {green}joined{/green} ${join.chat.title.red}${initiator}`);
         this.emit('join', join);
     }
     onAction(action: ActionEvent, sourceApi: Api) {
         action.sourceApi = sourceApi;
         action.attachXBot(this);
         let inChat = action.chat ? (` [${action.chat.title.red}]`) : '';
-        this.logger.log(`${action.user.firstName.blue} ${action.user.lastName.blue}${inChat} - ${action.action.yellow}`);
+        let lastName=action.user.lastName?` ${action.user.lastName.blue}`:'';
+        this.logger.log(`${action.user.firstName.blue}${lastName}${inChat} - ${action.action.yellow}`);
         this.emit('action', action);
     }
     onPhoto(photo: PhotoChangeEvent, sourceApi: Api) {
         photo.sourceApi = sourceApi;
         photo.attachXBot(this);
-        this.logger.log(`Changed photo in ${photo.chat.title.red} -> ${photo.newPhotoUrl} by ${photo.initiator.firstName} ${photo.initiator.lastName}`);
+        let lastName=photo.initiator.lastName?` ${photo.initiator.lastName.blue}`:'';
+        this.logger.log(`Changed photo in ${photo.chat.title.red} -> ${photo.newPhotoUrl} by ${photo.initiator.firstName}${lastName}`);
         this.emit('photo', photo);
     }
     onTitle(title: TitleChangeEvent, sourceApi: Api) {
         title.sourceApi = sourceApi;
         title.attachXBot(this);
-        this.logger.log(title.oldTitle.red + ' -> ' + title.newTitle.green + ' by ' + title.initiator.firstName + ' ' + title.initiator.lastName);
+        let lastName=title.initiator.lastName?` ${title.initiator.lastName.blue}`:'';
+        this.logger.log(title.oldTitle.red + ' -> ' + title.newTitle.green + ' by ' + title.initiator.firstName + lastName);
         this.emit('title', title);
     }
     async uGetUser(uid){
@@ -165,19 +180,19 @@ class BaseFile {
 
 export class File extends BaseFile {
     mime;
-    constructor(stream, size, name, mime) {
-        super(stream, size, name = 'text/plain');
+    constructor(stream, size, name, mime='text/plain') {
+        super(stream, size, name);
         this.mime=mime;
     }
-    static async fromBuffer(buffer, name) {
-        return new File(createReadStream(buffer), buffer.length, name);
+    static async fromBuffer(buffer, name, mime?) {
+        return new File(createReadStream(buffer), buffer.length, name, mime);
     }
-    static async fromUrl(url, name, mime) {
+    static async fromUrl(url, name, mime?) {
         let res = await emit(`GET ${url} STREAM`);
-        let size = res.headers['content-length'];
+        let size = +res.headers['content-length'];
         return new File(res, size, name, mime);
     }
-    static async fromFilePath(path, name, mime) {
+    static async fromFilePath(path, name, mime?) {
         if (!await isFile(path))
             throw new Error('This is not a file! ' + path);
         let size = (await stat(path)).size;
@@ -224,29 +239,15 @@ export class Audio extends BaseFile {
     }
 }
 
-export class Configuration {
-    provider;
-    type;
-    id;
-    constructor(provider, type, id) {
-        this.provider = provider;
-        this.type = type;
-        this.id = id;
-    }
-    async save() {
-        throw new Error('save() not implemented!');
-    }
+export enum Role {
+    CREATOR = 1,
+    MODERATOR = 2,
+    USER = 3
 }
-
-export class Role {
-    static CREATOR = 1;
-    static MODERATOR = 2;
-    static USER = 3;
-}
-export class Gender {
-    static MAN = 1;
-    static WOMAN = 2;
-    static OTHER = 3;
+export enum Gender {
+    MAN = 1,
+    WOMAN = 2,
+    OTHER = 3
 }
 
 export class ForwardedMessage {
@@ -286,7 +287,7 @@ class Conversation {
             let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
             let attachment = true ? (`A`.magenta) : ' ';
             let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${(caption||'').green}`);
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]${(`\n${caption}`||'')}`);
         }
         return await this.api.sendLocation(this.targetId, answer, caption, location, options);
     }
@@ -295,7 +296,7 @@ class Conversation {
             let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
             let attachment = false ? (`A`.magenta) : ' ';
             let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${text.green}`);
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]\n${text.green}`);
         }
         return await this.api.sendText(this.targetId, answer ? this.messageId : undefined, text, options);
     }
@@ -306,7 +307,7 @@ class Conversation {
             let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
             let attachment = true ? (`A`.magenta) : ' ';
             let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${(caption||'').green}`);
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]${(`\n${caption}`||'')}`);
         }
         return await this.api.sendImageStream(this.targetId, answer ? this.messageId : undefined, caption, image, options);
     }
@@ -317,9 +318,9 @@ class Conversation {
             let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
             let attachment = true ? (`A`.magenta) : ' ';
             let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${(caption||'').green}`);
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]${(`\n${caption}`||'')}`);
         }
-        return await this.api.sendFileStream(this.targetId, answer, caption, file, options);
+        return await this.api.sendFileStream(this.targetId, answer ? this.messageId : undefined, caption, file, options);
     }
     async sendAudio(answer, caption, audio, options = {}) {
         if (!(audio instanceof Audio))
@@ -328,9 +329,9 @@ class Conversation {
             let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
             let attachment = true ? (`A`.magenta) : ' ';
             let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}] ${(caption||'').green}`);
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]${(`\n${caption}`||'')}`);
         }
-        return await this.api.sendAudioStream(this.targetId, answer, caption, audio, options);
+        return await this.api.sendAudioStream(this.targetId, answer ? this.messageId : undefined, caption, audio, options);
     }
     async sendVoice(answer, caption, file, options = {}){
         if (!(file instanceof File))
@@ -339,12 +340,12 @@ class Conversation {
             let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
             let attachment = true ? (`A`.magenta) : ' ';
             let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]`);
+            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${(`\n${reply}`||'')}]`);
         }
-        return await this.api.sendVoiceStream(this.targetId, answer, caption, file, options);
+        return await this.api.sendVoiceStream(this.targetId, answer ? this.messageId : undefined, caption, file, options);
     }
     async sendCustom(answer, caption, options = {}) {
-        return await this.api.sendCustom(this.targetId, answer, caption, options);
+        return await this.api.sendCustom(this.targetId, answer ? this.messageId : undefined, caption, options);
     }
 }
 export class User extends Conversation {
@@ -358,8 +359,8 @@ export class User extends Conversation {
     config: any;
     state: any;
     profileUrl: string;
-    isUser=true;
-    isChat=false;
+    isUser:boolean=true;
+    isChat:boolean=false;
     xbot: XBot;
 
     constructor({
@@ -414,8 +415,8 @@ export class Chat extends Conversation {
     title:string;
     admins:User[];
     photoUrl:string;
-    isUser=false;
-    isChat=true;
+    isUser:boolean=false;
+    isChat:boolean=true;
     xbot: XBot;
 
     constructor({
@@ -448,13 +449,14 @@ export class Chat extends Conversation {
 }
 
 interface IMessageEventConstructionData {
-    api: Api,
+    api: Api;
     attachment: File|Audio|Image;
     text: string;
-    user: User,
-    chat?: Chat,
-    messageId: any,
-    replyTo?: ForwardedMessage
+    user: User;
+    chat?: Chat;
+    messageId: any;
+    replyTo?: ForwardedMessage;
+    timing?: TimingData;
 }
 export class MessageEvent extends Conversation {
     attachment: File|Audio|Image;
@@ -463,6 +465,8 @@ export class MessageEvent extends Conversation {
     chat: Chat;
     replyTo: ForwardedMessage;
     xbot: XBot;
+    timing: TimingData;
+
     get isChat(){
         return !!this.chat;
     }
@@ -474,6 +478,7 @@ export class MessageEvent extends Conversation {
         this.text = data.text;
         this.user = data.user;
         this.chat = data.chat;
+        this.timing = data.timing||new TimingData();
         this.replyTo = data.replyTo;
     }
     attachXBot(xbot){
@@ -486,7 +491,8 @@ export class MessageEvent extends Conversation {
 interface IJoinEventConstructionData {
     user: User;
     chat: Chat;
-    initiator?: User
+    initiator?: User;
+    timing?: TimingData
 }
 export class JoinEvent {
     sourceApi: Api;
@@ -494,12 +500,14 @@ export class JoinEvent {
     chat: Chat;
     initiator?: User;
     xbot: XBot;
+    timing: TimingData;
 
     constructor(data: IJoinEventConstructionData) {
         //assertAllIsDefined(user,chat);
         this.user = data.user;
         this.chat = data.chat;
         this.initiator = data.initiator;
+        this.timing=data.timing||new TimingData();
     }
     attachXBot(xbot){
         this.xbot=xbot;
@@ -513,7 +521,8 @@ interface IActionEventConstructionData{
     user: User;
     action: string;
     chat?: Chat;
-    data?: any
+    data?: any;
+    timing?: TimingData;
 }
 export class ActionEvent {
     sourceApi: Api;
@@ -522,6 +531,7 @@ export class ActionEvent {
     action: string;
     data: any;
     xbot: XBot;
+    timing: TimingData;
 
     constructor(data:IActionEventConstructionData) {
         //assertAllIsDefined(user);
@@ -529,6 +539,7 @@ export class ActionEvent {
         this.user = data.user;
         this.chat = data.chat;
         this.data = data.data;
+        this.timing=data.timing||new TimingData();
     }
     attachXBot(xbot){
         this.xbot=xbot;
@@ -541,6 +552,7 @@ interface ILeaveEventConstructionData {
     user:User;
     chat:Chat;
     initiator?:User;
+    timing?: TimingData;
 }
 export class LeaveEvent {
     sourceApi: Api;
@@ -548,11 +560,13 @@ export class LeaveEvent {
     chat: Chat;
     initiator: User;
     xbot: XBot;
+    timing: TimingData;
 
     constructor(data: ILeaveEventConstructionData) {
         this.user = data.user;
         this.chat = data.chat;
         this.initiator = data.initiator;
+        this.timing=data.timing||new TimingData();
     }
     attachXBot(xbot){
         this.xbot=xbot;
@@ -565,6 +579,7 @@ interface ITitleChangeEventConstructionData{
     newTitle: string;
     initiator: User;
     chat: Chat;
+    timing?: TimingData;
 }
 export class TitleChangeEvent {
     sourceApi: Api;
@@ -572,14 +587,15 @@ export class TitleChangeEvent {
     oldTitle: string;
     initiator: User;
     chat: Chat;
-
     xbot: XBot;
+    timing: TimingData;
 
     constructor(data: ITitleChangeEventConstructionData) {
         this.oldTitle = data.oldTitle;
         this.newTitle = data.newTitle;
         this.initiator = data.initiator;
         this.chat = data.chat;
+        this.timing=data.timing||new TimingData();
     }
     attachXBot(xbot){
         this.xbot=xbot;
@@ -591,6 +607,7 @@ interface IPhotoChangeEventConstructionData{
     newPhotoUrl:string;
     initiator:User;
     chat:Chat;
+    timing?: TimingData;
 }
 export class PhotoChangeEvent {
     sourceApi: Api;
@@ -598,12 +615,14 @@ export class PhotoChangeEvent {
     initiator: User;
     chat: Chat;
     xbot: XBot;
+    timing: TimingData;
 
     constructor(data:IPhotoChangeEventConstructionData) {
         //assertAllIsDefined(newPhotoUrl,initiator,chat);
         this.newPhotoUrl = data.newPhotoUrl;
         this.initiator = data.initiator;
         this.chat = data.chat;
+        this.timing=data.timing||new TimingData();
     }
     attachXBot(xbot){
         this.xbot=xbot;
