@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/fs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Wrappers for native fs module",
   "main": "index.js",
   "keywords": [
