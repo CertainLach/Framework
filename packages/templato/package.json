@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/templato",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "WIP template engine",
     "main": "index.js",
     "keywords": [

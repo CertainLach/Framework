@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/potato.socket",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Websocket wrapper with serialization support via protodef and more",
   "main": "index.js",
   "keywords": [
