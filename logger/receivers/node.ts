@@ -1,7 +1,8 @@
 import {format} from 'util';
 import Logger,{LOGGER_ACTIONS,BasicReceiver} from '../';
-import {clearScreen, writeStdout, writeEscape, moveCursor, clearLine, save, restore} from '@meteor-it/terminal';
+import {clearScreen, writeStdout, writeEscape, moveCursor, clearLine, save, restore, startBuffering, flushBuffer} from '@meteor-it/terminal';
 import emojiMap from '@meteor-it/emoji';
+import {start} from "repl";
 
 const ansiColors = {
 	reset: [0, 0],
@@ -165,6 +166,7 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 	}
 
 	write(data) {
+	    startBuffering();
 		data.string = stringifyData(data);
 		// if (data.repeated) {
 		// 	if(!process.env.NO_COLLAPSE){
@@ -215,6 +217,7 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 		// }
         // TODO: Support for non-tty terminals
         renderProgress();
+		flushBuffer();
 	}
 }
 

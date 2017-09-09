@@ -1,20 +1,13 @@
 {
     "name": "@meteor-it/utils-common",
-    "version": "0.1.2",
-    "description": "I",
+    "version": "1.0.0",
+    "description": "Random utils",
     "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": ["meteor-it"],
-    "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "keywords": ["meteor-it","utils"],
+    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
     "devDependencies": {},
     "dependencies": {},
     "peerDependencies": {},
-    "optionalDependencies": {},
-    "repository": "gitlab:Creeplays/meteor-it-framework",
-    "engines": {
-        "node": "^7.8.0"
-    }
+    "optionalDependencies": {}
 }

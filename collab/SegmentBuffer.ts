@@ -1,16 +1,14 @@
 import Segment from './Segment';
 
-/**
- * Creates a new SegmentBuffer instance from the given array of
- * segments.
- * @param {Array} [segments] The segments that this buffer should be
- * pre-filled with.
- * @class Holds multiple Segments and provides methods for modifying them at
- * a character level.
- */
 export default class SegmentBuffer {
     segments: Array<Segment>;
 
+    /**
+     * Holds multiple Segments and provides methods for modifying them at
+     * a character level.
+     * @param segments The segments that this buffer should be
+     * pre-filled with.
+     */
     constructor(segments?: Array<Segment>) {
         this.segments = [];
 
@@ -32,15 +30,16 @@ export default class SegmentBuffer {
         return result;
     }
 
-    /** Creates a deep copy of this buffer.
-     * @type SegmentBuffer
+    /**
+     * Creates a deep copy of this buffer
      */
-    copy() {
+    copy(): SegmentBuffer {
         return this.slice(0);
     }
 
-    /** Cleans up the buffer by removing empty segments and combining adjacent
-     *  segments by the same user.
+    /**
+     * Cleans up the buffer by removing empty segments and combining adjacent
+     * segments by the same user
      */
     compact() {
         let segmentIndex = 0;
@@ -50,13 +49,10 @@ export default class SegmentBuffer {
                 this.segments.splice(segmentIndex, 1);
                 continue;
             } else if (segmentIndex < this.segments.length - 1 &&
-                this.segments[segmentIndex].user ==
-                this.segments[segmentIndex + 1].user) {
+                this.segments[segmentIndex].user == this.segments[segmentIndex + 1].user) {
 
-                // Two consecutive segments are from the same user; merge them
-                // into one.
-                this.segments[segmentIndex].text +=
-                    this.segments[segmentIndex + 1].text;
+                // Two consecutive segments are from the same user; merge them into one.
+                this.segments[segmentIndex].text += this.segments[segmentIndex + 1].text;
 
                 this.segments.splice(segmentIndex + 1, 1);
                 continue;
@@ -66,9 +62,8 @@ export default class SegmentBuffer {
         }
     }
 
-    /** Calculates the total number of characters contained in this buffer.
-     * @returns Total character count in this buffer
-     * @type number
+    /**
+     * Calculates the total number of characters contained in this buffer
      */
     getLength(): number {
         let length = 0;
@@ -78,15 +73,14 @@ export default class SegmentBuffer {
         return length;
     }
 
-    /** Extracts a deep copy of a range of characters in this buffer and returns
-     *  it as a new SegmentBuffer object.
-     *  @param begin Index of first character to return
-     *  @param [end] Index of last character (exclusive). If not
-     *  provided, defaults to the total length of the buffer.
-     *  @returns New buffer containing the specified character range.
-     *  @type SegmentBuffer
+    /**
+     * Extracts a deep copy of a range of characters in this buffer and returns
+     * it as a new SegmentBuffer object
+     * @param begin Index of first character to return
+     * @param end Index of last character (exclusive). If not
+     * provided, defaults to the total length of the buffer
      */
-    slice(begin: number, end?: number) {
+    slice(begin: number, end?: number): SegmentBuffer {
         const result = new SegmentBuffer();
 
         let segmentIndex = 0;
@@ -119,15 +113,15 @@ export default class SegmentBuffer {
     }
 
     /**
-     *  Like the Array "splice" method, this method allows for removing and
-     *  inserting text in a buffer at a character level.
-     *  @param index    The offset at which to begin inserting/removing
-     *  @param [remove] number of characters to remove
-     *  @param [insert] SegmentBuffer to insert
+     * Like the Array "splice" method, this method allows for removing and
+     * inserting text in a buffer at a character level
+     * @param index The offset at which to begin inserting/removing
+     * @param remove number of characters to remove
+     * @param insert SegmentBuffer to insert
      */
     splice(index: number, remove?: number, insert?: SegmentBuffer) {
         if (index > this.getLength())
-            throw "SegmentBuffer splice operation out of bounds";
+            throw new Error("SegmentBuffer splice operation out of bounds");
 
         let segmentIndex = 0;
         const segmentOffset = 0;
@@ -140,8 +134,7 @@ export default class SegmentBuffer {
             if (spliceIndex >= 0 && spliceIndex < segment.text.length) {
                 // This segment is part of the region to splice.
 
-                // Store the text that this splice operation removes to adjust the
-                // splice offset correctly later on.
+                // Store the text that this splice operation removes to adjust the splice offset correctly later on.
                 const removedText = segment.text.slice(spliceIndex, spliceIndex + spliceCount);
 
                 if (spliceIndex == 0) {

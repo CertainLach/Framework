@@ -1,15 +1,12 @@
 {
   "name": "@meteor-it/xbot",
-  "version": "0.1.2",
-  "description": "I",
+  "version": "1.0.0",
+  "description": "Bot engine",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
-    "meteor-it"
+    "meteor-it","xbot","hubot"
   ],
-  "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
@@ -19,13 +16,11 @@
     "@meteor-it/utils": "latest",
     "@meteor-it/utils-node": "latest",
     "@meteor-it/xrest": "latest",
-    "canvas": "latest",
-    "node-telegram-bot-api": "^0.27.1"
+    "canvas": "latest"
   },
   "peerDependencies": {},
-  "optionalDependencies": {},
-  "repository": "gitlab:Creeplays/meteor-it-framework",
-  "engines": {
-    "node": "^7.8.0"
+  "optionalDependencies": {
+    "node-telegram-bot-api": "latest",
+    "discord.js": "latest"
   }
 }

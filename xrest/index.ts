@@ -18,6 +18,8 @@ const POSSIBLE_MIDDLEWARES = ['STREAM'];
 
 const USER_AGENT = 'Meteor-IT XRest';
 
+// TODO: Http2 
+
 const decoders = {
     gzip(buf) {
         return new Promise((res,rej)=>{

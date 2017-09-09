@@ -4,17 +4,16 @@ import NoOp from "./NoOp";
 import Split from "./Split";
 import Delete from "./Delete";
 
-/**
- * Instantiates a new Insert operation object.
- *  @class An operation that inserts a SegmentBuffer at a certain offset.
- *  @param position The offset at which the text is to be inserted.
- *  @param text The SegmentBuffer to insert.
- */
 export default class Insert implements Operation {
     requiresCID = true;
     text: SegmentBuffer;
     position: number;
 
+    /**
+     * An operation that inserts a SegmentBuffer at a certain offset.
+     * @param position The offset at which the text is to be inserted
+     * @param text The SegmentBuffer to insert
+     */
     constructor(position: number, text: SegmentBuffer) {
         this.position = position;
         this.text = text.copy();
@@ -28,53 +27,47 @@ export default class Insert implements Operation {
         return `Insert(${this.position}, ${this.text.toHTML()})`;
     }
 
-    /** Applies the insert operation to the given SegmentBuffer.
-     *  @param {SegmentBuffer} buffer The buffer in which the insert operation is to be
-     *  performed.
+    /**
+     * Applies the insert operation to the given SegmentBuffer
+     * @param buffer The buffer in which the insert operation is to be performed.
      */
     apply(buffer: SegmentBuffer) {
         buffer.splice(this.position, 0, this.text);
     }
 
-    /** Computes the concurrency ID against another Insert operation.
-     *  @param {Insert} other
-     *  @returns The operation that is to be transformed.
-     *  @type Insert
+    /**
+     * Computes the concurrency ID against another Insert operation
+     * @param other 
      */
-    cid(other: Insert) {
+    cid(other: Insert): Insert {
         if (this.position < other.position)
             return other;
         if (this.position > other.position)
             return this;
     }
 
-    /** Returns the total length of data to be inserted by this insert operation,
-     *  in characters.
-     *  @type number
+    /**
+     * Returns the total length of data to be inserted by this insert operation, in characters.
      */
-    getLength() {
+    getLength(): number {
         return this.text.getLength();
     }
 
-    /** Transforms this Insert operation against another operation, returning the
-     *  resulting operation as a new object.
-     *  @param {Operation} other The operation to transform against.
-     *  @param {Operation} [cid] The cid to take into account in the case of
-     *  conflicts.
-     *  @type Operation
+    /**
+     * Transforms this Insert operation against another operation, returning the resulting operation as a new object.
+     * @param other The operation to transform against
+     * @param cid The cid to take into account in the case of conflicts
      */
     transform(other: Operation, cid?: Operation): Operation {
         if (other instanceof NoOp)
             return new Insert(this.position, this.text);
 
         if (other instanceof Split) {
-            // We transform against the first component of the split operation
-            // first.
+            // We transform against the first component of the split operation first.
             const transformFirst = this.transform(other.first,
                 (cid == this ? this : other.first));
 
-            // The second part of the split operation is transformed against its
-            // first part.
+            // The second part of the split operation is transformed against its first part.
             const newSecond = other.second.transform(other.first);
 
             const transformSecond = transformFirst.transform(newSecond,
@@ -106,10 +99,10 @@ export default class Insert implements Operation {
         }
     }
 
-    /** Returns the inversion of this Insert operation.
-     *  @type Delete
+    /**
+     * Returns the inversion of this Insert operation
      */
-    mirror() {
+    mirror(): Delete {
         return new Delete(this.position, this.text.copy());
     }
 }

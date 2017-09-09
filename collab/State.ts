@@ -4,26 +4,25 @@ import DoRequest from './requests/Do';
 import UndoRequest from './requests/Undo';
 import RedoRequest from './requests/Redo';
 import Delete from './operations/Delete';
+import Request from './Request';
 
-/** Instantiates a new state object.
- *  @class Stores and manipulates the state of a document by keeping track of
- *  its state vector, content and history of executed requests.
- *  @param {SegmentBuffer} [buffer] Pre-initialize the buffer
- *  @param {Vector} [vector] Set the initial state vector
- */
 export default class State {
     buffer: SegmentBuffer;
     vector: Vector;
     request_queue: Array<Request>;
-    log: Array<State>;
+    log: Array<Request>;
     cache: any;
     user: number;
 
-    constructor(buffer, vector) {
-        if (buffer instanceof SegmentBuffer)
-            this.buffer = buffer.copy();
-        else
-            this.buffer = new SegmentBuffer();
+
+    /**
+     * Stores and manipulates the state of a document by keeping track of
+     * its state vector, content and history of executed requests
+     * @param buffer Pre-initialize the buffer
+     * @param vector Set the initial state vector
+     */
+    constructor(buffer: SegmentBuffer = new SegmentBuffer(), vector: Vector) {
+        this.buffer = buffer.copy();
 
         this.vector = new Vector(vector);
         this.request_queue = new Array();
@@ -31,12 +30,13 @@ export default class State {
         this.cache = {};
     }
 
-    /** Translates a request to the given state vector.
-     *  @param {Request} request The request to translate
-     *  @param {Vector} targetVector The target state vector
-     *  @param {Boolean} [nocache] Set to true to bypass the translation cache.
+    /**
+     * Translates a request to the given state vector
+     * @param request The request to translate
+     * @param targetVector The target state vector
+     * @param noCache Set to true to bypass the translation cache
      */
-    translate(request, targetVector, noCache?) {
+    translate(request, targetVector, noCache = false) {
         if (request instanceof DoRequest && request.vector.equals(targetVector)) {
             // If the request vector is not an undo/redo request and is already
             // at the desired state, simply return the original request since
@@ -197,20 +197,22 @@ export default class State {
             }
         }
 
-        throw "Could not find a translation path";
+        throw new Error("Could not find a translation path");
     }
 
-    /** Adds a request to the request queue.
-     *  @param {Request} request The request to be queued.
+    /**
+     * Adds a request to the request queue
+     * @param request The request to be queued
      */
-    queue(request) {
+    queue(request: Request) {
         this.request_queue.push(request);
     }
 
-    /** Checks whether a given request can be executed in the current state.
-     *  @type Boolean
+    /**
+     * Checks whether a given request can be executed in the current state
+     * @param request 
      */
-    canExecute(request) {
+    canExecute(request: Request): boolean {
         if (request == undefined)
             return false;
 
@@ -221,13 +223,12 @@ export default class State {
         }
     }
 
-    /** Executes a request that is executable.
-     *  @param {Request} [request] The request to be executed. If omitted, an
-     *  executable request is picked from the request queue instead.
-     *  @returns The request that has been executed, or undefined if no request
-     *  has been executed.
+    /**
+     * Executes a request that is executable
+     * @param request The request to be executed. If omitted, an
+     * executable request is picked from the request queue instead
      */
-    execute(request) {
+    execute(request?: Request): Request|undefined {
         if (request == undefined) {
             // Pick an executable request from the queue.
             for (let index = 0; index < this.request_queue.length; index++) {
@@ -273,7 +274,7 @@ export default class State {
             // Since each request might have to be mirrored at some point, it
             // needs to be reversible. Delete requests are not reversible by
             // default, but we can make them reversible.
-            this.log.push((<any>request).makeReversible(translated, this));
+            this.log.push(request.makeReversible(translated, this));
         } else {
             this.log.push(request);
         }
@@ -286,24 +287,25 @@ export default class State {
         return translated;
     }
 
-    /** Executes all queued requests that are ready for execution. */
+    /**
+     * Executes all queued requests that are ready for execution
+     */
     executeAll() {
         let executed;
         do {
-            executed = (<any>this).execute();
+            executed = this.execute();
         } while (executed);
     }
 
-    /** Determines whether a given state is reachable by translation.
-     *  @param {Vector} vector
-     *  @type Boolean
+    /**
+     * Determines whether a given state is reachable by translation
+     * @param vector 
      */
-    reachable(vector) {
-        const self = this;
-        return this.vector.eachUser((u, v) => self.reachableUser(vector, u));
+    reachable(vector: Vector): boolean {
+        return this.vector.eachUser(user => this.reachableUser(vector, user));
     }
 
-    reachableUser(vector, user) {
+    reachableUser(vector:Vector, user:number):boolean {
         let n = vector.get(user);
         const firstRequest = this.firstRequestByUser(user);
         const firstRequestnumber = firstRequest ? firstRequest.vector.get(user) :
@@ -329,11 +331,12 @@ export default class State {
         }
     }
 
-    /** Retrieve an user's request by its index.
-     *  @param {number} user
-     *  @param getIndex
+    /**
+     * Retrieve an user's request by its index
+     * @param user 
+     * @param getIndex 
      */
-    requestByUser(user, getIndex) {
+    requestByUser(user: number, getIndex: number) {
         for (const reqIndex in this.log) {
             const request = this.log[reqIndex];
 
@@ -343,8 +346,9 @@ export default class State {
         }
     }
 
-    /** Retrieve the first request in the log that was issued by the given user.
-     *  @param user
+    /**
+     * Retrieve the first request in the log that was issued by the given user
+     * @param user 
      */
     firstRequestByUser(user: number) {
         let firstRequest;

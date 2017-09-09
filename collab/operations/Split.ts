@@ -1,19 +1,18 @@
 import {Operation} from '../Operation';
 import SegmentBuffer from '../SegmentBuffer';
 
-/** Instantiates a new Split operation object.
- *  @class An operation which wraps two different operations into a single
- *  object. This is necessary for example in order to transform a Delete
- *  operation against an Insert operation which falls into the range that is
- *  to be deleted.
- *  @param {Operation} first
- *  @param {Operation} second
- */
 export default class Split implements Operation {
     requiresCID = true;
     first: Operation;
     second: Operation;
 
+    /**
+     * An operation which wraps two different operations into a single object. 
+     * This is necessary for example in order to transform a Delete operation against 
+     * an Insert operation which falls into the range that is to be deleted
+     * @param first 
+     * @param second 
+     */
     constructor(first: Operation, second: Operation) {
         this.first = first;
         this.second = second;
@@ -27,10 +26,10 @@ export default class Split implements Operation {
         return `Split(${this.first.toHTML()}, ${this.second.toHTML()})`;
     }
 
-    /** Applies the two components of this split operation to the given buffer
-     *  sequentially. The second component is implicitly transformed against the
-     *  first one in order to do so.
-     *  @param {SegmentBuffer} buffer The buffer to which this operation is to be applied.
+    /**
+     * Applies the two components of this split operation to the given buffer sequentially.
+     *  The second component is implicitly transformed against the first one in order to do so.
+     * @param buffer The buffer to which this operation is to be applied
      */
     apply(buffer: SegmentBuffer) {
         this.first.apply(buffer);
@@ -41,10 +40,11 @@ export default class Split implements Operation {
     cid() {
     }
 
-    /** Transforms this Split operation against another operation. This is done
-     *  by transforming both components individually.
-     *  @param {Operation} other
-     *  @param {Operation} [cid]
+    /**
+     * Transforms this Split operation against another operation. 
+     * This is done by transforming both components individually.
+     * @param other 
+     * @param cid 
      */
     transform(other: Operation, cid?: Operation) {
         if (cid === this || cid == other)
@@ -59,12 +59,11 @@ export default class Split implements Operation {
             );
     }
 
-    /** Mirrors this Split operation. This is done by transforming the second
-     *  component against the first one, then mirroring both components
-     *  individually.
-     *  @type Split
+    /**
+     * Mirrors this Split operation. This is done by transforming the second component 
+     * against the first one, then mirroring both components individually
      */
-    mirror() {
+    mirror(): Split {
         const newSecond = this.second.transform(this.first);
         return new Split(this.first.mirror(), newSecond.mirror());
     }

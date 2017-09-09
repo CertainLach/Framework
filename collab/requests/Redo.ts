@@ -1,15 +1,18 @@
 import Vector from '../Vector';
+import DoRequest from './Do';
+import UndoRequest from './Undo';
 
-/** Instantiates a new redo request.
- *  @class Represents an redo request made by an user at a certain time.
- *  @param {number} user
- *  @param {Vector} vector The time at which the request was issued.
- */
 export default class RedoRequest {
     user: number;
     vector: Vector;
 
-    constructor(user, vector) {
+
+    /**
+     * Represents an redo request made by an user at a certain time
+     * @param user 
+     * @param vector The time at which the request was issued
+     */
+    constructor(user: number, vector:Vector) {
         this.user = user;
         this.vector = vector;
     }
@@ -26,11 +29,11 @@ export default class RedoRequest {
         return new RedoRequest(this.user, this.vector);
     }
 
-    /** Finds the corresponding UndoRequest to this RedoRequest.
-     *  @param {Array} log The log to search
-     *  @type UndoRequest
+    /**
+     * Finds the corresponding UndoRequest to this RedoRequest
+     * @param log The log to search
      */
-    associatedRequest(log) {
+    associatedRequest(log:Array<DoRequest|UndoRequest|RedoRequest>): UndoRequest {
         let sequence = 1;
         let index = log.indexOf(this);
 
@@ -49,7 +52,7 @@ export default class RedoRequest {
                 sequence -= 1;
 
             if (sequence == 0)
-                return log[index];
+                return <UndoRequest>log[index];
         }
     }
 }

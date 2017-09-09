@@ -15,7 +15,6 @@ export function addSupport(nativeServer, xpress) {
         socket.__RAW = true;
         socket.upgradeReq.method = 'WS'; // Because upgrade req is a get
         // Socket will be transfered over handlers chain as http response
-        console.log(socket.upgradeReq.session);
         xpress.handle({
             url:socket.upgradeReq.url,
             session:socket.upgradeReq.session||{save(){}},

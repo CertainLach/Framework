@@ -1,25 +1,18 @@
 {
   "name": "@meteor-it/random",
-  "version": "0.1.4",
-  "description": "I",
+  "version": "0.1.5",
+  "description": "Random util",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
-    "meteor-it"
+    "meteor-it","random"
   ],
-  "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
     "@meteor-it/utils-common": "latest",
-    "seedrandom": "^2.4.3"
+    "seedrandom": "latest"
   },
   "peerDependencies": {},
-  "optionalDependencies": {},
-  "repository": "gitlab:Creeplays/meteor-it-framework",
-  "engines": {
-    "node": "^7.8.0"
-  }
+  "optionalDependencies": {}
 }

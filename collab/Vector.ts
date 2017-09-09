@@ -1,9 +1,5 @@
-/**
- * @class Stores state vectors.
- * @param [value] Pre-initialize the vector with existing values. This can be
- * a Vector object, a generic Object with numeric properties, or a string of
- * the form "1:2;3:4;5:6".
- */
+type VectorMetatype = {[key: number]: string};
+
 export default class Vector {
     static user_regex = /\d+/;
     static timestring_regex = /(\d+):(\d+)/g;
@@ -12,33 +8,39 @@ export default class Vector {
         return this.toString();
     }
 
-    constructor(value: Vector | string | any) {
-        if (typeof(value) == "object") {
+    users: {[key: string]: number} = {};
+
+    /**
+     * Stores state vectors
+     * @param value Pre-initialize the vector with existing values. This can be
+     * a Vector object, a generic Object with numeric properties, or a string of
+     * the form "1:2;3:4;5:6".
+     */
+    constructor(value: Vector | string) {
+        if (value instanceof Vector) {
             for (const user in value) {
                 if (user.match(Vector.user_regex) && value[user] > 0)
-                    this[user] = value[user];
+                    this.users[user] = value.users[user];
             }
         } else if (typeof(value) == "string") {
             let match = Vector.timestring_regex.exec(value);
             while (match != null) {
-                this[match[1]] = parseInt(match[2]);
+                this.users[match[1]] = parseInt(match[2], 10);
                 match = Vector.timestring_regex.exec(value);
             }
         }
     }
 
-    /** Helper function to easily iterate over all users in this vector.
-     *  @param {function} callback Callback function which is called with the user
-     *  and the value of each component. If this callback function returns false,
-     *  iteration is stopped at that point and false is returned.
-     *  @type Boolean
-     *  @returns True if the callback function has never returned false; returns
-     *  False otherwise.
+    /**
+     * Helper function to easily iterate over all users in this vector
+     * @param callback Callback function which is called with the user
+     * and the value of each component. If this callback function returns false,
+     * iteration is stopped at that point and false is returned
      */
-    eachUser(callback) {
-        for (const user in this) {
+    eachUser(callback: (u:number,v:number)=>boolean):boolean {
+        for (const user in this.users) {
             if (user.match(Vector.user_regex)) {
-                if (callback(parseInt(user), this[user]) == false)
+                if (callback(parseInt(user), this[user]) === false)
                     return false;
             }
         }
@@ -46,15 +48,16 @@ export default class Vector {
         return true;
     }
 
-    /** Returns this vector as a string of the form "1:2;3:4;5:6"
-     *  @type String
+    /**
+     * Returns this vector as a string of the form "1:2;3:4;5:6"
      */
-    toString() {
-        const components = new Array();
+    toString():string {
+        const components = new Array<string>();
 
         this.eachUser((u, v) => {
             if (v > 0)
                 components.push(`${u}:${v}`);
+            return true;
         });
 
         components.sort();
@@ -62,51 +65,57 @@ export default class Vector {
         return components.join(";");
     }
 
-    /** Returns the sum of two vectors.
-     *  @param {Vector} other
+    /**
+     * Returns the sum of two vectors
+     * @param other
      */
-    add(other) {
+    add(other: Vector) {
         const result = new Vector(this);
 
         other.eachUser((u, v) => {
             result[u] = result.get(u) + v;
+            return true;
         });
 
         return result;
     }
 
-    /** Returns a copy of this vector. */
-    copy() {
+    /**
+     * Returns a copy of this vector
+     */
+    copy(): Vector {
         return new Vector(this);
     }
 
-    /** Returns a specific component of this vector, or 0 if it is not defined.
-     *  @param {number} user Index of the component to be returned
+    /**
+     * Returns a specific component of this vector, or 0 if it is not defined
+     * @param user Index of the component to be returned
      */
-    get(user) {
-        if (this[user] != undefined)
-            return this[user];
+    get(user:number):number {
+        if (this.users[user] !== undefined)
+            return this.users[user];
         else
             return 0;
     }
 
-    /** Calculates whether this vector is smaller than or equal to another vector.
-     *  This means that all components of this vector are less than or equal to
-     *  their corresponding components in the other vector.
-     *  @param {Vector} other The vector to compare to
-     *  @type Boolean
+    /**
+     * Calculates whether this vector is smaller than or equal to another vector.
+     * This means that all components of this vector are less than or equal to
+     * their corresponding components in the other vector
+     * @param other The vector to compare to
      */
-    causallyBefore(other) {
+    causallyBefore(other: Vector):boolean {
         return this.eachUser((u, v) => v <= other.get(u));
     }
 
-    /** Determines whether this vector is equal to another vector. This is true if
-     *  all components of this vector are present in the other vector and match
-     *  their values, and vice-versa.
-     *  @param {Vector} other The vector to compare to
-     *  @type Boolean
+
+    /**
+     * Determines whether this vector is equal to another vector. This is true if
+     * all components of this vector are present in the other vector and match
+     * their values, and vice-versa
+     * @param other The vector to compare to
      */
-    equals(other) {
+    equals(other:Vector):boolean {
         const eq1 = this.eachUser((u, v) => other.get(u) == v);
 
         const self = this;
@@ -115,13 +124,14 @@ export default class Vector {
         return eq1 && eq2;
     }
 
-    /** Returns a new vector with a specific component increased by a given
-     *  amount.
-     *  @param {number} user Component to increase
-     *  @param {number} [by] Amount by which to increase the component (default 1)
-     *  @type Vector
+
+    /**
+     * Returns a new vector with a specific component increased by a given
+     * amount
+     * @param user Component to increase
+     * @param by Amount by which to increase the component
      */
-    incr(user, by: number = 1) {
+    incr(user, by: number = 1):Vector {
         const result = new Vector(this);
 
         result[user] = result.get(user) + by;
@@ -129,12 +139,12 @@ export default class Vector {
         return result;
     }
 
-    /** Calculates the least common successor of two vectors.
-     *  @param {Vector} v1
-     *  @param {Vector} v2
-     *  @type Vector
+    /**
+     * Calculates the least common successor of two vectors
+     * @param v1 
+     * @param v2 
      */
-    static leastCommonSuccessor(v1, v2) {
+    static leastCommonSuccessor(v1: Vector, v2:Vector): Vector {
         const result = v1.copy();
 
         v2.eachUser((u, v) => {
@@ -143,6 +153,7 @@ export default class Vector {
 
             if (val1 < val2)
                 result[u] = val2;
+            return true;
             //else
             //	result[u] = val1; // This is already the case since we copied v1
         });

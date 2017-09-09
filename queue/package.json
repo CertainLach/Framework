@@ -1,24 +1,17 @@
 {
   "name": "@meteor-it/queue",
-  "version": "0.2.1",
-  "description": "I",
+  "version": "1.0.0",
+  "description": "Queue decorator",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
-    "meteor-it"
+    "meteor-it","queue","async","await","decorator"
   ],
-  "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
     "@meteor-it/logger": "latest"
   },
   "peerDependencies": {},
-  "optionalDependencies": {},
-  "repository": "gitlab:Creeplays/meteor-it-framework",
-  "engines": {
-    "node": "^7.8.0"
-  }
+  "optionalDependencies": {}
 }

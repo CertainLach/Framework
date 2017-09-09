@@ -1,27 +1,20 @@
 {
   "name": "@meteor-it/plugin-loader",
-  "version": "0.1.2",
-  "description": "I",
+  "version": "1.0.0",
+  "description": "Plugin loader for all porposes",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
-    "meteor-it"
+    "meteor-it","plugin","plugins","webpack","hmr"
   ],
-  "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
     "@meteor-it/fs": "latest",
     "@meteor-it/logger": "latest",
     "@meteor-it/utils-common": "latest",
-    "chokidar": "^1.7.0"
+    "chokidar": "latest"
   },
   "peerDependencies": {},
-  "optionalDependencies": {},
-  "repository": "gitlab:Creeplays/meteor-it-framework",
-  "engines": {
-    "node": "^7.8.0"
-  }
+  "optionalDependencies": {}
 }

@@ -7,23 +7,24 @@ import Recon from "../Recon";
 import ReconSegment from "../ReconSegment";
 import State from "../State";
 
-/**
- * Instantiates a new Delete operation object.
- * Delete operations can be reversible or not, depending on how they are
- * constructed. Delete operations constructed with a SegmentBuffer object know which
- * text they are removing from the buffer and can therefore be mirrored,
- * whereas Delete operations knowing only the amount of characters to be
- * removed are non-reversible.
- * Delete - an operation that removes a range of characters in the target buffer.
- * @param position The offset of the first character to remove.
- * @param what The data to be removed. This can be either a numeric value or a SegmentBuffer object.
- */
 export default class Delete implements Operation {
     requiresCID = false;
     position: number;
     recon: Recon;
     what: SegmentBuffer | number;
 
+    /**
+     * Instantiates a new Delete operation object.
+     * Delete operations can be reversible or not, depending on how they are
+     * constructed. Delete operations constructed with a SegmentBuffer object know which
+     * text they are removing from the buffer and can therefore be mirrored,
+     * whereas Delete operations knowing only the amount of characters to be
+     * removed are non-reversible.
+     * Delete - an operation that removes a range of characters in the target buffer.
+     * @param position The offset of the first character to remove
+     * @param what The data to be removed
+     * @param recon 
+     */
     constructor(position: number, what: number | SegmentBuffer, recon: Recon = new Recon()) {
         this.position = position;
 
@@ -148,7 +149,7 @@ export default class Delete implements Operation {
      * @param transformed A transformed version of this operation.
      * @param state The state in which the transformed operation could be applied.
      */
-    makeReversible(transformed: Delete, state: State) {
+    makeReversible(transformed: Operation, state: State):Delete {
         if (this.what instanceof SegmentBuffer)
             return new Delete(this.position, this.what);
         else {
@@ -178,9 +179,10 @@ export default class Delete implements Operation {
         }
     }
 
-    /** Transforms this Delete operation against another operation.
-     *  @param other
-     *  @param cid
+    /**
+     * Transforms this Delete operation against another operation
+     * @param other 
+     * @param cid 
      */
     transform(other: Operation, cid?: Operation) {
         if (other instanceof NoOp)

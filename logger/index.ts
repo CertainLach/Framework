@@ -30,7 +30,7 @@ export enum LOGGER_ACTIONS{
 	PROGRESS_END,
     INFO=LOGGER_ACTIONS.LOG,
     WARN=LOGGER_ACTIONS.WARNING,
-    ERR=LOGGER_ACTIONS.ERR
+    ERR=LOGGER_ACTIONS.ERROR
 }
 
 const REPEATABLE_ACTIONS=[
@@ -238,10 +238,24 @@ export default class Logger {
 		}else {
             if (Logger.receivers.length === 0) {
                 if (!Logger.noReceiversWarned) {
-                    console._log('No receivers are defined for logger!');
+                    console._log('No receivers are defined for logger! See docs for info about this!');
                     Logger.noReceiversWarned = true;
                 }
-                console._log(what);
+                switch (what.type){
+                    case LOGGER_ACTIONS.DEBUG:
+                    case LOGGER_ACTIONS.LOG:
+                        console._log(what.line,...what.params);
+                        break;
+                    case LOGGER_ACTIONS.ERROR:
+                        console._error(what.line,...what.params);
+                        break;
+                    case LOGGER_ACTIONS.WARNING:
+                        console._warn(what.line,...what.params);
+                        break;
+                    default:
+                        console._log(what);
+                }
+                return;
             }
             if (Logger.isRepeating(what.name, what.line, what.type))
                 Logger.repeatCount++;

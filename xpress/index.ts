@@ -15,6 +15,8 @@ const MULTI_EVENTS={
     'ALL':[...METHODS.filter(e=>e!='OPTIONS'),'WS']
 };
 
+// TODO: Http2 
+
 let xpressLogger=new Logger('xpress');
 
 class HttpError extends Error{

@@ -1,25 +1,19 @@
 {
   "name": "@meteor-it/argv",
-  "version": "0.1.1",
-  "description": "I",
+  "version": "0.1.2",
+  "description": "Command line argument parser",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "keywords": [
-    "meteor-it"
+    "meteor-it","args","parser","arguments","commander","argv"
   ],
-  "author": "Yaroslaw Bolyulin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@meteor-it/logger": "0.0.1",
-    "@meteor-it/utils-common": "0.0.1"
+    "@meteor-it/logger": "latest",
+    "@meteor-it/utils-common": "latest"
   },
   "peerDependencies": {},
-  "optionalDependencies": {},
-  "repository": "gitlab:Creeplays/meteor-it-framework",
-  "engines": {
-    "node": "^7.8.0"
-  }
+  "optionalDependencies": {}
 }

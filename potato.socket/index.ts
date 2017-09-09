@@ -1,5 +1,4 @@
 import Logger from '@meteor-it/logger';
-import React from 'react';
 import potatoSuperProto from './potatoSuperProto.js';
 import proxyDeep from 'proxy-deep';
 
@@ -18,7 +17,7 @@ function processProtocol(protocolDeclaration) {
     };
     let eventId=0;
     let rpcEventId=0;
-    for(let key in protocolDeclaration){
+    for(let key of Object.keys(protocolDeclaration).sort()){
         if(!protocolDeclaration.hasOwnProperty(key))
             continue;
         if(!key.includes('::')){
@@ -56,12 +55,14 @@ export class WebSocketClient {
         this.url=url;
     }
 
+    /**
+     * Opens connection
+     */
     open() {
         this.safeClose=false;
         this.instance = new WebSocket(this.url);
         this.instance.binaryType = 'arraybuffer';
         this.instance.onopen = () => {
-            console.log("WebSocketClient: open!");
             this.onOpenResend();
             this.onopen();
         };
@@ -72,10 +73,10 @@ export class WebSocketClient {
         this.instance.onclose = (e) => {
             if (!this.safeClose){
                 switch (e) {
-                    case 1000:	// CLOSE_NORMAL
+                    case 1000: // CLOSE_NORMAL
                         this.onclose(e);
                         break;
-                    default:	// Abnormal closure
+                    default: // Abnormal closure
                         this.reconnect();
                         break;
                 }
@@ -98,13 +99,22 @@ export class WebSocketClient {
         };
     }
 
+    /**
+     * Closes connection
+     */
     close() {
         this.safeClose = true;
         this.instance.close();
     }
 
     sendBuffer=[];
-    send(data, option) {
+
+    /**
+     * Sends data to remote socket or saves to buffer if not available
+     * @param data 
+     * @param option 
+     */
+    send(data, option?) {
         try {
             this.instance.send(data, option);
         } catch (e) {
@@ -112,16 +122,20 @@ export class WebSocketClient {
         }
     }
 
+    /**
+     * Reconnects to a websocket
+     */
     reconnect() {
         if (!this.safeClose) {
-            console.log(`WebSocket: retry in ${this.autoReconnectInterval}ms`);
             setTimeout(() => {
-                console.log("WebSocket: reconnection...");
                 this.open();
             }, this.autoReconnectInterval);
         }
     }
 
+    /**
+     * After successful reconnection send all buffered data to remote
+     */
     onOpenResend(){
         for(let [data,option] of this.sendBuffer)
             this.send(data,option);
@@ -141,87 +155,9 @@ export class WebSocketClient {
     }
 }
 
-class SocketConnectedComponent extends React.Component {
-    static displayName = `SocketWrapped`;
-    socket;
-    state;
-    unmounted=false;
-    constructor(props){
-        super(props);
-        if(this.props.children.length!==1)
-            throw new Error('children != 1');
-        this.state={
-            socketState: 'connection',
-            socket: new PotatoSocketClient(props.children[0].name, props.packetDeclaration, props.socketUrl, props.reconnectInterval)
-        }
-    }
-    componentDidMount() {
-        this.state.socket.open();
-        this.state.socket.on('open', () => {
-            if(!this.socket.unmounted)
-                this.setState({socketState: 'open'})
-        });
-        this.state.socket.on('close', status => {
-            if(!this.socket.unmounted)
-                this.setState({socketState: 'close'})
-        });
-    }
-    componentWillUnmount(){
-        this.unmounted = true;
-        this.state.socket.close();
-    }
-    render() {
-        const el=this.props.children[0];
-        return <el {...this.props} socketState={this.state.socketState} socket={this.state.socket}/>
-        //return React.createElement(this.props.children[0], {...this.props, socketState:this.state.socketState, socket:this.state.socket})
-    }
-}
-
-// To connect react component to PotatoSocker
-export function connectSocket(packetDeclaration, socketUrl, reconnectInterval, loadingComponent){
-    return Wrapped=>class SocketConnectedComponent extends React.Component {
-        static displayName = `SocketWrapped${Wrapped.name}`;
-        socket;
-        state;
-        constructor(props){
-            super(props);
-            this.state={
-                socketState: 'connection',
-                socket: new PotatoSocketClient(Wrapped.name, packetDeclaration, socketUrl, reconnectInterval)
-            };
-            this.state.socket.on('open', () => this.setState({socketState: 'open'}));
-            this.state.socket.on('close', code => this.setState({socketState: 'close'}));
-        }
-        componentDidMount() {
-            setTimeout(()=>{
-                this.state.socket.open();
-            },1000);
-        }
-        componentWillUnmount(){
-            this.state.socket.close();
-        }
-
-        render() {
-            const wrappedStyle=loadingComponent?{
-                visiblity:this.state.socketState==='open'?'visible':'hidden'
-            }:{};
-            const loadingStyle={
-                visiblity:this.state.socketState!=='open'?'visible':'hidden'
-            };
-            return <div>
-                {loadingComponent?<loadingComponent style={loadingStyle}/>:''}
-                <Wrapped style={wrappedStyle} {...this.props} socketState={this.state.socketState} socket={this.state.socket}/>
-
-            </div>
-            //<loadingComponent/>;
-            //return React.createElement(this.props.children[0], {...this.props, socketState:this.state.socketState, socket:this.state.socket})
-        }
-    }
-}
-
 export class RPCError extends Error{
     constructor(message){
-        super(message);
+        super(message.toString());
     }
 }
 
@@ -346,31 +282,28 @@ export class PotatoSocketUniversal{
         });
     }
 
+    /**
+     * Local rpc calls
+     */
     get local(){
+        // TODO: Real local rpc
+        let self=this;
         return {
             get rpc(){
-                let self=this;
-                return proxyDeep({},{
-                    get(target, path, receiver, nest){
-                        let methodName=path.join('.');
-                        if(!self.rpcToId[methodName])
-                            return nest();
-                        return (...data)=>{
-                            if(data.length!==1)
-                                throw new Error('Wrong method call argument count: '+data.length);
-                            if(!(data[0] instanceof Object))
-                                throw new Error('Argument is not a object');
-                            return self.callRemoteMethod(self.rpcToId[methodName],data[0]);
-                        }
-                    },
-                    set(target, path, value){
-                        return false;
-                    }
-                });
+                return self.rpc;
+            },
+            get emit(){
+                return self.emit;
+            },
+            get on(){
+                return self.on;
             }
         }
     }
 
+    /**
+     * Remote rpc calls
+     */
     get remote(){
         let self=this;
         return {
@@ -388,29 +321,27 @@ export class PotatoSocketUniversal{
 
     /**
      * Random emulation
-     * @type {number}
      */
     lastRpcMethodCallId=0;
     /**
      * random=>[resolve,reject] map
-     * @type {Array}
      */
-    pendingRemoteRPCCalls=[];
+    pendingRemoteRPCCalls:{[key:number]:[(data:any)=>any,(error:Error)=>any]}={};
 
     /**
      * Rpc call (sender side)
      * @param methodId method id to call
      * @param data raw data
-     * @returns {Promise}
      */
-    callRemoteMethod(methodId,data){
+    callRemoteMethod(methodId: number,data: any):Promise<any>{
+        console.log(methodId,this.idToRpc[methodId],this.rpcToId[this.idToRpc[methodId]]);
         return new Promise((res,rej)=>{
             // TODO: Random?
             let random=this.lastRpcMethodCallId++;
             let body=Array.from(this.serializeByDeclaration(data,this._rpc[methodId][0]));
             let timeoutCalled=false;
             let timeoutTimeout=setTimeout(()=>{
-                this.timeoutCalled=true;
+                timeoutCalled=true;
                 rej(new RPCError('Local execution timeout'));
             },this.timeout*1.5);
             this.pendingRemoteRPCCalls[random]=[(d)=>{
@@ -479,9 +410,11 @@ export class PotatoSocketUniversal{
                 if(timeoutCalled)
                     return;
                 clearTimeout(timeoutTimeout);
+                this.logger.error(e.stack);
                 this.answerErrorOnRPCCall(random,e.message);
             })
         }catch(e){
+            this.logger.error(e.stack);
             this.answerErrorOnRPCCall(random,e.message);
         }
     }
@@ -543,6 +476,7 @@ export class PotatoSocketUniversal{
             },potatoSuperProto.potatoSocket));
         }catch(e){
             this.answerErrorOnRPCCall(random,'Server error: Response serialization failed');
+            this.logger.error(data);
             this.logger.error('Response serialization error:');
             this.logger.error(e.stack);
             if(body){
@@ -758,11 +692,12 @@ export class PotatoSocketUniversal{
      * @param declaration
      */
     processDeclaration(declaration) {
-        for(let key in declaration){
+        let keys=Object.keys(declaration).sort();
+        for(let key of keys){
             if(!declaration.hasOwnProperty(key))
                 continue;
-            let lastPart=key.split('::');
-            lastPart=lastPart[lastPart.length-1];
+            let lastParts=key.split('::');
+            let lastPart=lastParts[lastParts.length-1];
             if(lastPart!=='request'&&lastPart!=='response'){
                 let path = key.split('::');
                 if(path[0]==='')
@@ -791,6 +726,9 @@ export class PotatoSocketUniversal{
  * Websocket potato.socket client
  */
 export class PotatoSocketClient extends PotatoSocketUniversal {
+    websocketAddress:string;
+    websocket:WebSocketClient;
+
     constructor(name, protocolDeclaration, websocketAddress, reconnectInterval) {
         super(name, protocolDeclaration, false, false);
         this.websocketAddress=websocketAddress;
@@ -878,7 +816,7 @@ export class PotatoSocketServer extends PotatoSocketUniversal {
      * @param eventName
      * @param eventData
      */
-    emit(eventName,eventData){
+    emit(eventName:string,eventData:any){
         let eventId=this.eventToId[eventName];
         if(!eventId)
             throw new Error('Trying to emit not existing packet!');
@@ -891,9 +829,9 @@ export class PotatoSocketServer extends PotatoSocketUniversal {
                     body
                 }
             },potatoSuperProto.potatoSocket);
-            Object.values(this.clients).forEach(client=>{
+            for(let client of this.clients){
                 client.sendBufferToRemote(buffer);
-            })
+            }
         }catch(e){
             this.logger.error(JSON.stringify(eventData));
             this.logger.error(`Data serialization error for "${eventName}"`);
@@ -923,10 +861,9 @@ export class PotatoSocketServer extends PotatoSocketUniversal {
     handler(req,websocket){
         let wrappedSocket=new PotatoSocketServerInternalClient(this,websocket);
         let id=Math.random().toString(32).substr(2);
-        wrappedSocket.id=id;
-        console.log(req,req.session);
+        (<any>wrappedSocket).id=id;
         if(req.session)
-            wrappedSocket.session=req.session;
+            (<any>wrappedSocket).session=req.session;
         this.clients[id]=wrappedSocket;
         websocket.on('close',()=>{
             delete this.clients[id];

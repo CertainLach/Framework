@@ -2,7 +2,7 @@
 import Logger from '@meteor-it/logger';
 import {queue} from '@meteor-it/queue';
 
-const p={};
+const p:any={};
 //Chinese
 p.fa=p.id=p.ja=p.ko=p.lo=p.ms=p.th=p.tr=p.zh=n=>0;
 //German

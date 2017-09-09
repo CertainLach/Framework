@@ -5,7 +5,33 @@ let useStdoutFallback=false;
 if(process.env.STDOUT_FALLBACK)
 	useStdoutFallback=true;
 
-export function writeStdout (string) {
+let buffer='';
+let buffering=false;
+
+/**
+ * Start buffer write
+ */
+export function startBuffering (){
+    buffering=true;
+}
+
+/**
+ * Stop buffering and write buffer to stdout
+ */
+export function flushBuffer (){
+    buffering=false;
+    writeStdout(buffer);
+}
+
+/**
+ * Write string to stdout (or to buffer, if buffering is enabled)
+ * @param string 
+ */
+export function writeStdout (string:string) {
+    if(buffering) {
+        buffer += string;
+        return;
+    }
 	if (!useStdoutFallback) {
 		try {
 			writeSync(1, string);
@@ -18,18 +44,37 @@ export function writeStdout (string) {
 		process.stdout.write(string);
 	}
 }
-export function writeEscape(args){
+/**
+ * Wrap data to escape and write to stdout
+ * @param args code
+ */
+export function writeEscape(args:string){
     writeStdout('\u001B[' + args);
 }
-export function moveCursor(line, col?) {
-	writeEscape(line + ';' + (col || 1) + 'f');
+/**
+ * Moves cursor to specified position
+ * @param line 
+ * @param col
+ */
+export function moveCursor(line, col=1) {
+	writeEscape(line + ';' + col + 'f');
 }
+/**
+ * Hides cursor
+ */
 export function hideCursor(){
     writeEscape('?25l');
 }
+/**
+ * Shows cursor
+ */
 export function showCursor(){
     writeEscape('?25h');
 }
+/**
+ * Clear line
+ * @param line if not defined - current line 
+ */
 export function clearLine(line?) {
 	if(line){
 		save();
@@ -40,12 +85,21 @@ export function clearLine(line?) {
 	else
 		writeEscape('2K');
 }
+/**
+ * Clears screen
+ */
 export function clearScreen() {
 	writeEscape('2J');
 }
+/**
+ * Saves cursor position (Only one!)
+ */
 export function save() {
 	writeEscape('s');
 }
+/**
+ * Restores cursor position (Only one!)
+ */
 export function restore() {
 	writeEscape('u');
 }
