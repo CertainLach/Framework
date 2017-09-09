@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "module": "umd",
+        "target": "es5",
+        "outDir": "dist",
+        "rootDir": "packages",
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "allowJs": true,
+        "lib": [
+            "es5",
+            "es6",
+            "es2015",
+            "es7",
+            "es2016",
+            "es2017"
+        ]
+    }
+}
