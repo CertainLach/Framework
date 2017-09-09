@@ -1,0 +1,15 @@
+{
+    "name": "@meteor-it/mime",
+    "version": "0.2.0",
+    "description": "All the mimetypes by extension",
+    "main": "index.js",
+    "keywords": [
+        "meteor-it",
+        "mime",
+        "ext",
+        "extension",
+        "file"
+    ],
+    "author": "Yaroslav Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "license": "MIT"
+}

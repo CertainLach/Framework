@@ -1,0 +1,13 @@
+{
+    "name": "@meteor-it/terminal",
+    "version": "0.3.0",
+    "description": "Stdout utils",
+    "main": "index.js",
+    "keywords": [
+        "meteor-it",
+        "tty",
+        "stdout"
+    ],
+    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "license": "MIT"
+}

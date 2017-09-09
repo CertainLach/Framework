@@ -1,0 +1,18 @@
+{
+  "name": "@meteor-it/queue",
+  "version": "1.1.0",
+  "description": "Queue decorator",
+  "main": "index.js",
+  "keywords": [
+    "meteor-it",
+    "queue",
+    "async",
+    "await",
+    "decorator"
+  ],
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "dependencies": {
+    "@meteor-it/logger": "latest"
+  }
+}

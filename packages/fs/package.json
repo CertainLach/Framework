@@ -1,0 +1,15 @@
+{
+  "name": "@meteor-it/fs",
+  "version": "0.2.0",
+  "description": "Wrappers for native fs module",
+  "main": "index.js",
+  "keywords": [
+    "meteor-it",
+    "fs"
+  ],
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "dependencies": {
+    "@meteor-it/utils-common": "latest"
+  }
+}
