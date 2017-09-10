@@ -1,0 +1,21 @@
+{
+  "name": "@meteor-it/argv",
+  "version": "0.2.3",
+  "description": "Command line argument parser",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "meteor-it",
+    "args",
+    "parser",
+    "arguments",
+    "commander",
+    "argv"
+  ],
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "dependencies": {
+    "@meteor-it/logger": "latest",
+    "@meteor-it/utils-common": "latest"
+  }
+}

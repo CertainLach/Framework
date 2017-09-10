@@ -1,0 +1,13 @@
+{
+    "name": "@meteor-it/templato",
+    "version": "0.2.3",
+    "description": "WIP template engine",
+    "main": "index.js",
+    "keywords": [
+        "meteor-it",
+        "engine",
+        "template"
+    ],
+    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "license": "MIT"
+}

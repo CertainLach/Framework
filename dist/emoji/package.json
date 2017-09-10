@@ -1,0 +1,12 @@
+{
+    "name": "@meteor-it/emoji",
+    "version": "0.2.3",
+    "description": "Emoji4 list",
+    "main": "index.js",
+    "keywords": [
+        "meteor-it",
+        "emoji"
+    ],
+    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "license": "MIT"
+}

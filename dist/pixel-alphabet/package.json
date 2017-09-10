@@ -1,0 +1,13 @@
+{
+    "name": "@meteor-it/pixel-alphabet",
+    "version": "0.3.3",
+    "description": "Pixels alphabet",
+    "main": "index.js",
+    "keywords": [
+        "meteor-it",
+        "pixels",
+        "alphabet"
+    ],
+    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "license": "MIT"
+}
