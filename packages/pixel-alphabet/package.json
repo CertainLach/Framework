@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/pixel-alphabet",
-    "version": "0.3.2",
+    "version": "0.4.0",
     "description": "Pixels alphabet",
     "main": "index.js",
     "keywords": [
