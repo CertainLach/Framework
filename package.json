@@ -1,9 +1,6 @@
 {
   "scripts": {
-    "cp:md": "exitzero bash -c \"pwd && cd packages && pwd && find . -name '*.MD' -exec cp -R {} ../dist/{} \\; && cd ..\"",
-    "cp:authors": "exitzero bash -c \"cd dist && find . -type d -exec cp ../AUTHORS.MD {} ; && cd ..\"",
-    "cp:json": "exitzero bash -c \"cd packages && find . -name '*.json' -exec cp -R {} ../dist/{} ; && cd ..\"",
-    "cp:all": "npm run cp:md && npm run cp:json && npm run cp:authors",
+    "cp:all": "bash -c ./mkall.sh",
     "compile:ts": "exitzero tsc --declaration",
     "compile:docs": "exitzero typedoc -t ES7 --jsx react --readme none --hideGenerator --name Meteor.Framework --ignoreCompilerErrors --theme minimal --out ./docs ./ && echo Hi there, i am F6CF > ./docs/.nojekyll",
     "compile:all": "npm run compile:ts && npm run compile:docs",
