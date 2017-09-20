@@ -6,18 +6,25 @@ import Logger from '@meteor-it/logger';
 import {basename} from 'path';
 
 export default class ArgParser {
-    specs = {};
-    commands={};
-    name;
+    specs:any = {};
+    commands=[];
+    logger:Logger;
+    fallback;
+    _usage;
+    _script;
+    _help;
 
-    constructor(name){
+    constructor(name: string|Logger){
         if(!name)
-            throw new Error('ArgParser needs a name!');
-        this.name=name;
-        this.logger=new Logger(name);
+            throw new Error('ArgParser needs a name/logger!');
+        if(name instanceof Logger){
+            this.logger=new Logger(name);
+        }else{
+            this.logger = new Logger(name);
+        }
     }
 
-    command(name) {
+    command(name?) {
         let command;
         if (name) {
             command = this.commands[name] = {
@@ -30,7 +37,6 @@ export default class ArgParser {
                 specs: {}
             };
         }
-
         // facilitates command('name').options().cb().help()
         const chain = {
             options(specs) {
@@ -90,9 +96,9 @@ export default class ArgParser {
         return this;
     }
 
-    print(str, code) {
-        str.split('\n').forEach(s=>this.logger.log(s));
-        process.exit(code || 0);
+    print(str:string, code:number=0) {
+        this.logger.log(str.trim())
+        process.exit(code);
     }
 
     parse(argv = process.argv.slice(2)) {
@@ -102,8 +108,8 @@ export default class ArgParser {
 
         let arg = Arg(argv[0]).isValue && argv[0];
         let command = arg && this.commands[arg];
-        let commandExpected = this.commands.length !== 0;
-
+        let commandExpected = Object.keys(this.commands).length !== 0;
+        
         if (commandExpected) {
             if (command) {
                 this.specs={...this.specs,...command.specs};
@@ -175,7 +181,7 @@ export default class ArgParser {
             return this.print(this.getUsage());
         }
 
-        const options = {};
+        const options:any = {};
         const args = argv.map(arg => Arg(arg))
             .concat(Arg());
 
@@ -269,8 +275,8 @@ export default class ArgParser {
     }
 
     getUsage() {
-        if (this.command && this.command._usage) {
-            return this.command._usage;
+        if (this.command && (<any>this.command)._usage) {
+            return (<any>this.command)._usage;
         }
         if (this._usage) {
             return this._usage;
@@ -407,7 +413,7 @@ export default class ArgParser {
     }
 }
 
-function Arg(str) {
+function Arg(str?) {
     const abbrRegex = /^\-(\w+?)$/;
     const fullRegex = /^\-\-(no\-)?(.+?)(?:=(.+))?$/;
     const valRegex = /^[^\-].*/;

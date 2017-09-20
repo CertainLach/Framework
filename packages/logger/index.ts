@@ -2,7 +2,7 @@ import './colors';
 
 let cluster=null;
 /*global __NODE__*/
-if(__NODE__){
+if(typeof __NODE__!=='undefined'){
 	cluster=require('cluster'); //cluster
 }else{
 	cluster={

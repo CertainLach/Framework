@@ -1,21 +1,29 @@
 {
     "compilerOptions": {
         "emitDecoratorMetadata": true,
-        "module": "umd",
-        "target": "es5",
+        "module": "commonjs",
+        "target": "es2015",
         "outDir": "dist",
         "rootDir": "packages",
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
-        "allowJs": true,
         "lib": [
+            "dom",
             "es5",
             "es6",
             "es2015",
             "es7",
             "es2016",
             "es2017"
-        ]
+        ],
+        "declaration":true,
+        "removeComments": true,
+        "pretty": true,
+        "jsx": "react",
+        "noEmitHelpers": false,
+        "importHelpers": false,
+        "alwaysStrict": true,
+        "moduleResolution": "node"
     }
 }

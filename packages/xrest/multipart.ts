@@ -1,7 +1,7 @@
 import {basename} from 'path';
 import {close, open, read} from '@meteor-it/fs';
 import {Readable as ReadableStream} from 'stream';
-import {createReadStream} from '@meteor-it/utils';
+import {getReadStream} from '@meteor-it/fs';
 
 export const DEFAULT_BOUNDARY = '84921024METEORITXREST74819204';
 

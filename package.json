@@ -1,19 +1,10 @@
 {
   "scripts": {
-    "cp:all": "bash -c ./mkall.sh",
-    "compile:ts": "exitzero tsc --declaration",
-    "compile:docs": "exitzero typedoc -t ES7 --jsx react --readme none --hideGenerator --name Meteor.Framework --ignoreCompilerErrors --theme minimal --out ./docs ./ && echo Hi there, i am F6CF > ./docs/.nojekyll",
-    "compile:all": "npm run compile:ts && npm run compile:docs",
-    "clean:code": "rm -rf ./dist&&mkdir dist",
-    "clean:docs": "rm -rf ./docs",
-    "clean:all": "npm run clean:code && npm run clean:docs",
-    "publish:lerna": "lerna publish",
-    "publish:git": "git add . && git commit && git push -u origin master",
-    "publish:all": "npm run publish:lerna && npm run publish:git",
-    "sdelay_zaebis": "npm run clean:all && npm run compile:all && npm run cp:all && npm run publish:all"
+    "all": "bash -c ./mkall.sh"
   },
   "devDependencies": {
     "exitzero": "^1.0.1",
-    "lerna": "^2.1.2"
+    "lerna": "^2.1.2",
+    "oao": "^0.10.0"
   }
 }

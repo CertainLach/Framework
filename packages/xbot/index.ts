@@ -105,7 +105,7 @@ export default class XBot extends EventEmitter {
         }
         return found;
     }
-    onWaitNext(){
+    onWaitNext(...args:any[]){
         this.logger.warn(`onWaitNext should be implemented in extender class!`);
     }
 }
@@ -165,7 +165,21 @@ export class Location {
     }
 }
 
-class BaseFile {
+export interface Attachment {
+    type: string;
+}
+
+export class MessengerSpecific implements Attachment{
+    type: string;
+    data: any;
+    constructor(type:string,data:any){
+        this.type=type; 
+        this.data=data;  
+    }
+}
+
+export class BaseFile implements Attachment{
+    type = 'file';
     stream: Readable;
     size: number;
     name: string;
@@ -266,7 +280,7 @@ export class ForwardedMessage {
     }
 }
 
-class Conversation {
+export class Conversation {
     sourceApi:Api;
     api:any;
     targetId:any;
@@ -448,7 +462,7 @@ export class Chat extends Conversation {
     }
 }
 
-interface IMessageEventConstructionData {
+export interface IMessageEventConstructionData {
     api: Api;
     attachment: File|Audio|Image;
     text: string;
@@ -488,7 +502,7 @@ export class MessageEvent extends Conversation {
         this.user.xbot=xbot;
     }
 }
-interface IJoinEventConstructionData {
+export interface IJoinEventConstructionData {
     user: User;
     chat: Chat;
     initiator?: User;
@@ -517,7 +531,7 @@ export class JoinEvent {
             this.initiator.xbot=xbot;
     }
 }
-interface IActionEventConstructionData{
+export interface IActionEventConstructionData{
     user: User;
     action: string;
     chat?: Chat;
@@ -548,7 +562,7 @@ export class ActionEvent {
         this.user.xbot=xbot;
     }
 }
-interface ILeaveEventConstructionData {
+export interface ILeaveEventConstructionData {
     user:User;
     chat:Chat;
     initiator?:User;
@@ -574,7 +588,7 @@ export class LeaveEvent {
         this.user.xbot=xbot;
     }
 }
-interface ITitleChangeEventConstructionData{
+export interface ITitleChangeEventConstructionData{
     oldTitle: string;
     newTitle: string;
     initiator: User;
@@ -603,7 +617,7 @@ export class TitleChangeEvent {
         this.initiator.xbot=xbot;
     }
 }
-interface IPhotoChangeEventConstructionData{
+export interface IPhotoChangeEventConstructionData{
     newPhotoUrl:string;
     initiator:User;
     chat:Chat;

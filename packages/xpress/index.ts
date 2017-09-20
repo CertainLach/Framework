@@ -1,5 +1,6 @@
 import {createServer as createHttpsServer} from 'https';
 import {METHODS,createServer as createHttpServer} from 'http';
+import {createSecureServer as createHttps2Server} from 'http2';
 import {parse as parseUrl} from 'url';
 import {parse as parseQuerystring} from 'querystring';
 import AJSON from '@meteor-it/ajson';
@@ -14,8 +15,6 @@ const POSSIBLE_EVENTS=[...METHODS,'ALL','WS'];
 const MULTI_EVENTS={
     'ALL':[...METHODS.filter(e=>e!='OPTIONS'),'WS']
 };
-
-// TODO: Http2 
 
 let xpressLogger=new Logger('xpress');
 
@@ -240,10 +239,29 @@ export default class XPress extends Router{
                 // Allow only HttpError to be thrown
                 if(!(err instanceof HttpError))
                     err=new HttpError(404,'Page not found: '+encodeHtmlSpecials(req[TEMP_URL]));
-                res.end(developerErrorPageHandler(err.code,err.message,process.env.ENV==='development'?err.stack:undefined));
+                res.end(developerErrorPageHandler(err.code,err.message,err.stack));
             }, req.originalUrl);
         }catch(e){
-            res.end(developerErrorPageHandler(e.code,e.message,process.env.ENV==='development'?e.stack:undefined));
+            res.end(developerErrorPageHandler(e.code,e.message,e.stack));
+        }
+    }
+    http2Handler(req,res){
+        // HTTPS2 request handler
+        // Populate request with data
+        this.populateRequest(req);
+        this.populateResponse(res);
+        // Execute Router handler, the first in the handlers chain
+        try{
+            this.handle(req,res,err=>{
+                // Next here = all routes ends, so thats = 404
+                this.logger.warn('404 Page not found at '+req[TEMP_URL]);
+                // Allow only HttpError to be thrown
+                if(!(err instanceof HttpError))
+                    err=new HttpError(404,'Page not found: '+encodeHtmlSpecials(req[TEMP_URL]));
+                res.end(developerErrorPageHandler(err.code,err.message,err.stack));
+            }, req.originalUrl);
+        }catch(e){
+            res.end(developerErrorPageHandler(e.code,e.message,e.stack));
         }
     }
     listenListeners=[];
@@ -263,6 +281,9 @@ export default class XPress extends Router{
             });
         });
     }
+    listenHttp2(){
+        throw new Error('browsers has no support for insecure http2, so listenHttp2() is deprecated');
+    }
     listenHttps(host='0.0.0.0',port,certs,silent=false){
         let httpsServer=createHttpsServer(certs,this.httpHandler.bind(this));
         this.logger.log('Before listening, executing listeners (to add support providers)...');
@@ -272,6 +293,19 @@ export default class XPress extends Router{
             httpsServer.listen(port,host,()=>{
                 if(!silent)
                     this.logger.log('Listening (https) on %s:%d...',host,port);
+                res();
+            });
+        });
+    }
+    listenHttps2(host='0.0.0.0',port,certs,silent=false){
+        let https2Server= createHttps2Server({...certs, allowHTTP1: true},this.http2Handler.bind(this));
+        this.logger.log('Before listening, executing listeners (to add support providers)...');
+        this.listenListeners.forEach(listener=>{listener(https2Server,this)});
+        this.logger.log('Done adding %d support providers, listening...',this.listenListeners.length);
+        return new Promise((res,rej)=>{
+            https2Server.listen(port,host,()=>{
+                if(!silent)
+                    this.logger.log('Listening (https2) on %s:%d...',host,port);
                 res();
             });
         });

@@ -1,12 +1,13 @@
 {
     "name": "@meteor-it/terminal",
-    "version": "0.4.0",
-    "description": "Stdout utils",
+    "version": "0.5.0",
+    "description": "Provides utility functions for ANSI terminals",
     "main": "index.js",
     "keywords": [
         "meteor-it",
         "tty",
-        "stdout"
+        "stdout",
+        "ansi"
     ],
     "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT"

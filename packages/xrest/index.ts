@@ -376,7 +376,7 @@ class Request extends EventEmitter {
 
 const logger = new Logger('xrest');
 
-interface IXResponse extends IncomingMessage {
+export interface IXResponse extends IncomingMessage {
     body: any;
     raw: Buffer;
     headers: any;
@@ -405,8 +405,15 @@ export function emit(eventString: string, options: any = {}): Promise<IXResponse
     const request = new Request(path, options);
     return new Promise((res,rej)=>{
         request.run();
-        request.on('timeout',(ms)=>{
-            rej(new Error('Timeout: '+ms));
+        request.on('timeout',async (ms)=>{
+            logger.warn('Timeout, repeat in 15 s');
+            await new Promise(res=>setTimeout(res,150000));
+            try{
+                let data=await emit(eventString,options);
+                res(data);
+            }catch(e){
+                rej(e);
+            }
         });
         request.on('complete',(result,response)=>{
             if(result instanceof Error) {

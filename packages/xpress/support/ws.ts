@@ -3,7 +3,7 @@ import {
 }
 from 'uws';
 
-export function addSupport(nativeServer, xpress) {
+export default function addSupport(nativeServer, xpress) {
     // Patch xpress to return Websocket support!
     const ws = new Server({
         server: nativeServer

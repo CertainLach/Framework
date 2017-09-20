@@ -1,12 +1,13 @@
 # XPress
-## Warning! WebSocket, PotatoSocket and PeerJS support is moved to `xpress-support-*` packages!
+
+Websockets and others are moved to `@meteor-it/xpress/support/*`
 To use them do: 
 ```js
 import XPress from '@meteor-it/xpress';
-import {addSupport as addWSSupport} from 'xpress-support-ws';
+import addWSSupport from '@meteor-it/xpress/support/ws';
 
 const server=new XPress('name');
-addWSSupport(server);
+server.onListen(addWSSupport);
 //... use as before!
 ```
 ## Usage example:
@@ -48,3 +49,5 @@ server.get('/hello',async(req,res,next)=>{
     res.status(201).send('123');
 });
 ```
+
+## Now with HTTP2 support!

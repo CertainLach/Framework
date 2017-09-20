@@ -217,7 +217,7 @@ export function readStream(stream): Promise<Buffer> {
     });
 }
 
-interface IMultiStreamOptions {
+export interface IMultiStreamOptions {
     highWaterMark?: number;
     encoding?: string;
 }

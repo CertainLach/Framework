@@ -13,6 +13,7 @@ let buffering=false;
  */
 export function startBuffering (){
     buffering=true;
+    buffer=''
 }
 
 /**
@@ -21,6 +22,7 @@ export function startBuffering (){
 export function flushBuffer (){
     buffering=false;
     writeStdout(buffer);
+    buffer=''
 }
 
 /**
@@ -35,7 +37,7 @@ export function writeStdout (string:string) {
 	if (!useStdoutFallback) {
 		try {
 			writeSync(1, string);
-			fsyncSync(1);
+			try{fsyncSync(1);}catch(e){}
 		} catch (e) {
 			useStdoutFallback = true;
 			writeStdout(string);

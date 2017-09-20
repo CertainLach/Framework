@@ -10,7 +10,6 @@
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/emoji": "latest",
     "@meteor-it/platform": "latest",
     "@meteor-it/reflection": "latest",
     "@meteor-it/terminal": "latest",
