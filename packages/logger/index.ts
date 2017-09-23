@@ -1,8 +1,7 @@
 import './colors';
 
 let cluster=null;
-/*global __NODE__*/
-if(typeof __NODE__!=='undefined'){
+if(process.env.__NODE__!=='undefined'){
 	cluster=require('cluster'); //cluster
 }else{
 	cluster={
@@ -45,25 +44,6 @@ const REPEATABLE_ACTIONS=[
 
 let consoleLogger;
 let loggerLogger;
-
-declare global {
-    interface Global {
-        __LOGGER:any;
-    }
-    interface Console {
-        _log(...pars:any[]):any;
-        _warn(...pars:any[]):any;
-        _err(...pars:any[]):any;
-        err(...pars:any[]):any;
-        warning(...pars:any[]):any;
-        _error(...pars:any[]):any;
-        _warning(...pars:any[]):any;
-    }
-}
-
-if((<any>global).__LOGGER)
-	throw new Error('You have more than 1 logger installed! Make sure you use only latest versions of it, and/or reinstall dependencies');
-(<any>global).__LOGGER=1;
 
 export class BasicReceiver {
 	logger;

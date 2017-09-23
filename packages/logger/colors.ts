@@ -1,13 +1,3 @@
-import emojiMap from '@meteor-it/emoji';
-
-export function emojify(string) {
-	let ret = string;
-	let matches = ret.match(/(:[^:]+:)/g) || [];
-	matches.forEach(match => {
-		ret = ret.replace(match, emojiMap[match.substr(1, match.length - 2)] || match);
-	});
-	return ret;
-}
 export function addStyle(string, style) {
 	return `{${style.replace(/[{}]/g,'')}}${string}{/${style.replace(/[{}]/g,'')}}`;
 }
@@ -18,7 +8,6 @@ export function resetStyles(string) {
 declare global {
     interface String {
         addStyle(style: string) : string
-        emojify() : string;
         resetStyles() : string;
         reset:string;
         bold: string;
@@ -50,9 +39,6 @@ declare global {
 
 String.prototype.addStyle = function(style) {
 	return addStyle(this, style);
-};
-String.prototype.emojify = function() {
-	return emojify(this);
 };
 String.prototype.resetStyles = function() {
 	return resetStyles(this);

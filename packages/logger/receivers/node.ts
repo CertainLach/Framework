@@ -82,7 +82,7 @@ function stringifyTimeEndData(nameLimit, provider, data) {
 	return ` \u001B[35m${stringifyName(nameLimit, provider.nameLimit,data.name,'1m')}\u001B[34m${stringifyIdent(nameLimit, data.identationLength)} T Finished ${data.timeName}\u001B[1m in ${data.timeTime}ms\u001B[0m\n`;
 }
 function stringifyData(nameLimit, data) {
-	let uncolored = format(data.line, ...data.params || []).emojify();
+	let uncolored = format(data.line, ...data.params || []);
 	return uncolored.replace(/{(\/?)([^}]+)}/g, (...d) => {
 		if (!ansiColors[d[2]])return d[0];
 		return '\u001B[' + ansiColors[d[2]][d[1] === '/' ? 1 : 0] + 'm';

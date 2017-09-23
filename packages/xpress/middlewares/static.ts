@@ -23,7 +23,7 @@ export default function (rootFolder, gzipped) {
             if (stats.isDirectory()) {
                 return next();
             }
-            // Can be <, but if client sends never date, then file is changed to older?
+            // Can be <, but if client sends newer date, then file is changed to older?
             if ((new Date(req.headers['if-modified-since']).getTime() - stats.mtime.getTime()) === 0) {
                 res.writeHead(304);
                 return res.end();

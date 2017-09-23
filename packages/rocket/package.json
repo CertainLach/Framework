@@ -1,14 +1,14 @@
 {
   "name": "rocket",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
+    "autobind-decorator": "latest",
+    "history": "latest",
     "inferno": "latest",
+    "inferno-helmet": "latest",
     "inferno-mobx": "latest",
     "inferno-router": "latest",
-    "inferno-helmet": "latest",
-    "autobind-decorator": "latest",
-    "mobx": "latest",
     "inferno-server": "latest",
-    "history":"latest"
+    "mobx": "latest"
   }
 }

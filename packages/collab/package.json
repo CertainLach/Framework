@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/collab",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Collaboration algo",
   "main": "index.js",
   "scripts": {},

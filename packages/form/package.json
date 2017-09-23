@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/form",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Form validation",
   "main": "index.js",
   "keywords": [
@@ -8,8 +8,7 @@
   ],
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
-  "dependencies": {},
   "optionalDependencies": {
-    "react":"latest"
+    "react": "latest"
   }
 }

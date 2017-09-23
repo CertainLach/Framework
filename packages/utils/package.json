@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/utils-common",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Random utils",
     "main": "index.js",
     "keywords": [

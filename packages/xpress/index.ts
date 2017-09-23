@@ -167,6 +167,7 @@ export default class XPress extends Router{
     }
     populateRequest(req){
         this.parseReqUrl(req);
+        req.secure=req.protocol === 'https';
     }
     populateResHeader(res){
         res.header={};
