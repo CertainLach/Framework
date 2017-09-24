@@ -245,13 +245,6 @@ export default class Logger {
 		Logger.receivers.push(receiver);
 	}
 }
-if (cluster.isMaster) {
-	cluster.on('message', (worker, msg) => {
-		if (!(msg as any).loggerAction)
-			return;
-		Logger._write((msg as any).loggerAction);
-	});
-}
 
 consoleLogger = new Logger('console');
 loggerLogger = new Logger('logger'); // Like in java :D

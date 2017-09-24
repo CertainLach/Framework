@@ -228,13 +228,6 @@ Logger.receivers = [];
 Logger.noReceiversWarned = false;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Logger;
-if (cluster.isMaster) {
-    cluster.on('message', (worker, msg) => {
-        if (!msg.loggerAction)
-            return;
-        Logger._write(msg.loggerAction);
-    });
-}
 consoleLogger = new Logger('console');
 loggerLogger = new Logger('logger');
 if (!console._patchedByLogger) {
