@@ -1,1 +1,22 @@
-{"name":"@meteor-it/socket","version":"1.3.7","description":"Multi-protocol socket.io alternative","main":"index.js","keywords":["meteor-it","protodef","protobuf","rpc"],"author":"Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)","license":"MIT","dependencies":{"@meteor-it/logger":"latest","proxy-deep":"latest"},"optionalDependencies":{"msgpack-lite":"latest","react":"latest"}}
+{
+    "name": "@meteor-it/socket",
+    "version": "1.3.8",
+    "description": "Multi-protocol socket.io alternative",
+    "main": "index.js",
+    "keywords": [
+        "meteor-it",
+        "protodef",
+        "protobuf",
+        "rpc"
+    ],
+    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "license": "MIT",
+    "dependencies": {
+        "@meteor-it/logger": "latest",
+        "proxy-deep": "latest"
+    },
+    "optionalDependencies": {
+        "msgpack-lite": "latest",
+        "react": "latest"
+    }
+}
