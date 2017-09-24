@@ -1,17 +1,5 @@
 "use strict";
 require("./colors");
-let cluster = null;
-if (process.env.__NODE__ !== 'undefined') {
-    cluster = require('cluster');
-}
-else {
-    cluster = {
-        isMaster: true,
-        isWorker: false,
-        on() { },
-        emit() { }
-    };
-}
 const DEBUG = process.env.DEBUG || '';
 var LOGGER_ACTIONS;
 (function (LOGGER_ACTIONS) {
@@ -189,42 +177,35 @@ class Logger {
         Logger._write(data);
     }
     static _write(what) {
-        if (cluster.isWorker) {
-            process.send({
-                loggerAction: what
-            });
-        }
-        else {
-            if (Logger.receivers.length === 0) {
-                if (!Logger.noReceiversWarned) {
-                    console._log('No receivers are defined for logger! See docs for info about this!');
-                    Logger.noReceiversWarned = true;
-                }
-                switch (what.type) {
-                    case LOGGER_ACTIONS.DEBUG:
-                    case LOGGER_ACTIONS.LOG:
-                        console._log(what.line, ...what.params);
-                        break;
-                    case LOGGER_ACTIONS.ERROR:
-                        console._error(what.line, ...what.params);
-                        break;
-                    case LOGGER_ACTIONS.WARNING:
-                        console._warn(what.line, ...what.params);
-                        break;
-                    default:
-                        console._log(what);
-                }
-                return;
+        if (Logger.receivers.length === 0) {
+            if (!Logger.noReceiversWarned) {
+                console._log('No receivers are defined for logger! See docs for info about this!');
+                Logger.noReceiversWarned = true;
             }
-            if (Logger.isRepeating(what.name, what.line, what.type))
-                Logger.repeatCount++;
-            else
-                Logger.resetRepeating(what.name, what.line, what.type);
-            if (REPEATABLE_ACTIONS.indexOf(what.type) === -1)
-                what.repeats = Logger.repeatCount;
-            what.repeated = what.repeats && what.repeats > 0;
-            Logger.receivers.forEach(receiver => receiver.write(what));
+            switch (what.type) {
+                case LOGGER_ACTIONS.DEBUG:
+                case LOGGER_ACTIONS.LOG:
+                    console._log(what.line, ...what.params);
+                    break;
+                case LOGGER_ACTIONS.ERROR:
+                    console._error(what.line, ...what.params);
+                    break;
+                case LOGGER_ACTIONS.WARNING:
+                    console._warn(what.line, ...what.params);
+                    break;
+                default:
+                    console._log(what);
+            }
+            return;
         }
+        if (Logger.isRepeating(what.name, what.line, what.type))
+            Logger.repeatCount++;
+        else
+            Logger.resetRepeating(what.name, what.line, what.type);
+        if (REPEATABLE_ACTIONS.indexOf(what.type) === -1)
+            what.repeats = Logger.repeatCount;
+        what.repeated = what.repeats && what.repeats > 0;
+        Logger.receivers.forEach(receiver => receiver.write(what));
     }
     static resetRepeating(provider, message, type) {
         Logger.lastProvider = provider;
@@ -256,8 +237,11 @@ if (cluster.isMaster) {
 }
 consoleLogger = new Logger('console');
 loggerLogger = new Logger('logger');
-for (let method of ['log', 'error', 'warn', 'err', 'warning']) {
-    console['_' + method] = console[method];
-    console[method] = (...args) => consoleLogger[method](...args);
+if (!console._patchedByLogger) {
+    for (let method of ['log', 'error', 'warn', 'err', 'warning']) {
+        console['_' + method] = console[method];
+        console[method] = (...args) => consoleLogger[method](...args);
+    }
+    console._patchedByLogger = true;
 }
 //# sourceMappingURL=index.js.map
