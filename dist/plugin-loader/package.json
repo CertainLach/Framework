@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/plugin-loader",
-  "version": "1.2.2",
+  "version": "1.2.1",
   "description": "Plugin loader for all porposes",
   "main": "index.js",
   "keywords": [

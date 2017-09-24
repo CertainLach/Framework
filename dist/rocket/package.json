@@ -1,6 +1,6 @@
 {
-  "name": "rocket",
-  "version": "0.0.3",
+  "name": "@meteor-it/rocket",
+  "version": "0.0.2",
   "dependencies": {
     "autobind-decorator": "latest",
     "history": "latest",
