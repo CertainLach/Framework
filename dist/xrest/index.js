@@ -26,24 +26,12 @@ const http_1 = require("http");
 const https = require("https");
 const url_1 = require("url");
 const querystring_1 = require("querystring");
-const zlib = require("zlib");
 const iconv_1 = require("iconv");
 __export(require("./multipart"));
 const POSSIBLE_EVENTS = [...http_1.METHODS];
 const POSSIBLE_MIDDLEWARES = ['STREAM'];
 const USER_AGENT = 'Meteor-IT XRest';
-const decoders = {
-    gzip(buf) {
-        return new Promise((res, rej) => {
-            zlib.gunzip(buf, (err, result) => err ? rej(err) : res(result));
-        });
-    },
-    deflate(buf, callback) {
-        return new Promise((res, rej) => {
-            zlib.inflate(buf, (err, result) => err ? rej(err) : res(result));
-        });
-    }
-};
+const decoders = {};
 const parsers = {
     json(text, cb) {
         try {
@@ -67,7 +55,7 @@ class Request extends events_1.EventEmitter {
         }
         this.url = url_1.parse(url);
         this.options = options;
-        this.headers = __assign({ 'Accept': '*/*', 'User-Agent': USER_AGENT, 'Host': this.url.host, 'Accept-Encoding': 'gzip, deflate' }, options.headers);
+        this.headers = __assign({ 'Accept': '*/*', 'User-Agent': USER_AGENT, 'Host': this.url.host }, options.headers);
         if (!this.url.port)
             this.url.port = (this.url.protocol === 'https:') ? '443' : '80';
         if (!this.options.method)

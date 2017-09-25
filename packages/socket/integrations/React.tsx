@@ -23,6 +23,7 @@ export function connectSocket(encoder:IEncoder, socketUrl, reconnectInterval, lo
         }
 
         render() {
+
             const wrappedStyle=loadingComponent?{
                 visiblity:this.state.socketState==='open'?'visible':'hidden'
             }:{};

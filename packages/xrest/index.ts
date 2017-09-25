@@ -18,19 +18,20 @@ const POSSIBLE_MIDDLEWARES = ['STREAM'];
 
 const USER_AGENT = 'Meteor-IT XRest';
 
-// TODO: Http2 
+// TODO: Http2
+// TODO: Re-enable gzipped requests
 
 const decoders = {
-    gzip(buf) {
-        return new Promise((res,rej)=>{
-            zlib.gunzip(buf, (err,result)=>err?rej(err):res(result));
-        });
-    },
-    deflate(buf, callback) {
-        return new Promise((res,rej)=>{
-            zlib.inflate(buf, (err,result)=>err?rej(err):res(result));
-        });
-    }
+    // gzip(buf) {
+    //     return new Promise((res,rej)=>{
+    //         zlib.gunzip(buf, (err,result)=>err?rej(err):res(result));
+    //     });
+    // },
+    // deflate(buf, callback) {
+    //     return new Promise((res,rej)=>{
+    //         zlib.inflate(buf, (err,result)=>err?rej(err):res(result));
+    //     });
+    // }
 };
 const parsers = {
     json(text, cb) {
@@ -67,7 +68,7 @@ class Request extends EventEmitter {
             'Accept': '*/*',
             'User-Agent': USER_AGENT,
             'Host': this.url.host,
-            'Accept-Encoding': 'gzip, deflate',
+            //'Accept-Encoding': 'gzip, deflate',
             ...options.headers
         };
 
