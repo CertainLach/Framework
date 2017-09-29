@@ -1,0 +1,21 @@
+{
+  "name": "@meteor-it/plugin-loader",
+  "version": "1.2.2",
+  "description": "Plugin loader for all porposes",
+  "main": "index.js",
+  "keywords": [
+    "meteor-it",
+    "plugin",
+    "plugins",
+    "webpack",
+    "hmr"
+  ],
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "dependencies": {
+    "@meteor-it/fs": "latest",
+    "@meteor-it/logger": "latest",
+    "@meteor-it/utils": "latest",
+    "chokidar": "latest"
+  }
+}

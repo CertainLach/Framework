@@ -1,2 +1,0 @@
-# pixel-alphabet
-I

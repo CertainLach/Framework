@@ -1,0 +1,14 @@
+{
+  "name": "@meteor-it/rocket",
+  "version": "0.0.3",
+  "dependencies": {
+    "autobind-decorator": "latest",
+    "history": "latest",
+    "inferno": "latest",
+    "inferno-helmet": "latest",
+    "inferno-mobx": "latest",
+    "inferno-router": "latest",
+    "inferno-server": "latest",
+    "mobx": "latest"
+  }
+}
