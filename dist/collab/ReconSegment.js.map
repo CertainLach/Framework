@@ -1,1 +1,0 @@
-{"version":3,"file":"ReconSegment.js","sourceRoot":"","sources":["../../packages/collab/ReconSegment.ts"],"names":[],"mappings":";AAEA;IAUI,YAAY,MAAc,EAAE,MAAqB;QAC7C,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC,IAAI,EAAE,CAAC;IAChC,CAAC;IAED,QAAQ;QACJ,MAAM,CAAC,IAAI,IAAI,CAAC,MAAM,KAAK,IAAI,CAAC,MAAM,GAAG,CAAC;IAC9C,CAAC;CACJ;;AAlBD,+BAkBC"}

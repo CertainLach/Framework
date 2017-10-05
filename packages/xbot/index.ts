@@ -4,7 +4,7 @@ import {getReadStream,stat,isFile} from '@meteor-it/fs';
 import {emit} from '@meteor-it/xrest';
 import {readStream,createReadStream} from '@meteor-it/utils';
 import {Readable} from 'stream';
-import TimingData from './TimingData.js';
+import TimingData from './TimingData';
 
 const POSSIBLE_ACTIONS = ['writing'];
 export default class XBot extends EventEmitter {

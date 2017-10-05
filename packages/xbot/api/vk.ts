@@ -3,7 +3,7 @@ import queue from "@meteor-it/queue";
 import XRest,{emit} from "@meteor-it/xrest";
 import * as multipart from '@meteor-it/xrest/multipart';
 import {asyncEach} from '@meteor-it/utils';
-import TimingData from '../TimingData.js';
+import TimingData from '../TimingData';
 
 const OFFICIAL_SCOPES=['audio'];
 const EXECUTE_IN_SINGLE=[
