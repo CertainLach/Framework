@@ -4,7 +4,6 @@ import {createSecureServer as createHttps2Server} from 'http2';
 import {parse as parseUrl} from 'url';
 import {parse as parseQuerystring} from 'querystring';
 import AJSON from '@meteor-it/ajson';
-
 import Logger from '@meteor-it/logger';
 import {arrayKVObject, encodeHtmlSpecials} from '@meteor-it/utils';
 

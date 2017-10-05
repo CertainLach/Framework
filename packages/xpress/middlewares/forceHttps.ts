@@ -6,15 +6,14 @@ function createRedirectURL(hostname, url, securePort) {
         secureHostname = hostname + ':' + securePort; 
     }
     return 'https://' + secureHostname + url;
-};
-
+}
 
 export default function (securePort) {
     return async (req, res, next) => {
         if(req.secure) {
             next()
         } else {
-            res.redirect(createRedirectURL(req.hostname, req.url, securePort));
+            res.redirect(createRedirectURL(req.getHeader('host'), req.url, securePort));
         }
     }
 };

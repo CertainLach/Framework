@@ -2,7 +2,7 @@ import {Api,User,Chat,MessageEvent,ForwardedMessage,Gender,Location,Image,File,A
 import XRest from "@meteor-it/xrest";
 import * as multipart from '@meteor-it/xrest/multipart';
 import {readStream} from '@meteor-it/utils';
-import TelegramBot from 'node-telegram-bot-api';
+import * as TelegramBot from 'node-telegram-bot-api';
 
 export default class TGApi extends Api{
     logged=false;
