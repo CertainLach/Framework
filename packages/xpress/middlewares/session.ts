@@ -14,9 +14,9 @@ export default function (store:any, storeConfig:any={}, secret:string, sessionFi
     });
     
     return (req, res, next) => {
-        sessionParser(req, res, function(e){
+        sessionParser(req, res, e=> {
             if(e)
-                console.log(e.stack);
+                return next(e);
             next();
         });
     }
