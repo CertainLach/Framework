@@ -6,6 +6,29 @@ import {readStream,createReadStream} from '@meteor-it/utils';
 import {Readable} from 'stream';
 import TimingData from './TimingData';
 
+const UNDEFINED='<undefined>'.green;
+
+function logMessage(logger,chat,attachment,replyTo,lastName,firstName,nickName,text){
+    const inChat = chat ? (` [${chat.title.red}]`) : '';
+    const inAttachment = attachment ? (`A`.magenta) : ' ';
+    const inReply = replyTo ? (`R`.magenta) : ' ';
+    const inLastName=lastName?` ${lastName.blue}`:'';
+    const inFirstName=firstName?firstName.blue:nickName?nickName.blue:UNDEFINED;
+    const inText=text?'\n'+text:'';
+
+    logger.log(`<${inFirstName}${inLastName}${inChat}>[${inAttachment}${inReply}]${inText}`);
+}
+
+function logTitleChange(logger,chat,lastName,firstName,nickName,oldTitle,newTitle){
+    // No chat possible in discord (Look at it api)
+    const inChat = chat ? (` [${chat.title.red}]`) : '';
+    const inOldTitle=oldTitle?oldTitle.red:UNDEFINED;
+    const inNewTitle=newTitle?newTitle.green:UNDEFINED;
+    const inLastName=lastName?` ${lastName.blue}`:'';
+    const inFirstName=firstName?firstName.blue:nickName?nickName.blue:UNDEFINED;
+    logger.log(`${inOldTitle} -> ${inNewTitle} by ${inFirstName} ${inLastName}${inChat}`);
+}
+
 const POSSIBLE_ACTIONS = ['writing'];
 export default class XBot extends EventEmitter {
     logger: Logger;
@@ -29,20 +52,9 @@ export default class XBot extends EventEmitter {
     }
     onMessage(message: MessageEvent, sourceApi: Api) {
         let timing=message.timing;
-        timing.stop();
         message.sourceApi = sourceApi;
-        timing.start('Xbot extension')
         message.attachXBot(this);
-        timing.stop();
-        timing.start('Console log');
-        let inChat = message.chat ? (` [${message.chat.title.red}]`) : '';
-        let attachment = message.attachment ? (`A`.magenta) : ' ';
-        let reply = message.replyTo ? (`R`.magenta) : ' ';
-        let lastName=message.user.lastName?` ${message.user.lastName.blue}`:'';
-
-        this.logger.log(`<${message.user.firstName.blue}${lastName}${inChat}>[${attachment}${reply}]\n${message.text}`);
-        timing.stop();
-        timing.start('XBot <=> Ayzek transfer');
+        logMessage(this.logger,message.chat,message.attachment,message.replyTo,message.user.lastName,message.user.firstName,message.user.nickName,message.text);
         this.emit('message', message);
     }
     onLeave(leave: LeaveEvent, sourceApi: Api) {
@@ -79,8 +91,7 @@ export default class XBot extends EventEmitter {
     onTitle(title: TitleChangeEvent, sourceApi: Api) {
         title.sourceApi = sourceApi;
         title.attachXBot(this);
-        let lastName=title.initiator.lastName?` ${title.initiator.lastName.blue}`:'';
-        this.logger.log(title.oldTitle.red + ' -> ' + title.newTitle.green + ' by ' + title.initiator.firstName + lastName);
+        logTitleChange(this.logger,title.chat,title.user.firstName,title.user.lastName,title.user.firstName,title.user.nickName,title.oldTitle,title.newTitle)
         this.emit('title', title);
     }
     async uGetUser(uid){
@@ -173,8 +184,8 @@ export class MessengerSpecific implements Attachment{
     type: string;
     data: any;
     constructor(type:string,data:any){
-        this.type=type; 
-        this.data=data;  
+        this.type=type;
+        this.data=data;
     }
 }
 
@@ -297,65 +308,35 @@ export class Conversation {
     async sendLocation(answer, caption, location, options = {}) {
         if (!(location instanceof Location))
             throw new Error('"location" is not a instance of Location!');
-        if(this.xbot){
-            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
-            let attachment = true ? (`A`.magenta) : ' ';
-            let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]${(`\n${caption}`||'')}`);
-        }
+        logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendLocation(this.targetId, answer, caption, location, options);
     }
     async sendText(answer, text, options = {}) {
-        if(this.xbot){
-            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
-            let attachment = false ? (`A`.magenta) : ' ';
-            let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]\n${text.green}`);
-        }
+        logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,undefined,answer, undefined,undefined,this.xbot.logger.name,text);
         return await this.api.sendText(this.targetId, answer ? this.messageId : undefined, text, options);
     }
     async sendImage(answer, caption, image, options = {}) {
         if (!(image instanceof Image))
             throw new Error('"image" is not a instance of Image!');
-        if(this.xbot){
-            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
-            let attachment = true ? (`A`.magenta) : ' ';
-            let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]${(`\n${caption}`||'')}`);
-        }
+        logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendImageStream(this.targetId, answer ? this.messageId : undefined, caption, image, options);
     }
     async sendFile(answer, caption, file, options = {}) {
         if (!(file instanceof File))
             throw new Error('"file" is not a instance of File!');
-        if(this.xbot){
-            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
-            let attachment = true ? (`A`.magenta) : ' ';
-            let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]${(`\n${caption}`||'')}`);
-        }
+        logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendFileStream(this.targetId, answer ? this.messageId : undefined, caption, file, options);
     }
     async sendAudio(answer, caption, audio, options = {}) {
         if (!(audio instanceof Audio))
             throw new Error('"audio" is not a instance of Audio!');
-        if(this.xbot){
-            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
-            let attachment = true ? (`A`.magenta) : ' ';
-            let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${reply}]${(`\n${caption}`||'')}`);
-        }
+        logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendAudioStream(this.targetId, answer ? this.messageId : undefined, caption, audio, options);
     }
     async sendVoice(answer, caption, file, options = {}){
         if (!(file instanceof File))
             throw new Error('"file" is not a instance of File!');
-        if(this.xbot){
-            let inChat = (this instanceof Chat) ? (` [${this.title.red}]`) : '';
-            let attachment = true ? (`A`.magenta) : ' ';
-            let reply = answer ? (`R`.magenta) : ' ';
-            this.xbot.logger.log(`<${'Ayzek'.blue} ${'Azimov'.blue}${inChat}>[${attachment}${(`\n${reply}`||'')}]`);
-        }
+        logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendVoiceStream(this.targetId, answer ? this.messageId : undefined, caption, file, options);
     }
     async sendCustom(answer, caption, options = {}) {
