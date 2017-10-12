@@ -1,5 +1,4 @@
 import Logger from '@meteor-it/logger';
-import proxyDeep from 'proxy-deep';
 
 /**
  * Websocket wrapper with auto-reconnection
@@ -330,17 +329,9 @@ export class PotatoSocketUniversal {
          * SET = does nothing
          */
         get rpc(): IRPCFieldWithoutThis {
-            return proxyDeep({}, {
-                get: () => {
-                    // TODO: Add ability to do this
-                    throw new Error('Cannot get local rpc method!');
-                },
-                set: () => {
-                    throw new Error('Cannot set remote rpc method!');
-                }
-            })
+            throw new Error('Cannot use rpc on local!');
         }
-    }
+    };
 
     remote = {
         emit: (name: string, data: any): boolean => {
@@ -374,33 +365,39 @@ export class PotatoSocketUniversal {
          * SET = sets remote (Received from other client) rpc method handler
          */
         rpc: ()=>{
-            return proxyDeep({}, {
-                get: (target: any, path: string[], receiver, nest) => {
-                    let name = path.join('.');
-                    if (!this.encoder.hasRpcMethod(name))
-                        return nest();
-                    return (...args) => {
-                        if (args.length !== 1)
-                            throw new Error(`Wrong method call argument count: ${args.length}, methods must have only one argument passed!`);
-                        return this.callRemoteMethod(name, args[0]);
+            let path='';
+            const proxy= new Proxy({}, {
+                get(target,key:string){
+                    path+='.'+key;
+                    let callbackName=path.substr(1);
+                    if(this.encoder.hasRpcMethod(callbackName)){
+                        return (...args)=>{
+                            path='';
+                            if (args.length !== 1)
+                                throw new Error(`Wrong method call argument count: ${args.length}, methods must have only one argument passed!`);
+                            return this.callRemoteMethod(callbackName, args[0]);
+                        };
                     }
+                    return proxy;
                 },
-                set: (target: any, path: string[], value: IRPCHandlerWithThis | IRPCHandlerWithoutThis) => {
-                    let methodName = path.join('.');
-                    if (!this.encoder.hasRpcMethod(methodName))
-                        throw new Error(`Method declaration are not in pds: ${methodName}\nExisting methods: ${this.encoder.getExistingRpcMethods().join(', ')}`);
-                    if (!(value instanceof Function))
-                        throw new Error(`RPC method declaration are not a function type: ${methodName}`);
-                    console.log(this.isServer,value.length);
-                    if (this.isServer && value.length !== 2) {
-                        throw new Error(`RPC method declaration must be (socket, data)=>{...}: ${methodName}`);
-                    } else if (!this.isServer && value.length !== 1) {
-                        throw new Error(`RPC method declaration must be (data)=>{}: ${methodName}`);
+                set(target,key:string,to:IRPCHandlerWithThis | IRPCHandlerWithoutThis){
+                    path+='.'+key;
+                    let callbackName=path.substr(1);
+                    path='';
+                    if (!this.encoder.hasRpcMethod(callbackName))
+                        throw new Error(`Method declaration are not in pds: ${callbackName}\nExisting methods: ${this.encoder.getExistingRpcMethods().join(', ')}`);
+                    if (!(to instanceof Function))
+                        throw new Error(`RPC method declaration are not a function type: ${callbackName}`);
+                    if (this.isServer && to.length !== 2) {
+                        throw new Error(`RPC method declaration must be (socket, data)=>{...}: ${callbackName}`);
+                    } else if (!this.isServer && to.length !== 1) {
+                        throw new Error(`RPC method declaration must be (data)=>{}: ${callbackName}`);
                     }
-                    this.rpcMethods[methodName] = value;
+                    this.rpcMethods[callbackName] = to;
                     return true;
                 }
             });
+            return proxy;
         }
     };
 

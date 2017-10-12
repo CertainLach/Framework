@@ -1,3 +1,5 @@
+///<reference types="webpack-env" />
+
 import Logger from '@meteor-it/logger';
 import {readDir} from '@meteor-it/fs';
 import {asyncEach} from '@meteor-it/utils';
@@ -12,8 +14,8 @@ function isAllDepsResolved(plugin) {
     if (!plugin) return false;
     if (!plugin.resolved) return false;
     if (plugin.dependencies.length === 0) return true;
-    if (plugin.dependencies.length === Object.keys(plugin.resolved).length) return true;
-    return false;
+    return plugin.dependencies.length === Object.keys(plugin.resolved).length;
+
 }
 
 function validatePlugin(plugin,isHard) {

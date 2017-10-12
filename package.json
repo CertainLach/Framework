@@ -3,6 +3,7 @@
     "all": "bash -c ./mkall.sh"
   },
   "devDependencies": {
+    "@types/node": "^8.0.33",
     "exitzero": "^1.0.1",
     "lerna": "^2.1.2",
     "oao": "^0.10.0"

@@ -1,11 +1,11 @@
 var session = require("express-session");
 
-export default function (store:any, secret:string, sessionField='s') {
+export default function (store:any, storeConfig:any={}, secret:string, sessionField='s') {
     let sessionParser=session({
         secret: secret,
         name: sessionField,
         resave: true,
-        store,
+        store: new (store(session))(storeConfig),
         rolling: true,
         saveUninitialized: true,
         cookie: {
@@ -13,8 +13,10 @@ export default function (store:any, secret:string, sessionField='s') {
         }
     });
     
-    return async (req, res, next) => {
-        sessionParser(req, {}, function(){
+    return (req, res, next) => {
+        sessionParser(req, res, function(e){
+            if(e)
+                console.log(e.stack);
             next();
         });
     }
