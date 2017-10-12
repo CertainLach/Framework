@@ -14,17 +14,20 @@ export default function addSupport(nativeServer, xpress) {
         xpress.populateRequest(socket.upgradeReq);
         socket.__RAW = true;
         socket.upgradeReq.method = 'WS'; // Because upgrade req is a get
+        let url=socket.upgradeReq.url;
+        let session=socket.upgradeReq.session;
         // Socket will be transfered over handlers chain as http response
+        console.log(session);
         xpress.handle({
-            url:socket.upgradeReq.url,
-            session:socket.upgradeReq.session||{save(){}},
+            url,
+            session,
             headers:socket.upgradeReq.headers,
             method:'WS'
         },socket,err=> {
             // No handlers? Close socket. 404 as in http
             socket.close(1001);
             if(!err)
-                xpress.logger.warn('404 Socket url not found at ' + socket.upgradeReq.url);
+                xpress.logger.warn('404 Socket url not found at ' + url);
             // Handle any error here
             if (err instanceof Error)
             // We can throw there, but then error will be filled with http internals
@@ -36,5 +39,5 @@ export default function addSupport(nativeServer, xpress) {
                 xpress.logger.error(new Error(err));
         }, socket.upgradeReq.originalUrl);
     });
-    xpress.logger.log('Added WS support!');
+    xpress.logger.debug('Added WS support!');
 }

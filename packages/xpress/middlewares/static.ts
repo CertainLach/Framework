@@ -16,7 +16,7 @@ export default function (rootFolder, gzipped) {
     return async (req, res, next) => {
         let pathname = parse(req.url).pathname;
         if(gzipped)
-            pathname+='.gz'
+            pathname+='.gz';
         let filename = join(resolve(rootFolder), pathname);
         try {
             let stats = await stat(filename);
@@ -28,15 +28,18 @@ export default function (rootFolder, gzipped) {
                 res.writeHead(304);
                 return res.end();
             }
-            let type = lookup(filename);
+            let type = lookup(filename.split('.').slice(-1)[0]);
             let charset = /^text\/|^application\/(javascript|json)/.test(type) ? 'UTF-8' : false;
-            res.setHeader('Last-Modified', stats.mtime);
+            res.setHeader('Last-Modified', stats.mtime.toISOString());
+            res.setHeader('Cache-Control', 'public, max-age=31536000');
+            res.setHeader('ETag', stats.mtime.getTime().toString(36));
             res.setHeader('Content-Length', stats.size);
-            res.setHeader('Content-Type', type + (charset ? '; charset=' + charset : ''));
+            if(type)
+                res.setHeader('Content-Type', (type + (charset ? '; charset=' + charset : '')));
             getReadStream(filename).pipe(res);
         } catch (e) {
-            next(e);
+            // Any error = go next
+            next();
         }
-
     };
 }

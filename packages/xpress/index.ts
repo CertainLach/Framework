@@ -4,7 +4,6 @@ import {createSecureServer as createHttps2Server} from 'http2';
 import {parse as parseUrl} from 'url';
 import {parse as parseQuerystring} from 'querystring';
 import AJSON from '@meteor-it/ajson';
-
 import Logger from '@meteor-it/logger';
 import {arrayKVObject, encodeHtmlSpecials} from '@meteor-it/utils';
 
@@ -271,9 +270,9 @@ export default class XPress extends Router{
     }
     listenHttp(host='0.0.0.0',port,silent=false){
         let httpServer=createHttpServer(this.httpHandler.bind(this));
-        this.logger.log('Before listening, executing listeners (to add support providers)...',this.listenListeners.length);
+        this.logger.debug('Before listening, executing listeners (to add support providers)...',this.listenListeners.length);
         this.listenListeners.forEach(listener=>{listener(httpServer,this)});
-        this.logger.log('Done adding %d support providers, listening...',this.listenListeners.length);
+        this.logger.debug('Done adding %d support providers, listening...',this.listenListeners.length);
         return new Promise((res,rej)=>{
             httpServer.listen(port,host,()=>{
                 if(!silent)
@@ -287,27 +286,27 @@ export default class XPress extends Router{
     }
     listenHttps(host='0.0.0.0',port,certs,silent=false){
         let httpsServer=createHttpsServer(certs,this.httpHandler.bind(this));
-        this.logger.log('Before listening, executing listeners (to add support providers)...');
+        this.logger.debug('Before listening, executing listeners (to add support providers)...');
         this.listenListeners.forEach(listener=>{listener(httpsServer,this)});
-        this.logger.log('Done adding %d support providers, listening...',this.listenListeners.length);
+        this.logger.debug('Done adding %d support providers, listening...',this.listenListeners.length);
         return new Promise((res,rej)=>{
             httpsServer.listen(port,host,()=>{
                 if(!silent)
                     this.logger.log('Listening (https) on %s:%d...',host,port);
-                res();
+                res(httpsServer);
             });
         });
     }
     listenHttps2(host='0.0.0.0',port,certs,silent=false){
         let https2Server= createHttps2Server({...certs, allowHTTP1: true},this.http2Handler.bind(this));
-        this.logger.log('Before listening, executing listeners (to add support providers)...');
+        this.logger.debug('Before listening, executing listeners (to add support providers)...');
         this.listenListeners.forEach(listener=>{listener(https2Server,this)});
-        this.logger.log('Done adding %d support providers, listening...',this.listenListeners.length);
+        this.logger.debug('Done adding %d support providers, listening...',this.listenListeners.length);
         return new Promise((res,rej)=>{
             https2Server.listen(port,host,()=>{
                 if(!silent)
                     this.logger.log('Listening (https2) on %s:%d...',host,port);
-                res();
+                res(https2Server);
             });
         });
     }

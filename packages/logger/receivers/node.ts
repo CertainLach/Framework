@@ -1,6 +1,7 @@
 import {format} from 'util';
 import Logger,{LOGGER_ACTIONS,BasicReceiver} from '../';
-import {clearScreen, writeStdout, writeEscape, moveCursor, clearLine, save, restore, startBuffering, flushBuffer} from '@meteor-it/terminal';
+import {clearScreen, writeStdout, writeEscape,
+    moveCursor, clearLine, save, restore, startBuffering, flushBuffer} from '@meteor-it/terminal';
 import {start} from "repl";
 
 const ansiColors = {
@@ -115,11 +116,12 @@ function writeDebugData(nameLimit, provider, data) {
 
 interface IProgressItem {
 	name: string,
-	progress: number
+	progress: number,
+    time:number
 }
-const progresses={};
+const progresses:{[key:string]:IProgressItem}={};
 function progressStart(nameLimit, provider,data){
-	progresses[data.name]=<IProgressItem>{
+	progresses[data.name]={
 		name:data.name,
 		progress:0,
 		time:data.time
@@ -141,7 +143,7 @@ function renderProgress(nameLimit){
         moveCursor(i);
         clearLine();
         let percent=Math.ceil(progress.progress);
-        writeStdout(`\u001B[34m${progress.name.padStart(nameLimit)} ${(percent + '%').padStart(4, ' ')} ${'|'.repeat(Math.ceil(((<any>process.stdout).columns - 1 - 3 - 1 - 1 - nameLimit) / 100 * percent))}`);
+        writeStdout(`\u001B[34m${progress.name.padStart(nameLimit)} ${(percent + '%').padStart(4, ' ')} ${'|'.repeat(Math.ceil(((process.stdout as any).columns - 1 - 3 - 1 - 1 - nameLimit) / 100 * percent))}`);
         // writeEscape('34m');
         // writeStdout((<IProgressItem>progress).name.padStart(18,' '));
         // writeStdout(' ');
@@ -157,7 +159,7 @@ function renderProgress(nameLimit){
 }
 
 export default class NodeConsoleReceiver extends BasicReceiver {
-	nameLimit;
+	nameLimit:number;
 
 	constructor(nameLimit = 18) {
 		super();
@@ -225,15 +227,19 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 	}
 }
 
-// let terminalLogger=new Logger('terminal');
+let terminalLogger=new Logger('terminal');
 
-// process.on('uncaughtException', e => {
-// 	terminalLogger.err(e.stack);
-// });
+process.on('uncaughtException', e => {
+	terminalLogger.err('UncaughtException:');
+	terminalLogger.err(e.stack);
+	process.exit(0);
+});
 
-// process.on('unhandledRejection', e => {
-// 	terminalLogger.err(e.stack);
-// });
+process.on('unhandledRejection', e => {
+	terminalLogger.err('UnhandledRejection:');
+	terminalLogger.err(e.stack);
+	process.exit(0);
+});
 
 // process.on('warning', e => {
 // 	terminalLogger.warn(e.stack);

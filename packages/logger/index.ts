@@ -248,10 +248,21 @@ export default class Logger {
 
 consoleLogger = new Logger('console');
 loggerLogger = new Logger('logger'); // Like in java :D
-if (!(<any>console)._patchedByLogger) {
+export type logFunc=(...params)=>undefined;
+declare global {
+    interface Console {
+        _patchedByLogger:boolean;
+        _log:logFunc;
+        _error:logFunc;
+        _warn:logFunc;
+        _err:logFunc;
+        _warning:logFunc;
+    }
+}
+if (!console._patchedByLogger) {
 	for (let method of ['log', 'error', 'warn', 'err', 'warning']) {
 		console['_' + method] = console[method];
 		console[method] = (...args) => consoleLogger[method](...args);
 	}
-	(<any>console)._patchedByLogger = true;
+	console._patchedByLogger = true;
 }
