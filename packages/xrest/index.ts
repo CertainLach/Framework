@@ -226,20 +226,17 @@ class Request extends EventEmitter {
 
     static iconv(body, response) {
         let charset = response.headers['content-type'];
-        if (charset) {
-            charset = /\bcharset=(.+)(?:;|$)/i.exec(charset);
             if (charset) {
-                charset = charset[1].trim().toUpperCase();
-                if (charset !== 'UTF-8') {
-                    try {
-                        return (<any>iconv).decode(body, charset);
-                    }catch(e){
-                        return Promise.resolve(body);
-                    }
+                charset = /\bcharset=(.+)(?:;|$)/i.exec(charset);
+                if (charset) {
+                    charset = charset[1].trim().toUpperCase();
+                    if (charset !== 'UTF-8')
+                        try {
+                            return iconv.decode(body, charset);
+                        }catch(e){}
                 }
             }
-        }
-        return body;
+        return Promise.resolve(body);
     }
 
     encode(body, response, callback) {

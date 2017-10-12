@@ -3,7 +3,7 @@ import queue from "@meteor-it/queue";
 import XRest,{emit} from "@meteor-it/xrest";
 import * as multipart from '@meteor-it/xrest/multipart';
 import {asyncEach} from '@meteor-it/utils';
-import TimingData from '../TimingData.js';
+import TimingData from '../TimingData';
 
 const OFFICIAL_SCOPES=['audio'];
 const EXECUTE_IN_SINGLE=[
@@ -132,7 +132,8 @@ export default class VKApi extends Api{
         let users = users_orig.slice(0);
         let MAX_EXECUTIONS_ONE_TIME = 1000;
         this.logger.debug('Before: ' + users.length);
-        users.filter(user=>!!user);
+        users=users.filter(user=>!!user);
+        users=users.filter(user=>user>0); // TODO: Support groups
         this.logger.debug('After: ' + users.length);
         let result = [];
         while (users.length > 0) {
@@ -151,6 +152,7 @@ export default class VKApi extends Api{
             });
             this.logger.debug('Total ' + Array.from(curDep).length + ' left to load');
             if (Array.from(curDep).length != 0) {
+                this.logger.warn(`Uncached get user(s): ${Array.from(curDep).join(',')}`)
                 let res = await this.execute('users.get', {
                     user_ids: Array.from(curDep).join(','),
                     fields: "photo_id,verified,sex,bdate,city,country,home_town,has_photo,photo_50,photo_100,photo_200_orig,photo_200,photo_400_orig,photo_max,photo_max_orig,online,lists,domain,has_mobile,contacts,site,education,universities,schools,status,last_seen,followers_count,common_count,occupation,nickname,relatives,relation,personal,connections,exports,wall_comments,activities,interests,music,movies,tv,books,games,about,quotes,can_post,can_see_all_posts,can_see_audio,can_write_private_message,can_send_friend_request,is_favorite,is_hidden_from_feed,timezone,screen_name,maiden_name,crop_photo,is_friend,friend_status,career,military,blacklisted,blacklisted_by_me"
@@ -175,7 +177,7 @@ export default class VKApi extends Api{
         let key='VK:CHAT:'+chat;
         let res = this.cache.get(key);
         if (!res) {
-            this.logger.log('Uncached get chat... (%s)',chat);
+            this.logger.warn('Uncached get chat... (%s)',chat);
             res = await this.execute('messages.getChat', {
                 chat_id: +chat
             });
@@ -486,7 +488,7 @@ export default class VKApi extends Api{
     }
 
     static processText(text){
-        return text.replace(/ /g,SPACE_REPLACE);
+        return text.replace(/^ +/gm,e=>SPACE_REPLACE.repeat(e.length))//.replace(/ /g,SPACE_REPLACE);
     }
 
     //Implementing Api class methods

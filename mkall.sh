@@ -3,14 +3,18 @@ echo "Cleaning old"
 rm -rf ./docs
 mkdir docs
 echo "Compiling"
+<<<<<<< HEAD
 typedoc -t ESNext --jsx react --readme none --hideGenerator --name Meteor.Framework --ignoreCompilerErrors --theme minimal --out ./docs ./ 
+=======
+typedoc -t ES7 --jsx react --readme none --hideGenerator --name Meteor.Framework --ignoreCompilerErrors --theme minimal --out ./docs ./
+>>>>>>> 7a9144ab8ff0d9b2949e5cfd13042338cf95249d
 echo Hi there, i am F6CF > ./docs/.nojekyll
 echo "Cleaning old"
 rm -rf ./dist
 mkdir dist
 echo "Compiling"
 tsc --declaration || true
-cd packages 
+cd packages
     echo "Copy MD"
     find . -name '*.MD' -exec cp --parents {} ../dist/ \; > /dev/null
     find . -name '*.md' -exec cp --parents {} ../dist/ \; > /dev/null
