@@ -221,7 +221,7 @@ export default class XPress extends Router{
                 throw new Error('Data is already sent!');
             res.sent=true;
             res.writeHead(res.statusCode?res.statusCode:200,res.headers);
-            if(typeof body==='object')
+            if(typeof body==='object'&&!(body instanceof Buffer))
                 body=AJSON.stringify(body);
             res.end(body);
         };

@@ -67,21 +67,20 @@ export default class TGApi extends Api{
         });
     }
     async uGetUser(uid:string):Promise<User>{
-        throw new Error('WIP');
-        // if(!uid.startsWith('TGC.'))
-        //     return null;
-        // let id=uid.substr(3);
-        // if(!id)
-        //     return null;
-        // id=+id;
-        // if(isNaN(id))
-        //     return null;
-        // return await this.getUserFromApiData({
-        //     id,
-        //     username:'I',
-        //     first_name:'Hate',
-        //     last_name:'Telegram API',
-        // });
+        // throw new Error('WIP');
+        if(!uid.startsWith('TGC.'))
+            return null;
+        let id=uid.substr(3);
+        if(!id)
+            return null;
+        if(isNaN(+id))
+            return null;
+        return await this.getUserFromApiData({
+            id:+id,
+            username:'I',
+            first_name:'Hate',
+            last_name:'Telegram API',
+        });
     }
     async uGetChat(cid:string):Promise<Chat>{
         throw new Error('WIP');

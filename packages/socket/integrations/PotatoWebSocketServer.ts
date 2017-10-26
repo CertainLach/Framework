@@ -65,20 +65,20 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal {
     openHandlers: IServerOpenHandler[] = [];
     closeHandlers: IServerCloseHandler[] = [];
 
-    on(event: string, listener: IServerOpenCloseHandler) {
+    on(event: string, listener: any) {
         if (event === 'open') {
             if (listener.length !== 1)
                 throw new Error('"open" listener should receive 1 argument (socket)!');
-            this.openHandlers.push(<IServerOpenHandler>listener);
+            this.openHandlers.push(listener);
             return;
         }
         if (event === 'close') {
             if (listener.length !== 1)
                 throw new Error('"close" listener should receive 1 argument (socket)!');
-            this.closeHandlers.push(<IServerCloseHandler>listener);
+            this.closeHandlers.push(listener);
             return;
         }
-        super.on(event, <any>listener);
+        super.on(event, listener);
     }
     handler(req, websocket) {
         let id = Math.random().toString(32).substr(2);
