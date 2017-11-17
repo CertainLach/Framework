@@ -241,6 +241,7 @@ export default class State {
         }
 
         if (!this.canExecute(request)) {
+            // console.log('Cant execute');
             // Not executable yet - put it (back) in the queue.
             if (request != undefined)
                 this.queue(request);

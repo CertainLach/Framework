@@ -27,20 +27,20 @@ export default class PotatoSocketClient extends PotatoSocketUniversal {
     }
     openHandlers: IClientOpenHandler[] = [];
     closeHandlers: IClientCloseHandler[] = [];
-    on(event: 'open' | 'close' | string, handler: any) {
+    on(event: 'open'|'close'|string, handler: any) {
         if (event === 'open') {
             if (handler.length !== 0)
                 throw new Error('"open" listener should receive 0 arguments!');
-            this.openHandlers.push(<IClientOpenHandler>handler);
+            this.openHandlers.push(handler);
             return;
         }
         if (event === 'close') {
             if (handler.length !== 1)
                 throw new Error('"close" listener should receive 1 argument (status)!');
-            this.closeHandlers.push(<IClientCloseHandler>handler);
+            this.closeHandlers.push(handler);
             return;
         }
-        super.on(event, <any>handler);
+        super.on(event, handler);
     }
     sendBufferToRemote(buffer) {
         this.websocket.send(buffer);

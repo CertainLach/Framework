@@ -297,7 +297,6 @@ export class PotatoSocketUniversal {
             try {
                 if (this.eventHandlers[name]) {
                     handled = true;
-                    console.log(this.eventHandlers);
                     for (let handler of this.eventHandlers[name]) {
                         (<any>handler)(data);
                     }
@@ -310,7 +309,7 @@ export class PotatoSocketUniversal {
                 try {
                     if (this.server.eventHandlers[name]) {
                         handled = true;
-                        for (let handler of this.server.eventHandlers)
+                        for (let handler of this.server.eventHandlers[name])
                             handler(this, data);
                     }
                 } catch (e) {
@@ -366,34 +365,35 @@ export class PotatoSocketUniversal {
          */
         rpc: ()=>{
             let path='';
+            let self=this;
             const proxy= new Proxy({}, {
                 get(target,key:string){
                     path+='.'+key;
                     let callbackName=path.substr(1);
-                    if(this.encoder.hasRpcMethod(callbackName)){
+                    if(self.encoder.hasRpcMethod(callbackName)){
                         return (...args)=>{
                             path='';
                             if (args.length !== 1)
                                 throw new Error(`Wrong method call argument count: ${args.length}, methods must have only one argument passed!`);
-                            return this.callRemoteMethod(callbackName, args[0]);
+                            return self.callRemoteMethod(callbackName, args[0]);
                         };
                     }
                     return proxy;
                 },
-                set(target,key:string,to:IRPCHandlerWithThis | IRPCHandlerWithoutThis){
+                set(target,key:string,to:IRPCHandlerWithoutThis|IRPCHandlerWithThis){
                     path+='.'+key;
                     let callbackName=path.substr(1);
                     path='';
-                    if (!this.encoder.hasRpcMethod(callbackName))
-                        throw new Error(`Method declaration are not in pds: ${callbackName}\nExisting methods: ${this.encoder.getExistingRpcMethods().join(', ')}`);
+                    if (!self.encoder.hasRpcMethod(callbackName))
+                        throw new Error(`Method declaration are not in pds: ${callbackName}\nExisting methods: ${self.encoder.getExistingRpcMethods().join(', ')}`);
                     if (!(to instanceof Function))
                         throw new Error(`RPC method declaration are not a function type: ${callbackName}`);
-                    if (this.isServer && to.length !== 2) {
+                    if (self.isServer && to.length !== 2) {
                         throw new Error(`RPC method declaration must be (socket, data)=>{...}: ${callbackName}`);
-                    } else if (!this.isServer && to.length !== 1) {
+                    } else if (!self.isServer && to.length !== 1) {
                         throw new Error(`RPC method declaration must be (data)=>{}: ${callbackName}`);
                     }
-                    this.rpcMethods[callbackName] = to;
+                    self.rpcMethods[callbackName] = to;
                     return true;
                 }
             });
@@ -607,7 +607,7 @@ export class PotatoSocketUniversal {
      * @param buffer
      */
     sendBufferToRemote(buffer) {
-        console.error(buffer);
+        this.logger.error(buffer);
         throw new Error('PotatoSocketUniversal have no sendBufferToRemote method declaration!\nUse class extending it!');
     }
 

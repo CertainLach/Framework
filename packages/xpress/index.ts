@@ -176,6 +176,7 @@ export default class XPress extends Router{
         res.set=(key,value)=>{
             this.logger.debug('Set header %s to %s',key,value);
             res.__setHeader(key,value);
+            return res;
         };
         res.get=(key)=>{
             this.logger.debug('Get value of header %s',key);
@@ -201,11 +202,12 @@ export default class XPress extends Router{
             return res.__writeHead(...args);
         };
         res.end=(...args)=>{
-            //res.writeHead(res.statusCode?res.statusCode:200,res.header);
+            res.writeHead(res.statusCode?res.statusCode:200,res.header);
             return res.__end(...args);
         };
         res.status=(code)=>{
             res.statusCode=code;
+            return res;
         };
         res.redirect=(url)=>{
             if(res.sent)
@@ -221,7 +223,7 @@ export default class XPress extends Router{
                 throw new Error('Data is already sent!');
             res.sent=true;
             res.writeHead(res.statusCode?res.statusCode:200,res.headers);
-            if(typeof body==='object')
+            if(typeof body==='object'&&!(body instanceof Buffer))
                 body=AJSON.stringify(body);
             res.end(body);
         };
@@ -235,14 +237,14 @@ export default class XPress extends Router{
         try{
             this.handle(req,res,err=>{
                 // Next here = all routes ends, so thats = 404
-                this.logger.warn('404 Page not found at '+req[TEMP_URL]);
+                this.logger.warn('404 Page not found at '+req.originalUrl);
                 // Allow only HttpError to be thrown
                 if(!(err instanceof HttpError))
-                    err=new HttpError(404,'Page not found: '+encodeHtmlSpecials(req[TEMP_URL]));
-                res.end(developerErrorPageHandler(err.code,err.message,err.stack));
+                    err=new HttpError(404,'Page not found: '+req.originalUrl);
+                res.status(err.code||500).send(developerErrorPageHandler(err.code,err.message,err.stack));
             }, req.originalUrl);
         }catch(e){
-            res.end(developerErrorPageHandler(e.code,e.message,e.stack));
+            res.status(500).send(developerErrorPageHandler(e.code,e.message,e.stack));
         }
     }
     http2Handler(req,res){
@@ -377,7 +379,7 @@ export function developerErrorPageHandler (title, desc, stack = undefined) {
         desc=encodeHtmlSpecials(desc).replace(/\n/g, '<br>');
     if(stack)
         stack=encodeHtmlSpecials(stack).replace(/\n/g, '<br>');
-	return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack?`<code>${stack}</code>`:''}<hr><h2>uFramework xPress</h2></body></html>`;
+	return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack?`<code style="white-space:pre;">${stack}</code>`:''}<hr><h2>uFramework xPress</h2></body></html>`;
 }
 
 export function userErrorPageHandler (hello, whatHappened, sorry, post) {
