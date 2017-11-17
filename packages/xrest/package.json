@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/xrest",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Powerfull REST client library",
   "main": "index.js",
   "keywords": [
@@ -13,6 +13,6 @@
   "dependencies": {
     "@meteor-it/fs": "latest",
     "@meteor-it/logger": "latest",
-    "iconv": "latest"
+    "iconv-lite": "latest"
   }
 }

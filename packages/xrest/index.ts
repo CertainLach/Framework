@@ -9,7 +9,7 @@ import * as https from 'https';
 import {parse as parseUrl, resolve} from 'url';
 import {stringify} from 'querystring';
 import * as zlib from 'zlib';
-import iconv from 'iconv';
+import iconv from 'iconv-lite';
 
 export * from './multipart';
 

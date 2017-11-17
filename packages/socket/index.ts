@@ -309,7 +309,7 @@ export class PotatoSocketUniversal {
                 try {
                     if (this.server.eventHandlers[name]) {
                         handled = true;
-                        for (let handler of this.server.eventHandlers)
+                        for (let handler of this.server.eventHandlers[name])
                             handler(this, data);
                     }
                 } catch (e) {

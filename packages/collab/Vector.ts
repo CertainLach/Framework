@@ -18,8 +18,8 @@ export default class Vector {
      */
     constructor(value: Vector | string) {
         if (value instanceof Vector) {
-            for (const user in value) {
-                if (user.match(Vector.user_regex) && value[user] > 0)
+            for (const user in value.users) {
+                if (user.match(Vector.user_regex) && value.users[user] > 0)
                     this.users[user] = value.users[user];
             }
         } else if (typeof(value) == "string") {
@@ -40,7 +40,7 @@ export default class Vector {
     eachUser(callback: (u:number,v:number)=>boolean):boolean {
         for (const user in this.users) {
             if (user.match(Vector.user_regex)) {
-                if (callback(parseInt(user), this[user]) === false)
+                if (callback(parseInt(user), this.users[user]) === false)
                     return false;
             }
         }
@@ -73,7 +73,7 @@ export default class Vector {
         const result = new Vector(this);
 
         other.eachUser((u, v) => {
-            result[u] = result.get(u) + v;
+            result.users[u] = result.get(u) + v;
             return true;
         });
 
@@ -132,10 +132,9 @@ export default class Vector {
      * @param by Amount by which to increase the component
      */
     incr(user, by: number = 1):Vector {
+        // console.log('incr',this);
         const result = new Vector(this);
-
-        result[user] = result.get(user) + by;
-
+        result.users[user] = result.get(user) + by;
         return result;
     }
 
@@ -152,7 +151,7 @@ export default class Vector {
             const val2 = v2.get(u);
 
             if (val1 < val2)
-                result[u] = val2;
+                result.users[u] = val2;
             return true;
             //else
             //	result[u] = val1; // This is already the case since we copied v1

@@ -87,11 +87,9 @@ export default class RocketStore extends timerMixin(Object) {
         this.onAfterDehydrate();
         return ret;
     }
-    rehydrate(data:null|any){
+    rehydrate(data:any){
         if(this.isClientSide===null)
             throw new Error('Cannot rehydrate while side is not set!');
-        if(data=null)
-            data={};
         if(!this.dehydrationRequired)
             return;
         this.onBeforeRehydrate();

@@ -41,11 +41,11 @@ export default class RocketApp {
         for(let [name,initializer] of this.storeInitializers){
             let store=initializer(fullStore);
             store.setSide(isClientSide);
-            store.rehydrate(prefillStores[name]||null);
-            console.log(JSON.stringify(store.partsSearchInput));
+            if(!prefillStores[name])
+                prefillStores[name]={};
+            store.rehydrate(prefillStores[name]);
             if(isClientSide)
                 await rehydrate(store.constructor.name,store);
-            console.log(JSON.stringify(store.partsSearchInput));
             store.storeName=name;
             fullStore[name]=store;
         }
@@ -88,9 +88,13 @@ export default class RocketApp {
         stores.router=new RouterStore(history);
         stores.router.setSide(true);
         stores.router.rehydrate({});
-        (<any>window).stores=stores;
+        // (<any>window).stores=stores;
+        // console.log(stores.app.partsSearchInput);
         let rendered=this.commonRender(stores,history);
-        const app = ReactDOMClient.hydrate(rendered,to)
+        if(process.env.ENV==='development')
+            ReactDOMClient.render(rendered,to);
+        else
+            ReactDOMClient.hydrate(rendered,to)
     }
 
     async serverRender(url:string,prefillStores:{[key:string]:any}={},webpackStats?:any){
@@ -112,13 +116,17 @@ export default class RocketApp {
         let rendered=r(AsyncComponentProvider,{asyncContext},
             this.commonRender(stores,history)
         );
+
+
         // console.log(asyncContext);
         await asyncBootstrapper(rendered);
         const asyncState = serialize(asyncContext.getState());
         // console.log(asyncState);
 
 
-        const app = ReactDOM.renderToString(rendered)
+        let app = ReactDOM.renderToString(rendered);
+        if(process.env.ENV==='development')
+            app='';
         let dehydrated=this.deinitializeStores(stores);
         let html=this.createServerHtml(app,dehydrated,asyncState);
         useStaticRendering(false);
