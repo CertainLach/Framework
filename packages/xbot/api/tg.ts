@@ -35,6 +35,21 @@ export default class TGApi extends Api{
     async startReceiver(){
         this.bot.on('message', async (msg) => {
             const chatId = msg.chat.id;
+            let replyTo=undefined;
+            if(msg.reply_to_message){
+                let attachment=null;
+                let attachmentType;
+                for(let type of 'document,photo,location'.split(','))
+                    if(msg.reply_to_message[type]){
+                        attachment=msg.reply_to_message[type];
+                        attachmentType=type;
+                    }
+                replyTo=new ForwardedMessage({
+                    text:msg.reply_to_message.caption||msg.reply_to_message.text||'',
+                    sender: await this.getUserFromApiData(msg.reply_to_message.from),
+                    attachment: await this.parseAttachment(attachmentType,attachment)
+                });
+            }
             let attachment=null;
             let attachmentType;
             for(let type of 'document,photo,location'.split(','))
@@ -57,7 +72,7 @@ export default class TGApi extends Api{
                 text: text,
                 user,
                 chat: isChat ? chat : undefined,
-                replyTo: undefined,
+                replyTo,
                 messageId: msg.message_id
             });
             message.user.messageId = msg.message_id;
@@ -67,33 +82,34 @@ export default class TGApi extends Api{
         });
     }
     async uGetUser(uid:string):Promise<User>{
-        throw new Error('WIP');
-        // if(!uid.startsWith('TGC.'))
-        //     return null;
-        // let id=uid.substr(3);
-        // if(!id)
-        //     return null;
-        // id=+id;
-        // if(isNaN(id))
-        //     return null;
-        // return await this.getUserFromApiData({
-        //     id,
-        //     username:'I',
-        //     first_name:'Hate',
-        //     last_name:'Telegram API',
-        // });
+        if(!uid.startsWith('TG.'))
+            return null;
+        let id=uid.substr(3);
+        if(!id)
+            return null;
+        id=+id;
+        if(isNaN(id))
+            return null;
+        return await this.getUserFromApiData({
+            id,
+            username:'I',
+            first_name:'Hate',
+            last_name:'Telegram API',
+        });
     }
     async uGetChat(cid:string):Promise<Chat>{
-        throw new Error('WIP');
-        // if(!cid.startsWith('TGC.'))
-        //     return null;
-        // let id=cid.substr(4);
-        // if(!id)
-        //     return null;
-        // id=+id;
-        // if(isNaN(id))
-        //     return null;
-        // return await this.getChat(id);
+        if(!cid.startsWith('TGC.'))
+            return null;
+        let id=cid.substr(4);
+        if(!id)
+            return null;
+        id=+id;
+        if(isNaN(id))
+            return null;
+        return await this.getChatFromApiData({
+            id,
+            title:'I hate telegram'
+        });
     }
     photoCache=new Map();
     async getUserFromApiData(data){

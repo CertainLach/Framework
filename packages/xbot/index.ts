@@ -103,6 +103,8 @@ export default class XBot extends EventEmitter {
                     break;
             }catch(e){}
         }
+        if(found!==null)
+            found.xbot=this;
         return found;
     }
     async uGetChat(cid){
@@ -114,6 +116,8 @@ export default class XBot extends EventEmitter {
                     break;
             }catch(e){}
         }
+        if(found!==null)
+            found.xbot=this;
         return found;
     }
     onWaitNext(...args:any[]){

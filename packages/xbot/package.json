@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/xbot",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Bot engine",
   "main": "index.js",
   "keywords": [
