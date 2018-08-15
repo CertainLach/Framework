@@ -12,7 +12,7 @@ export default class DSApi extends Api {
     constructor() {
         super('DSAPI');
     }
-    async auth(token) {
+    async auth(token:string) {
         const client = new Client();
         client.login(token);
         this.client = client;
@@ -20,11 +20,11 @@ export default class DSApi extends Api {
         this.logged = true;
         this.startReceiver();
     }
-    async parseAttachment(type, obj) {
+    async parseAttachment(type:any, obj:any) {
 
     }
     async startReceiver() {
-        this.client.on('message', message => {
+        this.client.on('message', (message:any) => {
             let user = this.getUserFromApiData(message.author)
             let chat = message.channel;
             if (message.guild)
@@ -36,7 +36,8 @@ export default class DSApi extends Api {
                 user: user,
                 chat: isChat ? chat : undefined,
                 replyTo: undefined,
-                messageId: message.id
+                messageId: message.id,
+                attachment: undefined
             });
             msgEvent.user.messageId = message.id;
             if (msgEvent.chat)
@@ -74,7 +75,7 @@ export default class DSApi extends Api {
         // return await this.getChat(id);
     }
     photoCache = new Map();
-    getUserFromApiData(data) {
+    getUserFromApiData(data:any) {
         return new User({
             messageId: null,
             api: this,
@@ -88,31 +89,31 @@ export default class DSApi extends Api {
             profileUrl: 'netu ego, hы'
         });
     }
-    getChatFromApiData(data, guild) {
+    getChatFromApiData(data:any, guild:any) {
         return new Chat({
             messageId: null,
             api: this,
             cid: 'DSC.' + data.id,
             targetId: data,
             title: data.topic || data.name,
-            users: guild.members.array().map(member => this.getUserFromApiData(member)),
+            users: guild.members.array().map((member:any) => this.getUserFromApiData(member)),
             admins: [],
             photoUrl: guild.iconURL
         });
     }
-    async sendLocation(targetId, answer, caption, location, options) {
+    async sendLocation(targetId:any, answer:any, caption:any, location:any, options:any) {
 
     }
 
 
-    * limitTextString(text) {
+    * limitTextString(text:string):IterableIterator<string> {
         let strings = text.split(' \n');
         let currentString = '';
         while (true) {
             if (strings.length === 0) {
                 if (currentString !== '')
                     yield currentString;
-                return;
+                return null;
             }
             if (currentString.length + strings[0].length >= 2000) {
                 yield currentString;
@@ -121,25 +122,27 @@ export default class DSApi extends Api {
             currentString += strings.shift() + '\n';
         }
     }
-    async sendText(targetId, answer, text, options) {
+    async sendText(targetId:any, answer:any, text:any, options:any) {
         for (let textPart of this.limitTextString(SPACE_REPLACE + '\n' + text)) {
-            await targetId.send(textPart);
-            await sleep(500);
+            if(textPart!==null){
+                await targetId.send(textPart);
+                await sleep(500);
+            }
         }
     }
 
-    async sendImageStream(targetId, answer, caption, image, options) {
+    async sendImageStream(targetId:any, answer:any, caption:any, image:any, options:any) {
         // image.stream.path='aaaaa.jpeg';
         // await this.bot.sendPhoto(targetId, image.stream, {
         //     reply_to_message_id:answer,
         //     caption
         // });
     }
-    async sendFileStream(targetId, answer, caption, file, options) {
+    async sendFileStream(targetId:any, answer:any, caption:any, file:any, options:any) {
 
     }
-    async sendAudioStream(targetId, answer, caption, audio, options) {
+    async sendAudioStream(targetId:any, answer:any, caption:any, audio:any, options:any) {
 
     }
-    async sendCustom(targetId, answer, options) {}
+    async sendCustom(targetId:any, answer:any, options:any) {}
 }

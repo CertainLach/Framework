@@ -1,5 +1,5 @@
-import EMOJIS from './data/emojis.json';
-import GROUPS from './data/groups.json';
+import * as EMOJIS from './data/emojis.json';
+import * as GROUPS from './data/groups.json';
 
 export const JOINER=String.fromCodePoint(0x200D);
 export const PRESENTATION=String.fromCharCode(0xFE0F);
@@ -21,22 +21,4 @@ export function isEmoji(str:string):boolean{
 }
 export function getEmojis(str:string):string[]{
 	return str.match(EMOJI_REGEX_GLOBAL);
-}
-
-interface IEmojiPart{
-	skin: number|null,
-	name: string,
-	modifier: string|null,
-	isPlain: boolean
-}
-function analyzePart(str:string):IEmojiPart{
-	return {
-		
-	}
-}
-export function analyze(str:string):IEmojiPart[]{
-	if(!isEmoji(str))
-		return null;
-	let parts=str.split(JOINER);
-	return parts.map(analyzePart);
 }

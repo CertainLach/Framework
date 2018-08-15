@@ -20,7 +20,7 @@ export default class PDSEncoder implements IEncoder {
         this.randomToRpcId[random]=id;
         this.rpcIdToRandom[id]=random;
     }
-    resetRandomToRpc(random){
+    resetRandomToRpc(random:number){
         let id=this.randomToRpcId[random];
         delete this.randomToRpcId[random];
         delete this.rpcIdToRandom[id];
@@ -160,6 +160,9 @@ export default class PDSEncoder implements IEncoder {
                     name,
                     data
                 };
+            default: 
+                // Should not be called, as wrong packet type is thrown in parsing stage
+                throw new Error('Unknown packet type!');
         }
     }
 

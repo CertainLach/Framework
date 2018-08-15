@@ -5,43 +5,28 @@ import {parse} from 'url';
 import middleRun from './middleRun';
 import wrapMiddleware from './wrapMiddleware';
 
-
-function lazyLoad (step) {
-    if (this.loaded) return this.fn(step);
-    return Promise.resolve(this.fn(step)).then((fn)=>{
-        if (fn instanceof URouter) fn = middleRun((fn as URouter).middleware);
-        this.loaded = true;
-        return (this.fn = fn)(step)
-    })
+interface IContextNextMethodAttachment {
+    next():void;
 }
 
-export default class URouter extends EventEmitter {
-    private options:any;
+export default class URouter<C> extends EventEmitter {
     middleware:any[]=[];
-    private routing = null;
+    private routing:any = null;
     private context:any = {};
-    constructor(options:any = {}){
+    constructor(){
         super();
-        this.options = options;
     }
-    use(path:string|null,...callbacks:(Function|URouter)[]){
+    use(path:string|null,...callbacks:((ctx:C&IContextNextMethodAttachment)=>void|URouter<C&IContextNextMethodAttachment>)[]){
         const middleware = this.middleware;
         for (let callback of callbacks) {
             if(callback instanceof URouter)
-                callback=middleRun(callback.middleware);
-            middleware.push(wrapMiddleware(path,callback instanceof URouter,callback));
+                middleware.push(wrapMiddleware(path,true,middleRun(callback.middleware)));
+            else
+                middleware.push(wrapMiddleware(path,false,callback));
         }
         return this;
     }
-    lazy(path,...callbacks:Function[]){
-        const middleware = this.middleware;
-        for (let callback of callbacks) {
-            callback = lazyLoad.bind({ callback, loaded: false });
-            middleware.push(wrapMiddleware(path, true, callback));
-        }
-        return this;
-    }
-    route(path,state=null){
+    route(path:string,state:C=null){
         const self = this;
         const location = parse(path, true);
         const args = {
@@ -61,17 +46,5 @@ export default class URouter extends EventEmitter {
         this.emit('beforeroute', args, promise);
         this.emit('route', args, promise);
         return promise;
-    }
-    handle(){
-        return (req,res,next)=>{
-            this.once('beforeroute', (args, routing) => {
-                args.request = req;
-                args.response = res;
-                args.params = req.params;
-                args.next = () => { next() };
-                routing.catch(next)
-            });
-            this.route(req.url);
-        }
     }
 }

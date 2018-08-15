@@ -1,8 +1,7 @@
 import {LOGGER_ACTIONS,BasicReceiver} from '../';
 import {fixLength} from '@meteor-it/utils';
-import * as nodeUtil from 'util';
 
-const colors = {
+const colors:{[key:string]:string[]} = {
 	reset: ['',''],
 
 	bold: ['text-decoration:bold','text-decoration:none'],
@@ -34,38 +33,34 @@ const colors = {
 };
 
 
-///console.clear();
-function extractColors(line) {
-	let r=[];
-	let nl=line.replace(/{(\/?)([^}]+)}/g, (...d) => {
-		if (!colors[d[2]])return d[0];
-		r.push(colors[d[2]][d[1] === '/' ? 1 : 0]);
-		return '%c';
-	});
-	return [r,nl];
-}
+// function extractColors(line:string) {
+// 	let r:string[]=[];
+// 	let nl=line.replace(/{(\/?)([^}]+)}/g, (...d:string[]) => {
+// 		if (!colors[d[2]])return d[0];
+// 		r.push(colors[d[2]][d[1] === '/' ? 1 : 0]);
+// 		return '%c';
+// 	});
+// 	return [r,nl];
+// }
 
 
 export default class BrowserConsoleReceiver extends BasicReceiver {
-	nameLimit;
+	nameLimit:number;
 
 	constructor(nameLimit = 8) {
 		super();
 		this.nameLimit = nameLimit;
 	}
 
-	write(data) {
+	write(data:any) {
 		let line=[data.line,...data.params];
-		//line=colors[1];
-		//colors=colors[0];
-		let name=fixLength(data.name, this.nameLimit, true, ' ');
-		//line='%c'+name+'%c '+line;
+        data.name=fixLength(data.name, this.nameLimit, true, ' ');
 		switch (data.type) {
 			case LOGGER_ACTIONS.IDENT:
 				console.group('%cIDENT',data.name);
 				break;
 			case LOGGER_ACTIONS.DEENT:
-				console.groupEnd()
+				console.groupEnd();
 				break;
 			case LOGGER_ACTIONS.LOG:
 				console._log(...line);

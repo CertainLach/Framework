@@ -44,6 +44,7 @@ export default class Insert implements Operation {
             return other;
         if (this.position > other.position)
             return this;
+        throw new Error('2 operations have same position');
     }
 
     /**
@@ -97,6 +98,7 @@ export default class Insert implements Operation {
             if (pos1 >= pos2 && pos1 < pos2 + len2)
                 return new Insert(pos2, str1);
         }
+        throw new Error('Transforming Insert against unknown request!');
     }
 
     /**

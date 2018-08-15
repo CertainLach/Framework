@@ -2,7 +2,7 @@ import {
     action as actionD,
     observable,
     IObservableValue
-} from 'mobx';
+} from 'inferno';
 import {
     inject as injectD,
     observer as observerD
@@ -17,17 +17,18 @@ export {
 export {
     Provider
 } from 'mobx-react';
-import {withRouter}from 'react-router';
+// import {withRouter}from 'inferno-route';
 import RocketComponent from './RocketComponent';
-export { create, persist } from 'mobx-persist'
+import {Component} from 'react';
+// export { create, persist } from 'mobx-persist'
 export const inject:(
     ...stores: string[]
 )=>(target: any)=>any=injectD as any;
 export function boxed<T>(initial:T):IObservableValue<T>{
     return observable.box(initial);
 }
-export function observer(component){
-    return withRouter(observerD(component));
+export function observer(component:RocketComponent<any>|Component<any>){
+    return withRouter(observerD(<any>component));
 }
 export const unboundAction=actionD;
 export const action=actionD.bound;

@@ -33,6 +33,8 @@ export default function (rootFolder, gzipped) {
             res.setHeader('Last-Modified', stats.mtime.toISOString());
             res.setHeader('Cache-Control', 'public, max-age=31536000');
             res.setHeader('ETag', stats.mtime.getTime().toString(36));
+            if(gzipped)
+                res.setHeader('Content-Encoding','gzip');
             res.setHeader('Content-Length', stats.size);
             if(type)
                 res.setHeader('Content-Type', (type + (charset ? '; charset=' + charset : '')));

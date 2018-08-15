@@ -9,15 +9,13 @@ export default class MsgPackEncoder implements IEncoder {
     }
 
     setRandomToRpc(random:number,rpc:string){}
-    resetRandomToRpc(random){}
+    resetRandomToRpc(random:number){}
 
     getExistingRpcMethods(): string[] {
-        return ['any 2 part'];
+        return ['any'];
     }
     hasRpcMethod(name: string): boolean {
-        if(name.split('.').length===2)
-            return true;
-        return false;
+        return true;
     }
 
     getExistingEvents(): string[] {
@@ -58,7 +56,7 @@ export default class MsgPackEncoder implements IEncoder {
     }
 
     decodeData(buffer:Buffer):IEncoderPacket {
-        let data=msgpack.decode(buffer);
+        let data:{t:PacketType,n:string,d:Buffer|string,r:number}=msgpack.decode(buffer);
         switch(data.t){
             case PacketType.RPC_CALL:
                 return {
@@ -76,7 +74,7 @@ export default class MsgPackEncoder implements IEncoder {
             case PacketType.RPC_ERROR:
                 return {
                     type:data.t,
-                    data:data.d,
+                    data:<string>data.d,
                     random:data.r
                 };
             case PacketType.EVENT:

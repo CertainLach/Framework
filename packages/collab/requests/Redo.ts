@@ -54,5 +54,6 @@ export default class RedoRequest {
             if (sequence == 0)
                 return <UndoRequest>log[index];
         }
+        return null;
     }
 }

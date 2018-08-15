@@ -53,5 +53,6 @@ export default class UndoRequest {
             if (sequence == 0)
                 return <DoRequest>log[index];
         }
+        return null;
     }
 }

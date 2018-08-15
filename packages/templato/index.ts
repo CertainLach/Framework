@@ -1,22 +1,22 @@
 //templatio
 import Logger from '@meteor-it/logger';
-import {queue} from '@meteor-it/queue';
+import queue from '@meteor-it/queue';
 
 const p:any={};
 //Chinese
-p.fa=p.id=p.ja=p.ko=p.lo=p.ms=p.th=p.tr=p.zh=n=>0;
+p.fa=p.id=p.ja=p.ko=p.lo=p.ms=p.th=p.tr=p.zh=(n:number)=>0;
 //German
-p.da=p.de=p.en=p.es=p.fi=p.el=p.he=p.hu=p.it=p.nl=p.no=p.pt=p.sv=n=>n!==1?1:0;
+p.da=p.de=p.en=p.es=p.fi=p.el=p.he=p.hu=p.it=p.nl=p.no=p.pt=p.sv=(n:number)=>n!==1?1:0;
 //French
-p.fr=p.tl=p['pt-br']=n=>n>1?1:0;
+p.fr=p.tl=p['pt-br']=(n:number)=>n>1?1:0;
 //Russian
-p.hr=p.ru=n=>n%10===1&&n%100!==11?0:n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?1:2;
+p.hr=p.ru=(n:number)=>n%10===1&&n%100!==11?0:n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?1:2;
 //Czesc
-p.cs=n=>(n===1)?0:(n>=2&&n<=4)?1:2;
+p.cs=(n:number)=>(n===1)?0:(n>=2&&n<=4)?1:2;
 //Polish
-p.pl=n=>(n===1?0:n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?1:2);
+p.pl=(n:number)=>(n===1?0:n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?1:2);
 //Iceland
-p.is=n=>(n%10!==1||n%100===11)?1:0;
+p.is=(n:number)=>(n%10!==1||n%100===11)?1:0;
 
 let DATA_REGEX=/{{([a-zA-Z]+)}}/g;
 let NUMERAL_REGEX=/(%[1-9\-]+(?::[a-zA-Zа-яА-Я\s]*)+%)/g;
@@ -30,12 +30,12 @@ export default class Templato {
     logger=new Logger('translate');
     languages={};
     constructor(){}
-    @queue
-    async addLanguage(folder,family){
-        let language={plural:null};
+    @queue(0,1)
+    async addLanguage(folder:string,family:string){
+        let language:{plural:(n:number)=>number}={plural:null};
         if(!p[family]){
-            this.logger.warn('Unknown language family: %s!\nSupported families is %s',family,Object.keys[p].join(', '));
-            language.plural=n=>0;
+            this.logger.warn('Unknown language family: %s!\nSupported families is %s',family,Object.keys(p).join(', '));
+            language.plural=(n:number)=>0;
         }else{
             language.plural=p[family];
         }

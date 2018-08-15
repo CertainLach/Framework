@@ -2,3 +2,8 @@
 **/package-lock.json
 **/lerna-debug.log
 **/.vscode
+**/.idea
+**/*.ts.d
+**/*.js
+**/*.js.map
+**/*.iml

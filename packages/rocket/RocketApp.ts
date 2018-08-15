@@ -16,13 +16,16 @@ import asyncBootstrapper from 'react-async-bootstrapper';
 import serialize from 'serialize-javascript';
 import { create, persist } from './mobx';
 
+type HTML5Location = any;
+type HTML5History = any;
+declare var process:any;
 
 export type IRocketStoreInitializer=(context:any)=>RocketStore;
 
 export default class RocketApp {
     defaultSiteName:string;
     defaultPageName:string;
-    constructor(defaultSiteName,defaultPageName,root:Element){
+    constructor(defaultSiteName:string,defaultPageName:string,root:Element){
         this.defaultSiteName=defaultSiteName;
         this.defaultPageName=defaultPageName;
         this.root=root;
@@ -33,8 +36,8 @@ export default class RocketApp {
         this.storeInitializers.push([name,initializer]);
     }
 
-    async initializeStores(isClientSide:boolean,prefillStores:{[key:string]:any}={}):{router?: RouterStore,header?: HeaderStore,[key:string]: RocketStore}{
-        let fullStore={};
+    async initializeStores(isClientSide:boolean,prefillStores:{[key:string]:any}={}):Promise<{router?: RouterStore,header?: HeaderStore,[key:string]: RocketStore}>{
+        let fullStore:{[key:string]:RocketStore}={};
         let rehydrate = null;
         if(isClientSide)
             rehydrate=create({});
@@ -52,7 +55,7 @@ export default class RocketApp {
         return fullStore;
     }
     deinitializeStores(stores:{[key:string]:RocketStore}){
-        let fullDehydrate={};
+        let fullDehydrate:{[key:string]:RocketStore}={};
         Object.keys(stores).forEach((name) => {
             let store=stores[name];
             let dehydrated=store.dehydrate();
@@ -62,16 +65,16 @@ export default class RocketApp {
         return fullDehydrate;
     }
 
-    private commonRender(stores,history){
+    private commonRender(stores:{[key:string]:RocketStore},history:HTML5History){
         return r(<any>Provider,stores,
             r(Router,{
                 history
             },this.root)
         );
     }
-    private createServerHtml(app,dehydrated,asyncState){
-        const metatags=dehydrated.header.metaTags.map(tag=>`<meta ${(Object.keys(tag).map(tagName=>`${tagName}="${encodeURIComponent(tag[tagName])}"`).join(' ')).trim()}></meta>`)
-        const head=`<title>${dehydrated.header.siteName} - ${dehydrated.header.pageName}</title><meta name="description" content="${encodeURIComponent(dehydrated.header.description)}"></meta><meta name="viewport" content="width=device-width, initial-scale=1.0"></meta><meta name="keywords" content="${encodeURIComponent(dehydrated.header.keywords.join(' '))}"></meta>${metatags}`;
+    private createServerHtml(app:string,dehydrated:any,asyncState:any){
+        const metatags=dehydrated.header.metaTags.map((tag:{[key:string]:string})=>`<meta ${(Object.keys(tag).map(tagName=>`${tagName}="${encodeURIComponent(tag[tagName])}"`).join(' ')).trim()}></meta>`)
+        const head=`<title>${dehydrated.header.siteName} - ${dehydrated.header.pageName}</title><meta charset='utf-8'></meta><meta name="description" content="${encodeURIComponent(dehydrated.header.description)}"></meta><meta name="viewport" content="width=device-width, initial-scale=1.0"></meta><meta name="keywords" content="${encodeURIComponent(dehydrated.header.keywords.join(' '))}"></meta>${metatags}<link href="main.client.css" rel="stylesheet">`;
         const storeJson=`<script type="text/javascript">window.__SERVER_STORE__=${JSON.stringify(dehydrated)}</script>`;
         const asyncStoreJson=`<script type="text/javascript">window.__PRERENDER_STORE__=${asyncState}</script>`;
         const scripts=`<script type="text/javascript" src="/bootstrap.client.js"></script><script type="text/javascript" src="/main.client.js"></script>`;

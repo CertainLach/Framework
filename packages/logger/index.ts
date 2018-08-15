@@ -30,42 +30,39 @@ const REPEATABLE_ACTIONS = [
 	LOGGER_ACTIONS.PROGRESS_END
 ];
 
-let consoleLogger;
-let loggerLogger;
+let consoleLogger:Logger;
+let loggerLogger:Logger;
 
 export class BasicReceiver {
-	logger;
+	logger:typeof Logger;
 
-	setLogger(logger) {
+	setLogger(logger:typeof Logger) {
 		this.logger = logger;
 	}
-	write(data) {
+	write(data:any) {
 		throw new Error('write(): Not implemented!');
 	}
 }
 
-/**
- * Powerfull logger. Exists from second generation of "ayzek"
- */
 export default class Logger {
 	static nameLength = 12;
-	static repeatCount;
-	static lastProvider;
-	static lastMessage;
-	static lastType;
-	static receivers = [];
-	name;
-	identation = [];
-	identationTime = [];
-	times = {};
+	static repeatCount:number;
+	static lastProvider:string;
+	static lastMessage:any;
+	static lastType:string;
+	static receivers:BasicReceiver[] = [];
+	name:string;
+	identation:string[] = [];
+	identationTime:number[] = [];
+	times:{[key:string]:number} = {};
 
-	static setNameLength(length) {
+	static setNameLength(length:number) {
 		Logger.nameLength = length;
 	}
-	constructor(name) {
+	constructor(name:string) {
 		this.name = name.toUpperCase();
 	}
-	timeStart(name) {
+	timeStart(name:string) {
 		if (this.times[name]) {
 			loggerLogger.warn('timeStart(%s) called 2 times with same name!', name);
 			return;
@@ -76,7 +73,7 @@ export default class Logger {
 			timeName: name
 		});
 	}
-	timeEnd(name) {
+	timeEnd(name:string) {
 		if (!this.times[name]) {
 			loggerLogger.warn('timeEnd(%s) called with unknown name!', name);
 			return;
@@ -88,7 +85,7 @@ export default class Logger {
 		});
 		delete this.times[name];
 	}
-	ident(name) {
+	ident(name:string) {
 		this.identation.push(name);
 		this.identationTime.push(new Date().getTime());
 		this.write({
@@ -113,14 +110,14 @@ export default class Logger {
 	}
 
 	// LOG
-	log(...params) {
+	log(...params:any[]) {
 		this.write({
 			type: LOGGER_ACTIONS.LOG,
 			line: params.shift(),
 			params: params
 		});
 	}
-	info(...params) {
+	info(...params:any[]) {
 		this.write({
 			type: LOGGER_ACTIONS.LOG,
 			line: params.shift(),
@@ -128,28 +125,28 @@ export default class Logger {
 		});
 	}
 	// WARNING
-	warning(...params) {
+	warning(...params:any[]) {
 		this.write({
 			type: LOGGER_ACTIONS.WARNING,
 			line: params.shift(),
 			params: params
 		});
 	}
-	warn(...params) {
+	warn(...params:any[]) {
 		this.write({
 			type: LOGGER_ACTIONS.WARNING,
 			line: params.shift(),
 			params: params
 		});
 	}
-	error(...params) {
+	error(...params:any[]) {
 		this.write({
 			type: LOGGER_ACTIONS.ERROR,
 			line: params.shift(),
 			params: params
 		});
 	}
-	err(...params) {
+	err(...params:any[]) {
 		this.write({
 			type: LOGGER_ACTIONS.ERROR,
 			line: params.shift(),
@@ -157,7 +154,7 @@ export default class Logger {
 		});
 	}
 	// DEBUG
-	debug(...params) {
+	debug(...params:any[]) {
 		//if(DEBUG === '-')
 		//	return;
 		if (DEBUG === '*' || ~DEBUG.split(',').indexOf(this.name))
@@ -168,7 +165,7 @@ export default class Logger {
 			});
 	}
 	// Progress
-	progress(name, progress: boolean | number, info?: string) {
+	progress(name:string, progress: boolean | number, info?: string) {
 		if (progress === true) {
 			this.write({
 				type: LOGGER_ACTIONS.PROGRESS_START,
@@ -189,7 +186,7 @@ export default class Logger {
 		}
 	}
 	static noReceiversWarned = false;
-	write(data) {
+	write(data:any) {
 		if (!data.time)
 			data.time = new Date().getTime();
 		if (!data.name)
@@ -198,7 +195,7 @@ export default class Logger {
 			data.identationLength = this.identation.length;
 		Logger._write(data);
 	}
-	static _write(what) {
+	private static _write(what:any) {
 		if (Logger.receivers.length === 0) {
 			if (!Logger.noReceiversWarned) {
 				console._log('No receivers are defined for logger! See docs for info about this!');
@@ -229,16 +226,16 @@ export default class Logger {
 		what.repeated = what.repeats && what.repeats > 0;
 		Logger.receivers.forEach(receiver => receiver.write(what));
 	}
-	static resetRepeating(provider, message, type) {
+    private static resetRepeating(provider:string, message:string, type:string) {
 		Logger.lastProvider = provider;
 		Logger.lastMessage = message;
 		Logger.lastType = type;
 		Logger.repeatCount = 0;
 	}
-	static isRepeating(provider, message, type) {
+    private static isRepeating(provider:string, message:string, type:string) {
 		return Logger.lastProvider === provider && Logger.lastMessage === message && Logger.lastType === type;
 	}
-	static addReceiver(receiver) {
+	static addReceiver(receiver:BasicReceiver) {
 		if (Logger.receivers.length === 4)
 			loggerLogger.warn('Possible memory leak detected: 4 or more receivers are added.');
 		receiver.setLogger(Logger);
@@ -247,11 +244,10 @@ export default class Logger {
 }
 
 consoleLogger = new Logger('console');
-loggerLogger = new Logger('logger'); // Like in java :D
-export type logFunc=(...params)=>undefined;
+loggerLogger = new Logger('logger');
+export type logFunc=(...params:any[])=>undefined;
 declare global {
     interface Console {
-        _patchedByLogger:boolean;
         _log:logFunc;
         _error:logFunc;
         _warn:logFunc;
@@ -259,10 +255,10 @@ declare global {
         _warning:logFunc;
     }
 }
-if (!console._patchedByLogger) {
-	for (let method of ['log', 'error', 'warn', 'err', 'warning']) {
-		console['_' + method] = console[method];
-		console[method] = (...args) => consoleLogger[method](...args);
+if (!(console as any)._patchedByLogger) {
+	for (let method of ['log', 'error', 'warn', 'err', 'warning', 'info']) {
+		(console as any)['_' + method] = (console as any)[method];
+        (console as any)[method] = (...args:any[]) => (consoleLogger as any)[method](...args);
 	}
-	console._patchedByLogger = true;
+    (console as any)._patchedByLogger = true;
 }

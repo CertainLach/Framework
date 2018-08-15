@@ -1,7 +1,7 @@
 {
-  "name": "$package_name$",
+  "name": "@meteor-it/rocket",
   "version": "0.0.1",
   "dependencies": {
-    $END$
+    "inferno": "latest"
   }
 }

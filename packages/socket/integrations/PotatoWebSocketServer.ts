@@ -1,36 +1,39 @@
 import {
-    WebSocketClient, PotatoSocketUniversal, 
+    PotatoSocketUniversal, 
     IEncoder, PacketType, IServerOpenHandler, 
-    IServerCloseHandler, IServerOpenCloseHandler
+    IServerCloseHandler, IServerOpenCloseHandler,
+    IRPCFieldWithThis, IRPCFieldWithoutThis
 }from '../';
 import Logger from '@meteor-it/logger';
+import WebSocketClient from '../WebSocketClient';
 
 /**
  * For internal use
  */
-export class PotatoWebSocketServerInternalClient extends PotatoSocketUniversal {
+export class PotatoWebSocketServerInternalClient extends PotatoSocketUniversal<IRPCFieldWithoutThis> {
     websocket: WebSocketClient;
     session: any = {};
     id: string;
 
-    constructor(id: string, server: PotatoWebSocketServer, websocket) {
+    constructor(id: string, server: PotatoWebSocketServer, websocket:WebSocketClient) {
         super(server.logger,server.encoder, server);
         this.id = id;
         this.websocket = websocket;
         this.logger = server.logger;
-        websocket.on('message', data => {
-            this.gotBufferFromRemote(Buffer.from(data));
+        (<any>websocket).on('message', (data:Buffer|string) => {
+            this.gotBufferFromRemote(Buffer.from(<string>data));
         });
     }
-    sendBufferToRemote(buffer) {
+    sendBufferToRemote(buffer:Buffer) {
         this.websocket.send(buffer);
     }
 }
 
+
 /**
  * Websocket potato.socket server
  */
-export default class PotatoWebSocketServer extends PotatoSocketUniversal {
+export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonly<IRPCFieldWithThis<PotatoWebSocketServer>>> {
     clients: {[key:string]:PotatoWebSocketServerInternalClient} = {};
     constructor(name:string|Logger, encoder: IEncoder) {
         super(name, encoder);
@@ -62,8 +65,12 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal {
         }
         return true;
     }
-    openHandlers: IServerOpenHandler[] = [];
-    closeHandlers: IServerCloseHandler[] = [];
+    openHandlers: IServerOpenHandler<PotatoWebSocketServerInternalClient>[] = [];
+    closeHandlers: IServerCloseHandler<PotatoWebSocketServerInternalClient>[] = [];
+
+    rpc():IRPCFieldWithThis<this>{
+        return super.rpc();
+    }
 
     on(event: string, listener: any) {
         if (event === 'open') {
@@ -80,14 +87,14 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal {
         }
         super.on(event, listener);
     }
-    handler(req, websocket) {
+    handler(req:Request, websocket:WebSocketClient) {
         let id = Math.random().toString(32).substr(2);
         let wrappedSocket = new PotatoWebSocketServerInternalClient(id, this, websocket);
         wrappedSocket.id = id;
-        if (req.session)
-            wrappedSocket.session = req.session;
+        if ((<any>req).session)
+            wrappedSocket.session = (<any>req).session;
         this.clients[id] = wrappedSocket;
-        websocket.on('close', status => {
+        (<any>websocket).on('close', (status:any)=>{
             delete this.clients[id];
             this.closeHandlers.forEach(handler => {
                 handler(wrappedSocket, status);
@@ -98,3 +105,4 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal {
         });
     }
 }
+

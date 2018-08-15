@@ -1,6 +1,16 @@
-import {_r} from './internal/r';
-import {IRocketArgumentHtmlProps} from "./internal/data";
-import RocketComponent from "./RocketComponent";
+import {_r} from '../internal/r';
+import {IRocketArgumentHtmlProps} from "../internal/data";
+import RocketComponentBase from "../RocketComponent";
+
+abstract class RocketComponent<P> extends RocketComponentBase<P>{
+    constructor(props:P){
+        const {classes,...otherProps} = <any>props;
+        super({
+            ...otherProps,
+            className: classes.filter((c:any)=>c!==false&&c!==null).join(' ')
+        });
+    }
+}
 
 type IAcceptType = any;
 type IAcceptCharsetType = any;
@@ -18,6 +28,7 @@ type IBufferedType = any;
 type IChallengeType = any;
 type ICharsetType = string;
 type ICheckedType = boolean;
+type IClassesType = (string|false)[]
 type ICiteType = any;
 type ICodeType = any;
 type ICodebaseType = any;
@@ -92,7 +103,7 @@ type ISandboxType = any;
 type IScopeType = any;
 type IScopedType = any;
 type ISeamlessType = any;
-type ISelectedType = any;
+type ISelectedType = boolean;
 type IShapeType = any;
 type ISizeType = any;
 type ISizesType = any;
@@ -135,6 +146,7 @@ interface IHtmlAttributes extends IRocketArgumentHtmlProps {
     style?: IStyleType; // Defines CSS styles which will override styles previously set.
     tabindex?: ITabindexType; // Overrides the browser's default tab order and follows the one specified instead.
     title?: ITitleType; // Text to be displayed in a tooltip when hovering over the element.
+    classes?: IClassesType;
 }
 
 interface IFormAttributes extends IHtmlAttributes {

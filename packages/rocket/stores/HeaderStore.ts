@@ -1,10 +1,10 @@
 import RocketStore from '../RocketStore';
 import {observable, computed, action} from 'mobx';
 
-declare const document;
+declare const document:any;
 
 export default class HeaderStore extends RocketStore{
-    constructor(defaultSiteName,defaultPageName){
+    constructor(defaultSiteName:string,defaultPageName:string){
         super(null,true);
         this.siteName=defaultSiteName;
         this.pageName=defaultPageName;
@@ -21,7 +21,7 @@ export default class HeaderStore extends RocketStore{
     }
 
     @action
-    setSiteName(siteName){
+    setSiteName(siteName:string){
         this.siteName=siteName;
     }
     

@@ -1,10 +1,9 @@
 import {format} from 'util';
 import Logger,{LOGGER_ACTIONS,BasicReceiver} from '../';
-import {clearScreen, writeStdout, writeEscape,
+import {writeStdout,
     moveCursor, clearLine, save, restore, startBuffering, flushBuffer} from '@meteor-it/terminal';
-import {start} from "repl";
 
-const ansiColors = {
+const ansiColors:{[key:string]:number[]} = {
 	reset: [0, 0],
 
 	bold: [1, 22],
@@ -35,10 +34,7 @@ const ansiColors = {
 	bgWhite: [47, 49]
 };
 
-if(!process.env.NODE_CONSOLE_DONT_CLEAR)
-	clearScreen();
-
-function stringifyIdent(nameLimit, count, symbolNeeded = undefined) {
+function stringifyIdent(nameLimit:number, count:number, symbolNeeded:string = undefined) {
 	return `${'  '.repeat(count)}${symbolNeeded ? symbolNeeded : ' '}`;
 }
 // function writeDate(date) {
@@ -46,7 +42,7 @@ function stringifyIdent(nameLimit, count, symbolNeeded = undefined) {
 // 	// writeStdout((new Date(date)).toLocaleTimeString());
 // 	// writeEscape('0m');
 // }
-function stringifyName(nameLimit, limit, name, escapeCode = '44m') {
+function stringifyName(nameLimit:number, limit:number, name:string, escapeCode = '44m') {
 	return `\u001B[${escapeCode}\u001B[1m${nameLimit===0?'':name.toString().padStart(nameLimit,' ')}\u001B[0m`;
 }
 // function writeRepeats(count, none = false) {
@@ -62,56 +58,56 @@ function stringifyName(nameLimit, limit, name, escapeCode = '44m') {
 // 	// 	writeEscape('0m');
 // 	// }
 // }
-function stringifyIdentData(nameLimit, provider, data) {
+function stringifyIdentData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
 	// writeRepeats(0, true);
 	// writeDate(data.time);
-	return ` ${stringifyName(nameLimit, provider.nameLimit,data.name)} \u001B[35m${stringifyIdent(nameLimit, data.identationLength-1,'>')}\u001B[1m ${data.identName}\u001B[0m\n`;
+	return ` ${stringifyName(nameLimit, provider.nameLimit,data.name)} \u001B[35m${stringifyIdent(nameLimit, data.identationLength-1,'>')}\u001B[1m ${data.identName}\u001B[0m`;
 }
-function stringifyDeentData(nameLimit, provider, data) {
+function stringifyDeentData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
 	// writeRepeats(0, true);
 	// writeDate(data.time);
-	return ` ${stringifyName(nameLimit, provider.nameLimit,data.name)} \u001B[35m${stringifyIdent(nameLimit, data.identationLength,'<')}\u001B[1m ${data.identName}\u001B[22m (Done in ${data.identTime}ms)\u001B[0m\n`;
+	return ` ${stringifyName(nameLimit, provider.nameLimit,data.name)} \u001B[35m${stringifyIdent(nameLimit, data.identationLength,'<')}\u001B[1m ${data.identName}\u001B[22m (Done in ${data.identTime}ms)\u001B[0m`;
 }
-function stringifyTimeStartData(nameLimit, provider, data) {
+function stringifyTimeStartData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
 	// writeRepeats(0, true);
 	// writeDate(data.time);
-	return ` \u001B[35m${stringifyName(nameLimit, provider.nameLimit,data.name,'1m')}\u001B[33m${stringifyIdent(nameLimit, data.identationLength)} T Started ${data.timeName}\n`;
+	return ` \u001B[35m${stringifyName(nameLimit, provider.nameLimit,data.name,'1m')}\u001B[33m${stringifyIdent(nameLimit, data.identationLength)} T Started ${data.timeName}`;
 }
-function stringifyTimeEndData(nameLimit, provider, data) {
+function stringifyTimeEndData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
 	// writeRepeats(0, true);
 	// writeDate(data.time);
-	return ` \u001B[35m${stringifyName(nameLimit, provider.nameLimit,data.name,'1m')}\u001B[34m${stringifyIdent(nameLimit, data.identationLength)} T Finished ${data.timeName}\u001B[1m in ${data.timeTime}ms\u001B[0m\n`;
+	return ` \u001B[35m${stringifyName(nameLimit, provider.nameLimit,data.name,'1m')}\u001B[34m${stringifyIdent(nameLimit, data.identationLength)} T Finished ${data.timeName}\u001B[1m in ${data.timeTime}ms\u001B[0m`;
 }
-function stringifyData(nameLimit, data) {
+function stringifyData(nameLimit:number, data:any) {
 	let uncolored = format(data.line, ...data.params || []);
-	return uncolored.replace(/{(\/?)([^}]+)}/g, (...d) => {
+	return uncolored.replace(/{(\/?)([^}]+)}/g, (...d:any[]) => {
 		if (!ansiColors[d[2]])return d[0];
 		return '\u001B[' + ansiColors[d[2]][d[1] === '/' ? 1 : 0] + 'm';
 	});
 }
-const STRIPPED_DATE=(new Date()).toLocaleTimeString().replace(/./g, ' ');
-function stringifyCommonData(nameLimit, escapeCode, provider, data) {
+// const STRIPPED_DATE=(new Date()).toLocaleTimeString().replace(/./g, ' ');
+function stringifyCommonData(nameLimit:number, escapeCode:string, provider:NodeConsoleReceiver, data:any) {
 	// writeRepeats(data.repeats, false);
 	// writeDate(data.time);
 	const strings = data.string.split('\n');
-	let ret = ` \u001B[40m${stringifyName(nameLimit, provider.nameLimit, data.name, escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${strings.shift()}\n`;
+	let ret = ` \u001B[40m${stringifyName(nameLimit, provider.nameLimit, data.name, escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${strings.shift()}`;
 	for(let string of strings){
-		ret += ` \u001B[40m${stringifyName(nameLimit, provider.nameLimit, '|', escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${string}\n`;
+		ret += ` \n\u001B[40m${stringifyName(nameLimit, provider.nameLimit, '|', escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${string}`;
 		//`${stringifyIdent(data.identationLength)}${stringifyName(provider.nameLimit,'|',escapeCode)} ${string}\n`;
 	}
 	return ret;
 }
-function writeLogData(nameLimit, provider, data) {
-	writeStdout(stringifyCommonData(nameLimit, '34m',provider,data));
+function writeLogData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
+	writeStdout('\n'+stringifyCommonData(nameLimit, '34m',provider,data));
 }
-function writeErrorData(nameLimit, provider, data) {
-	writeStdout(stringifyCommonData(nameLimit, '31m',provider,data));
+function writeErrorData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
+	writeStdout('\n'+stringifyCommonData(nameLimit, '31m',provider,data));
 }
-function writeWarningData(nameLimit, provider, data) {
-	writeStdout(stringifyCommonData(nameLimit, '33m',provider,data));
+function writeWarningData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
+	writeStdout('\n'+stringifyCommonData(nameLimit, '33m',provider,data));
 }
-function writeDebugData(nameLimit, provider, data) {
-	writeStdout(stringifyCommonData(nameLimit, '90m',provider,data));
+function writeDebugData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
+	writeStdout('\n'+stringifyCommonData(nameLimit, '90m',provider,data));
 }
 
 interface IProgressItem {
@@ -120,23 +116,23 @@ interface IProgressItem {
     time:number
 }
 const progresses:{[key:string]:IProgressItem}={};
-function progressStart(nameLimit, provider,data){
+function progressStart(nameLimit:number, provider:NodeConsoleReceiver,data:any){
 	progresses[data.name]={
 		name:data.name,
 		progress:0,
 		time:data.time
 	};
 }
-function progressEnd(nameLimit, provider,data){
+function progressEnd(nameLimit:number, provider:NodeConsoleReceiver,data:any){
 	delete progresses[data.name];
 }
-function progress(nameLimit, provider,data){
+function progress(nameLimit:number, provider:NodeConsoleReceiver,data:any){
 	if(!progresses[data.name])
 		return;
     progresses[data.name].time=data.time;
     progresses[data.name].progress=data.progress;
 }
-function renderProgress(nameLimit){
+function renderProgress(nameLimit:number){
 	save();
 	let i=0;
 	for(let progress of Object.values(progresses)) {
@@ -166,7 +162,7 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 		this.nameLimit = nameLimit;
 	}
 
-	write(data) {
+	write(data:any) {
 		let {nameLimit} = this;
         if(Object.values(progresses).length!==0) {
             startBuffering();
@@ -181,10 +177,10 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 		// }
 		switch (data.type) {
 			case LOGGER_ACTIONS.IDENT:
-				writeStdout(stringifyIdentData(nameLimit, this, data));
+				writeStdout('\n'+stringifyIdentData(nameLimit, this, data));
 				break;
 			case LOGGER_ACTIONS.DEENT:
-				writeStdout(stringifyDeentData(nameLimit, this, data));
+				writeStdout('\n'+stringifyDeentData(nameLimit, this, data));
 				break;
 			case LOGGER_ACTIONS.LOG:
 				writeLogData(nameLimit, this, data);
@@ -199,10 +195,10 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 				writeDebugData(nameLimit, this, data);
 				break;
 			case LOGGER_ACTIONS.TIME_START:
-				writeStdout(stringifyTimeStartData(nameLimit, this, data));
+				writeStdout('\n'+stringifyTimeStartData(nameLimit, this, data));
 				break;
 			case LOGGER_ACTIONS.TIME_END:
-				writeStdout(stringifyTimeEndData(nameLimit, this, data));
+				writeStdout('\n'+stringifyTimeEndData(nameLimit, this, data));
 				break;
 			case LOGGER_ACTIONS.PROGRESS_START:
 				progressStart(nameLimit, this, data);
@@ -232,13 +228,13 @@ let terminalLogger=new Logger('terminal');
 process.on('uncaughtException', e => {
 	terminalLogger.err('UncaughtException:');
 	terminalLogger.err(e.stack);
-	process.exit(0);
+	// process.exit(0);
 });
 
 process.on('unhandledRejection', e => {
 	terminalLogger.err('UnhandledRejection:');
 	terminalLogger.err(e.stack);
-	process.exit(0);
+	// process.exit(0);
 });
 
 // process.on('warning', e => {

@@ -8,7 +8,7 @@ export default class Vector {
         return this.toString();
     }
 
-    users: {[key: string]: number} = {};
+    users: {[key: number]: number} = {};
 
     /**
      * Stores state vectors
@@ -25,7 +25,7 @@ export default class Vector {
         } else if (typeof(value) == "string") {
             let match = Vector.timestring_regex.exec(value);
             while (match != null) {
-                this.users[match[1]] = parseInt(match[2], 10);
+                this.users[parseInt(match[1],10)] = parseInt(match[2], 10);
                 match = Vector.timestring_regex.exec(value);
             }
         }
@@ -52,7 +52,7 @@ export default class Vector {
      * Returns this vector as a string of the form "1:2;3:4;5:6"
      */
     toString():string {
-        const components = new Array<string>();
+        const components:string[] = [];
 
         this.eachUser((u, v) => {
             if (v > 0)
@@ -131,7 +131,7 @@ export default class Vector {
      * @param user Component to increase
      * @param by Amount by which to increase the component
      */
-    incr(user, by: number = 1):Vector {
+    incr(user:number, by: number = 1):Vector {
         // console.log('incr',this);
         const result = new Vector(this);
         result.users[user] = result.get(user) + by;

@@ -46,7 +46,7 @@ export default class Split implements Operation {
      * @param other 
      * @param cid 
      */
-    transform(other: Operation, cid?: Operation) {
+    transform(other: Operation, cid?: Operation):Operation {
         if (cid === this || cid == other)
             return new Split(
                 this.first.transform(other, (cid === this ? this.first : other)),

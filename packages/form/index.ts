@@ -164,7 +164,7 @@ export default class FormValidator {
         for(let key of Object.keys(fields))
             this.fields[key]=new FieldValidator(fields[key]);
     }
-    static text(placeholder,[min=null,max=null],regex=null,defaultValue=''):TextFieldData{
+    static text(placeholder:string,[min=null,max=null]:[number,number],regex:RegExp=null,defaultValue=''):TextFieldData{
         return {
             type:FieldType.TEXT,
             placeholder,
@@ -174,7 +174,7 @@ export default class FormValidator {
             max
         }
     }
-    static number(placeholder,[min=null,max=null],defaultValue=0):NumberData{
+    static number(placeholder:string,[min=null,max=null]:[number,number],defaultValue=0):NumberData{
         return {
             type:FieldType.NUMBER,
             min,
@@ -183,9 +183,9 @@ export default class FormValidator {
             defaultValue
         }
     }
-    static select(placeholder,possible,defaultValue=null):SelectData{
+    static select(placeholder:string,possible:{[key:number]:string},defaultValue:number=null):SelectData{
         if(defaultValue===null)
-            defaultValue=Object.keys(possible)[0];
+            defaultValue=+Object.keys(possible)[0];
         return {
             type:FieldType.SELECT,
             possible,
@@ -193,7 +193,7 @@ export default class FormValidator {
             placeholder
         }
     }
-    static multi(placeholder,[min,max],inner):MultiFieldData{
+    static multi(placeholder:string,[min,max]:[number,number],inner:FormInputData):MultiFieldData{
         return {
             type:FieldType.MULTIFIELD,
             min,
@@ -202,7 +202,7 @@ export default class FormValidator {
             placeholder
         }
     }
-    validate(data):ValidationError|true{
+    validate(data:FormInputData):ValidationError|true{
         for(let key of Object.keys(this.fields)){
             if(!(key in data))
                 return {name:ValidationErrorType.NO_KEY,field:key};
@@ -219,7 +219,7 @@ export default class FormValidator {
         return ret;
     }
 }
-export function stringifyError(error:ValidationError,returnKey){
+export function stringifyError(error:ValidationError,returnKey:boolean){
     let key=[];
     while(error.name in [ValidationErrorType.INNER_FORM,ValidationErrorType.INNER_MULTI]){
         key.push(error.field);

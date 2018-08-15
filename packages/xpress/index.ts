@@ -1,11 +1,12 @@
 import {createServer as createHttpsServer} from 'https';
-import {METHODS,createServer as createHttpServer} from 'http';
+import {METHODS,createServer as createHttpServer,IncomingMessage,ServerResponse} from 'http';
 import {createSecureServer as createHttps2Server} from 'http2';
 import {parse as parseUrl} from 'url';
 import {parse as parseQuerystring} from 'querystring';
 import AJSON from '@meteor-it/ajson';
 import Logger from '@meteor-it/logger';
 import {arrayKVObject, encodeHtmlSpecials} from '@meteor-it/utils';
+import URouter from "../router";
 
 const URL_START_REPLACER=/^\/+/;
 const PATH_INDEX_SYM=Symbol('XPress#Request.middlewareIndex');
@@ -17,121 +18,73 @@ const MULTI_EVENTS={
 
 let xpressLogger=new Logger('xpress');
 
-class HttpError extends Error{
-    code;
+class XPressWrappedRequest{
+    private realReq:IncomingMessage;
+    params: {[key:string]:string};
+    query: {[key:string]:string};
+    url:string;
+    path:string;
+    constructor(req:IncomingMessage){
+        this.realReq=req;
+        this.url = req.url;
+        let parsed=parseUrl(req.url);
+        req.path=parsed.pathname;
 
-    constructor(code,message){
+        req.originalUrl=req.url;
+        req.app=this;
+        req.body=req.cookie=undefined;
+        req.secure='https' == req.protocol;
+        req.query=parseQuerystring(req.querystring=parsed.query);
+    }
+    setHeader(key:string,value:string){
+        this.realReq.headers[key]=value;
+    }
+    getHeader(key:string){
+        return this.realReq.headers[key];
+    }
+}
+
+class XPRessWrappedResponse{
+    private realRes:ServerResponse;
+    constructor(res:ServerResponse){
+        this.realRes=res;
+    }
+}
+
+class XPressRouterContext<S> {
+    req: XPressWrappedRequest;
+    res: XPRessWrappedResponse;
+    session: S;
+    constructor(req:XPressWrappedRequest,res:XPRessWrappedResponse,session:S){
+        this.req=req;
+        this.res=res;
+    }
+}
+
+/**
+ * return (req:IncomingMessage,res:ServerResponse,next:(e?:Error)=>void)=>{
+            this.once('beforeroute', (args, routing) => {
+                args.request = req;
+                args.response = res;
+                args.params = (<any>req).params||{};
+                args.next = () => { next() };
+                routing.catch(next)
+            });
+            this.route(req.url);
+        }
+ */
+
+class HttpError extends Error{
+    code:number;
+
+    constructor(code:number,message:string){
         super(message);
         this.code=code;
     }
 }
 let routerIndex=0;
-export class Router{
-    logger:Logger;
-    middlewares=[];
-    routeIndexKey=Symbol('XPress#Request.middlewareIndex(Router#'+(routerIndex++)+')');
-    constructor(name){
-        this.logger=new Logger(name);
-    }
-    use(handler){
-        this.on('ALL /**?',handler);
-    }
-    //event===GET /, WS /*
-    on(eventString,handler){
-        let [event,path,...middlewares]=eventString.split(' ');
-        if(middlewares.length!==0)
-            throw new Error('Middlewares work in progress! Remove thrid parameter from .on()');
-        if(event.toUpperCase()!==event){
-            this.logger.warn('Upper case is preffered for event names! (Got: %s)',event);
-            event=event.toUpperCase();
-        }
-        if(!~POSSIBLE_EVENTS.indexOf(event)){
-            throw new Error('Unknown event: '+event+', possible events are '+POSSIBLE_EVENTS.join(', ')+'!');
-        }
-        let middleware=parsePath(path);
-        let nhandler=handler;
-        if(handler instanceof Router){
-            if(path.indexOf('**')!==-1)
-                throw new Error('Can\'t attach router handle to double-star path! (Got: '+path+')');
-            if(!path.endsWith('/*'))
-                this.logger.warn('Seems like you forgot about /* at end of your router path. (Got: %s)',path);
-            nhandler=(req,res,next)=>{
-                this.logger.debug('Router handler url[before] = %s',req.originalUrl);
-                let slicedUrl='/'+req.originalUrl.split('/').slice(path.split('/').length-1).join('/');
-                this.logger.debug('Router handler url[after] = %s',slicedUrl);
-                return handler.handle(req,res,next,slicedUrl);
-            };
-        }
-        if(nhandler.length!==2&&nhandler.length!==3)
-            this.logger.warn('Possible invalid handler method! Possible methods: \n   (req,res,next)=>{...} \n   (req,res)=>{...}\nBut passed handler accepts %d arguments!',nhandler.length);
-        if(MULTI_EVENTS[event])
-            for(let cEvent of MULTI_EVENTS[event])
-                middleware.handlers[cEvent]=nhandler;
-        else
-            middleware.handlers[event]=nhandler;
-        this.middlewares.push(middleware);
-    }
-    handle(req,res,next,fakeUrl){
-        this.logger.debug('handle(%s %s)',req.method.toUpperCase(),fakeUrl||req.originalUrl);
-        if(!req[this.routeIndexKey])
-            req[this.routeIndexKey]=0;
-        if(req[this.routeIndexKey]>this.middlewares.length)
-            next();
-        let nextCb=(data)=>{
-            if(data)
-                throw new Error('next() is called with data, it is unsupported currently! Use req object to save data for next routes');
-            this.logger.debug('next()');
-            req[this.routeIndexKey]++;
-            this.handle(req,res,next,fakeUrl);
-        };
-        let matched=null; // regex.match result
-        let params=[];
-        let found=null; // handle() function for method
-        let currentMiddlewareIndex=req[this.routeIndexKey]; // Quick access
-        while(!found){
-            this.logger.debug('Searching middleware... %d',currentMiddlewareIndex);
-            if(!this.middlewares[currentMiddlewareIndex]){
-                // End of middleware list
-                // currentMiddlewareIndex++;
-                this.logger.debug('End of middleware list');
-                break;
-            }
-            if(!this.middlewares[currentMiddlewareIndex].handlers[req.method]){
-                // No such method on this middleware
-                currentMiddlewareIndex++;
-                this.logger.debug('No method on middleware');
-                continue;
-            }
-            if(!(matched=(fakeUrl||req.originalUrl).match(this.middlewares[currentMiddlewareIndex].regex))){
-                // Url regex doesn't match
-                currentMiddlewareIndex++;
-                this.logger.debug('URL doesn\'t matched: ',matched,fakeUrl||req.originalUrl,this.middlewares[currentMiddlewareIndex-1].regex);
-                continue;
-            }
-            // Found middleware
-            found=this.middlewares[currentMiddlewareIndex].handlers[req.method];
-            params=this.middlewares[currentMiddlewareIndex].params;
-            // Dont match again, since we already have matches assigned to 'matched'
-            //matched=(fakeUrl||req.originalUrl).match(this.middlewares[currentMiddlewareIndex]);
-        }
-        this.logger.debug('Index: %d, found: %s',currentMiddlewareIndex,!!found);
-        req[this.routeIndexKey]=currentMiddlewareIndex; // Restore key
-        if(found===null){
-            // Not found, exit from this router and go to next (or to XPress route handle)
-            next();
-            return;
-        }
-        // Found handler, gogogo!
-        req.params=arrayKVObject(params,matched.slice(1));
-        try{
-            found(req,res,nextCb);
-        }catch(e){
-            next(e);
-        }
-        //this.middlewares[req[this.routeIndexKey]].handle(req,res,nextCb);
-    }
-}
-export default class XPress extends Router{
+
+export default class XPress<S> extends URouter<XPressRouterContext<S>>{
     server;
     logger;
 
@@ -202,7 +155,7 @@ export default class XPress extends Router{
             return res.__writeHead(...args);
         };
         res.end=(...args)=>{
-            res.writeHead(res.statusCode?res.statusCode:200,res.header);
+            // res.writeHead(res.statusCode?res.statusCode:200,res.header);
             return res.__end(...args);
         };
         res.status=(code)=>{
@@ -222,6 +175,7 @@ export default class XPress extends Router{
             if(res.sent)
                 throw new Error('Data is already sent!');
             res.sent=true;
+            // console.log(res.statusCode?res.statusCode:200);
             res.writeHead(res.statusCode?res.statusCode:200,res.headers);
             if(typeof body==='object'&&!(body instanceof Buffer))
                 body=AJSON.stringify(body);
@@ -236,6 +190,8 @@ export default class XPress extends Router{
         // Execute Router handler, the first in the handlers chain
         try{
             this.handle(req,res,err=>{
+                if(res.sent)
+                    return;
                 // Next here = all routes ends, so thats = 404
                 this.logger.warn('404 Page not found at '+req.originalUrl);
                 // Allow only HttpError to be thrown
@@ -270,7 +226,7 @@ export default class XPress extends Router{
     onListen(func){
         this.listenListeners.push(func);
     }
-    listenHttp(host='0.0.0.0',port,silent=false){
+    listenHttp(host='0.0.0.0',port:number,silent=false){
         let httpServer=createHttpServer(this.httpHandler.bind(this));
         this.logger.debug('Before listening, executing listeners (to add support providers)...',this.listenListeners.length);
         this.listenListeners.forEach(listener=>{listener(httpServer,this)});
@@ -286,7 +242,7 @@ export default class XPress extends Router{
     listenHttp2(){
         throw new Error('browsers has no support for insecure http2, so listenHttp2() is deprecated');
     }
-    listenHttps(host='0.0.0.0',port,certs,silent=false){
+    listenHttps(host='0.0.0.0',port:number,certs,silent=false){
         let httpsServer=createHttpsServer(certs,this.httpHandler.bind(this));
         this.logger.debug('Before listening, executing listeners (to add support providers)...');
         this.listenListeners.forEach(listener=>{listener(httpsServer,this)});
@@ -299,7 +255,7 @@ export default class XPress extends Router{
             });
         });
     }
-    listenHttps2(host='0.0.0.0',port,certs,silent=false){
+    listenHttps2(host='0.0.0.0',port:number,certs,silent=false){
         let https2Server= createHttps2Server({...certs, allowHTTP1: true},this.http2Handler.bind(this));
         this.logger.debug('Before listening, executing listeners (to add support providers)...');
         this.listenListeners.forEach(listener=>{listener(https2Server,this)});
@@ -314,7 +270,7 @@ export default class XPress extends Router{
     }
 }
 
-function parsePath(path) {
+function parsePath(path:string) {
     // We can use path-to-regexp, but why, if it is soo big module with a lot of dependencies?
     let result={
         regex:null,
@@ -371,7 +327,7 @@ function parsePath(path) {
     return result;
 }
 
-export function developerErrorPageHandler (title, desc, stack = undefined) {
+export function developerErrorPageHandler (title:string, desc:string, stack:string|undefined = undefined) {
     // Developer friendly
     if(title)
         title=encodeHtmlSpecials(title).replace(/\n/g, '<br>');
@@ -382,7 +338,7 @@ export function developerErrorPageHandler (title, desc, stack = undefined) {
 	return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack?`<code style="white-space:pre;">${stack}</code>`:''}<hr><h2>uFramework xPress</h2></body></html>`;
 }
 
-export function userErrorPageHandler (hello, whatHappened, sorry, post) {
+export function userErrorPageHandler (hello:string, whatHappened:string, sorry:string, post:string) {
     // User friendly
     if(hello)
         hello=encodeHtmlSpecials(hello.replace(/\n/g, '<br>'));

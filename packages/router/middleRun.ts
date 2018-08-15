@@ -3,8 +3,8 @@ export default function run<T>(middleware: Function | Function[]): Function {
         middleware = [middleware]
     }
 
-    return parent => {
-        let finalPromise;
+    return (parent:any) => {
+        let finalPromise:any;
         let index = 0;
         let isResolved = false;
         let value: T;
@@ -26,7 +26,7 @@ export default function run<T>(middleware: Function | Function[]): Function {
             }
 
             let nextCalled = false;
-            let nextResult;
+            let nextResult:any;
             args.next = function next() {
                 if (!nextCalled) {
                     nextCalled = true;
@@ -35,11 +35,11 @@ export default function run<T>(middleware: Function | Function[]): Function {
                 return nextResult;
             };
 
-            let stepResolve;
+            let stepResolve:any;
             const stepPromise = new Promise(resolve => {
                 stepResolve = resolve
             });
-            args.resolve = function resolve(val) {
+            args.resolve = function resolve(val:any) {
                 isResolved = true;
                 if (stepResolve) {
                     if (arguments.length >= 1) value = val;
@@ -49,7 +49,7 @@ export default function run<T>(middleware: Function | Function[]): Function {
                 return finalPromise
             };
 
-            const current = middleware[index++];
+            const current = (<any>middleware)[index++];
             const result = current(args);
             return Promise.race([result, stepPromise]).then(args.next)
         }

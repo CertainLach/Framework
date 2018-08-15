@@ -16,7 +16,7 @@ export default class Recon {
         if (recon)
             this.segments = recon.segments.slice(0);
         else
-            this.segments = new Array();
+            this.segments = [];
     }
 
     toString() {

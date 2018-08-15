@@ -1,123 +1,8 @@
 import Logger from '@meteor-it/logger';
 
-/**
- * Websocket wrapper with auto-reconnection
- */
-export class WebSocketClient {
-    number = 0; // Message id
-    autoReconnectInterval;
-    url;
-    instance;
-    safeClose = false;
-
-    constructor(url, reconnectInterval = 100) {
-        this.autoReconnectInterval = reconnectInterval; // ms
-        this.url = url;
-    }
-
-    /**
-     * Opens connection
-     */
-    open() {
-        this.safeClose = false;
-        this.instance = new WebSocket(this.url);
-        this.instance.binaryType = 'arraybuffer';
-        this.instance.onopen = () => {
-            this.onOpenResend();
-            this.onopen();
-        };
-        this.instance.onmessage = (data, flags) => {
-            this.number++;
-            this.onmessage(data, flags, this.number);
-        };
-        this.instance.onclose = (e) => {
-            if (!this.safeClose) {
-                switch (e) {
-                    case 1000: // CLOSE_NORMAL
-                        this.onclose(e);
-                        break;
-                    default: // Abnormal closure
-                        this.reconnect();
-                        break;
-                }
-            } else {
-                this.onclose(e);
-            }
-        };
-        this.instance.onerror = (e) => {
-            switch (e.code) {
-                case 'ECONNREFUSED':
-                    if (!this.safeClose)
-                        this.reconnect();
-                    else
-                        this.onclose(e);
-                    break;
-                default:
-                    this.onerror(e);
-                    break;
-            }
-        };
-    }
-
-    /**
-     * Closes connection
-     */
-    close() {
-        this.safeClose = true;
-        this.instance.close();
-    }
-
-    sendBuffer = [];
-
-    /**
-     * Sends data to remote socket or saves to buffer if not available
-     * @param data
-     * @param option
-     */
-    send(data, option?) {
-        try {
-            this.instance.send(data, option);
-        } catch (e) {
-            this.sendBuffer.push([data, option]);
-        }
-    }
-
-    /**
-     * Reconnects to a websocket
-     */
-    reconnect() {
-        if (!this.safeClose) {
-            setTimeout(() => {
-                this.open();
-            }, this.autoReconnectInterval);
-        }
-    }
-
-    /**
-     * After successful reconnection send all buffered data to remote
-     */
-    onOpenResend() {
-        for (let [data, option] of this.sendBuffer)
-            this.send(data, option);
-        this.sendBuffer = [];
-    }
-
-    onopen() {
-    }
-
-    onmessage(data, flags, number) {
-    }
-
-    onerror(e) {
-    }
-
-    onclose(e) {
-    }
-}
-
 export class RPCError extends Error {
-    constructor(message) {
-        super(message.toString());
+    constructor(message:string) {
+        super(message);
     }
 }
 
@@ -128,9 +13,9 @@ export type IClientOpenHandler = () => PromisableVoid;
 export type IClientCloseHandler = (status: number) => PromisableVoid;
 export type IClientOpenCloseHandler = IClientOpenHandler | IClientCloseHandler;
 
-export type IServerOpenHandler = (socket) => PromisableVoid;
-export type IServerCloseHandler = (socket, status: number) => PromisableVoid;
-export type IServerOpenCloseHandler = IServerOpenHandler | IServerCloseHandler;
+export type IServerOpenHandler<T> = (socket:T) => PromisableVoid;
+export type IServerCloseHandler<T> = (socket:T, status: number) => PromisableVoid;
+export type IServerOpenCloseHandler<T> = IServerOpenHandler<T> | IServerCloseHandler<T>;
 
 /**
  * Values there is used by mine very old arduino project...
@@ -204,9 +89,9 @@ export interface IEncoder {
 
     encodeData(data: IEncoderPacket): Buffer;
 
-    setRandomToRpc(random: number, rpc: string);
+    setRandomToRpc(random: number, rpc: string): void;
 
-    resetRandomToRpc(random);
+    resetRandomToRpc(random: number):void;
 
     hasRpcMethod(name: string): boolean;
 
@@ -221,26 +106,26 @@ export interface IEncoder {
  * Handler
  */
 export type IRPCHandlerWithoutThis = (data: any) => Promise<any>;
-export type IRPCHandlerWithThis = (socket: PotatoSocketUniversal, data: any) => Promise<any>;
+export type IRPCHandlerWithThis<T> = (socket: T, data: any) => Promise<any>;
 
 export type IEventHandlerWithoutThis = (name: 'open' | 'close' | string, handler: (data: any) => PromisableVoid) => void;
-export type IEventHandlerWithThis = (name: 'open' | 'close' | string, handler: (socket, data: any) => PromisableVoid) => void;
+export type IEventHandlerWithThis<T> = (name: 'open' | 'close' | string, handler: (socket:T, data: any) => PromisableVoid) => void;
 /**
  * Misc
  */
-export type IRPCFieldWithoutThis = { [key: string]: IRPCField | IRPCHandlerWithoutThis };
-export type IRPCFieldWithThis = { [key: string]: IRPCField | IRPCHandlerWithThis };
-export type IRPCField = IRPCFieldWithoutThis | IRPCFieldWithThis;
+export type IRPCFieldWithoutThis = { [key: string]: IRPCHandlerWithoutThis | IRPCFieldWithoutThis };
+export type IRPCFieldWithThis<T> = { [key: string]: IRPCHandlerWithThis<T> | IRPCFieldWithThis<T> };
+export type IRPCField<T> = IRPCFieldWithoutThis | IRPCFieldWithThis<T>;
 export type PromisableVoid = void | Promise<void>;
 
-export type IRPCMethodList = { [key: string]: IRPCHandlerWithoutThis | IRPCHandlerWithThis };
-export type IEventHandlerList = { [key: string]: (IEventHandlerWithThis | IEventHandlerWithoutThis)[] }
+export type IRPCMethodList<T> = { [key: string]: IRPCHandlerWithoutThis | IRPCHandlerWithThis<T> };
+export type IEventHandlerList<T> = { [key: string]: (IEventHandlerWithThis<T> | IEventHandlerWithoutThis)[] }
 
 /**
  * Common potato.socket implementation
  * Universal side (Use any protocol)
  */
-export class PotatoSocketUniversal {
+export class PotatoSocketUniversal<F> {
     logger: Logger;
 
     /**
@@ -258,7 +143,7 @@ export class PotatoSocketUniversal {
 
     //isThisNeeded: boolean;
 
-    server?;
+    server?:any;
     /**
      * Encoder manages data (de)serialization
      */
@@ -268,7 +153,7 @@ export class PotatoSocketUniversal {
      */
     timeout: number;
 
-    constructor(name: string | Logger, encoder: IEncoder, server = null, timeout = 20000) {
+    constructor(name: string | Logger, encoder: IEncoder, server:any = null, timeout = 20000) {
         this.timeout = timeout;
         if (name instanceof Logger) {
             this.logger = name;
@@ -284,12 +169,12 @@ export class PotatoSocketUniversal {
      * Local defined RPC methods
      * methodId=>handler map
      */
-    rpcMethods: IRPCMethodList = {};
+    rpcMethods: IRPCMethodList<this> = {};
     /**
      * Local defined event handlers
      * eventId=>[...handlers] map
      */
-    eventHandlers: IEventHandlerList = {};
+    eventHandlers: IEventHandlerList<this> = {};
 
     local = {
         emit: (name: string, data: any): boolean => {
@@ -327,7 +212,7 @@ export class PotatoSocketUniversal {
          * GET = calls local rpc method
          * SET = does nothing
          */
-        get rpc(): IRPCFieldWithoutThis {
+        get rpc(): F {
             throw new Error('Cannot use rpc on local!');
         }
     };
@@ -350,7 +235,7 @@ export class PotatoSocketUniversal {
             }
             return true;
         },
-        on: (name: string, handler: IEventHandlerWithoutThis | IEventHandlerWithThis) => {
+        on: (name: string, handler: IEventHandlerWithoutThis) => {
             if (!this.encoder.hasEvent(name)) {
                 throw new Error(`Trying to listen for not existing remote packet: ${name}\nExisting packets: ${this.encoder.getExistingEvents().join(', ')}`);
             }
@@ -363,15 +248,15 @@ export class PotatoSocketUniversal {
          * GET = calls remote rpc method
          * SET = sets remote (Received from other client) rpc method handler
          */
-        rpc: ()=>{
+        rpc: (): F =>{
             let path='';
             let self=this;
-            const proxy= new Proxy({}, {
+            const proxy:ProxyHandler<IRPCField<this>>= new Proxy({}, {
                 get(target,key:string){
                     path+='.'+key;
                     let callbackName=path.substr(1);
                     if(self.encoder.hasRpcMethod(callbackName)){
-                        return (...args)=>{
+                        return (...args:any[])=>{
                             path='';
                             if (args.length !== 1)
                                 throw new Error(`Wrong method call argument count: ${args.length}, methods must have only one argument passed!`);
@@ -380,7 +265,7 @@ export class PotatoSocketUniversal {
                     }
                     return proxy;
                 },
-                set(target,key:string,to:IRPCHandlerWithoutThis|IRPCHandlerWithThis){
+                set(target,key:string,to:IRPCHandlerWithoutThis|IRPCHandlerWithThis<typeof self>){
                     path+='.'+key;
                     let callbackName=path.substr(1);
                     path='';
@@ -397,11 +282,11 @@ export class PotatoSocketUniversal {
                     return true;
                 }
             });
-            return proxy;
+            return <F>proxy;
         }
     };
 
-    rpc(): IRPCFieldWithoutThis {
+    rpc(): any {
         return this.remote.rpc();
     }
 
@@ -409,7 +294,7 @@ export class PotatoSocketUniversal {
         return this.remote.emit(name, data);
     }
 
-    on(name: string, handler: IRPCHandlerWithThis | IRPCHandlerWithoutThis) {
+    on(name: string, handler: IRPCHandlerWithThis<this> | IRPCHandlerWithoutThis) {
         this.remote.on(name, <any>handler);
     }
 
@@ -489,7 +374,7 @@ export class PotatoSocketUniversal {
         }, this.timeout);
         let methodResult;
         if (this.isManaged) {
-            methodResult = (<IRPCHandlerWithThis>rpcMethods[methodName])(this, data);
+            methodResult = (<IRPCHandlerWithThis<this>>rpcMethods[methodName])(this, data);
         } else {
             methodResult = (<IRPCHandlerWithoutThis>rpcMethods[methodName])(data);
         }
@@ -606,7 +491,7 @@ export class PotatoSocketUniversal {
      * Send buffer to receiver side
      * @param buffer
      */
-    sendBufferToRemote(buffer) {
+    sendBufferToRemote(buffer:Buffer) {
         this.logger.error(buffer);
         throw new Error('PotatoSocketUniversal have no sendBufferToRemote method declaration!\nUse class extending it!');
     }
@@ -616,7 +501,7 @@ export class PotatoSocketUniversal {
      * Got buffer from sender side
      * @param buffer
      */
-    gotBufferFromRemote(buffer) {
+    gotBufferFromRemote(buffer:Buffer) {
         try {
             let packet = this.encoder.decodeData(buffer);
             switch (packet.type) {

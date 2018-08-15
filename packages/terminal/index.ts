@@ -58,7 +58,7 @@ export function writeEscape(args:string){
  * @param line 
  * @param col
  */
-export function moveCursor(line, col=1) {
+export function moveCursor(line:number, col:number=1) {
 	writeEscape(line + ';' + col + 'f');
 }
 /**
@@ -77,7 +77,7 @@ export function showCursor(){
  * Clear line
  * @param line if not defined - current line 
  */
-export function clearLine(line?) {
+export function clearLine(line?:number) {
 	if(line){
 		save();
 		moveCursor(line);

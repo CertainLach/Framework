@@ -36,7 +36,7 @@ export default class State {
      * @param targetVector The target state vector
      * @param noCache Set to true to bypass the translation cache
      */
-    translate(request, targetVector, noCache = false) {
+    translate(request:Request, targetVector: Vector, noCache = false) {
         if (request instanceof DoRequest && request.vector.equals(targetVector)) {
             // If the request vector is not an undo/redo request and is already
             // at the desired state, simply return the original request since
@@ -67,15 +67,14 @@ export default class State {
             // vector, except the component of the issuing user is changed to
             // match the one from the associated request.
             const mirrorAt = targetVector.copy();
-            mirrorAt[request.user] = assocReq.vector.get(request.user);
+            mirrorAt.users[request.user] = assocReq.vector.get(request.user);
 
             if (this.reachable(mirrorAt)) {
-                let translated = this.translate(assocReq, mirrorAt);
+                let translated:any = this.translate(assocReq, mirrorAt);
                 const mirrorBy = targetVector.get(request.user) -
                     mirrorAt.get(request.user);
 
-                const mirrored = translated.mirror(mirrorBy);
-                return mirrored;
+                return translated.mirror(mirrorBy);
             }
 
             // If mirrorAt is not reachable, we need to mirror earlier and then
@@ -122,10 +121,8 @@ export default class State {
                     // was issued before it.
 
                     if (this.reachable(foldAt) && request.vector.causallyBefore(foldAt)) {
-                        let translated = this.translate(request, foldAt);
-                        const folded = translated.fold(user, foldBy);
-
-                        return folded;
+                        let translated:any = this.translate(request, foldAt);
+                        return translated.fold(user, foldBy);
                     }
                 }
             }
@@ -138,8 +135,8 @@ export default class State {
             if (transformAt.get(user) >= 0 && this.reachable(transformAt)) {
                 lastRequest = this.requestByUser(user, transformAt.get(user));
 
-                const r1 = this.translate(request, transformAt);
-                const r2 = this.translate(lastRequest, transformAt);
+                const r1:any = this.translate(request, transformAt);
+                const r2:any = this.translate(lastRequest, transformAt);
 
                 let cid_req;
 
@@ -228,7 +225,7 @@ export default class State {
      * @param request The request to be executed. If omitted, an
      * executable request is picked from the request queue instead
      */
-    execute(request?: Request): Request|undefined {
+    execute(request?: Request): Request {
         if (request == undefined) {
             // Pick an executable request from the queue.
             for (let index = 0; index < this.request_queue.length; index++) {
@@ -246,7 +243,7 @@ export default class State {
             if (request != undefined)
                 this.queue(request);
 
-            return;
+            return null;
         }
 
         if (request.vector.get(request.user) < this.vector.get(request.user)) {
@@ -254,7 +251,7 @@ export default class State {
             // log.
             // FIXME: this assumes the received request is already reversible
             this.log.push(request);
-            return;
+            return null;
         }
 
         request = request.copy();
@@ -265,7 +262,7 @@ export default class State {
             // untouched.
             const assocReq = request.associatedRequest(this.log);
             const newVector = new Vector(assocReq.vector);
-            newVector[request.user] = request.vector.get(request.user);
+            newVector.users[request.user] = request.vector.get(request.user);
             request.vector = newVector;
         }
 
@@ -345,6 +342,7 @@ export default class State {
                 return request;
             }
         }
+        return null;
     }
 
     /**

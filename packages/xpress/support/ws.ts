@@ -17,8 +17,8 @@ export default function addSupport(nativeServer, xpress) {
         let url=socket.upgradeReq.url;
         let session=socket.upgradeReq.session;
         // Socket will be transfered over handlers chain as http response
-        console.log(session);
         xpress.handle({
+            originalUrl:url,
             url,
             session,
             headers:socket.upgradeReq.headers,

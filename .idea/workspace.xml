@@ -1,0 +1,1934 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="62323e8a-b399-440f-8917-c0c9d269af58" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/Meteor-IT.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Meteor-IT.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_ajson_index_.ajson.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_argv_index_.argparser.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_operations_delete_.delete.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_operations_insert_.insert.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_operations_noop_.noop.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_operations_split_.split.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_recon_.recon.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_reconsegment_.reconsegment.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_requests_do_.dorequest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_requests_redo_.redorequest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_requests_undo_.undorequest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_segment_.segment.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_segmentbuffer_.segmentbuffer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_state_.state.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_collab_vector_.vector.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_form_index_.fieldvalidator.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_form_index_.formvalidator.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_form_integrations_react_.field.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_form_integrations_react_.form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_logger_index_.basicreceiver.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_logger_index_.logger.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_logger_receivers_browser_.browserconsolereceiver.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_logger_receivers_node_.nodeconsolereceiver.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_plugin_loader_hardpluginloader_.hardpluginloader.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_plugin_loader_index_.hardpluginloader.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_plugin_loader_index_.softpluginloader.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_plugin_loader_index_.webpackpluginloader.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_plugin_loader_softpluginloader_.softpluginloader.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_plugin_loader_webpackpluginloader_.webpackpluginloader.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_random_index_.random.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.a.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.abbr.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.acronym.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.address.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.applet.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.area.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.article.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.aside.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.audio.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.b.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.basefont.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.bdi.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.bdo.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.bgsound.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.big.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.blink.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.blockquote.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.body.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.br.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.button.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.canvas.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.caption.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.center.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.cite.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.code.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.col.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.colgroup.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.command.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.content.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.data.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.datalist.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.dd.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.del.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.details.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.dfn.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.dialog.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.dir.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.div.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.dl.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.dt.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.element.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.em.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.embed.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.fieldset.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.figcaption.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.figure.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.font.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.footer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.frame.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.frameset.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.h1.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.h2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.h3.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.h4.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.h5.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.h6.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.head.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.header.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.hgroup.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.hr.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.html.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.i.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.iframe.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.image.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.img.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.input.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.ins.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.isindex.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.kbd.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.keygen.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.label.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.legend.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.li.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.link.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.listing.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.main.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.map.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.mark.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.marquee.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.math.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.menu.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.menuitem.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.meta.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.meter.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.multicol.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.nav.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.nextid.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.nobr.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.noembed.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.noframes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.noscript.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.object.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.ol.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.optgroup.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.option.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.output.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.p.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.param.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.picture.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.plaintext.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.pre.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.progress.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.q.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.rb.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.rbc.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.rocketcomponent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.rp.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.rt.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.rtc.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.ruby.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.s.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.samp.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.script.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.section.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.select.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.shadow.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.slot.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.small.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.source.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.spacer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.span.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.strike.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.strong.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.style.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.sub.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.summary.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.sup.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.svg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.tbody.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.td.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.template.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.textarea.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.tfoot.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.th.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.thead.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.time.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.title.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.tr.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.track.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.tt.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.u.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.ul.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.var.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.video.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.wbr.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_elements_html_.xmp.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_internal_data_.internalrocketnode.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_internal_data_.rocketcomponentreacteventsproxy.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_rocketapp_.rocketapp.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_rocketcomponent_.rocketcomponent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_rocketstore_.empty.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_rocketstore_.rocketstore.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_stores_headerstore_.headerstore.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_rocket_stores_routerstore_.routerstore.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_router_index_.urouter.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_router_pathtoregexp_.key.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_socket_encoders_msgpackencoder_.msgpackencoder.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_socket_encoders_pdsencoder_.pdsencoder.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_socket_index_.potatosocketuniversal.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_socket_index_.rpcerror.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_socket_integrations_potatowebsocketclient_.potatosocketclient.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_socket_integrations_potatowebsocketserver_.potatowebsocketserver.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_socket_integrations_potatowebsocketserver_.potatowebsocketserverinternalclient.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_socket_websocketclient_.websocketclient.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_templato_index_.templato.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_utils_index_.multistream.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_api_ds_.dsapi.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_api_tg_.tgapi.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_api_vk_.vkapi.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_eventemitter_.eventemitter.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.actionevent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.api.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.audio.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.basefile.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.chat.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.conversation.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.file.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.forwardedmessage.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.image.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.joinevent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.leaveevent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.location.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.messageevent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.messengerspecific.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.notimplementedinapierror.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.photochangeevent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.titlechangeevent.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.user.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_index_.xbot.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xbot_timingdata_.timingdata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xpress_index_.httperror.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xpress_index_.xpress.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xpress_index_.xpressroutercontext.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xpress_index_.xpresswrappedrequest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xpress_index_.xpresswrappedresponse.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xrest_index_.request.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xrest_index_.xrest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xrest_multipart_.file.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xrest_multipart_.filestream.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xrest_multipart_.multipartrequest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/classes/_xrest_multipart_.part.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/enums/_form_index_.fieldtype.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/enums/_form_index_.validationerrortype.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/enums/_logger_index_.logger_actions.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/enums/_socket_index_.packettype.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/enums/_xbot_index_.gender.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/enums/_xbot_index_.role.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_collab_operation_.operation.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_form_index_.fielddata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_form_index_.multifielddata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_form_index_.numberdata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_form_index_.selectdata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_form_index_.textfielddata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_form_index_.validationerror.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_fs_index_.iparseddataurl.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_logger_index_.__global.console.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_logger_receivers_node_.iprogressitem.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_plugin_loader_index_.__global.nodemodule.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iaattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iappletattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iareaattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iaudioattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ibaseattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ibasefontattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ibgsoundattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iblockquoteattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ibodyattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ibuttonattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.icanvasattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.icaptionattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.icolattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.icolgroupattributes-1.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.icolgroupattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.icommandattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.idelattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.idetailsattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iembedattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ifieldsetattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ifontattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iformattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ihrattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ihtmlattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iiframeattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iimgattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iinputattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iinsattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ikeygenattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ilabelattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iliattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ilinkattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.imapattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.imarqueeattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.imenuattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.imetaattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.imeterattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iobjectattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iolattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ioptionattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ioutputattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iparamattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iprogressattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iqattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iscriptattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.iselectattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.isourceattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.istyleattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itableattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itbodyattributes-1.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itbodyattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itdattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itextareaattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itfootattributes-1.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itfootattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ithattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itheadattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itimeattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itrackattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.itrattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.ivideoattributes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_rocket_elements_html_.optgroup-1.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_router_index_.icontextnextmethodattachment.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_router_pathtoregexp_.ikey.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_router_pathtoregexp_.options.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_socket_index_.iencoder.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_socket_index_.ieventpacket.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_socket_index_.irpccallpacket.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_socket_index_.irpcerrorpacket.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_socket_index_.irpcokpacket.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_utils_index_.__global.objectconstructor.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_utils_index_.imultistreamoptions.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_xbot_index_.attachment.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_xbot_index_.iactioneventconstructiondata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_xbot_index_.ijoineventconstructiondata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_xbot_index_.ileaveeventconstructiondata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_xbot_index_.imessageeventconstructiondata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_xbot_index_.iphotochangeeventconstructiondata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/interfaces/_xbot_index_.ititlechangeeventconstructiondata.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_ajson_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_argv_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_operation_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_operations_delete_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_operations_insert_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_operations_noop_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_operations_split_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_recon_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_reconsegment_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_request_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_requests_do_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_requests_redo_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_requests_undo_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_segment_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_segmentbuffer_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_state_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_collab_vector_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_decorators_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_emoji_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_form_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_form_integrations_react_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_fs_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_logger_colors_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_logger_index_.__global.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_logger_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_logger_receivers_browser_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_logger_receivers_node_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_mime_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_mixins_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_plugin_loader_hardpluginloader_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_plugin_loader_index_.__global.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_plugin_loader_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_plugin_loader_nonwebpackloaderutils_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_plugin_loader_softpluginloader_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_plugin_loader_webpackpluginloader_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_queue_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_random_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_elements_android_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_elements_html_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_elements_svg_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_internal_data_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_internal_r_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_mobx_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_r_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_rocketapp_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_rocketcomponent_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_rocketstore_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_router_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_stores_headerstore_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_rocket_stores_routerstore_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_router_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_router_middlerun_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_router_pathtoregexp_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_router_wrapmiddleware_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_socket_encoders_msgpackencoder_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_socket_encoders_pdsencoder_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_socket_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_socket_integrations_potatowebsocketclient_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_socket_integrations_potatowebsocketserver_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_socket_websocketclient_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_templato_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_terminal_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_utils_index_.__global.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_utils_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xbot_api_ds_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xbot_api_tg_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xbot_api_vk_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xbot_eventemitter_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xbot_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xbot_timingdata_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xpress_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xpress_middlewares_forcehttps_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xpress_middlewares_session_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xpress_middlewares_static_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xpress_support_ws_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xrest_index_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/modules/_xrest_multipart_.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/ajson/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/argv/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/Operation.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/Recon.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/ReconSegment.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/Request.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/Segment.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/SegmentBuffer.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/State.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/Vector.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/operations/Delete.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/operations/Insert.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/operations/NoOp.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/operations/Split.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/requests/Do.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/requests/Redo.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/collab/requests/Undo.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/decorators/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/emoji/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/form/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/fs/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/logger/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/logger/receivers/browser.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/logger/receivers/node.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/mime/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/mixins/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/plugin-loader/HardPluginLoader.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/plugin-loader/SoftPluginLoader.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/plugin-loader/WebpackPluginLoader.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/plugin-loader/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/plugin-loader/nonWebpackLoaderUtils.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/queue/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/random/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/RocketApp.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/RocketComponent.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/RocketStore.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/elements/android.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/elements/html.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/elements/svg.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/internal/data.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/internal/r.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/mobx.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/r.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/router.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/stores/HeaderStore.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/rocket/stores/RouterStore.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/socket/WebSocketClient.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/socket/WebSocketClient.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/socket/encoders/MsgPackEncoder.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/socket/encoders/PDSEncoder.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/socket/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketClient.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketServer.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/templato/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/terminal/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/utils/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xbot/EventEmitter.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xbot/TimingData.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xbot/api/ds.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xbot/api/tg.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xbot/api/vk.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xbot/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xpress/index.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xpress/middlewares/forceHttps.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xpress/middlewares/session.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xpress/middlewares/static.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/xpress/support/ws.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.MD" beforeDir="false" afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/.nojekyll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/js/search.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_ajson_index_.ajson.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_argv_index_.argparser.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_operations_delete_.delete.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_operations_insert_.insert.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_operations_noop_.noop.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_operations_split_.split.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_recon_.recon.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_reconsegment_.reconsegment.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_requests_do_.dorequest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_requests_redo_.redorequest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_requests_undo_.undorequest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_segment_.segment.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_segmentbuffer_.segmentbuffer.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_state_.state.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_collab_vector_.vector.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_form_index_.fieldvalidator.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_form_index_.formvalidator.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_form_integrations_react_.field.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_form_integrations_react_.form.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_logger_index_.basicreceiver.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_logger_index_.logger.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_logger_receivers_browser_.browserconsolereceiver.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_logger_receivers_node_.nodeconsolereceiver.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_plugin_loader_hardpluginloader_.hardpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_plugin_loader_index_.hardpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_plugin_loader_index_.softpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_plugin_loader_index_.webpackpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_plugin_loader_softpluginloader_.softpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_plugin_loader_webpackpluginloader_.webpackpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_random_index_.random.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_rocket_headerstore_.headerstore.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_rocket_html_.html.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_rocket_rocketcomponent_.rocketcomponent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_rocket_routerstore_.routerstore.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_rocket_store_.rocketstore.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_encoders_msgpackencoder_.msgpackencoder.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_encoders_pdsencoder_.pdsencoder.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_index_.potatosocketuniversal.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_index_.potatosocketuniversal.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d_0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_index_.potatosocketuniversal.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_index_.potatosocketuniversal.html~HEAD_0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_index_.rpcerror.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_index_.websocketclient.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_integrations_potatowebsocketclient_.potatosocketclient.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_integrations_potatowebsocketserver_.potatowebsocketserver.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_socket_integrations_potatowebsocketserver_.potatowebsocketserverinternalclient.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_templato_index_.templato.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_utils_index_.multistream.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_api_ds_.dsapi.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_api_ds_.dsapi.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_api_tg_.tgapi.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_api_tg_.tgapi.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_api_vk_.vkapi.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_eventemitter_.eventemitter.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.actionevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.api.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.audio.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.basefile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.chat.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.conversation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.file.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.forwardedmessage.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.image.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.joinevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.leaveevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.location.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.messageevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.messengerspecific.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.notimplementedinapierror.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.photochangeevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.titlechangeevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.user.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_index_.xbot.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xbot_timingdata_.timingdata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xpress_index_.httperror.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xpress_index_.router.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xpress_index_.xpress.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xpress_index_.xpress.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d_0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xpress_index_.xpress.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xpress_index_.xpress.html~HEAD_0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xrest_index_.request.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xrest_index_.xrest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xrest_multipart_.data.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xrest_multipart_.file.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xrest_multipart_.filestream.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xrest_multipart_.multipartrequest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xrest_multipart_.part.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/__meteor_it_xrest_multipart_.stream.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_ajson_index_.ajson.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_argv_index_.argparser.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_operations_delete_.delete.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_operations_insert_.insert.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_operations_noop_.noop.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_operations_split_.split.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_recon_.recon.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_reconsegment_.reconsegment.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_requests_do_.dorequest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_requests_redo_.redorequest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_requests_undo_.undorequest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_segment_.segment.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_segmentbuffer_.segmentbuffer.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_state_.state.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_collab_vector_.vector.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_form_index_.fieldvalidator.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_form_index_.formvalidator.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_form_integrations_react_.field.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_form_integrations_react_.form.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_logger_index_.basicreceiver.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_logger_index_.logger.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_logger_receivers_browser_.browserconsolereceiver.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_logger_receivers_node_.nodeconsolereceiver.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_plugin_loader_hardpluginloader_.hardpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_plugin_loader_index_.hardpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_plugin_loader_index_.softpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_plugin_loader_index_.webpackpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_plugin_loader_softpluginloader_.softpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_plugin_loader_webpackpluginloader_.webpackpluginloader.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_random_index_.random.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_rocket_headerstore_.headerstore.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_rocket_html_.html.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_rocket_rocketcomponent_.rocketcomponent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_rocket_routerstore_.routerstore.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_rocket_store_.rocketstore.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_encoders_msgpackencoder_.msgpackencoder.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_encoders_pdsencoder_.pdsencoder.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_index_.potatosocketuniversal.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_index_.potatosocketuniversal.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_index_.rpcerror.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_index_.websocketclient.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_integrations_potatowebsocketclient_.potatosocketclient.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_integrations_potatowebsocketserver_.potatowebsocketserver.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_socket_integrations_potatowebsocketserver_.potatowebsocketserverinternalclient.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_templato_index_.templato.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_utils_index_.multistream.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_api_ds_.dsapi.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_api_ds_.dsapi.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_api_tg_.tgapi.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_api_tg_.tgapi.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_api_vk_.vkapi.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_eventemitter_.eventemitter.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.actionevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.api.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.audio.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.basefile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.chat.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.conversation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.file.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.forwardedmessage.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.image.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.joinevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.leaveevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.location.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.messageevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.messengerspecific.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.notimplementedinapierror.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.photochangeevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.titlechangeevent.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.user.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_index_.xbot.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xbot_timingdata_.timingdata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xpress_index_.httperror.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xpress_index_.router.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xpress_index_.xpress.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xpress_index_.xpress.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xrest_index_.request.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xrest_index_.xrest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xrest_multipart_.data.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xrest_multipart_.file.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xrest_multipart_.filestream.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xrest_multipart_.multipartrequest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xrest_multipart_.part.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/classes/_packages_xrest_multipart_.stream.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/__meteor_it_form_index_.fieldtype.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/__meteor_it_form_index_.validationerrortype.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/__meteor_it_logger_index_.logger_actions.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/__meteor_it_socket_index_.packettype.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/__meteor_it_xbot_index_.gender.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/__meteor_it_xbot_index_.role.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/_packages_form_index_.fieldtype.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/_packages_form_index_.validationerrortype.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/_packages_logger_index_.logger_actions.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/_packages_socket_index_.packettype.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/_packages_xbot_index_.gender.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/enums/_packages_xbot_index_.role.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_collab_operation_.operation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_emoji_index_.iemojipart.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_form_index_.fielddata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_form_index_.multifielddata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_form_index_.numberdata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_form_index_.selectdata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_form_index_.textfielddata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_form_index_.validationerror.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_fs_index_.iparseddataurl.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_logger_colors_.__global.string.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_logger_index_.__global.console.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_logger_receivers_node_.iprogressitem.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_plugin_loader_index_.__global.nodemodule.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_rocket_html_.ihtmlprops.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_rocket_rocketcomponent_.rocketcomponentlifecycle.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_socket_index_.iencoder.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_socket_index_.ieventpacket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_socket_index_.irpccallpacket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_socket_index_.irpcerrorpacket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_socket_index_.irpcokpacket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_utils_index_.__global.objectconstructor.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_utils_index_.imultistreamoptions.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_xbot_index_.attachment.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_xbot_index_.iactioneventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_xbot_index_.ijoineventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_xbot_index_.ileaveeventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_xbot_index_.imessageeventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_xbot_index_.iphotochangeeventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_xbot_index_.ititlechangeeventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/__meteor_it_xrest_index_.ixresponse.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_collab_operation_.operation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_emoji_index_.iemojipart.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_form_index_.fielddata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_form_index_.multifielddata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_form_index_.numberdata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_form_index_.selectdata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_form_index_.textfielddata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_form_index_.validationerror.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_fs_index_.iparseddataurl.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_logger_colors_.__global.string.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_logger_index_.__global.console.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_logger_receivers_node_.iprogressitem.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_plugin_loader_index_.__global.nodemodule.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_rocket_html_.ihtmlprops.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_rocket_rocketcomponent_.rocketcomponentlifecycle.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_socket_index_.iencoder.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_socket_index_.ieventpacket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_socket_index_.irpccallpacket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_socket_index_.irpcerrorpacket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_socket_index_.irpcokpacket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_utils_index_.__global.objectconstructor.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_utils_index_.imultistreamoptions.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_xbot_index_.attachment.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_xbot_index_.iactioneventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_xbot_index_.ijoineventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_xbot_index_.ileaveeventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_xbot_index_.imessageeventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_xbot_index_.iphotochangeeventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_xbot_index_.ititlechangeeventconstructiondata.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/interfaces/_packages_xrest_index_.ixresponse.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_ajson_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_argv_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_operation_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_operations_delete_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_operations_insert_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_operations_noop_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_operations_split_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_recon_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_reconsegment_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_request_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_requests_do_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_requests_redo_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_requests_undo_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_segment_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_segmentbuffer_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_state_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_collab_vector_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_emoji_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_form_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_form_integrations_react_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_fs_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_logger_colors_.__global.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_logger_colors_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_logger_index_.__global.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_logger_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_logger_receivers_browser_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_logger_receivers_node_.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_logger_receivers_node_.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_mime_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_plugin_loader_hardpluginloader_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_plugin_loader_index_.__global.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_plugin_loader_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_plugin_loader_nonwebpackloaderutils_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_plugin_loader_softpluginloader_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_plugin_loader_webpackpluginloader_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_queue_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_random_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_headerstore_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_html_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_mobx_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_reacttools_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_rocketcomponent_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_router_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_routerstore_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_store_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_rocket_utils_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_socket_encoders_msgpackencoder_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_socket_encoders_pdsencoder_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_socket_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_socket_integrations_potatowebsocketclient_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_socket_integrations_potatowebsocketserver_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_socket_integrations_react_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_templato_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_terminal_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_utils_index_.__global.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_utils_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xbot_api_ds_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xbot_api_tg_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xbot_api_vk_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xbot_eventemitter_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xbot_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xbot_timingdata_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xpress_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xpress_middlewares_forcehttps_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xpress_middlewares_session_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xpress_middlewares_static_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xpress_support_ws_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xrest_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/__meteor_it_xrest_multipart_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_ajson_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_argv_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_operation_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_operations_delete_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_operations_insert_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_operations_noop_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_operations_split_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_recon_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_reconsegment_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_request_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_requests_do_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_requests_redo_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_requests_undo_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_segment_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_segmentbuffer_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_state_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_collab_vector_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_emoji_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_form_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_form_integrations_react_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_fs_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_logger_colors_.__global.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_logger_colors_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_logger_index_.__global.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_logger_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_logger_receivers_browser_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_logger_receivers_node_.html~7a9144ab8ff0d9b2949e5cfd13042338cf95249d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_logger_receivers_node_.html~HEAD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_mime_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_plugin_loader_hardpluginloader_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_plugin_loader_index_.__global.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_plugin_loader_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_plugin_loader_nonwebpackloaderutils_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_plugin_loader_softpluginloader_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_plugin_loader_webpackpluginloader_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_queue_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_random_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_headerstore_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_html_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_mobx_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_reacttools_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_rocketcomponent_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_router_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_routerstore_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_store_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_rocket_utils_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_socket_encoders_msgpackencoder_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_socket_encoders_pdsencoder_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_socket_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_socket_integrations_potatowebsocketclient_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_socket_integrations_potatowebsocketserver_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_socket_integrations_react_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_templato_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_terminal_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_utils_index_.__global.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_utils_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xbot_api_ds_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xbot_api_tg_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xbot_api_vk_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xbot_eventemitter_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xbot_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xbot_timingdata_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xpress_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xpress_middlewares_forcehttps_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xpress_middlewares_session_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xpress_middlewares_static_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xpress_support_ws_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xrest_index_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modules/_packages_xrest_multipart_.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/ajson/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/ajson/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/argv/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/argv/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/collab/Recon.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/collab/Recon.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/collab/State.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/collab/State.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/collab/Vector.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/collab/Vector.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/collab/operations/Delete.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/collab/operations/Delete.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/collab/operations/Insert.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/collab/operations/Insert.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/collab/operations/Split.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/collab/operations/Split.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/collab/requests/Redo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/collab/requests/Redo.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/collab/requests/Undo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/collab/requests/Undo.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/emoji/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/emoji/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/form/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/form/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/fs/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/fs/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/logger/colors.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/logger/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/logger/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/logger/receivers/.node.ts.swp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/logger/receivers/browser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/logger/receivers/browser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/logger/receivers/node.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/logger/receivers/node.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/logger/receivers/node.ts.save" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/mixins/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/mixins/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/README.MD" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/README.MD" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/RocketApp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/RocketApp.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/RocketComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/RocketComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/RocketStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/RocketStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/elements/html.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/elements/html.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/internal/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/internal/data.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/internal/r.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/internal/r.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/mobx.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/mobx.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/r.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/r.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/stores/HeaderStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/stores/HeaderStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/rocket/stores/RouterStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/rocket/stores/RouterStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/router/middleRun.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/router/middleRun.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/router/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/router/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/router/pathToRegexp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/router/pathToRegexp.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/socket/encoders/MsgPackEncoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/socket/encoders/MsgPackEncoder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/socket/encoders/PDSEncoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/socket/encoders/PDSEncoder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/socket/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/socket/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketServer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketServer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/socket/integrations/Rocket.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/socket/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/socket/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/templato/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/templato/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/templato/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/templato/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/terminal/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/terminal/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/terminal/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/terminal/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/utils/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/utils/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/utils/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/utils/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/xbot/api/ds.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/xbot/api/ds.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/xbot/api/tg.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/xbot/api/tg.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/xbot/api/vk.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/xbot/api/vk.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/xpress/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/xpress/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/xpress/middlewares/static.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/xpress/middlewares/static.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/xpress/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/xpress/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/xpress/support/ws.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/xpress/support/ws.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="1088246260">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.js.language.service.starts">
+        <counts>
+          <entry key="TypeScriptServerServiceImpl" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="MD" value="33" />
+          <entry key="gitignore" value="67" />
+          <entry key="ts" value="6618" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Markdown" value="33" />
+          <entry key="PLAIN_TEXT" value="67" />
+          <entry key="TypeScript" value="6618" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="MD" value="1" />
+          <entry key="gitignore" value="2" />
+          <entry key="json" value="3" />
+          <entry key="ts" value="17" />
+          <entry key="tsx" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="JSON" value="3" />
+          <entry key="Markdown" value="1" />
+          <entry key="PLAIN_TEXT" value="2" />
+          <entry key="TypeScript" value="17" />
+          <entry key="TypeScript JSX" value="1" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/xrest/multipart.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2704">
+              <caret line="169" column="43" selection-start-line="169" selection-start-column="43" selection-end-line="169" selection-end-column="43" />
+              <folding>
+                <element signature="e#0#30#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/xrest/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="208">
+              <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="128">
+              <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/ajson/index.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="218" column="5" selection-start-line="218" selection-start-column="5" selection-end-line="218" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/argv/index.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="111" column="21" lean-forward="true" selection-start-line="111" selection-start-column="21" selection-end-line="111" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#58#0" expanded="true" />
+                <element signature="e#564#1625#0" />
+                <element signature="n#!!block;n#normalizeArgument#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/packages/argv/node_modules/@meteor-it/logger/colors.d.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="16">
+              <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/logger/receivers/node.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2452">
+              <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/logger/receivers/browser.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="156">
+              <caret line="21" column="33" lean-forward="true" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
+              <folding>
+                <element signature="e#0#49#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/packages/logger/index.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1619">
+              <caret line="247" column="49" lean-forward="true" selection-start-line="247" selection-start-column="49" selection-end-line="247" selection-end-column="49" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lerna.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="96">
+              <caret line="6" selection-start-line="6" selection-end-line="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>Request</find>
+      <find>Response</find>
+      <find>source</find>
+      <find>pathTORegexp</find>
+      <find>resolve</find>
+      <find>handle</find>
+      <find>:any</find>
+      <find>[</find>
+      <find>Transfor</find>
+      <find>request</find>
+      <find>class Stream</find>
+      <find>ansiColors</find>
+      <find>bold</find>
+      <find>.bold</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/packages/router.ts" />
+        <option value="$PROJECT_DIR$/packages/router/package.json" />
+        <option value="$PROJECT_DIR$/packages/router/middleRun.ts" />
+        <option value="$PROJECT_DIR$/packages/router/pathToRegexp.ts" />
+        <option value="$PROJECT_DIR$/packages/router/index.ts" />
+        <option value="$PROJECT_DIR$/packages/collab/State.ts" />
+        <option value="$PROJECT_DIR$/packages/collab/Vector.ts" />
+        <option value="$PROJECT_DIR$/packages/collab/Recon.ts" />
+        <option value="$PROJECT_DIR$/packages/collab/requests/Redo.ts" />
+        <option value="$PROJECT_DIR$/packages/collab/requests/Undo.ts" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Insert.ts" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Delete.ts" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Split.ts" />
+        <option value="$PROJECT_DIR$/packages/emoji/index.ts" />
+        <option value="$PROJECT_DIR$/packages/form/index.ts" />
+        <option value="$PROJECT_DIR$/packages/form/integrations/React.tsx" />
+        <option value="$PROJECT_DIR$/packages/fs/index.ts" />
+        <option value="$PROJECT_DIR$/packages/xpress/index.ts" />
+        <option value="$PROJECT_DIR$/packages/xrest/multipart.ts" />
+        <option value="$PROJECT_DIR$/packages/xrest/index.ts" />
+        <option value="$PROJECT_DIR$/README.MD" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/packages/ajson/index.ts" />
+        <option value="$PROJECT_DIR$/packages/logger/index.ts" />
+        <option value="$PROJECT_DIR$/packages/logger/receivers/node.ts" />
+        <option value="$PROJECT_DIR$/packages/logger/receivers/browser.ts" />
+        <option value="$PROJECT_DIR$/packages/argv/index.ts" />
+        <option value="$PROJECT_DIR$/packages/argv/node_modules/@meteor-it/logger/colors.d.ts" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodeModulesDirectoryManager">
+    <handled-path value="$PROJECT_DIR$/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/argv/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/form/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/fs/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/logger/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/plugin-loader/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/queue/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/random/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/rocket/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/router/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/socket/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/xbot/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/xpress/node_modules" />
+    <handled-path value="$PROJECT_DIR$/packages/xrest/node_modules" />
+  </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/package.json" />
+      <path value="$PROJECT_DIR$/packages/ajson/package.json" />
+      <path value="$PROJECT_DIR$/packages/argv/package.json" />
+      <path value="$PROJECT_DIR$/packages/collab/package.json" />
+      <path value="$PROJECT_DIR$/packages/emoji/package.json" />
+      <path value="$PROJECT_DIR$/packages/form/package.json" />
+      <path value="$PROJECT_DIR$/packages/fs/package.json" />
+      <path value="$PROJECT_DIR$/packages/logger/package.json" />
+      <path value="$PROJECT_DIR$/packages/mime/package.json" />
+      <path value="$PROJECT_DIR$/packages/plugin-loader/package.json" />
+      <path value="$PROJECT_DIR$/packages/queue/package.json" />
+      <path value="$PROJECT_DIR$/packages/random/package.json" />
+      <path value="$PROJECT_DIR$/packages/rocket/package.json" />
+      <path value="$PROJECT_DIR$/packages/router/package.json" />
+      <path value="$PROJECT_DIR$/packages/socket/package.json" />
+      <path value="$PROJECT_DIR$/packages/templato/package.json" />
+      <path value="$PROJECT_DIR$/packages/terminal/package.json" />
+      <path value="$PROJECT_DIR$/packages/utils/package.json" />
+      <path value="$PROJECT_DIR$/packages/xbot/package.json" />
+      <path value="$PROJECT_DIR$/packages/xpress/package.json" />
+      <path value="$PROJECT_DIR$/packages/xrest/package.json" />
+    </packageJsonPaths>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-1226" />
+    <option name="y" value="-70" />
+    <option name="width" value="1234" />
+    <option name="height" value="1040" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="AndroidView" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Meteor-IT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Meteor-IT" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Meteor-IT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Meteor-IT" type="462c0819:PsiDirectoryNode" />
+              <item name="packages" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Meteor-IT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Meteor-IT" type="462c0819:PsiDirectoryNode" />
+              <item name="packages" type="462c0819:PsiDirectoryNode" />
+              <item name="ajson" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Meteor-IT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Meteor-IT" type="462c0819:PsiDirectoryNode" />
+              <item name="packages" type="462c0819:PsiDirectoryNode" />
+              <item name="argv" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Meteor-IT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Meteor-IT" type="462c0819:PsiDirectoryNode" />
+              <item name="packages" type="462c0819:PsiDirectoryNode" />
+              <item name="logger" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Meteor-IT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Meteor-IT" type="462c0819:PsiDirectoryNode" />
+              <item name="packages" type="462c0819:PsiDirectoryNode" />
+              <item name="logger" type="462c0819:PsiDirectoryNode" />
+              <item name="receivers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Meteor-IT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Meteor-IT" type="462c0819:PsiDirectoryNode" />
+              <item name="packages" type="462c0819:PsiDirectoryNode" />
+              <item name="xrest" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1534348583266" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="C:/Program Files/nodejs/node" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
+    <property name="typescript-compiler-editor-notification" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\f6cf\Desktop\Projects\Frameworks\Meteor-IT\packages\router" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\f6cf\Desktop\Projects\Frameworks\Meteor-IT\packages\router" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file id="idea.log" enabled="true" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="62323e8a-b399-440f-8917-c0c9d269af58" name="Default" comment="" />
+      <created>1524169158237</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1524169158237</updated>
+      <workItem from="1524169160315" duration="1711000" />
+      <workItem from="1524323461770" duration="4330000" />
+      <workItem from="1524495533540" duration="3003000" />
+      <workItem from="1526820351311" duration="4079000" />
+      <workItem from="1534288069838" duration="97000" />
+      <workItem from="1534334546966" duration="12747000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="25967000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-1226" y="-70" width="1234" height="1040" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.31942078" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="UI Designer" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="TypeScript" order="9" weight="0.32904884" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.3289183" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="Floobits" order="12" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="right" id="Cargo" order="5" />
+      <window_info anchor="right" id="Theme Preview" order="6" />
+      <window_info anchor="right" id="Database" order="7" />
+      <window_info anchor="right" id="Palette&#9;" order="8" />
+      <window_info anchor="right" id="Maven Projects" order="9" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/packages/rocket/router.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/RocketStore.js" />
+        <option value="$PROJECT_DIR$/packages/xbot/api/vk.js.map" />
+        <option value="$PROJECT_DIR$/packages/form/index.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/RocketStore.js.map" />
+        <option value="$PROJECT_DIR$/packages/xbot/api/tg.js" />
+        <option value="$PROJECT_DIR$/packages/xbot/api/ds.js.map" />
+        <option value="$PROJECT_DIR$/packages/xbot/api/vk.js" />
+        <option value="$PROJECT_DIR$/packages/xbot/api/tg.js.map" />
+        <option value="$PROJECT_DIR$/packages/mime/index.js" />
+        <option value="$PROJECT_DIR$/packages/form/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/mime/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/xbot/TimingData.js" />
+        <option value="$PROJECT_DIR$/packages/socket/WebSocketClient.js.map" />
+        <option value="$PROJECT_DIR$/packages/xbot/EventEmitter.js.map" />
+        <option value="$PROJECT_DIR$/packages/socket/WebSocketClient.js" />
+        <option value="$PROJECT_DIR$/packages/xbot/index.js" />
+        <option value="$PROJECT_DIR$/packages/xpress/middlewares/static.js" />
+        <option value="$PROJECT_DIR$/packages/xbot/TimingData.js.map" />
+        <option value="$PROJECT_DIR$/packages/socket/index.js" />
+        <option value="$PROJECT_DIR$/packages/xbot/EventEmitter.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/mobx.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/mobx.js" />
+        <option value="$PROJECT_DIR$/packages/socket/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/xpress/support/ws.js.map" />
+        <option value="$PROJECT_DIR$/packages/xpress/index.js" />
+        <option value="$PROJECT_DIR$/packages/xpress/support/ws.js" />
+        <option value="$PROJECT_DIR$/packages/xbot/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/xpress/middlewares/static.js.map" />
+        <option value="$PROJECT_DIR$/packages/templato/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/templato/index.js" />
+        <option value="$PROJECT_DIR$/packages/terminal/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/terminal/index.js" />
+        <option value="$PROJECT_DIR$/packages/xpress/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/ajson/index.js" />
+        <option value="$PROJECT_DIR$/packages/emoji/index.js" />
+        <option value="$PROJECT_DIR$/packages/ajson/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/xrest/index.js" />
+        <option value="$PROJECT_DIR$/packages/utils/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/SoftPluginLoader.js" />
+        <option value="$PROJECT_DIR$/packages/xrest/multipart.js" />
+        <option value="$PROJECT_DIR$/packages/xrest/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/queue/index.js" />
+        <option value="$PROJECT_DIR$/packages/decorators/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/emoji/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/decorators/index.js" />
+        <option value="$PROJECT_DIR$/packages/utils/index.js" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/nonWebpackLoaderUtils.js.map" />
+        <option value="$PROJECT_DIR$/packages/queue/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/nonWebpackLoaderUtils.js" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/SoftPluginLoader.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/requests/Undo.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/requests/Undo.js" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/requests/Do.js.map" />
+        <option value="$PROJECT_DIR$/packages/xrest/multipart.js.map" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/index.js" />
+        <option value="$PROJECT_DIR$/packages/collab/requests/Do.js" />
+        <option value="$PROJECT_DIR$/packages/collab/ReconSegment.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/ReconSegment.js" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/WebpackPluginLoader.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/requests/Redo.js.map" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/WebpackPluginLoader.js" />
+        <option value="$PROJECT_DIR$/packages/collab/requests/Redo.js" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/HardPluginLoader.js.map" />
+        <option value="$PROJECT_DIR$/packages/plugin-loader/HardPluginLoader.js" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Delete.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Delete.js" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Split.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Split.js" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Insert.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/Insert.js" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/NoOp.js" />
+        <option value="$PROJECT_DIR$/packages/logger/receivers/browser.js" />
+        <option value="$PROJECT_DIR$/packages/collab/operations/NoOp.js.map" />
+        <option value="$PROJECT_DIR$/packages/xpress/middlewares/session.js" />
+        <option value="$PROJECT_DIR$/packages/xpress/middlewares/session.js.map" />
+        <option value="$PROJECT_DIR$/packages/logger/receivers/browser.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/Recon.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/Recon.js" />
+        <option value="$PROJECT_DIR$/packages/xpress/middlewares/forceHttps.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/Request.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/Request.js" />
+        <option value="$PROJECT_DIR$/packages/collab/SegmentBuffer.js.map" />
+        <option value="$PROJECT_DIR$/packages/xpress/middlewares/forceHttps.js" />
+        <option value="$PROJECT_DIR$/packages/collab/SegmentBuffer.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/index.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/internal/r.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/Operation.js.map" />
+        <option value="$PROJECT_DIR$/packages/logger/receivers/node.js" />
+        <option value="$PROJECT_DIR$/packages/form/integrations/React.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/Operation.js" />
+        <option value="$PROJECT_DIR$/packages/form/integrations/React.js" />
+        <option value="$PROJECT_DIR$/packages/collab/Vector.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/internal/r.js" />
+        <option value="$PROJECT_DIR$/packages/collab/Vector.js" />
+        <option value="$PROJECT_DIR$/packages/logger/receivers/node.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/Segment.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/stores/RouterStore.js" />
+        <option value="$PROJECT_DIR$/packages/collab/Segment.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/stores/HeaderStore.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/State.js.map" />
+        <option value="$PROJECT_DIR$/packages/collab/State.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/stores/RouterStore.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/stores/HeaderStore.js" />
+        <option value="$PROJECT_DIR$/packages/socket/encoders/MsgPackEncoder.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/r.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/r.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/elements/svg.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/elements/html.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/elements/android.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/elements/html.js" />
+        <option value="$PROJECT_DIR$/packages/socket/encoders/PDSEncoder.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/elements/android.js.map" />
+        <option value="$PROJECT_DIR$/packages/socket/encoders/PDSEncoder.js" />
+        <option value="$PROJECT_DIR$/packages/logger/index.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/elements/svg.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/internal/data.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/internal/data.js.map" />
+        <option value="$PROJECT_DIR$/packages/socket/encoders/MsgPackEncoder.js.map" />
+        <option value="$PROJECT_DIR$/packages/logger/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/fs/index.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/RocketApp.js.map" />
+        <option value="$PROJECT_DIR$/packages/rocket/RocketApp.js" />
+        <option value="$PROJECT_DIR$/packages/mixins/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/mixins/index.js" />
+        <option value="$PROJECT_DIR$/packages/random/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/fs/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/random/index.js" />
+        <option value="$PROJECT_DIR$/packages/argv/index.js" />
+        <option value="$PROJECT_DIR$/packages/argv/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketServer.js" />
+        <option value="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketClient.js.map" />
+        <option value="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketServer.js.map" />
+        <option value="$PROJECT_DIR$/packages/socket/integrations/PotatoWebSocketClient.js" />
+        <option value="$PROJECT_DIR$/packages/xbot/api/ds.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/RocketComponent.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/router.js" />
+        <option value="$PROJECT_DIR$/packages/rocket/RocketComponent.js.map" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/tsconfig.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" column="6" selection-start-line="34" selection-start-column="6" selection-end-line="34" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/@types/node/index.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15062">
+          <caret line="906" column="80" selection-start-line="906" selection-start-column="66" selection-end-line="906" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUTHORS.MD">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/ajson/README.MD">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="85">
+            <caret line="5" column="3" selection-start-line="5" selection-start-column="3" selection-end-line="5" selection-end-column="3" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/State.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="264" column="28" selection-start-line="264" selection-start-column="27" selection-end-line="264" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/Vector.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="497">
+          <caret line="155" column="18" lean-forward="true" selection-start-line="155" selection-start-column="18" selection-end-line="155" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/SegmentBuffer.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="208" column="19" selection-start-line="208" selection-start-column="19" selection-end-line="208" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/Segment.ts">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/Request.ts">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/ReconSegment.ts">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/README.MD">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/requests/Redo.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="582">
+          <caret line="56" column="20" selection-start-line="56" selection-start-column="20" selection-end-line="56" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/requests/Undo.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="49" column="16" lean-forward="true" selection-start-line="49" selection-start-column="16" selection-end-line="49" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/Recon.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="41" lean-forward="true" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/operations/Insert.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="876">
+          <caret line="90" column="45" lean-forward="true" selection-start-line="90" selection-start-column="45" selection-end-line="90" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/operations/Delete.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="76" lean-forward="true" selection-start-line="20" selection-start-column="76" selection-end-line="20" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/operations/NoOp.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="26" lean-forward="true" selection-start-line="25" selection-start-column="26" selection-end-line="25" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/operations/Split.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1003">
+          <caret line="59" column="5" lean-forward="true" selection-start-line="59" selection-start-column="5" selection-end-line="59" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/requests/Do.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="376">
+          <caret line="68" column="26" lean-forward="true" selection-start-line="68" selection-start-column="26" selection-end-line="68" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/collab/Operation.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/decorators/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/emoji/data/emojis.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/emoji/data/groups.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/emoji/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="22" column="41" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/form/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3744">
+          <caret line="234" column="77" selection-start-line="234" selection-start-column="77" selection-end-line="234" selection-end-column="77" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/fs/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="16">
+          <caret line="1" column="36" selection-start-line="1" selection-start-column="36" selection-end-line="1" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/fs/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/form/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/form/integrations/React.tsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="17" column="34" selection-start-line="17" selection-end-line="18" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/xpress/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1356">
+          <caret line="334" column="61" lean-forward="true" selection-start-line="334" selection-start-column="61" selection-end-line="334" selection-end-column="61" />
+          <folding>
+            <element signature="e#0#56#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/xpress/middlewares/forceHttps.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="18" column="2" lean-forward="true" selection-start-line="18" selection-start-column="2" selection-end-line="18" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/router/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-47">
+          <caret line="17" column="5" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/router/middleRun.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-51">
+          <caret line="27" column="35" selection-start-line="27" selection-start-column="35" selection-end-line="27" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/router/pathToRegexp.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="4" column="45" selection-start-line="4" selection-start-column="45" selection-end-line="4" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/router/wrapMiddleware.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-19" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/rocket/index.tsx">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/rocket/mobx.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="417">
+          <caret line="30" column="14" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#86#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/rocket/RocketApp.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1727">
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.MD">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="128">
+            <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/xrest/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3440">
+          <caret line="215" column="20" selection-start-line="215" selection-start-column="19" selection-end-line="215" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/xrest/multipart.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2704">
+          <caret line="169" column="43" selection-start-line="169" selection-start-column="43" selection-end-line="169" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/xrest/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/ajson/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="218" column="5" selection-start-line="218" selection-start-column="5" selection-end-line="218" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lerna.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/logger/colors.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/logger/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1619">
+          <caret line="247" column="49" lean-forward="true" selection-start-line="247" selection-start-column="49" selection-end-line="247" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/logger/receivers/node.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2452">
+          <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/logger/receivers/browser.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="21" column="33" lean-forward="true" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#49#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/argv/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="111" column="21" lean-forward="true" selection-start-line="111" selection-start-column="21" selection-end-line="111" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
+            <element signature="e#564#1625#0" />
+            <element signature="n#!!block;n#normalizeArgument#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/packages/argv/node_modules/@meteor-it/logger/colors.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="16">
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8 (1)</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

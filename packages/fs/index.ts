@@ -31,7 +31,7 @@ function parseDataUrl(path:string):IParsedDataUrl{
 /**
  * Get all files in directory
  */
-export async function readDir (dir) {
+export async function readDir (dir:string) {
 	return await promisify(fs.readdir)(dir);
 }
 /**
@@ -44,19 +44,19 @@ export async function readFile (file:string):Promise<Buffer> {
 	return await promisify(fs.readFile)(file);
 }
 
-export async function stat (file) {
+export async function stat (file:string):Promise<fs.Stats>{
 	return await promisify(fs.stat)(file);
 }
 
-export async function open (file,mode,access){
+export async function open (file:string,mode:string,access:string):Promise<number>{
 	return await promisify(fs.open)(file,mode,access);
 }
 
-export async function read(fd, buffer, offset, length, position){
+export async function read(fd:number, buffer:Buffer, offset:number, length:number, position:number){
 	return await promisify(fs.read)(fd, buffer, offset, length, position);
 }
 
-export async function close(fd){
+export async function close(fd:number){
 	return await promisify(fs.close)(fd);
 }
 
@@ -72,19 +72,19 @@ export async function writeFile (filename:string, text:string|Buffer) {
  * @param dir Directory to walk
  * @param cb If provided, found files will returned realtime. If not - function will return all found files
  */
-export async function walkDir (dir, cb?) {
+export async function walkDir (dir:string, cb?:(file:string,dir:string)=>void):Promise<string[]|null> {
 	if (!await exists(dir)) { throw new Error('No such file or directory: ' + dir); }
-	let returnValue;
+	let returnValue:string[];
 	let shouldReturn = false;
 	if (!cb) {
 		returnValue = [];
 		shouldReturn = true;
-		cb = (file, dir) => {
+		cb = (file:string, dir:string) => {
 			returnValue.push(dir + sep + file);
 		};
 	}
-	let dirList = [];
-	await asyncEach(await readDir(dir), async(file) => {
+	let dirList:string[] = [];
+	await asyncEach(await readDir(dir), async(file:string) => {
 		let path = dir + sep + file;
 		if (await isFile(path)) {
 			cb(file, dir);
@@ -92,24 +92,25 @@ export async function walkDir (dir, cb?) {
 			dirList.push(file);
 		}
 	});
-	await asyncEach(dirList, async(dirLevelDown) => {
+	await asyncEach(dirList, async(dirLevelDown:string) => {
 		await walkDir(dir + sep + dirLevelDown, cb);
 	});
 	if (shouldReturn) {
 	    return returnValue.sort();
 	}
-	return;
+	return null;
 }
 
 /**
  * Check if file exists
  */
-export async function exists (file) {
+export async function exists (file:string):Promise<boolean> {
 	try {
 		let result = await promisify(fs.access)(file, fs.constants.F_OK);
 		if (result === undefined) {
 		    return true;
 		}
+		return false;
 		// Because only "err" field is returned if not exists
 	} catch (e) {
 		return false;

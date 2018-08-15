@@ -6,7 +6,8 @@ import {create} from 'mobx-persist';
 
 
 export type IStoreList = {[key:string]:RocketStore};
-export default class RocketStore extends timerMixin(Object) {
+class Empty{};
+export default class RocketStore extends timerMixin(Empty) {
     // @enumerable(false)
     storeName: string = null;
     // @enumerable(false)
@@ -32,7 +33,7 @@ export default class RocketStore extends timerMixin(Object) {
 
     // @enumerable(false)
     runningAutorunDisposer: IReactionDisposer = null;
-    autorun?();
+    autorun?():void;
 
     onBeforeRehydrate() {
 
@@ -71,7 +72,7 @@ export default class RocketStore extends timerMixin(Object) {
             this.runningAutorunDisposer=null;
         }
         this.onDeinit();
-        this.clearAll();
+        (<any>this).clearAll();
         let ret = toJS(this, false);
         // From timer mixin
         delete (<any>ret).timeouts;
@@ -94,7 +95,7 @@ export default class RocketStore extends timerMixin(Object) {
             return;
         this.onBeforeRehydrate();
         for (const hydratedKey in data) {
-            this[hydratedKey] = data[hydratedKey];
+            (<any>this)[hydratedKey] = data[hydratedKey];
         }
         this.onInit();
         if(this.runningAutorunDisposer===null&&this.autorun){

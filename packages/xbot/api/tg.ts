@@ -10,7 +10,7 @@ export default class TGApi extends Api{
     constructor(){
         super('TGAPI');
     }
-    async auth(token){
+    async auth(token:string){
         const bot = new TelegramBot(token, {
             polling: true
         });
@@ -19,7 +19,7 @@ export default class TGApi extends Api{
         this.logged=true;
         this.startReceiver();
     }
-    async parseAttachment(type,obj){
+    async parseAttachment(type:string,obj:any){
         switch(type){
             case 'photo':
                 return await Image.fromUrl(await this.bot.getFileLink(obj[obj.length-1].file_id));
@@ -87,11 +87,11 @@ export default class TGApi extends Api{
         let id=uid.substr(3);
         if(!id)
             return null;
-        id=+id;
-        if(isNaN(id))
+        let nid=+id;
+        if(isNaN(nid))
             return null;
         return await this.getUserFromApiData({
-            id,
+            id:nid,
             username:'I',
             first_name:'Hate',
             last_name:'Telegram API',
@@ -103,16 +103,16 @@ export default class TGApi extends Api{
         let id=cid.substr(4);
         if(!id)
             return null;
-        id=+id;
-        if(isNaN(id))
+        let nid=+id;
+        if(isNaN(nid))
             return null;
         return await this.getChatFromApiData({
-            id,
+            id:nid,
             title:'I hate telegram'
         });
     }
     photoCache=new Map();
-    async getUserFromApiData(data){
+    async getUserFromApiData(data:any){
         let photoFile=this.photoCache.get('TG:PHOTO:'+data.id);
         if(!photoFile){
             let photoD=await this.bot.getUserProfilePhotos(data.id);
@@ -134,7 +134,7 @@ export default class TGApi extends Api{
             profileUrl:'https://telegram.me/'+data.username
         });
     }
-    async getChatFromApiData(data){
+    async getChatFromApiData(data:any){
         return new Chat({
             messageId:null,
             api:this,
@@ -146,14 +146,14 @@ export default class TGApi extends Api{
             photoUrl:'http://www.myiconfinder.com/uploads/iconsets/256-256-b381526610eb3ed95c7fdf75f1ec54d5.png'
         });
     }
-    async sendLocation(targetId,answer,caption,location,options){
+    async sendLocation(targetId:any,answer:any,caption:any,location:any,options:any){
 
     }
-    async sendText(targetId,answer,text,options){
+    async sendText(targetId:any,answer:any,text:any,options:any){
         let opts:any={};
         if(options.keyboard){
             opts.reply_markup={
-                inline_keyboard:options.keyboard.map(row=>row.map(btn=>({text:btn[0],callback_data:btn[1]})))
+                inline_keyboard:options.keyboard.map((row:any)=>row.map(btn=>({text:btn[0],callback_data:btn[1]})))
             }
         }
         await this.bot.sendMessage(targetId, text, {
@@ -162,19 +162,19 @@ export default class TGApi extends Api{
         });
     }
 
-    async sendImageStream(targetId,answer,caption,image,options){
+    async sendImageStream(targetId:any,answer:any,caption:any,image:any,options:any){
         image.stream.path='aaaaa.jpeg';
         await this.bot.sendPhoto(targetId, image.stream, {
             reply_to_message_id:answer,
             caption
         });
     }
-    async sendFileStream(targetId,answer,caption,file,options){
+    async sendFileStream(targetId:any,answer:any,caption:any,file:any,options:any){
 
     }
-    async sendAudioStream(targetId,answer,caption,audio,options){
+    async sendAudioStream(targetId:any,answer:any,caption:any,audio:any,options:any){
 
     }
-    async sendCustom(targetId,answer,options){
+    async sendCustom(targetId:any,answer:any,options:any){
     }
 }

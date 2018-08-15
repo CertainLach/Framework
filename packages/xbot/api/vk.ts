@@ -17,13 +17,13 @@ const SPACE_REPLACE=String.fromCharCode(8194);
 
 export default class VKApi extends Api{
     logged=false;
-    tokens=[];
+    tokens:string[]=[];
     xrest: XRest;
     uploadToken='';
     constructor(){
         super('VKAPI');
     }
-    async auth(tokens){
+    async auth(tokens:string[]){
         try{
             if(!(tokens instanceof Array)){
                 this.logger.warn('Use multiple tokens, luke!');
@@ -52,12 +52,12 @@ export default class VKApi extends Api{
     }
     // execute - dummy method for typescript support
     @queue(600,3,'executeMulti')
-    execute(method,params={}):Promise<any>{throw new Error('execute() was called, WTF?!')}
+    execute(method:string,params={}):Promise<any>{throw new Error('execute() was called, WTF?!')}
     tokenId=0;
     // executeMulti - wraps multiple calls into single execute method call
-    async executeMulti(tasks){
+    async executeMulti(tasks:Array<[string,any]>){
         let code='return [';
-        let tasksCodes=[];
+        let tasksCodes:string[]=[];
         let needsToBeExecutedInSingle=false;
         tasks.forEach(([method,params])=>{
             if(EXECUTE_IN_SINGLE.includes(method))
@@ -101,10 +101,10 @@ export default class VKApi extends Api{
                 return responses[id];
             });
     }
-    async getUser(user,onlyCached=false){
+    async getUser(user:any,onlyCached=false){
         return (await this.getUsers([user]))[0];
     }
-    getUserFromApiData(data){
+    getUserFromApiData(data:any){
         let gender=0;
         switch(data.sex){
             case 1: gender=Gender.WOMAN;break;
@@ -128,14 +128,14 @@ export default class VKApi extends Api{
     }
     cache=new Map();
     @queue()
-    async getUsers(users_orig) {
+    async getUsers(users_orig:any) {
         let users = users_orig.slice(0);
         let MAX_EXECUTIONS_ONE_TIME = 1000;
         this.logger.debug('Before: ' + users.length);
-        users=users.filter(user=>!!user);
-        users=users.filter(user=>user>0); // TODO: Support groups
+        users=users.filter((user:any)=>!!user);
+        users=users.filter((user:any)=>user>0); // TODO: Support groups
         this.logger.debug('After: ' + users.length);
-        let result = [];
+        let result:any = [];
         while (users.length > 0) {
             this.logger.debug('Getting packet of users');
             let curDep = new Set();
