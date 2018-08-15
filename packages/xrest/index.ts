@@ -4,12 +4,12 @@ import * as multipart from './multipart';
 
 import {EventEmitter} from 'events';
 import * as http from 'http';
-import {METHODS,IncomingMessage} from 'http';
+import {METHODS,IncomingMessage, Agent, ServerResponse, ClientRequest} from 'http';
 import * as https from 'https';
-import {parse as parseUrl, resolve} from 'url';
+import {parse as parseUrl, resolve, Url} from 'url';
 import {stringify} from 'querystring';
-import * as zlib from 'zlib';
 import iconv from 'iconv-lite';
+import {IMultiPartData} from "./multipart";
 
 export * from './multipart';
 
@@ -18,63 +18,127 @@ const POSSIBLE_MIDDLEWARES = ['STREAM'];
 
 const USER_AGENT = 'Meteor-IT XRest';
 
-// TODO: Http2
-// TODO: Re-enable gzipped requests
+// TODO: More assertions
 
-const decoders = {
-    // gzip(buf) {
-    //     return new Promise((res,rej)=>{
-    //         zlib.gunzip(buf, (err,result)=>err?rej(err):res(result));
-    //     });
-    // },
-    // deflate(buf, callback) {
-    //     return new Promise((res,rej)=>{
-    //         zlib.inflate(buf, (err,result)=>err?rej(err):res(result));
-    //     });
-    // }
+const decoders:{[key:string]:((buffer:Buffer)=>Promise<Buffer>)} = {
+    gzip(buf:Buffer):Promise<Buffer> {
+        return new Promise((res,rej)=>{
+            zlib.gunzip(buf, (err:Error,result:Buffer)=>err?rej(err):res(result));
+        });
+    },
+    deflate(buf:Buffer):Promise<Buffer>  {
+        return new Promise((res,rej)=>{
+            zlib.inflate(buf, (err:Error,result:Buffer)=>err?rej(err):res(result));
+        });
+    }
 };
 const parsers = {
-    json(text, cb) {
-        try {
-            cb(null, JSON.parse(text));
-        } catch (e) {
-            cb(null, text);
-        }
+    async json(text:string) {
+        return JSON.parse(text);
     }
 };
 
+export type IRequestHeaders = {[key:string]:string|number};
+export type IRequestRepeatOptions = {
+    repeatIn?:number;
+    shouldRepeatOnTimeout?:boolean;
+    shouldRepeatBeIncrementing?:boolean;
+    maxRepeatIncrementMultipler?:number;
+}
+export type IRequestOptions = {
+    /**
+     * Additional headers to include with request
+     */
+    headers?:IRequestHeaders;
+    /**
+     * POST data
+     */
+    data?:Buffer|string|IMultiPartData;
+    /**
+     * Request method
+     */
+    method?:string;
+    /**
+     * Should library follow redirect responses
+     */
+    followRedirects?:boolean;
+    /**
+     * Time allowed to make a request
+     * if 0 - then request can long forever
+     */
+    timeout?:number;
+
+    repeat?: IRequestRepeatOptions;
+    /**
+     * Parse body as JSON/XML/any
+     * @param data
+     */
+    parser?:(data:string)=>Promise<any>;
+    /**
+     * Request query parameters
+     */
+    query?:string|{[key:string]:string|number};
+    /**
+     * Should data field to be handled as IMultiPartData
+     */
+    multipart?:boolean;
+    encoding?:string;
+    decoding?:string;
+    rejectUnauthorized?:boolean;
+    agent?:Agent;
+    /**
+     * Internal
+     * TODO: Move to Request
+     */
+    timeoutFn?:any;
+
+    /**
+     * login for the basic auth
+     */
+    username?:string;
+    /**
+     * password for the basic auth
+     */
+    password?:string;
+    /**
+     * token for the bearer auth
+     */
+    accessToken?:string;
+}
+export type IExtendedIncomingMessage=IncomingMessage&{raw:Buffer,rawEncoded:Buffer};
 class Request extends EventEmitter {
-    url;
-    options;
-    headers;
+    url:string;
+    parsedUrl: Url;
+    options:IRequestOptions;
+    headers:IRequestHeaders;
     request: any;
     aborted: boolean;
     timedout: boolean;
 
-    constructor(url, options) {
+    constructor(url:string, options:IRequestOptions) {
         super();
         this.prepare(url, options);
     }
 
-    prepare(url, options) {
+    prepare(url:string, options:IRequestOptions) {
         logger.debug('prepare(%s)', url);
         if (url.indexOf('undefined') + 1) {
             logger.warn('undefined found in request url! Stack for reference:');
             logger.warn(new Error('reference stack').stack);
         }
-        this.url = parseUrl(url);
+        this.parsedUrl = parseUrl(url);
         this.options = options;
         this.headers = {
             'Accept': '*/*',
             'User-Agent': USER_AGENT,
-            'Host': this.url.host,
-            //'Accept-Encoding': 'gzip, deflate',
+            'Host': this.parsedUrl.host,
+            'Accept-Encoding': 'gzip, deflate',
             ...options.headers
         };
 
         // set port and method defaults
-        if (!this.url.port)
-            this.url.port = (this.url.protocol === 'https:') ? '443' : '80';
+        if (!this.parsedUrl.port)
+            this.parsedUrl.port = (this.parsedUrl.protocol === 'https:') ? '443' : '80';
         if (!this.options.method)
             this.options.method = (this.options.data) ? 'POST' : 'GET';
         if (typeof this.options.followRedirects === 'undefined')
@@ -84,15 +148,22 @@ class Request extends EventEmitter {
         if (!this.options.parser)
             this.options.parser = parsers.json;
 
+        if(this.options.method==='GET'&&this.options.data)
+            throw new Error('GET requests doesn\'t supports request body!');
+
         // stringify query given in options of not given in URL
         if (this.options.query) {
             if (typeof this.options.query === 'object')
-                this.url.query = stringify(this.options.query);
-            else this.url.query = this.options.query;
+                this.parsedUrl.query = stringify(this.options.query);
+            else this.parsedUrl.query = this.options.query;
         }
         this.applyAuth();
 
         if (this.options.multipart) {
+            if(!this.options.data)
+                throw new Error('No data is defined for multipart request!');
+            if(this.options.data instanceof Buffer||typeof this.options.data==='string')
+                throw new Error('When multipart mode is enabled, you cannot pass plain data!');
             this.headers['Content-Type'] = `multipart/form-data; boundary=${multipart.DEFAULT_BOUNDARY}`;
             const multipartSize = multipart.sizeOf(this.options.data, multipart.DEFAULT_BOUNDARY);
             if (!isNaN(multipartSize))
@@ -116,12 +187,12 @@ class Request extends EventEmitter {
             }
         }
 
-        const proto:any = (this.url.protocol === 'https:') ? https : http;
+        const proto:any = (this.parsedUrl.protocol === 'https:') ? https : http;
 
         this.request = proto.request({
-            host: this.url.hostname,
-            port: this.url.port,
-            path: this.fullPath(),
+            host: this.parsedUrl.hostname,
+            port: this.parsedUrl.port,
+            path: this.fullPath,
             method: this.options.method,
             headers: this.headers,
             rejectUnauthorized: this.options.rejectUnauthorized,
@@ -130,22 +201,26 @@ class Request extends EventEmitter {
         this.makeRequest();
     }
 
-    static isRedirect(response) {
-        return ([301, 302, 303, 307].includes(response.statusCode));
+    /**
+     * Test if response is a redirect to the another page
+     * @param response
+     */
+    static isRedirect(response:IExtendedIncomingMessage) {
+        return ([301, 302, 303, 307, 308].includes(response.statusCode));
     }
 
-    fullPath() {
-        let path = this.url.pathname || '/';
-        if (this.url.hash) path += this.url.hash;
-        if (this.url.query) path += `?${this.url.query}`;
+    get fullPath() {
+        let path = this.parsedUrl.pathname || '/';
+        if (this.parsedUrl.hash) path += this.parsedUrl.hash;
+        if (this.parsedUrl.query) path += `?${this.parsedUrl.query}`;
         return path;
     }
 
     applyAuth() {
         let authParts;
 
-        if (this.url.auth) {
-            authParts = this.url.auth.split(':');
+        if (this.parsedUrl.auth) {
+            authParts = this.parsedUrl.auth.split(':');
             this.options.username = authParts[0];
             this.options.password = authParts[1];
         }
@@ -159,19 +234,19 @@ class Request extends EventEmitter {
         }
     }
 
-    responseHandler(response) {
+    responseHandler(response:IExtendedIncomingMessage) {
         if (Request.isRedirect(response) && this.options.followRedirects) {
             try {
                 // 303 should redirect and retrieve content with the GET method
                 // http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.4
                 if (response.statusCode === 303) {
-                    this.url = parseUrl(resolve(this.url.href, response.headers['location']));
+                    this.parsedUrl = parseUrl(resolve(this.parsedUrl.href, response.headers['location']));
                     this.options.method = 'GET';
                     delete this.options.data;
                     this.reRetry();
                 }
                 else {
-                    this.url = parseUrl(resolve(this.url.href, response.headers['location']));
+                    this.parsedUrl = parseUrl(resolve(this.parsedUrl.href, response.headers['location']));
                     this.reRetry();
                     // TODO: Handle somehow infinite redirects
                 }
@@ -182,30 +257,25 @@ class Request extends EventEmitter {
             }
         }
         else {
-            let body = '';
+            let bodyParts:Buffer[] = [];
 
-            // When using browserify, response.setEncoding is not defined
+            // Browserify/some webpack-provided stubs doesn't supports this
             if (typeof response.setEncoding === 'function')
                 response.setEncoding('binary');
 
             response.on('data', chunk => {
-                body += chunk;
+                bodyParts.push(typeof chunk==='string'?Buffer.from(chunk):chunk);
             });
 
             response.on('end', async () => {
+                let body=Buffer.concat(bodyParts);
                 response.rawEncoded = body;
                 try {
-                    body = await Request.decode(new Buffer(body, 'binary'), response);
+                    body = await Request.decode(body, response);
                     response.raw = body;
                     body = await Request.iconv(body, response);
-                    this.encode(body, response, (err, body) => {
-                        if (err) {
-                            this.fireError(err, response);
-                        }
-                        else {
-                            this.fireSuccess(body, response);
-                        }
-                    });
+                    let encoded = await this.encode(body);
+                    this.fireSuccess(body, encoded);
                 }catch(e){
                     this.fireError(e,response);
                 }
@@ -213,7 +283,7 @@ class Request extends EventEmitter {
         }
     }
 
-    static async decode(body, response) {
+    static async decode(body:Buffer, response:IExtendedIncomingMessage) {
         const decoder = response.headers['content-encoding'];
 
         if (decoder in decoders) {
@@ -224,37 +294,37 @@ class Request extends EventEmitter {
         }
     }
 
-    static iconv(body, response) {
-        let charset = response.headers['content-type'];
-            if (charset) {
-                charset = /\bcharset=(.+)(?:;|$)/i.exec(charset);
-                if (charset) {
-                    charset = charset[1].trim().toUpperCase();
+    static iconv(body:Buffer, response:IExtendedIncomingMessage):Promise<Buffer> {
+        let contentType = response.headers['content-type'];
+            if (contentType) {
+                let charsetRegexpResult = /\bcharset=(.+)(?:;|$)/i.exec(contentType);
+                if (charsetRegexpResult) {
+                    let charset = charsetRegexpResult[1].trim().toUpperCase();
                     if (charset !== 'UTF-8')
                         try {
-                            return iconv.decode(body, charset);
+                            return Promise.resolve(Buffer.from(iconv.decode(body, charset)));
                         }catch(e){}
                 }
             }
         return Promise.resolve(body);
     }
 
-    encode(body, response, callback) {
+    encode(body:Buffer):Promise<any> {
         if (this.options.decoding === 'buffer') {
-            callback(null, body);
+            return Promise.resolve(body);
         }
         else {
-            body = body.toString(this.options.decoding);
+            let bodyString = body.toString(this.options.decoding);
             if (this.options.parser) {
-                this.options.parser.call(response, body, callback);
+                return this.options.parser(bodyString);
             }
             else {
-                callback(null, body);
+                return Promise.resolve(body);
             }
         }
     }
 
-    fireError(err, response) {
+    fireError(err:Error, response:IExtendedIncomingMessage) {
         this.fireCancelTimeout();
         this.emit('error', err, response);
         this.emit('complete', err, response);
@@ -266,15 +336,15 @@ class Request extends EventEmitter {
         }
     }
 
-    fireTimeout(err) {
-        this.emit('timeout', err);
+    fireTimeout(time:number) {
+        this.emit('timeout', new Error(`Request isn't completed in ${time}ms`));
         this.aborted = true;
         this.timedout = true;
         this.request.abort();
     }
 
-    fireSuccess(body, response) {
-        if (parseInt(response.statusCode, 10) >= 400) {
+    fireSuccess(body:any, response:IExtendedIncomingMessage) {
+        if (response.statusCode >= 400) {
             this.emit('fail', body, response);
         }
         else {
@@ -292,11 +362,11 @@ class Request extends EventEmitter {
                 this.fireTimeout(timeoutMs);
             }, timeoutMs);
         }
-        this.request.on('response', response => {
+        this.request.on('response', (response:IExtendedIncomingMessage) => {
             this.fireCancelTimeout();
             this.emit('response', response);
             this.responseHandler(response);
-        }).on('error', err => {
+        }).on('error', (err:Error) => {
             this.fireCancelTimeout();
             if (!this.aborted) {
                 this.fireError(err, null);
@@ -310,15 +380,14 @@ class Request extends EventEmitter {
         if (this.request.finished) {
             this.request.abort();
         }
-        this.prepare(this.url.href, this.options); // reusing request object to handle recursive calls and remember listeners
+        this.prepare(this.parsedUrl.href, this.options); // reusing request object to handle recursive calls and remember listeners
         this.run();
     }
 
     async run() {
         if (this.options.multipart) {
-            await multipart.write(this.request, this.options.data, () => {
-                this.request.end();
-            });
+            await multipart.write(this.options.encoding || 'binary',this.request, this.options.data as IMultiPartData);
+            this.request.end();
         }
         else {
             if (this.options.data) {
@@ -330,20 +399,7 @@ class Request extends EventEmitter {
         return this;
     }
 
-    abort(err) {
-        if (err) {
-            if (typeof err === 'string') {
-                err = new Error(err);
-            }
-            else if (!(err instanceof Error)) {
-                err = new Error('AbortError');
-            }
-            err.type = 'abort';
-        }
-        else {
-            err = null;
-        }
-
+    abort(err:Error) {
         this.request.on('close', () => {
             if (err) {
                 this.fireError(err, null);
@@ -359,8 +415,7 @@ class Request extends EventEmitter {
         return this;
     }
 
-    retry(timeout) {
-        timeout = parseInt(timeout, 10);
+    retry(timeout:number) {
         const fn = this.reRetry.bind(this);
         if (!isFinite(timeout) || timeout <= 0) {
             process.nextTick(fn, timeout);
@@ -374,13 +429,7 @@ class Request extends EventEmitter {
 
 const logger = new Logger('xrest');
 
-export interface IXResponse extends IncomingMessage {
-    body: any;
-    raw: Buffer;
-    headers: any;
-}
-
-export function emit(eventString: string, options: any = {}): Promise<IXResponse> {
+export function emit(eventString: string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
     let [event, path, ...middlewares] = eventString.split(' ');
     let middleFunctions = [];
     for (let middleware of middlewares) {
@@ -403,15 +452,24 @@ export function emit(eventString: string, options: any = {}): Promise<IXResponse
     const request = new Request(path, options);
     return new Promise((res,rej)=>{
         request.run();
-        request.on('timeout',async (ms)=>{
-            logger.warn('Timeout, repeat in 15 s');
-            await new Promise(res=>setTimeout(res,150000));
-            try{
-                let data=await emit(eventString,options);
-                res(data);
-            }catch(e){
+        let repeats = 0;
+        request.on('timeout',async (e:Error)=>{
+            if(options.repeat&&options.repeat.shouldRepeatOnTimeout){
+                repeats++;
+                let repeatIn = options.repeat.repeatIn||5000;
+                if(options.repeat.shouldRepeatBeIncrementing){
+                    repeatIn*=Math.min(options.repeat.maxRepeatIncrementMultipler||12,repeats);
+                }
+                logger.debug(`Timeout, repeat in ${repeatIn}ms`);
+                await new Promise(res=>setTimeout(res,repeatIn));
+                try{
+                    let data=await emit(eventString,options);
+                    res(data);
+                }catch(e){
+                    rej(e);
+                }
+            }else
                 rej(e);
-            }
         });
         request.on('complete',(result,response)=>{
             if(result instanceof Error) {
@@ -425,16 +483,16 @@ export function emit(eventString: string, options: any = {}): Promise<IXResponse
 }
 
 export default class XRest {
-    baseUrl;
-    defaultOptions;
+    baseUrl:string;
+    defaultOptions:IRequestOptions;
 
-    constructor(url, defaultOptions) {
+    constructor(url:string, defaultOptions:IRequestOptions) {
         logger.debug('new XRest(%s)', url);
         this.baseUrl = url;
         this.defaultOptions = defaultOptions;
     }
 
-    emit(eventString, options) {
+    emit(eventString:string, options:IRequestOptions) {
         let [event, path, ...middlewares] = eventString.split(' ');
         let opts={};
         Object.assign(opts,this.defaultOptions,options);

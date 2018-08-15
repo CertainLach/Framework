@@ -1,55 +1,30 @@
 import {basename} from 'path';
 import {close, open, read} from '@meteor-it/fs';
-import {Readable as ReadableStream} from 'stream';
+import {Readable as ReadableStream,Writable as WritableStream} from 'stream';
 import {getReadStream} from '@meteor-it/fs';
 
 export const DEFAULT_BOUNDARY = '84921024METEORITXREST74819204';
-
-export class Stream {
-    stream;
-    string;
-
-    constructor(stream) {
-        if (this._isString(stream)) {
-            this.string = '';
-        }
-        this.stream = stream;
-    }
-
-    write(data) {
-        if (this.string !== undefined) {
-            this.string += data;
-        } else {
-            this.stream.write(data, 'binary');
-        }
-    }
-
-    _isString(obj) {
-        return !!(obj === '' || (obj && obj.charCodeAt && obj.substr));
-    }
-}
-
 export class File {
-    path;
-    filename;
-    fileSize;
-    encoding;
-    contentType;
+    path:string;
+    filename:string;
+    fileSize:number;
+    encoding:string;
+    contentType:string;
 
-    constructor(path, filename, fileSize, encoding, contentType) {
+    constructor(path:string, filename:string|null, fileSize:number, encoding:string='binary', contentType:string='application/octet-stream') {
         this.path = path;
         this.filename = filename || basename(path);
         this.fileSize = fileSize;
-        this.encoding = encoding || 'binary';
-        this.contentType = contentType || 'application/octet-stream';
+        this.encoding = encoding;
+        this.contentType = contentType;
     }
 }
 
 export class FileStream {
-    filename;
-    fileSize;
-    encoding;
-    contentType;
+    filename:string;
+    fileSize:number;
+    encoding:string;
+    contentType:string;
     stream: ReadableStream;
 
     constructor(stream:ReadableStream, filename:string, dataLength:number, encoding:string = 'binary', contentType:string = 'application/octet-stream') {
@@ -61,25 +36,20 @@ export class FileStream {
     }
 }
 
-export class Data extends FileStream {
-    constructor(filename:string, contentType:string = 'application/octet-stream', data:any) {
-        super(createReadStream(data), filename, data.length, 'binary', contentType);
-    }
-}
-
+export type IPartData = File|FileStream|number|string;
 export class Part {
-    name;
-    value;
-    boundary;
+    name:string;
+    value:File|FileStream|number|string;
+    boundary:string;
 
-    constructor(name, value, boundary) {
+    constructor(name:string, value:IPartData, boundary:string) {
         this.name = name;
         this.value = value;
         this.boundary = boundary;
     }
 
     //returns the Content-Disposition header
-    header() {
+    header():string {
         let header;
 
         if (this.value instanceof File) {
@@ -96,7 +66,7 @@ export class Part {
     }
 
     //calculates the size of the Part
-    sizeOf() {
+    sizeOf():number {
         let valueSize;
         if (this.value instanceof File) {
             valueSize = this.value.fileSize;
@@ -114,11 +84,8 @@ export class Part {
     }
 
     // Writes the Part out to a writable stream that supports the write(data) method
-    write(stream) {
-        return new Promise(async (resolve, reject) => {
-            if (!stream.on)
-                if (stream.stream)
-                    stream = stream.stream;
+    write(stream:WritableStream):Promise<void> {
+        return new Promise(async (resolve) => {
             //first write the Content-Disposition
             stream.write(this.header());
 
@@ -148,7 +115,7 @@ export class Part {
                     resolve();
                 });
 
-                let s = this.value.stream.pipe(stream, {
+                this.value.stream.pipe(stream, {
                     end: false // Do not end writing streams, may be there is more data incoming
                 });
             } else {
@@ -159,55 +126,56 @@ export class Part {
     }
 }
 
+export type IMultiPartData = {[key:string]:IPartData};
 export class MultiPartRequest {
-    encoding;
-    boundary;
-    data;
-    partNames;
+    encoding:string;
+    boundary:string;
+    data:IMultiPartData;
+    private _partNames:string[];
 
-    constructor(data, boundary) {
-        this.encoding = 'binary';
-        this.boundary = boundary || DEFAULT_BOUNDARY;
+    constructor(encoding:string='binary',data:IMultiPartData, boundary:string=DEFAULT_BOUNDARY) {
+        this.encoding = encoding;
+        this.boundary = boundary;
         this.data = data;
-        this.partNames = this._partNames();
     }
 
-    _partNames() {
-        const partNames = [];
+    get partNames():string[] {
+        if(this._partNames)
+            return this._partNames;
+        this._partNames = [];
         for (const name in this.data) {
-            partNames.push(name);
+            this._partNames.push(name);
         }
-        return partNames;
+        return this._partNames;
     }
 
-    async write(stream) {
-        let partCount = 0;
-        // wrap the stream in our own Stream object
-        // See the Stream function above for the benefits of this
-        stream = new Stream(stream);
-        while (true) {
-            const partName = this.partNames[partCount];
-            const part = new Part(partName, this.data[partName], this.boundary);
-            await part.write(stream);
-            partCount++;
-            if (partCount >= this.partNames.length) {
-                stream.write(`--${this.boundary}--\r\n`);
-                return stream.string || '';
-            }
+    private async writePart(stream:WritableStream,partCount:number=0):Promise<void>{
+        let partName = this.partNames[partCount];
+        let part = new Part(partName,this.data[partName],this.boundary);
+        await part.write(stream);
+        partCount++;
+        if(partCount<this.partNames.length)
+            await this.writePart(stream,partCount);
+        else{
+            stream.write(`--${this.boundary}--\r\n`);
         }
+    }
+
+    async write(stream:WritableStream):Promise<void> {
+        await this.writePart(stream,0);
     }
 }
 
 
-export function sizeOf(parts, boundary = DEFAULT_BOUNDARY) {
+export function sizeOf(parts:IMultiPartData, boundary = DEFAULT_BOUNDARY):number {
     let totalSize = 0;
     for (let name in parts)
         totalSize += new Part(name, parts[name], boundary).sizeOf();
     return totalSize + boundary.length + 6;
 }
 
-export async function write(stream, data, callback, boundary=DEFAULT_BOUNDARY) {
-    let r = new MultiPartRequest(data, boundary);
-    await r.write(stream);
-    return r;
+export async function write(encoding:string='binary',stream:WritableStream, data:IMultiPartData, boundary=DEFAULT_BOUNDARY):Promise<MultiPartRequest> {
+    let multiPartRequest = new MultiPartRequest(encoding, data, boundary);
+    await multiPartRequest.write(stream);
+    return multiPartRequest;
 }
