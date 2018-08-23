@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/mime",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "description": "All the mimetypes by extension",
     "main": "index.js",
     "keywords": [
@@ -12,8 +12,8 @@
     ],
     "author": "Yaroslav Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
+    "publishConfig": {
+        "access": "public"
+    },
     "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
 }

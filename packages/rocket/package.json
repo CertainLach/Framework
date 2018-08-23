@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/rocket",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
     "inferno": "^5.4.2"
   },
