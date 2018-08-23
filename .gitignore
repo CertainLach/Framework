@@ -3,7 +3,7 @@
 **/lerna-debug.log
 **/.vscode
 **/.idea
-**/*.ts.d
+**/*.d.ts
 **/*.js
 **/*.js.map
 **/*.iml
