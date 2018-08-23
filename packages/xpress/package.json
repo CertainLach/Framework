@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/xpress",
-    "version": "3.4.27",
+    "version": "4.0.0",
     "description": "The most powerfull express.js alternative",
     "main": "index.js",
     "keywords": [
@@ -12,18 +12,18 @@
     "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/ajson": "^0.3.1",
-        "@meteor-it/fs": "^0.3.4",
-        "@meteor-it/logger": "^2.2.11",
-        "@meteor-it/mime": "^0.3.1",
-        "@meteor-it/router": "^1.0.0",
-        "@meteor-it/utils": "^1.2.2",
+        "@meteor-it/ajson": "^0.4.0",
+        "@meteor-it/fs": "^1.0.0",
+        "@meteor-it/logger": "^2.3.0",
+        "@meteor-it/mime": "^0.4.0",
+        "@meteor-it/router": "^2.0.0",
+        "@meteor-it/utils": "^1.3.0",
         "uws": "^10.148.1"
     },
     "devDependencies": {
         "@types/uws": "^0.13.2"
     },
-    "optionalDependencies":{
+    "optionalDependencies": {
         "express-session": "^1.15.6"
     }
 }
