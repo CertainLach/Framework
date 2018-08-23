@@ -22,5 +22,9 @@
   "optionalDependencies": {
     "discord.js": "^11.4.2",
     "node-telegram-bot-api": "^0.30.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
 }

@@ -14,5 +14,9 @@
     "@meteor-it/fs": "^1.0.2",
     "@meteor-it/logger": "^2.3.2",
     "iconv-lite": "^0.4.23"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
 }

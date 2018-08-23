@@ -14,5 +14,9 @@
   "license": "MIT",
   "dependencies": {
     "@meteor-it/logger": "^2.3.2"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
 }

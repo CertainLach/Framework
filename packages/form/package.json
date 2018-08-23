@@ -7,5 +7,9 @@
     "meteor-it"
   ],
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
 }
