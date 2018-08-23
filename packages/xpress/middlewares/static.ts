@@ -1,20 +1,16 @@
-import { stat, getReadStream } from '@meteor-it/fs';
-import {parse} from 'url';
+import {stat, getReadStream, exists} from '@meteor-it/fs';
 import {join,resolve} from 'path';
-import {lookup} from '@meteor-it/mime';
+import {lookupByPath} from '@meteor-it/mime';
+import {IRouterContext} from '@meteor-it/router';
+import {XPressRouterContext} from '../';
 
-function lookupMime(filename, gzipped){
-    let splitted=filename.split('.');
-    if(gzipped){
-        return lookup(splitted[splitted.length-2]);
-    }else{
-        return lookup(splitted[splitted.length-1]);
-    }
+function lookupMime(filename:string, gzipped:boolean){
+    return lookupByPath(gzipped?(filename.substr(0,filename.lastIndexOf('.'))):filename);
 }
 
-export default function (rootFolder, gzipped) {
-    return async (req, res, next) => {
-        let pathname = parse(req.url).pathname;
+export default function (rootFolder:string, gzipped:boolean) {
+    return async ({req,res,next,path}:IRouterContext<any>&XPressRouterContext) => {
+        let pathname = path;
         if(gzipped)
             pathname+='.gz';
         let filename = join(resolve(rootFolder), pathname);
@@ -28,7 +24,7 @@ export default function (rootFolder, gzipped) {
                 res.writeHead(304);
                 return res.end();
             }
-            let type = lookup(filename.split('.').slice(-1)[0]);
+            let type = lookupMime(filename,gzipped);
             let charset = /^text\/|^application\/(javascript|json)/.test(type) ? 'UTF-8' : false;
             res.setHeader('Last-Modified', stats.mtime.toISOString());
             res.setHeader('Cache-Control', 'public, max-age=31536000');

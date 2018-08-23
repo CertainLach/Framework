@@ -11,8 +11,8 @@
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/fs": "latest",
-    "@meteor-it/logger": "latest",
-    "iconv-lite": "latest"
+    "@meteor-it/fs": "^0.3.4",
+    "@meteor-it/logger": "^2.2.11",
+    "iconv-lite": "^0.4.23"
   }
 }

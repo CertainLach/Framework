@@ -1,8 +1,8 @@
-import {Api,User,Chat,MessageEvent,ForwardedMessage,Gender,Location,Image,File,Audio,TitleChangeEvent,JoinEvent,LeaveEvent,ActionEvent} from "../";
-import XRest from "@meteor-it/xrest";
-import * as multipart from '@meteor-it/xrest/multipart';
-import {readStream,sleep} from '@meteor-it/utils';
-import {Client, User as DiscordUser, Channel as DiscordChannel} from 'discord.js';
+import {Api,User,Chat,MessageEvent,/*ForwardedMessage,*/Gender,/*Location,Image,File,Audio,TitleChangeEvent,JoinEvent,LeaveEvent,ActionEvent*/} from "../";
+/*import XRest from "@meteor-it/xrest";
+import * as multipart from '@meteor-it/xrest/multipart';*/
+import {/*readStream,*/sleep} from '@meteor-it/utils';
+import {Client/*, User as DiscordUser, Channel as DiscordChannel*/} from 'discord.js';
 
 const SPACE_REPLACE=String.fromCharCode(8194);
 
@@ -16,16 +16,16 @@ export default class DSApi extends Api {
         const client = new Client();
         client.login(token);
         this.client = client;
-        this.logger.log('Logged in')
+        this.logger.log('Logged in');
         this.logged = true;
         this.startReceiver();
     }
-    async parseAttachment(type:any, obj:any) {
-
-    }
+    // async parseAttachment(type:any, obj:any) {
+    //
+    // }
     async startReceiver() {
         this.client.on('message', (message:any) => {
-            let user = this.getUserFromApiData(message.author)
+            let user = this.getUserFromApiData(message.author);
             let chat = message.channel;
             if (message.guild)
                 chat = this.getChatFromApiData(chat, message.guild);
@@ -106,7 +106,7 @@ export default class DSApi extends Api {
     }
 
 
-    * limitTextString(text:string):IterableIterator<string> {
+    static *limitTextString(text:string):IterableIterator<string> {
         let strings = text.split(' \n');
         let currentString = '';
         while (true) {
@@ -123,7 +123,7 @@ export default class DSApi extends Api {
         }
     }
     async sendText(targetId:any, answer:any, text:any, options:any) {
-        for (let textPart of this.limitTextString(SPACE_REPLACE + '\n' + text)) {
+        for (let textPart of DSApi.limitTextString(SPACE_REPLACE + '\n' + text)) {
             if(textPart!==null){
                 await targetId.send(textPart);
                 await sleep(500);

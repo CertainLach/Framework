@@ -1,5 +1,3 @@
-import './colors';
-
 const DEBUG = process.env.DEBUG || '';
 
 export enum LOGGER_ACTIONS {
@@ -108,6 +106,9 @@ export default class Logger {
 			this.deent();
 		}
 	}
+	isDebugging():boolean{
+        return DEBUG === '*' || DEBUG.split(',').indexOf(this.name)!==-1
+    }
 
 	// LOG
 	log(...params:any[]) {
@@ -241,6 +242,11 @@ export default class Logger {
 		receiver.setLogger(Logger);
 		Logger.receivers.push(receiver);
 	}
+	static from(name:string|Logger):Logger {
+	    if(name instanceof Logger)
+	        return name;
+	    return new Logger(name);
+    }
 }
 
 consoleLogger = new Logger('console');

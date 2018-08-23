@@ -58,27 +58,27 @@ export interface IRPCCallPacket {
     name: string,
     random: number,
     data: any
-};
+}
 
 export interface IRPCErrorPacket {
     type: PacketType.RPC_ERROR,
     serializerName?: string,
     random: number,
     data: string
-};
+}
 
 export interface IRPCOkPacket {
     type: PacketType.RPC_OK,
     serializerName?: string,
     random: number,
     data: any
-};
+}
 
 export interface IEventPacket {
     type: PacketType.EVENT,
     name: string,
     data: any
-};
+}
 export type IEncoderPacket = IRPCCallPacket | IRPCErrorPacket | IRPCOkPacket | IEventPacket;
 
 /**
@@ -251,7 +251,7 @@ export class PotatoSocketUniversal<F> {
         rpc: (): F =>{
             let path='';
             let self=this;
-            const proxy:ProxyHandler<IRPCField<this>>= new Proxy({}, {
+            const proxy:ProxyHandler<IRPCField<this>> = new Proxy({}, {
                 get(target,key:string){
                     path+='.'+key;
                     let callbackName=path.substr(1);
@@ -271,7 +271,7 @@ export class PotatoSocketUniversal<F> {
                     path='';
                     if (!self.encoder.hasRpcMethod(callbackName))
                         throw new Error(`Method declaration are not in pds: ${callbackName}\nExisting methods: ${self.encoder.getExistingRpcMethods().join(', ')}`);
-                    if (!(to instanceof Function))
+                    if (!((to as any) instanceof Function))
                         throw new Error(`RPC method declaration are not a function type: ${callbackName}`);
                     if (self.isServer && to.length !== 2) {
                         throw new Error(`RPC method declaration must be (socket, data)=>{...}: ${callbackName}`);
@@ -378,7 +378,7 @@ export class PotatoSocketUniversal<F> {
         } else {
             methodResult = (<IRPCHandlerWithoutThis>rpcMethods[methodName])(data);
         }
-        if (!(methodResult instanceof Promise)) {
+        if (!((methodResult as any) instanceof Promise)) {
             this.answerErrorOnRPCCall(random, methodName, `Server failed to construct response for ${methodName}`);
             throw new Error(`Method call ${methodName} returned not a promise!`);
         }
@@ -400,6 +400,7 @@ export class PotatoSocketUniversal<F> {
     /**
      * Rpc error (sender side)
      * @param random
+     * @param methodName
      * @param rpcError
      */
     answerErrorOnRPCCall(random: number, methodName: string, rpcError: string) {
@@ -439,6 +440,7 @@ export class PotatoSocketUniversal<F> {
     /**
      * Rpc ok (sender side)
      * @param random
+     * @param methodName
      * @param data
      */
     answerOkOnRPCCall(random: number, methodName: string, data: any) {

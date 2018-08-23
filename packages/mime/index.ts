@@ -1,4 +1,6 @@
-const map = {
+import {parse as parsePath} from 'path';
+
+export const map:{[key:string]:string} = {
 	"123": "application/vnd.lotus-1-2-3",
 	"ez": "application/andrew-inset",
 	"aw": "application/applixware",
@@ -1064,6 +1066,9 @@ const map = {
 	"ice": "x-conference/x-cooltalk"
 };
 export default map;
-export function lookup(extension){
+export function lookup(extension:string){
 	return map[extension];
+}
+export function lookupByPath(path:string){
+    return lookup(parsePath(path).ext);
 }

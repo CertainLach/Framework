@@ -1,7 +1,7 @@
 import {
     PotatoSocketUniversal, 
     IEncoder, PacketType, IServerOpenHandler, 
-    IServerCloseHandler, IServerOpenCloseHandler,
+    IServerCloseHandler,
     IRPCFieldWithThis, IRPCFieldWithoutThis
 }from '../';
 import Logger from '@meteor-it/logger';

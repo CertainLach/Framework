@@ -1,19 +1,35 @@
-import Logger from '@meteor-it/logger';
-import queue from '@meteor-it/queue';
+///<reference types="webpack-env" />
 
-export default class WebpackPluginLoader {
-    plugins = [];
-    acceptor;
+import Logger from '@meteor-it/logger';
+import IPlugin from './IPlugin';
+
+type Module = __WebpackModuleApi.Module;
+type RequireContext = __WebpackModuleApi.RequireContext;
+
+type IAcceptor = (acceptor:()=>void,getContext:()=>Module)=>void;
+type IRequireContextGetter = ()=>RequireContext;
+
+/**
+ * HMR Plugin Loader
+ * Example:
+ * new WebpackPluginLoader('openPlugins',
+ *      () => require.context(__dirname + '/publicPlugins', false, /Plugin\/index\.js$/),
+ *      (acceptor, getContext) => module.hot.accept(getContext().id, acceptor));
+ */
+export default class WebpackPluginLoader<C> {
+    plugins:IPlugin[] = [];
+    acceptor:IAcceptor;
     logger: Logger;
-    requireContextGetter;
-    pluginContext:any;
-    constructor(name, requireContextGetter, acceptor) {
-        this.logger = new Logger(name);
+    requireContextGetter: IRequireContextGetter;
+    pluginContext:C;
+    constructor(name:string|Logger, requireContextGetter:IRequireContextGetter, acceptor:IAcceptor) {
+        this.logger = Logger.from(name);
         this.requireContextGetter = requireContextGetter;
         this.acceptor=acceptor;
     }
-    @queue(1)
-    async customReloadLogic(key, module, reloaded) {
+    // TODO: Queue
+    // @queue(1)
+    async customReloadLogic(key:string, module:any, reloaded:boolean) {
         this.logger.ident(key);
         if (!reloaded) {
             this.logger.log(`${key} is loading`);
@@ -79,25 +95,25 @@ export default class WebpackPluginLoader {
         }
         this.logger.deent();
     }
-    async load(pluginContext) {
+    async load(pluginContext:C) {
         this.pluginContext = pluginContext;
         let context = this.requireContextGetter();
-        var modules = {};
+        let modules:{[key:string]:any} = {};
         context.keys().forEach((key) => {
-            var module = context(key);
+            let module = context(key);
             modules[key] = module;
             this.customReloadLogic(key, module, false);
         });
 
         if (module.hot) {
-            console.log('Adding HMR to',context.id);
+            console.log('Adding HMR to',(context as any).id);
             this.acceptor(() => {
                 let reloadedContext = this.requireContextGetter();
                 reloadedContext.keys().map(key=>[key, reloadedContext(key)]).filter(reloadedModule=>modules[reloadedModule[0]] !== reloadedModule[1]).forEach((module) => {
                     modules[module[0]] = module[1];
                     this.customReloadLogic(module[0], module[1], true);
                 });
-            },this.requireContextGetter);
+            },this.requireContextGetter as any);
         }
 
         return this.plugins;

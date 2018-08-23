@@ -11,16 +11,16 @@
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/fs": "latest",
-    "@meteor-it/logger": "latest",
-    "@meteor-it/queue": "latest",
-    "@meteor-it/utils": "latest",
-    "@meteor-it/utils-node": "latest",
-    "@meteor-it/xrest": "latest",
-    "canvas": "latest"
+    "@meteor-it/fs": "^0.3.4",
+    "@meteor-it/logger": "^2.2.11",
+    "@meteor-it/queue": "^1.2.1",
+    "@meteor-it/utils": "^1.2.2",
+    "@meteor-it/xrest": "^1.2.2",
+    "@meteor-it/mime":"^0.3.1",
+    "canvas": "^2.0.0-alpha.13"
   },
   "optionalDependencies": {
-    "discord.js": "latest",
-    "node-telegram-bot-api": "latest"
+    "discord.js": "^11.4.2",
+    "node-telegram-bot-api": "^0.30.0"
   }
 }

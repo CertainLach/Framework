@@ -1,78 +1,60 @@
-import {createServer as createHttpsServer} from 'https';
-import {METHODS,createServer as createHttpServer,IncomingMessage,ServerResponse} from 'http';
-import {createSecureServer as createHttps2Server} from 'http2';
+import {createServer as createHttpServer,IncomingMessage,ServerResponse} from 'http';
+import {Server as WSServer,default as WebSocket} from 'uws';
 import {parse as parseUrl} from 'url';
 import {parse as parseQuerystring} from 'querystring';
 import AJSON from '@meteor-it/ajson';
 import Logger from '@meteor-it/logger';
-import {arrayKVObject, encodeHtmlSpecials} from '@meteor-it/utils';
-import URouter from "../router";
-
-const URL_START_REPLACER=/^\/+/;
-const PATH_INDEX_SYM=Symbol('XPress#Request.middlewareIndex');
-const TEMP_URL=Symbol('XPress#Request.currentUrl');
-const POSSIBLE_EVENTS=[...METHODS,'ALL','WS'];
-const MULTI_EVENTS={
-    'ALL':[...METHODS.filter(e=>e!='OPTIONS'),'WS']
-};
+import {encodeHtmlSpecials} from '@meteor-it/utils';
+import URouter from "@meteor-it/router";
 
 let xpressLogger=new Logger('xpress');
 
-class XPressWrappedRequest{
-    private realReq:IncomingMessage;
-    params: {[key:string]:string};
-    query: {[key:string]:string};
-    url:string;
+export type IIncomingMessageExtension<T=any> = {
+    query:{[key:string]:any};
+    headers:{[key:string]:string};
+
+    route:any;
+
+    app:XPress<T>;
+    baseUrl:string;
+    body:any;
+    cookies:any;
+    signedCookies:any;
+    fresh:boolean;
+    stale:boolean;
+    hostname:string;
+    ip:string;
+    ips:string[];
+    method:string;
+    originalUrl:string;
     path:string;
-    constructor(req:IncomingMessage){
-        this.realReq=req;
-        this.url = req.url;
-        let parsed=parseUrl(req.url);
-        req.path=parsed.pathname;
+    protocol:string;
+    secure:boolean;
+    subdomains:string[];
+    xhr:boolean;
 
-        req.originalUrl=req.url;
-        req.app=this;
-        req.body=req.cookie=undefined;
-        req.secure='https' == req.protocol;
-        req.query=parseQuerystring(req.querystring=parsed.query);
-    }
-    setHeader(key:string,value:string){
-        this.realReq.headers[key]=value;
-    }
-    getHeader(key:string){
-        return this.realReq.headers[key];
-    }
+    get:(key:string)=>string;
+};
+export type IServerResponseExtension<T=any> = {
+    sent:boolean;
+
+    set:(key:string,value:string)=>void;
+    status:(status:number)=>ServerResponse&IServerResponseExtension<T>;
+    redirect:(url:string)=>void;
+    send:(data:string|Buffer|any)=>void;
+};
+declare class UWSSocket{
+    on:(event:'open',cb:()=>{})=>void;
 }
-
-class XPRessWrappedResponse{
-    private realRes:ServerResponse;
-    constructor(res:ServerResponse){
-        this.realRes=res;
-    }
-}
-
-class XPressRouterContext<S> {
-    req: XPressWrappedRequest;
-    res: XPRessWrappedResponse;
-    session: S;
-    constructor(req:XPressWrappedRequest,res:XPRessWrappedResponse,session:S){
+export class XPressRouterContext {
+    req: IncomingMessage&IIncomingMessageExtension;
+    res: ServerResponse&IServerResponseExtension;
+    socket: WebSocket;
+    constructor(req:IncomingMessage&IIncomingMessageExtension,res:ServerResponse&IServerResponseExtension){
         this.req=req;
         this.res=res;
     }
 }
-
-/**
- * return (req:IncomingMessage,res:ServerResponse,next:(e?:Error)=>void)=>{
-            this.once('beforeroute', (args, routing) => {
-                args.request = req;
-                args.response = res;
-                args.params = (<any>req).params||{};
-                args.next = () => { next() };
-                routing.catch(next)
-            });
-            this.route(req.url);
-        }
- */
 
 class HttpError extends Error{
     code:number;
@@ -84,247 +66,149 @@ class HttpError extends Error{
 }
 let routerIndex=0;
 
-export default class XPress<S> extends URouter<XPressRouterContext<S>>{
-    server;
-    logger;
-
-    constructor(name){
-        super(name);
-        this.logger=new Logger(name);
-    }
-    addPossible(event){
-        POSSIBLE_EVENTS.push(event.toUpperCase());
-    }
-    parseReqUrl(req){
-        // Set
-        let parsed=parseUrl(req.url);
-        req.originalUrl=req.url;
-        req.app=this;
-        req.body=req.cookie=undefined;
-        req.path=parsed.pathname;
-        req.secure='https' == req.protocol;
-        req.query=parseQuerystring(req.querystring=parsed.query);
-    }
-    populateReqHeader(req){
-        // Express.JS methods
-        req.set=(key,value)=>{
-            req.setHeader(key,value);
-            //return req;
-        };
-        req.get=(key)=>{
-            return req.getHeader(key);
-            //return req;
-        };
-        // reqRes.removeHeader; This is a part of original api
-    }
-    populateRequest(req){
-        this.parseReqUrl(req);
-        req.secure=req.protocol === 'https';
-    }
-    populateResHeader(res){
-        res.header={};
-        res.__getHeader=res.getHeader;
-        res.__setHeader=res.setHeader;
-        res.__removeHeader=res.removeHeader;
-        res.set=(key,value)=>{
-            this.logger.debug('Set header %s to %s',key,value);
-            res.__setHeader(key,value);
-            return res;
-        };
-        res.get=(key)=>{
-            this.logger.debug('Get value of header %s',key);
-            return res.__getHeader(key);
-        };
-        res.getHeader=(key)=>{
-            return res.get(key);
-        };
-        res.setHeader=(key,value)=>{
-            res.set(key,value);
-        };
-        res.removeHeader=(key)=>{
-            res.__removeHeader(key);
-        };
-    }
-    populateResponse(res){
-        this.populateResHeader(res);
-        res.__writeHead=res.writeHead;
-        res.__end=res.end;
-        res.sent=false;
-        // TODO: Use primary closure
-        res.writeHead=(...args)=>{
-            return res.__writeHead(...args);
-        };
-        res.end=(...args)=>{
-            // res.writeHead(res.statusCode?res.statusCode:200,res.header);
-            return res.__end(...args);
-        };
-        res.status=(code)=>{
-            res.statusCode=code;
-            return res;
-        };
-        res.redirect=(url)=>{
-            if(res.sent)
-                throw new Error('Data is already sent!');
-            res.sent=true;
-            res.writeHead(307,{
-                Location:url
-            });
-            res.end('307 Redirect to '+url);
-        };
-        res.send=(body)=>{
-            if(res.sent)
-                throw new Error('Data is already sent!');
-            res.sent=true;
-            // console.log(res.statusCode?res.statusCode:200);
-            res.writeHead(res.statusCode?res.statusCode:200,res.headers);
-            if(typeof body==='object'&&!(body instanceof Buffer))
-                body=AJSON.stringify(body);
-            res.end(body);
-        };
-    }
-    httpHandler(req,res){
-        // HTTP/HTTPS request handler
-        // Populate request with data
-        this.populateRequest(req);
-        this.populateResponse(res);
-        // Execute Router handler, the first in the handlers chain
-        try{
-            this.handle(req,res,err=>{
-                if(res.sent)
-                    return;
-                // Next here = all routes ends, so thats = 404
-                this.logger.warn('404 Page not found at '+req.originalUrl);
-                // Allow only HttpError to be thrown
-                if(!(err instanceof HttpError))
-                    err=new HttpError(404,'Page not found: '+req.originalUrl);
-                res.status(err.code||500).send(developerErrorPageHandler(err.code,err.message,err.stack));
-            }, req.originalUrl);
-        }catch(e){
-            res.status(500).send(developerErrorPageHandler(e.code,e.message,e.stack));
-        }
-    }
-    http2Handler(req,res){
-        // HTTPS2 request handler
-        // Populate request with data
-        this.populateRequest(req);
-        this.populateResponse(res);
-        // Execute Router handler, the first in the handlers chain
-        try{
-            this.handle(req,res,err=>{
-                // Next here = all routes ends, so thats = 404
-                this.logger.warn('404 Page not found at '+req[TEMP_URL]);
-                // Allow only HttpError to be thrown
-                if(!(err instanceof HttpError))
-                    err=new HttpError(404,'Page not found: '+encodeHtmlSpecials(req[TEMP_URL]));
-                res.end(developerErrorPageHandler(err.code,err.message,err.stack));
-            }, req.originalUrl);
-        }catch(e){
-            res.end(developerErrorPageHandler(e.code,e.message,e.stack));
-        }
-    }
-    listenListeners=[];
-    onListen(func){
-        this.listenListeners.push(func);
-    }
-    listenHttp(host='0.0.0.0',port:number,silent=false){
-        let httpServer=createHttpServer(this.httpHandler.bind(this));
-        this.logger.debug('Before listening, executing listeners (to add support providers)...',this.listenListeners.length);
-        this.listenListeners.forEach(listener=>{listener(httpServer,this)});
-        this.logger.debug('Done adding %d support providers, listening...',this.listenListeners.length);
-        return new Promise((res,rej)=>{
-            httpServer.listen(port,host,()=>{
-                if(!silent)
-                    this.logger.log('Listening (http) on %s:%d...',host,port);
-                res(httpServer);
-            });
-        });
-    }
-    listenHttp2(){
-        throw new Error('browsers has no support for insecure http2, so listenHttp2() is deprecated');
-    }
-    listenHttps(host='0.0.0.0',port:number,certs,silent=false){
-        let httpsServer=createHttpsServer(certs,this.httpHandler.bind(this));
-        this.logger.debug('Before listening, executing listeners (to add support providers)...');
-        this.listenListeners.forEach(listener=>{listener(httpsServer,this)});
-        this.logger.debug('Done adding %d support providers, listening...',this.listenListeners.length);
-        return new Promise((res,rej)=>{
-            httpsServer.listen(port,host,()=>{
-                if(!silent)
-                    this.logger.log('Listening (https) on %s:%d...',host,port);
-                res(httpsServer);
-            });
-        });
-    }
-    listenHttps2(host='0.0.0.0',port:number,certs,silent=false){
-        let https2Server= createHttps2Server({...certs, allowHTTP1: true},this.http2Handler.bind(this));
-        this.logger.debug('Before listening, executing listeners (to add support providers)...');
-        this.listenListeners.forEach(listener=>{listener(https2Server,this)});
-        this.logger.debug('Done adding %d support providers, listening...',this.listenListeners.length);
-        return new Promise((res,rej)=>{
-            https2Server.listen(port,host,()=>{
-                if(!silent)
-                    this.logger.log('Listening (https2) on %s:%d...',host,port);
-                res(https2Server);
-            });
-        });
+export class Router<S> extends URouter<XPressRouterContext,S>{
+    constructor(defaultState:(()=>S)|null=null){
+        super(defaultState);
     }
 }
+export default class XPress<S> extends URouter<XPressRouterContext,S>{
+    logger:Logger;
 
-function parsePath(path:string) {
-    // We can use path-to-regexp, but why, if it is soo big module with a lot of dependencies?
-    let result={
-        regex:null,
-        params:[],
-        handlers:{}
-    };
-    path=path.replace(URL_START_REPLACER,'');
-    let starCount=0;
-    result.regex=new RegExp('^/'+path.split('/').map(part=>{
-        if(part.indexOf(':')!==-1&&part.length>=1){
-            result.params.push(part.substr(part.indexOf(':')+1));
-            return part.substr(0,part.indexOf(':'))+'([^/]+)';
+    constructor(name:string|Logger,defaultState:(()=>S)|null=null){
+        super(defaultState);
+        if(name instanceof Logger)
+            this.logger=name;
+        else
+            this.logger=new Logger(name);
+    }
+    populateReqRes(req:IncomingMessage&IIncomingMessageExtension,res:ServerResponse&IServerResponseExtension){
+        if(req!==null) {
+            let parsed = parseUrl(req.url, false);
+            req.originalUrl = req.url;
+            req.app = this;
+            req.body = req.cookies = undefined;
+            req.path = parsed.pathname;
+            req.secure = 'https' == req.protocol;
+            req.query = parseQuerystring(parsed.query);
+            req.get = (key: string) => (req.headers[key.toLowerCase()]);
         }
-        if(part==='*'){
-            if(starCount===0){
-                result.params.push('star');
-                starCount++;
+        if(res!==null) {
+            res.set = (key: string, value: string) => res.setHeader(key, value);
+            res.sent = false;
+            res.status = (code: number) => {
+                res.statusCode = code;
+                return res;
+            };
+            (res as any).__write = res.write;
+            (res as any).write = function (...args: any[]) {
+                res.sent = true;
+                return ((res as any).__write as any)(...args);
+            };
+            (res as any).__end = res.end;
+            (res as any).end = function (...args: any[]) {
+                res.sent = true;
+                return ((res as any).__end as any)(...args);
+            };
+            res.send = (body: string | Buffer | any) => {
+                if (res.sent) throw new Error('Data is already sent!');
+                res.sent = true;
+                if (typeof body === 'object' && !(body instanceof Buffer)) {
+                    body = AJSON.stringify(body);
+                    res.set('content-type', 'application/json');
+                }
+                res.writeHead(res.statusCode ? res.statusCode : 200, res.getHeaders());
+                res.end(body, () => {
+                });
+            };
+            res.redirect = (url: string) => {
+                if (res.sent) throw new Error('Data is already sent!');
+                res.sent = true;
+                res.writeHead(307, {
+                    Location: url
+                });
+                res.end('307 Redirect to ' + url);
+            };
+        }
+    }
+    private async httpHandler(req:IncomingMessage&IIncomingMessageExtension,res:ServerResponse&IServerResponseExtension){
+        // HTTP/HTTPS request handler
+        // Populate request with data
+        this.populateReqRes(req,res);
+        // Execute Router handler, the first in the handlers chain
+        const next=(e?:any)=>{
+            if(res.sent)
+                return;
+            if(e){
+                if(e instanceof HttpError) {
+                    res.status(e.code).send(developerErrorPageHandler(`${e.code} ${e.message}`, e.message, e.stack));
+                }else {
+                    res.status(500).send(developerErrorPageHandler('500 Internal Server Error', e.message, e.stack));
+                    this.logger.error(`Internal server error at ${req.method} ${req.path}`);
+                    this.logger.error(e.stack);
+                }
             }else{
-                result.params.push('star_'+ ++starCount);
+                res.status(404).send(developerErrorPageHandler('404 Page Not Found','Page not found',new Error('Reference stack').stack));
+                this.logger.warn(`Page not found at ${req.method} ${req.path}`);
             }
-            return '([^\/]+)';
+        };
+        try{
+            await this.route(req.path,ctx => {
+                ctx.method=req.method as any;
+                ctx.req=req;
+                ctx.res=res;
+                ctx.next=()=>{next()};
+            });
+            next();
+        }catch(e){
+            next(e);
         }
-        if(part==='**'){
-            if(starCount===0){
-                result.params.push('star');
-                starCount++;
+    }
+    private async wsHandler(socket:any){
+        // Websocket request handler, acts similar to httpHandler()
+        let req:IncomingMessage&IIncomingMessageExtension=socket.upgradeReq;
+        this.populateReqRes(req,null);
+        const next=(e?:any)=>{
+            if(e){
+                if(e instanceof HttpError) {
+                    // Nothing?
+                    socket.close(e.code);
+                }else {
+                    this.logger.error(`Internal server error at WS ${req.path}`);
+                    this.logger.error(e.stack);
+                    socket.close(500);
+                }
             }else{
-                result.params.push('star_'+ ++starCount);
+                // TODO: Dirty check, but how to handle not handled socket?
+                if(socket.internalOnMessage.name==='noop'&&socket.internalOnClose.name==='noop') {
+                    this.logger.warn(`Page not found at WS ${req.path}`);
+                    socket.close(404);
+                }
             }
-            return '(.+)';
+        };
+        try{
+            await this.route(req.path,ctx => {
+                ctx.method='WS';
+                ctx.req=req;
+                ctx.socket=socket;
+                ctx.next=()=>{next()}
+            });
+        }catch(e){
+            next(e);
         }
-        if(part==='*?'){
-            if(starCount===0){
-                result.params.push('star');
-                starCount++;
-            }else{
-                result.params.push('star_'+ ++starCount);
-            }
-            return '([^\/]*)';
-        }
-        if(part==='**?'){
-            if(starCount===0){
-                result.params.push('star');
-                starCount++;
-            }else{
-                result.params.push('star_'+ ++starCount);
-            }
-            return '(.*)';
-        }
-        return part;
-    }).join('/')+'$','');
-
-    xpressLogger.debug('NEW PATH REGEX: '.blue+result.regex);
-    return result;
+    }
+    listenHttp(host='0.0.0.0',port:number,silent=false):Promise<void>{
+        let server=createHttpServer(this.httpHandler.bind(this));
+        const ws = new WSServer({
+            server
+        });
+        ws.on('connection',this.wsHandler.bind(this));
+        return new Promise((res,rej)=>{
+            server.listen(port,host,()=>{
+                this.logger.debug('Listening (http) on %s:%d...',host,port);
+                res();
+            });
+        });
+    }
 }
 
 export function developerErrorPageHandler (title:string, desc:string, stack:string|undefined = undefined) {
@@ -348,5 +232,5 @@ export function userErrorPageHandler (hello:string, whatHappened:string, sorry:s
         sorry=encodeHtmlSpecials(sorry.replace(/\n/g, '<br>'));
     if(post)
         post=encodeHtmlSpecials(post.replace(/\n/g, '<br>'));
-	return `<html><head></head><body style='font-family:Arial,sans-serif;font-size:22px;color:#CCC;background:#222;padding:40px;'>${hello}<br/><br/><span style='color:#FC0;font-weight:600;'>${whatHappened}</span><br/><br/>${sorry}<br/><br/><span style='font-size: 14px;'>${post}</span></body></html>`;
+	return `<html><body style='font-family:Arial,sans-serif;font-size:22px;color:#CCC;background:#222;padding:40px;'>${hello}<br/><br/><span style='color:#FC0;font-weight:600;'>${whatHappened}</span><br/><br/>${sorry}<br/><br/><span style='font-size: 14px;'>${post}</span></body></html>`;
 }

@@ -23,21 +23,11 @@ export function objectEquals(x:any, y:any):boolean {
     if (Array.isArray(x) && x.length !== y.length) {
         return false;
     }
-    if (x instanceof Date) {
-        return false;
-    }
-    if (!(x instanceof Object)) {
-        return false;
-    }
-    if (!(y instanceof Object)) {
-        return false;
-    }
 
     let p = Object.keys(x);
     return Object.keys(y).every(i => p.indexOf(i) !== -1) && p.every(i => objectEquals(x[i], y[i]));
 }
 export function flatten(array:any[], result:any[] = []):any[] {
-    if (!(array instanceof Array)) throw new TypeError('"array" argument is not a array!');
     for (let i = 0; i < array.length; i++) {
         const value = array[i];
 
@@ -52,35 +42,28 @@ export function flatten(array:any[], result:any[] = []):any[] {
     return result;
 }
 export function removeDuplicates<T>(array:T[]):T[] {
-    if (!(array instanceof Array)) throw new TypeError('"array" argument is not a array!');
     return Array.from(new Set(array));
 }
-export function mix(array1:any[]|any, array2:any[]|any):any {
-    //if (!(array1 instanceof Array) || !!(array2 instanceof Array)) throw new TypeError('One of arguments is not a array! ('+(typeof array1)+', '+(typeof array2)+')');
-    if (typeof array1 !== typeof array2) throw new TypeError('Both arguments must have same types!');
+export function mix(array1:any[]|Object, array2:any[]|Object):any {
     let out:any;
     if (array1 instanceof Array) {
         out = [];
         for (let index in array1) {
-            // noinspection JSUnfilteredForInLoop
-            out.push([array1[index], array2[index]]);
+            out.push([array1[index], (array2 as any)[index]]);
         }
         return out;
-    }else if(array1 instanceof Object){
+    }else {
         out={};
         for(let key in array1){
             // noinspection JSUnfilteredForInLoop
-            out[key]=array1[key];
+            out[key]=(array1 as any)[key];
         }
         for(let key in array2){
             // noinspection JSUnfilteredForInLoop
-            out[key]=array2[key];
+            out[key]=(array2 as any)[key];
         }
         return out;
-    }else{
-        throw new TypeError('Unknown input type!');
     }
-
 }
 export function createPrivateEnum(...values:string[]):{[key:string]:Symbol} {
     let returnObj:any = {};
@@ -203,15 +186,20 @@ export function createReadStream(object:Buffer, options = {}):MultiStream {
     return new MultiStream(object, options);
 }
 
-export function readStream(stream:Readable): Promise<Buffer> {
+export function readStreamToBuffer(stream:Readable,maxSize:number=0): Promise<Buffer> {
     return new Promise((res, rej) => {
         const bufs:any = [];
+        let size = 0;
         stream.on('data', d => {
+            if(size+d.length>maxSize){
+                rej(new Error('Max buffer size exceeded'));
+                return;
+            }
             bufs.push(d);
+            size+=d.length;
         });
         stream.on('end', () => {
-            let buf = Buffer.concat(bufs);
-            res(buf);
+            res(Buffer.concat(bufs));
         });
         stream.on('error',rej);
     });
@@ -223,24 +211,17 @@ export interface IMultiStreamOptions {
 }
 
 export class MultiStream extends Readable {
-    _object:Buffer;
+    private object:Buffer;
     constructor(object:Buffer, options:IMultiStreamOptions = {}) {
-        if (object instanceof Buffer || typeof object === 'string') {
-            super({
-                highWaterMark: options.highWaterMark,
-                encoding: options.encoding
-            });
-        }
-        else {
-            super({
-                objectMode: true
-            });
-        }
-        this._object = object;
+        super({
+            highWaterMark: options.highWaterMark,
+            encoding: options.encoding
+        });
+        this.object = object;
     }
 
     _read() {
-        this.push(this._object);
-        this._object = null;
+        this.push(this.object);
+        this.object = null;
     }
 }

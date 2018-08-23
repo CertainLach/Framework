@@ -7,8 +7,5 @@
     "meteor-it"
   ],
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
-  "license": "MIT",
-  "optionalDependencies": {
-    "react": "latest"
-  }
+  "license": "MIT"
 }

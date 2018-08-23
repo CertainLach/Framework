@@ -1,7 +1,7 @@
 export default class TimingData {
-    data=[];
-    cn='';
-    st=0;
+    private data:[string,number,number,number][]=[];
+    private cn:string='';
+    private st:number=0;
     /**
      * Used to save timings between bot events
      */

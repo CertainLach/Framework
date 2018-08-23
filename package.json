@@ -1,15 +1,16 @@
 {
   "name": "@meteor-it/all",
+  "scripts":{
+    "build": "tsc -d --sourceMap -p .",
+    "buildDocs": "npx typedoc -t ES7 --jsx react --readme none --hideGenerator --name Meteor.Framework --ignoreCompilerErrors --theme minimal --out ./docs ./",
+    "fixGithubDocs": "echo 123 > ./docs/.nojekyll"
+  },
   "devDependencies": {
-    "lerna": "^3.0.5"
+    "lerna": "^3.1.1",
+    "@types/chokidar": "^1.7.5",
+    "@types/webpack-env": "^1.13.6"
   },
   "dependencies": {
-    "@types/node": "^8.0.53",
-    "@types/react": "^16.0.13",
-    "mobx": "^3.3.1",
-    "mobx-react": "^4.3.3",
-    "react": "^16.0.0",
-    "react-router": "^4.2.0",
     "typescript": "^2.6.2"
   }
 }

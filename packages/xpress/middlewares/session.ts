@@ -1,4 +1,7 @@
-var session = require("express-session");
+import {IRouterContext} from "@meteor-it/router";
+import {XPressRouterContext} from "../index";
+
+import * as session from 'express-session';
 
 export default function (store:any, storeConfig:any={}, secret:string, sessionField='s') {
     let sessionParser=session({
@@ -12,12 +15,12 @@ export default function (store:any, storeConfig:any={}, secret:string, sessionFi
             secure: false
         }
     });
-    
-    return (req, res, next) => {
-        sessionParser(req, res, e=> {
+
+    return async ({req,res,next,path}:IRouterContext<any>&XPressRouterContext) => {
+        sessionParser(req, res, (e:Error)=> {
             if(e)
                 return next(e);
             next();
         });
-    }
+    };
 };

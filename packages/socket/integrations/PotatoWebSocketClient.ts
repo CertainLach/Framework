@@ -1,5 +1,5 @@
 import { PotatoSocketUniversal, IEncoder, IClientCloseHandler, 
-    IClientOpenHandler, IClientOpenCloseHandler,IRPCFieldWithoutThis } from '../';
+    IClientOpenHandler, IRPCFieldWithoutThis } from '../';
 import Logger from '@meteor-it/logger';
 import WebSocketClient from '../WebSocketClient';
 

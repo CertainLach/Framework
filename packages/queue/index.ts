@@ -1,86 +1,150 @@
 import Logger from '@meteor-it/logger';
+
 const queueLogger=new Logger('queue');
 
-export default function queue(time: number=0, maxCalls: number=1, collapser: string=null){
-    return function queueDecorator(target, key, descriptor) {
-        let queued=[];
-        let origFun=descriptor.value;
-        let busy=false;
-        let startTime;
-        async function process() {
-            busy=true;
-            if(queued.length===0){
-                busy=false;
-                return;
-            }
-            startTime=Date.now();
+type IQueueItem<I,O> = {
+    data:I;
+    reject:(e:Error)=>void;
+    resolve:(out:O)=>void;
+}
 
-            if(collapser!==null){
-                // Collapsed task
-                if(maxCalls===1)
-                    queueLogger.warn('Collapser is for multiple running tasks in time, but you specified only 1.');
-                let willBeExecuted=queued.slice(0,maxCalls);
-                queued=queued.slice(maxCalls);
-                let multiExecuted=willBeExecuted.map(task=>task.args);
-                try{
-                    let returns=await (target[collapser].call(willBeExecuted[0].context,multiExecuted));
-                    if(!returns)
-                        throw new Error('Collapser doesn\'t returned anything!');
-                    if(!(returns instanceof Array))
-                        throw new Error('Collapser return value isn\'t array!');
-                    if(returns.length!==willBeExecuted.length)
-                        throw new Error('Collapser returned wrong data array! (Length mismatch)');
-                    willBeExecuted.map((task,id)=>{
-                        if(returns[id] instanceof Error)
-                            task.reject(returns[id]);
-                        else
-                            task.resolve(returns[id]);
-                    });
-                }catch(e){
-                    willBeExecuted.forEach(task=>task.reject(e));
-                }
-            }else{
-                // Single task
-                if(maxCalls!==1)
-                    throw new Error('Only 1 call can be processed at time if no collapser is defined!');
-                let task=queued.shift();
-                try{
-                    let data=await origFun.call(task.context,...task.args);
-                    if(data instanceof Error)
-                        task.reject(data);
-                    else
-                        task.resolve(data);
-                }catch(e){
-                    task.reject(e);
-                }
-            }
+export interface IQueueProcessor<I,O> {
+    runTask(data:I):Promise<O>;
+}
 
-            if(queued.length>0){
-                let nowTime=Date.now();
-                let timeLeftToSleep=startTime+time-nowTime;
-                if(timeLeftToSleep<=1){
-                    setTimeout(()=>process(),1);
-                }else{
-                    setTimeout(()=>process(),timeLeftToSleep);
-                }
-            }else{
-                busy=false;
-            }
-        };
-        descriptor.value = function (){
-            let context=this;
-            let args=arguments;
-            return new Promise((resolve,reject)=>{
-                queued.push({
-                    reject:reject,
-                    resolve:resolve,
-                    args:args,
-                    context:context
-                });
-                if(!busy)
-                    process();
+/**
+ * Can be used for rate-limited apis
+ */
+export abstract class QueueProcessor<I,O> implements IQueueProcessor<I,O>{
+    private busy: boolean = false;
+    private queued: IQueueItem<I, O>[] = [];
+    private time: number;
+
+    protected constructor(time: number) {
+        this.time = time;
+        this.boundProcessLoop = this.processLoop.bind(this);
+    }
+
+    protected abstract executor(data: I): Promise<O | Error>;
+    public runTask(data:I):Promise<O>{
+        return new Promise((resolve,reject)=>{
+            this.queued.push({
+                reject,
+                resolve,
+                data
             });
-        };
-        return descriptor;
+            if(!this.busy) {
+                // noinspection JSIgnoredPromiseFromCall
+                this.processLoop();
+            }
+        });
+    }
+
+    private readonly boundProcessLoop:()=>Promise<void>;
+    private async processLoop(){
+        this.busy=true;
+        if(this.queued.length===0){
+            this.busy = false;
+            return;
+        }
+        let startTime=Date.now();
+
+        let task=this.queued.shift();
+        try{
+            let data=await this.executor(task.data);
+            // noinspection SuspiciousInstanceOfGuard
+            if(data instanceof Error)
+                task.reject(data);
+            else
+                task.resolve(data);
+        }catch(e){
+            task.reject(e);
+        }
+
+        if(this.queued.length>0){
+            let nowTime=Date.now();
+            let timeLeftToSleep=startTime+this.time-nowTime;
+            if(timeLeftToSleep<=1)
+                setTimeout(this.boundProcessLoop,1);
+            else
+                setTimeout(this.boundProcessLoop,timeLeftToSleep);
+        }else{
+            this.busy=false;
+        }
+    }
+}
+
+/**
+ * Can be used for some rate-limited apis, where
+ * u can request data for multiple users in a time for example
+ */
+export abstract class CollapseQueueProcessor<I,O> implements IQueueProcessor<I,O>{
+    private busy:boolean=false;
+    private queued: IQueueItem<I,O>[]=[];
+    private readonly tasksPerTime:number;
+    private time:number;
+
+    protected constructor(time:number, tasksPerTime:number){
+        if(tasksPerTime===1)
+            throw new Error('CollapseQueueProcessor is for multiple tasks running in time, but you specified only 1.');
+        this.time=time;
+        this.tasksPerTime=tasksPerTime;
+        this.boundProcessLoop = this.processLoop.bind(this);
+    }
+
+    protected abstract collapser(data:I[]):Promise<(O|Error)[]>;
+    public runTask(data:I):Promise<O>{
+        return new Promise((resolve,reject)=>{
+            this.queued.push({
+                reject,
+                resolve,
+                data
+            });
+            if(!this.busy) {
+                // noinspection JSIgnoredPromiseFromCall
+                this.processLoop();
+            }
+        });
+    }
+
+    private readonly boundProcessLoop:()=>Promise<void>;
+    private async processLoop(){
+        this.busy=true;
+        if(this.queued.length===0){
+            this.busy = false;
+            return;
+        }
+        let startTime=Date.now();
+        let willBeExecuted:IQueueItem<I,O>[] = this.queued.slice(0,this.tasksPerTime);
+        // Immutable queue
+        this.queued=this.queued.slice(this.tasksPerTime);
+        let multiExecuted:I[] = willBeExecuted.map(task=>task.data);
+        try{
+            let returns:(O|Error)[]=await this.collapser(multiExecuted);
+            if(returns.length!==willBeExecuted.length){
+                // noinspection ExceptionCaughtLocallyJS
+                throw new Error('Collapser returned wrong data array! (Length mismatch)');
+            }
+            willBeExecuted.map((task,id)=>{
+                let ret = returns[id];
+                // noinspection SuspiciousInstanceOfGuard
+                if(ret instanceof Error)
+                    task.reject(ret);
+                else
+                    task.resolve(ret);
+            });
+        }catch(e){
+            willBeExecuted.forEach(task=>task.reject(e));
+        }
+        if(this.queued.length>0){
+            let nowTime=Date.now();
+            let timeLeftToSleep=startTime+this.time-nowTime;
+            if(timeLeftToSleep<=1)
+                setTimeout(this.boundProcessLoop,1);
+            else
+                setTimeout(this.boundProcessLoop,timeLeftToSleep);
+        }else{
+            this.busy=false;
+        }
     }
 }

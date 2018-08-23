@@ -12,14 +12,18 @@
     "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/fs": "latest",
-        "@meteor-it/mime": "latest",
-        "@meteor-it/ajson": "latest",
-        "@meteor-it/logger": "latest",
-        "@meteor-it/utils": "latest"
+        "@meteor-it/ajson": "^0.3.1",
+        "@meteor-it/fs": "^0.3.4",
+        "@meteor-it/logger": "^2.2.11",
+        "@meteor-it/mime": "^0.3.1",
+        "@meteor-it/router": "^1.0.0",
+        "@meteor-it/utils": "^1.2.2",
+        "uws": "^10.148.1"
     },
-    "optionalDependencies": {
-        "express-session": "latest",
-        "uws": "latest"
+    "devDependencies": {
+        "@types/uws": "^0.13.2"
+    },
+    "optionalDependencies":{
+        "express-session": "^1.15.6"
     }
 }

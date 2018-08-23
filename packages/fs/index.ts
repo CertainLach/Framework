@@ -3,7 +3,7 @@ import {asyncEach} from '@meteor-it/utils';
 import {sep} from 'path';
 import {promisify} from 'util';
 
-// TODO: Data url: Support encoding and not base64 format
+// TODO: Deprecate (Because node now supports promised fs)
 
 /**
  * Returns true if path is a valid data url
@@ -107,12 +107,9 @@ export async function walkDir (dir:string, cb?:(file:string,dir:string)=>void):P
 export async function exists (file:string):Promise<boolean> {
 	try {
 		let result = await promisify(fs.access)(file, fs.constants.F_OK);
-		if (result === undefined) {
-		    return true;
-		}
-		return false;
-		// Because only "err" field is returned if not exists
-	} catch (e) {
+		return result === undefined;
+    } catch (e) {
+        // Because only "err" field is returned if not exists
 		return false;
 	}
 }

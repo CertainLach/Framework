@@ -10,6 +10,6 @@
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/utils": "latest"
+    "@meteor-it/utils": "^1.2.2"
   }
 }

@@ -2,7 +2,7 @@ const DEFAULT_DELIMITER = '/';
 const ESCAPED_DEFAULT_DELIMITER = escapeString(DEFAULT_DELIMITER);
 const DEFAULT_DELIMITERS = './';
 
-const PATH_REGEXP = new RegExp('(\\\\.)|(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?', 'g');
+const PATH_REGEXP = new RegExp('(\\\\.)|(?::(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?', 'g');
 
 export interface Options {
     sensitive?: boolean;
@@ -94,7 +94,7 @@ function parse (str:string):Token[] {
             optional: optional,
             repeat: repeat,
             partial: partial,
-            pattern: pattern ? escapeGroup(pattern) : '[^' + escapeString(delimiter) + ']+?'
+            pattern: pattern ? escapeGroup(pattern) : `[^${escapeString(delimiter)}]+?`
         })
     }
 
@@ -115,7 +115,7 @@ function tokensToFunction (tokens:Token[]):PathFunction {
     // Compile all the patterns before compilation.
     for (let i = 0; i < tokens.length; i++) {
         if (tokens[i] instanceof Key) {
-            matches[i] = new RegExp('^(?:' + (<Key>tokens[i]).pattern + ')$')
+            matches[i] = new RegExp(`^(?:${(<Key>tokens[i]).pattern})$`)
         }
     }
 
@@ -136,20 +136,20 @@ function tokensToFunction (tokens:Token[]):PathFunction {
 
             if (Array.isArray(value)) {
                 if (!token.repeat) {
-                    throw new TypeError('Expected "' + token.name + '" to not repeat, but got array')
+                    throw new TypeError(`Expected "${token.name}" to not repeat, but got array`)
                 }
 
                 if (value.length === 0) {
                     if (token.optional) continue;
 
-                    throw new TypeError('Expected "' + token.name + '" to not be empty')
+                    throw new TypeError(`Expected "${token.name}" to not be empty`)
                 }
 
                 for (let j = 0; j < value.length; j++) {
                     segment = encodeURIComponent(value[j]);
 
                     if (!matches[i].test(segment)) {
-                        throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '"')
+                        throw new TypeError(`Expected all "${token.name}" to match "${token.pattern}"`)
                     }
 
                     path += (j === 0 ? token.prefix : token.delimiter) + segment
@@ -161,7 +161,7 @@ function tokensToFunction (tokens:Token[]):PathFunction {
             if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
                 segment = encodeURIComponent(String(value));
                 if (!matches[i].test(segment))
-                    throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but got "' + segment + '"')
+                    throw new TypeError(`Expected "${token.name}" to match "${token.pattern}", but got "${segment}"`);
                 path += token.prefix + segment;
                 continue
             }
@@ -171,7 +171,7 @@ function tokensToFunction (tokens:Token[]):PathFunction {
                 continue
             }
 
-            throw new TypeError('Expected "' + token.name + '" to be ' + (token.repeat ? 'an array' : 'a string'))
+            throw new TypeError(`Expected "${token.name}" to be ${token.repeat ? 'an array' : 'a string'}`)
         }
 
         return path
@@ -215,7 +215,7 @@ function arrayToRegexp (path:Path[], keys:Key[], options:Options) {
         parts.push(pathToRegexp(path[i], keys, options).source)
     }
 
-    return new RegExp('(?:' + parts.join('|') + ')', flags(options))
+    return new RegExp(`(?:${parts.join('|')})`, flags(options))
 }
 function stringToRegexp (path:string, keys:Key[], options:Options) {
     return tokensToRegExp(parse(path), keys, options)
@@ -236,36 +236,36 @@ function tokensToRegExp (tokens:Token[], keys?:Key[], options:Options={}) {
         } else {
             const prefix = escapeString(token.prefix);
             const capture = token.repeat
-                ? '(?:' + token.pattern + ')(?:' + prefix + '(?:' + token.pattern + '))*'
+                ? `(?:${token.pattern})(?:${prefix}(?:${token.pattern}))*`
                 : token.pattern;
 
             if (keys) keys.push(token);
 
             if (token.optional) {
                 if (token.partial) {
-                    route += prefix + '(' + capture + ')?'
+                    route += `${prefix}(${capture})?`
                 } else {
-                    route += '(?:' + prefix + '(' + capture + '))?'
+                    route += `(?:${prefix}(${capture}))?`
                 }
             } else {
-                route += prefix + '(' + capture + ')'
+                route += `${prefix}(${capture})`
             }
         }
     }
 
     if (end) {
-        if (!strict) route += '(?:' + ESCAPED_DEFAULT_DELIMITER + ')?';
+        if (!strict) route += `(?:${ESCAPED_DEFAULT_DELIMITER})?`;
 
-        route += endsWith === '$' ? '$' : '(?=' + endsWith + ')'
+        route += endsWith === '$' ? '$' : `(?=${endsWith})`
     } else {
-        if (!strict) route += '(?:' + ESCAPED_DEFAULT_DELIMITER + '(?=' + endsWith + '))?';
-        if (!isEndDelimited) route += '(?=' + ESCAPED_DEFAULT_DELIMITER + '|' + endsWith + ')'
+        if (!strict) route += `(?:${ESCAPED_DEFAULT_DELIMITER}(?=${endsWith}))?`;
+        if (!isEndDelimited) route += `(?=${ESCAPED_DEFAULT_DELIMITER}|${endsWith})`
     }
 
-    return new RegExp('^' + route, flags(options))
+    return new RegExp(`^${route}`, flags(options))
 }
 
-function pathToRegexp (path:Path, keys:Key[], options:Options):RegExp {
+export default function pathToRegexp (path:Path, keys:Key[], options:Options):RegExp {
     if (path instanceof RegExp) {
         return regexpToRegexp(path, keys)
     }

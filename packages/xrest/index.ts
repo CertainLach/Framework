@@ -4,12 +4,13 @@ import * as multipart from './multipart';
 
 import {EventEmitter} from 'events';
 import * as http from 'http';
-import {METHODS,IncomingMessage, Agent, ServerResponse, ClientRequest} from 'http';
+import {METHODS,IncomingMessage, Agent} from 'http';
 import * as https from 'https';
 import {parse as parseUrl, resolve, Url} from 'url';
 import {stringify} from 'querystring';
 import iconv from 'iconv-lite';
 import {IMultiPartData} from "./multipart";
+import * as zlib from 'zlib';
 
 export * from './multipart';
 
@@ -429,26 +430,14 @@ class Request extends EventEmitter {
 
 const logger = new Logger('xrest');
 
-export function emit(eventString: string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
-    let [event, path, ...middlewares] = eventString.split(' ');
-    let middleFunctions = [];
-    for (let middleware of middlewares) {
-        if (middleware.toUpperCase() !== middleware) {
-            logger.warn('Upper case is preffered for middleware names! (Got: %s)', event);
-            middleware = middleware.toUpperCase();
-        }
-        if (!~POSSIBLE_MIDDLEWARES.indexOf(middleware))
-            throw new Error('Unknown middleware: ' + middleware);
-        middleFunctions.push(middleware);
+export function emit(method:string,path:string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
+    if (method.toUpperCase() !== method) {
+        throw new Error(`Method name should be uppercase! (Got: ${method})`);
     }
-    if (event.toUpperCase() !== event) {
-        logger.warn('Upper case is preffered for event names! (Got: %s)', event);
-        event = event.toUpperCase();
+    if (!~POSSIBLE_EVENTS.indexOf(method)) {
+        throw new Error('Unknown method: ' + method + ', possible methods are ' + POSSIBLE_EVENTS.join(', ') + '!');
     }
-    if (!~POSSIBLE_EVENTS.indexOf(event)) {
-        throw new Error('Unknown event: ' + event + ', possible events are ' + POSSIBLE_EVENTS.join(', ') + '!');
-    }
-    options.method = event;
+    options.method = method;
     const request = new Request(path, options);
     return new Promise((res,rej)=>{
         request.run();
@@ -463,7 +452,7 @@ export function emit(eventString: string, options: IRequestOptions = {}): Promis
                 logger.debug(`Timeout, repeat in ${repeatIn}ms`);
                 await new Promise(res=>setTimeout(res,repeatIn));
                 try{
-                    let data=await emit(eventString,options);
+                    let data=await emit(method,path,options);
                     res(data);
                 }catch(e){
                     rej(e);
@@ -492,11 +481,10 @@ export default class XRest {
         this.defaultOptions = defaultOptions;
     }
 
-    emit(eventString:string, options:IRequestOptions) {
-        let [event, path, ...middlewares] = eventString.split(' ');
+    emit(event:string,path:string, options:IRequestOptions) {
         let opts={};
         Object.assign(opts,this.defaultOptions,options);
         path = resolve(this.baseUrl, path);
-        return emit([event, path, ...middlewares].join(' '), opts);
+        return emit(event, path, opts);
     }
 }

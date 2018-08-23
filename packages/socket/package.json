@@ -12,10 +12,9 @@
     "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/logger": "latest"
+        "@meteor-it/logger": "^2.2.11"
     },
     "optionalDependencies": {
-        "msgpack-lite": "latest",
-        "react": "latest"
+        "msgpack-lite": "^0.1.26"
     }
 }

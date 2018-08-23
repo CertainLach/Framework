@@ -189,11 +189,11 @@ AJSON.defineType('date', {
 });
 // TODO: ArrayBuffer
 AJSON.defineType('binary', {
-	testObj (obj:any) {
+	testObj (obj:Buffer) {
 		if (typeof Buffer === 'undefined') return false;
 		return obj instanceof Buffer;
 	},
-	serialize (obj:any) {
+	serialize (obj:Buffer) {
 		return {
 			$binary: obj.toString('base64')
 		};

@@ -1,36 +1,46 @@
-export default function run<T>(middleware: Function | Function[]): Function {
-    if (!Array.isArray(middleware)) {
+import Logger from '@meteor-it/logger';
+import {IRouterContext} from "./";
+
+export default function middleRun<T>(middleware: Function | Function[]): (context:IRouterContext<any>)=>()=>Promise<void|T> {
+    if (!(middleware instanceof Array)) {
         middleware = [middleware]
     }
+    middleware = middleware as Function[];
 
-    return (parent:any) => {
+    return (parent:IRouterContext<any>) => {
+        // parent.logger.ident('middleRun#inner');
+
         let finalPromise:any;
         let index = 0;
         let isResolved = false;
         let value: T;
 
-        const context = (parent && parent.context) || {};
+        const state = (parent && parent.state) || {};
         const parentKeys = parent ? Object.keys(parent) : [];
         const parentKeysLength = parentKeys.length;
 
-        function loop() {
+        async function loop() {
             if (isResolved) {
                 return value;
             } else if (index >= middleware.length) {
                 return parent && parent.next && parent.next()
             }
 
-            const args: any = {context};
-            for (let i = 0; i < parentKeysLength; ++i) {
-                args[parentKeys[i]] = parent[parentKeys[i]]
-            }
+            const args: IRouterContext<any> = {
+                ...parent,
+                state
+            };
 
             let nextCalled = false;
             let nextResult:any;
-            args.next = function next() {
-                if (!nextCalled) {
-                    nextCalled = true;
-                    nextResult = loop()
+            args.next = async ()=>{
+                try {
+                    if (!nextCalled) {
+                        nextCalled = true;
+                        nextResult = await loop()
+                    }
+                }catch (e) {
+                    throw e;
                 }
                 return nextResult;
             };
@@ -49,16 +59,12 @@ export default function run<T>(middleware: Function | Function[]): Function {
                 return finalPromise
             };
 
-            const current = (<any>middleware)[index++];
+            const current = (middleware as Function[])[index++];
             const result = current(args);
-            return Promise.race([result, stepPromise]).then(args.next)
+            let res = await Promise.race([result, stepPromise]);
+            return args.next(res);
         }
 
-        const loopPromise = Promise.resolve().then(loop);
-        finalPromise = loopPromise.then(() => {
-            const shouldResolveParent = isResolved && parent && parent.resolve;
-            return shouldResolveParent ? parent.resolve(value) : value
-        });
-        return loopPromise
+        return loop;
     }
 };

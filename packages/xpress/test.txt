@@ -1,0 +1,24 @@
+              _           _     _            _
+             | |         | |   | |          | |
+          ___| |__   __ _| |_  | | __ _  ___| |__    _ ____      __
+         / __| '_ \ / _` | __| | |/ _` |/ __| '_ \  | '_ \ \ /\ / /
+        | (__| | | | (_| | |_ _| | (_| | (__| | | |_| |_) \ V  V /
+         \___|_| |_|\__,_|\__(_)_|\__,_|\___|_| |_(_) .__/ \_/\_/
+                                                    | |
+                                                    |_|
+
+
+Welcome to chat.lach.pw, a minimal, distraction-free chat application, clone of hack.chat based on Meteor.Framework.
+Channels are created and joined by going to <a href="?your-channel">https://chat.lach.pw/?your-channel</a>. There are no channel lists, so a secret channel name can be used for private discussions.
+
+Here are some pre-made channels you can join:
+<a href="?lounge">?lounge</a> <a href="?meta">?meta</a>
+<a href="?math">?math</a> <a href="?physics">?physics</a> <a href="?chemistry">?chemistry</a>
+<a href="?technology">?technology</a> <a href="?programming">?programming</a>
+<a href="?games">?games</a> <a href="?banana">?banana</a>
+And here's a random one generated just for you: <a href="?randomString" target="_blank">?randomString</a>
+
+Github: <a href="https://github.com/CertainLach/chat.lach.pw" target="_blank">https://github.com/CertainLach/chat.lach.pw</a> includes server and client source along with other resources
+
+Server and web client released under the WTFPL and MIT open source license.
+No message history is retained on the hack.chat server.

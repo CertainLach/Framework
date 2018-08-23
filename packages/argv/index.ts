@@ -1,4 +1,4 @@
-import {objectMap,firstUppercase} from '@meteor-it/utils';
+import {objectMap} from '@meteor-it/utils';
 import Logger from '@meteor-it/logger';
 
 import {basename} from 'path';
@@ -151,7 +151,7 @@ export default class ArgParser {
                         let cmdHelp = objectMap(this.commands, (cmd:ICommand,name:string)=>{
                             let diff = maxLength - name.length;
                             let pad = new Array(diff + 4).join(" ");
-                            return "  " + [name.green, pad, cmd.help].join(" ");
+                            return "  " + [`{green}${name}{/green}`, pad, cmd.help].join(" ");
                         });
                         return "\n" + cmdHelp.join("\n");
                     }
@@ -185,7 +185,7 @@ export default class ArgParser {
 
         if (this.specs.length === undefined) {
             // specs is a hash not an array
-            this.specs = objectMap(this.specs, (opt:IOption, name:string) => {
+            (this.specs as any) = objectMap(this.specs, (opt:IOption, name:string) => {
                 opt.name = name;
                 return opt;
             });
@@ -339,8 +339,7 @@ export default class ArgParser {
         positionals.forEach((pos:IOption)=>{
             const posStr = pos.string || pos.name;
             str += `${posStr + ' '.repeat(longest - posStr.length)}     `;
-            str += (pos.help || "").gray;
-            str += "\n";
+            str += `{gray}${(pos.help || "")}{/gray}\n`;
         });
         if (positionals.length && options.length) {
             str += "\n";
@@ -354,13 +353,7 @@ export default class ArgParser {
 
             options.forEach((opt:IOption)=>{
                 if (!opt.hidden) {
-                    str += `   ${opt.string}${' '.repeat(longest - opt.string.length)}   `;
-
-                    const defaults = (opt.default != null ? ` {bold}[Default: ${opt.default}]{/bold}` : "");
-                    const help = opt.help ? opt.help + defaults : "";
-                    str += help.gray;
-
-                    str += "\n";
+                    str += `   ${opt.string}${' '.repeat(longest - opt.string.length)}   {gray}${opt.help ? opt.help + (opt.default != null ? ` {bold}[Default: ${opt.default}]{/bold}` : "") : ""}{/gray}\n`;
                 }
             });
         }

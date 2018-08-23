@@ -1,3 +1,5 @@
+// TODO: Translations
+
 export enum FieldType{
     TEXT,
     SELECT,
