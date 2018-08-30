@@ -4,7 +4,7 @@ import * as multipart from './multipart';
 
 import {EventEmitter} from 'events';
 import * as http from 'http';
-import {METHODS,IncomingMessage, Agent} from 'http';
+import {METHODS, IncomingMessage, Agent, ClientRequest} from 'http';
 import * as https from 'https';
 import {parse as parseUrl, resolve, Url} from 'url';
 import {stringify} from 'querystring';
@@ -14,30 +14,19 @@ import * as zlib from 'zlib';
 
 export * from './multipart';
 
-const POSSIBLE_EVENTS = [...METHODS];
-const POSSIBLE_MIDDLEWARES = ['STREAM'];
-
 const USER_AGENT = 'Meteor-IT XRest';
 
 // TODO: More assertions
 
-const decoders:{[key:string]:((buffer:Buffer)=>Promise<Buffer>)} = {
-    gzip(buf:Buffer):Promise<Buffer> {
-        return new Promise((res,rej)=>{
-            zlib.gunzip(buf, (err:Error,result:Buffer)=>err?rej(err):res(result));
-        });
-    },
-    deflate(buf:Buffer):Promise<Buffer>  {
-        return new Promise((res,rej)=>{
-            zlib.inflate(buf, (err:Error,result:Buffer)=>err?rej(err):res(result));
-        });
-    }
-};
-const parsers = {
-    async json(text:string) {
-        return JSON.parse(text);
-    }
-};
+const decoders: Map<string,(buffer:Buffer)=>Promise<Buffer>> = new Map<string, (buffer:Buffer)=>Promise<Buffer>>();
+decoders.set('gzip',buffer => new Promise((res,rej)=>{
+    zlib.gunzip(buffer, (err:Error,result:Buffer)=>err?rej(err):res(result));
+}));
+decoders.set('deflate',buffer => new Promise((res,rej)=>{
+    zlib.inflate(buffer, (err:Error,result:Buffer)=>err?rej(err):res(result));
+}));
+const parsers: Map<string,(data:string)=>Promise<unknown>> = new Map<string, (data:string)=>Promise<unknown>>();
+parsers.set('json', data=>Promise.resolve(JSON.parse(data)));
 
 export type IRequestHeaders = {[key:string]:string|number};
 export type IRequestRepeatOptions = {
@@ -74,7 +63,7 @@ export type IRequestOptions = {
      * Parse body as JSON/XML/any
      * @param data
      */
-    parser?:(data:string)=>Promise<any>;
+    parser?:string
     /**
      * Request query parameters
      */
@@ -112,7 +101,7 @@ class Request extends EventEmitter {
     parsedUrl: Url;
     options:IRequestOptions;
     headers:IRequestHeaders;
-    request: any;
+    request: ClientRequest;
     aborted: boolean;
     timedout: boolean;
 
@@ -133,7 +122,7 @@ class Request extends EventEmitter {
             'Accept': '*/*',
             'User-Agent': USER_AGENT,
             'Host': this.parsedUrl.host,
-            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Encoding': [...decoders.keys()].join(', '),
             ...options.headers
         };
 
@@ -147,8 +136,9 @@ class Request extends EventEmitter {
         if (this.options.timeout === undefined)
             this.options.timeout = 12000;
         if (!this.options.parser)
-            this.options.parser = parsers.json;
-
+            this.options.parser = 'json';
+        else if(!parsers.has(this.options.parser))
+            throw new Error(`parser ${this.options.parser} is not registered, registered parsers: ${[...parsers.keys()].join(', ')}. Did you forgot to call XRest.registerParser(name, parser)?`);
         if(this.options.method==='GET'&&this.options.data)
             throw new Error('GET requests doesn\'t supports request body!');
 
@@ -276,7 +266,7 @@ class Request extends EventEmitter {
                     response.raw = body;
                     body = await Request.iconv(body, response);
                     let encoded = await this.encode(body);
-                    this.fireSuccess(body, encoded);
+                    this.fireSuccess(encoded, response);
                 }catch(e){
                     this.fireError(e,response);
                 }
@@ -286,11 +276,9 @@ class Request extends EventEmitter {
 
     static async decode(body:Buffer, response:IExtendedIncomingMessage) {
         const decoder = response.headers['content-encoding'];
-
-        if (decoder in decoders) {
-            return await decoders[decoder].call(response, body);
-        }
-        else {
+        if (decoders.has(decoder)) {
+            return await decoders.get(decoder)(body);
+        } else {
             return body;
         }
     }
@@ -310,14 +298,14 @@ class Request extends EventEmitter {
         return Promise.resolve(body);
     }
 
-    encode(body:Buffer):Promise<any> {
+    encode(body:Buffer):Promise<unknown> {
         if (this.options.decoding === 'buffer') {
             return Promise.resolve(body);
         }
         else {
             let bodyString = body.toString(this.options.decoding);
             if (this.options.parser) {
-                return this.options.parser(bodyString);
+                return parsers.get(this.options.parser)(bodyString);
             }
             else {
                 return Promise.resolve(body);
@@ -344,7 +332,7 @@ class Request extends EventEmitter {
         this.request.abort();
     }
 
-    fireSuccess(body:any, response:IExtendedIncomingMessage) {
+    fireSuccess(body:unknown, response:IExtendedIncomingMessage) {
         if (response.statusCode >= 400) {
             this.emit('fail', body, response);
         }
@@ -400,6 +388,7 @@ class Request extends EventEmitter {
         return this;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     abort(err:Error) {
         this.request.on('close', () => {
             if (err) {
@@ -416,6 +405,7 @@ class Request extends EventEmitter {
         return this;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     retry(timeout:number) {
         const fn = this.reRetry.bind(this);
         if (!isFinite(timeout) || timeout <= 0) {
@@ -430,12 +420,12 @@ class Request extends EventEmitter {
 
 const logger = new Logger('xrest');
 
-export function emit(method:string,path:string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
+function emit(method:string,path:string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
     if (method.toUpperCase() !== method) {
         throw new Error(`Method name should be uppercase! (Got: ${method})`);
     }
-    if (!~POSSIBLE_EVENTS.indexOf(method)) {
-        throw new Error('Unknown method: ' + method + ', possible methods are ' + POSSIBLE_EVENTS.join(', ') + '!');
+    if (METHODS.indexOf(method)===-1) {
+        throw new Error(`Unknown method: ${method}, possible methods are ${METHODS.join(', ')}!`);
     }
     options.method = method;
     const request = new Request(path, options);
@@ -476,15 +466,29 @@ export default class XRest {
     defaultOptions:IRequestOptions;
 
     constructor(url:string, defaultOptions:IRequestOptions) {
-        logger.debug('new XRest(%s)', url);
+        logger.debug(`new XRest(${url})`);
         this.baseUrl = url;
         this.defaultOptions = defaultOptions;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     emit(event:string,path:string, options:IRequestOptions) {
-        let opts={};
-        Object.assign(opts,this.defaultOptions,options);
         path = resolve(this.baseUrl, path);
-        return emit(event, path, opts);
+        return emit(event, path, {...this.defaultOptions,...options});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    static emit(event:string, path:string, options: IRequestOptions): Promise<IExtendedIncomingMessage>{
+        return emit(event, path, options);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    static registerParser(name:string, parser: (data:string)=>Promise<unknown>):void{
+        parsers.set(name,parser);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    static registerDecoder(name:string, decoder: (data:Buffer)=>Promise<Buffer>):void{
+        decoders.set(name, decoder);
     }
 }

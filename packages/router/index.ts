@@ -29,6 +29,11 @@ export function wrapMiddleware (method:IMethodString, matchPath:string, middlewa
     return async (step:IRouterContext<any>) => {
         if(step.method!==method&&method!=='ALL')
             return;
+        // if(matchPath!=='*'&&matchPath!=='/*'){
+        //     const matches = regex.exec(decodeURIComponent(step.path));
+        //     if (!matches) return;
+        // }
+            
         const matches = regex.exec(decodeURIComponent(step.path));
         if (!matches) return;
         if (middleware instanceof URouter) step.path = `/${(matches[matches.length - 1] || '').replace(/^\/+/, '')}`;
