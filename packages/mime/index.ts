@@ -58,6 +58,7 @@ export const map:{[key:string]:string} = {
 	"ma": "application/mathematica",
 	"nb": "application/mathematica",
 	"mb": "application/mathematica",
+    "nex": "application/x-navigator-extension",
 	"mathml": "application/mathml+xml",
 	"mbox": "application/mbox",
 	"mscml": "application/mediaservercontrol+xml",
@@ -1069,6 +1070,7 @@ export default map;
 export function lookup(extension:string){
 	return map[extension];
 }
+// noinspection JSUnusedGlobalSymbols
 export function lookupByPath(path:string){
     return lookup(parsePath(path).ext);
 }
