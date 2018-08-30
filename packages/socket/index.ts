@@ -11,10 +11,12 @@ export class RPCError extends Error {
  */
 export type IClientOpenHandler = () => PromisableVoid;
 export type IClientCloseHandler = (status: number) => PromisableVoid;
+// noinspection JSUnusedGlobalSymbols
 export type IClientOpenCloseHandler = IClientOpenHandler | IClientCloseHandler;
 
 export type IServerOpenHandler<T> = (socket:T) => PromisableVoid;
 export type IServerCloseHandler<T> = (socket:T, status: number) => PromisableVoid;
+// noinspection JSUnusedGlobalSymbols
 export type IServerOpenCloseHandler<T> = IServerOpenHandler<T> | IServerCloseHandler<T>;
 
 /**
@@ -34,20 +36,30 @@ export type IServerOpenCloseHandler<T> = IServerOpenHandler<T> | IServerCloseHan
  * Potato socket are currently not manages thier ipv4/ipv6 stack in this project,
  * so 7 and 8 bits are unused
  */
+let jsDocDontMakeMeCry;
+
+// noinspection JSUnusedGlobalSymbols
 export const IS_RPC = 0b10000000;
+// noinspection JSUnusedGlobalSymbols
 export const IS_RES = 0b01000000;
+// noinspection JSUnusedGlobalSymbols
 export const IS_OK = 0b00100000;
+// noinspection JSUnusedGlobalSymbols
 export const IS_MULT_OF_2 = 0b00010000;
+// noinspection JSUnusedGlobalSymbols
 export const IS_TEST = 0b00001000;
+// noinspection JSUnusedGlobalSymbols
 export const IS_PING = 0b00000100;
+// noinspection JSUnusedGlobalSymbols
 export const IS_AOK = 0b00000010;
+// noinspection JSUnusedGlobalSymbols
 export const IS_DOK = 0b00000001;
 
 export enum PacketType {
-    RPC_CALL = 0b10000010,
-    RPC_ERROR = 0b11000010,
-    RPC_OK = 0b11100010,
-    EVENT = 0b01100010
+    RPC_CALL    = 0b10000010, // IS_RPC|IS_AOK
+    RPC_ERROR   = 0b11000010, // IS_RPC|IS_RES|IS_AOK
+    RPC_OK      = 0b11100010, // IS_RPC|IS_RES|IS_OK|IS_AOK
+    EVENT       = 0b01100010  // IS_RES|IS_OK|IS_AOK
 }
 
 /**
@@ -121,6 +133,7 @@ export type PromisableVoid = void | Promise<void>;
 export type IRPCMethodList<T> = { [key: string]: IRPCHandlerWithoutThis | IRPCHandlerWithThis<T> };
 export type IEventHandlerList<T> = { [key: string]: (IEventHandlerWithThis<T> | IEventHandlerWithoutThis)[] }
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Common potato.socket implementation
  * Universal side (Use any protocol)
@@ -286,10 +299,12 @@ export class PotatoSocketUniversal<F> {
         }
     };
 
-    rpc(): any {
+    // noinspection JSUnusedGlobalSymbols
+    rpc(): F {
         return this.remote.rpc();
     }
 
+    // noinspection JSUnusedGlobalSymbols
     emit(name: string, data: any): boolean {
         return this.remote.emit(name, data);
     }
@@ -498,6 +513,7 @@ export class PotatoSocketUniversal<F> {
         throw new Error('PotatoSocketUniversal have no sendBufferToRemote method declaration!\nUse class extending it!');
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Networking
      * Got buffer from sender side

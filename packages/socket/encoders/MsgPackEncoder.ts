@@ -1,6 +1,10 @@
 import {IEncoder,IEncoderPacket,PacketType} from '../';
 import msgpack from 'msgpack-lite';
 
+// noinspection JSUnusedGlobalSymbols
+/**
+ * Encodes packets with msgpack
+ */
 export default class MsgPackEncoder implements IEncoder {
     /**
      * Schemaless encoder built on MsgPack

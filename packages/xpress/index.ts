@@ -6,6 +6,7 @@ import AJSON from '@meteor-it/ajson';
 import Logger from '@meteor-it/logger';
 import {encodeHtmlSpecials} from '@meteor-it/utils';
 import URouter from "@meteor-it/router";
+import {IRouterContext} from "../router";
 
 let xpressLogger=new Logger('xpress');
 
@@ -43,12 +44,10 @@ export type IServerResponseExtension<T=any> = {
     redirect:(url:string)=>void;
     send:(data:string|Buffer|any)=>void;
 };
-declare class UWSSocket{
-    on:(event:'open',cb:()=>{})=>void;
-}
 export class XPressRouterContext {
     req: IncomingMessage&IIncomingMessageExtension;
     res: ServerResponse&IServerResponseExtension;
+    query: {[key:string]:string};
     socket: WebSocket;
     constructor(req:IncomingMessage&IIncomingMessageExtension,res:ServerResponse&IServerResponseExtension){
         this.req=req;
@@ -56,6 +55,10 @@ export class XPressRouterContext {
     }
 }
 
+/**
+ * Throw this error if you want to customize XPress error message
+ * (By default, all thrown errors are displayed as 500 Internal Server Error)
+ */
 class HttpError extends Error{
     code:number;
 
@@ -64,13 +67,21 @@ class HttpError extends Error{
         this.code=code;
     }
 }
-let routerIndex=0;
 
+/**
+ * Routing helper to pass default XPress context
+ * Read docs of URouter
+ */
+// noinspection JSUnusedGlobalSymbols
 export class Router<S> extends URouter<XPressRouterContext,S>{
     constructor(defaultState:(()=>S)|null=null){
         super(defaultState);
     }
 }
+
+/**
+ * XPress web server API
+ */
 export default class XPress<S> extends URouter<XPressRouterContext,S>{
     logger:Logger;
 
@@ -81,7 +92,13 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
         else
             this.logger=new Logger(name);
     }
-    populateReqRes(req:IncomingMessage&IIncomingMessageExtension,res:ServerResponse&IServerResponseExtension){
+
+    /**
+     * Internal, make req/res look like express.js ones
+     * @param req
+     * @param res
+     */
+    private populateReqRes(req:IncomingMessage&IIncomingMessageExtension,res:ServerResponse&IServerResponseExtension){
         if(req!==null) {
             let parsed = parseUrl(req.url, false);
             req.originalUrl = req.url;
@@ -130,6 +147,12 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
             };
         }
     }
+
+    /**
+     * Internal
+     * @param req
+     * @param res
+     */
     private async httpHandler(req:IncomingMessage&IIncomingMessageExtension,res:ServerResponse&IServerResponseExtension){
         // HTTP/HTTPS request handler
         // Populate request with data
@@ -152,20 +175,26 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
             }
         };
         try{
-            await this.route(req.path,ctx => {
-                ctx.method=req.method as any;
-                ctx.req=req;
-                ctx.res=res;
-                ctx.next=()=>{next()};
+            await (this as URouter).route(req.path,(ctx:IRouterContext<S>&XPressRouterContext) => {
+                ctx.method = req.method as any;
+                ctx.query = req.query;
+                ctx.req = req;
+                ctx.res = res;
+                ctx.next = ()=>{next()};
             });
             next();
         }catch(e){
             next(e);
         }
     }
-    private async wsHandler(socket:any){
+
+    /**
+     * Internal
+     * @param socket
+     */
+    private async wsHandler(socket:WebSocket){
         // Websocket request handler, acts similar to httpHandler()
-        let req:IncomingMessage&IIncomingMessageExtension=socket.upgradeReq;
+        let req:IncomingMessage&IIncomingMessageExtension=socket.upgradeReq as IncomingMessage&IIncomingMessageExtension;
         this.populateReqRes(req,null);
         const next=(e?:any)=>{
             if(e){
@@ -179,15 +208,17 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
                 }
             }else{
                 // TODO: Dirty check, but how to handle not handled socket?
-                if(socket.internalOnMessage.name==='noop'&&socket.internalOnClose.name==='noop') {
+                // internalOnMessage/internalOnClose is undocummented fields
+                if((socket as any).internalOnMessage.name==='noop'&&(socket as any).internalOnClose.name==='noop') {
                     this.logger.warn(`Page not found at WS ${req.path}`);
                     socket.close(404);
                 }
             }
         };
         try{
-            await this.route(req.path,ctx => {
+            await (this as URouter).route(req.path,(ctx:IRouterContext<S>&XPressRouterContext) => {
                 ctx.method='WS';
+                ctx.query = req.query;
                 ctx.req=req;
                 ctx.socket=socket;
                 ctx.next=()=>{next()}
@@ -196,7 +227,14 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
             next(e);
         }
     }
-    listenHttp(host='0.0.0.0',port:number,silent=false):Promise<void>{
+
+    /**
+     * bind()
+     * @param host host to bind on
+     * @param port port to bind on
+     */
+    // noinspection JSUnusedGlobalSymbols
+    listenHttp(host='0.0.0.0',port:number):Promise<void>{
         let server=createHttpServer(this.httpHandler.bind(this));
         const ws = new WSServer({
             server
@@ -211,6 +249,12 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
     }
 }
 
+/**
+ * Fancify error message for developer
+ * @param title
+ * @param desc
+ * @param stack
+ */
 export function developerErrorPageHandler (title:string, desc:string, stack:string|undefined = undefined) {
     // Developer friendly
     if(title)
@@ -222,6 +266,14 @@ export function developerErrorPageHandler (title:string, desc:string, stack:stri
 	return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack?`<code style="white-space:pre;">${stack}</code>`:''}<hr><h2>uFramework xPress</h2></body></html>`;
 }
 
+/**
+ * Fancify error message for user
+ * @param hello
+ * @param whatHappened
+ * @param sorry
+ * @param post
+ */
+// noinspection JSUnusedGlobalSymbols
 export function userErrorPageHandler (hello:string, whatHappened:string, sorry:string, post:string) {
     // User friendly
     if(hello)

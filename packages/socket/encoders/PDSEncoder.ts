@@ -8,16 +8,10 @@ export type IPDSDeSerializer = {
 
 export type IPDSOutput = {[key:string]:IPDSDeSerializer}
 
-export type INBTSerializer = (buf:any)=>Buffer;
-export type INBTDeserializer = (buf:Buffer)=>any;
-
-export type IRemoteWorker = {
-    workerId: string;
-    nbtDeclaration: Buffer;
-    nbtSerializer: INBTSerializer;
-    nbtDeserializer: INBTDeserializer;
-}
-
+// noinspection JSUnusedGlobalSymbols
+/**
+ * Encodes packets with protodefc
+ */
 export default class PDSEncoder implements IEncoder {
     constructor(output: IPDSOutput){
         this.processDeclaration(output);
@@ -180,6 +174,7 @@ export default class PDSEncoder implements IEncoder {
      * Helpers
      */
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Serialize via protodef
      * @param data data to serialize
@@ -192,6 +187,7 @@ export default class PDSEncoder implements IEncoder {
         return buffer;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Deserialize via protodef
      * @param buffer data to deserialize
@@ -215,14 +211,12 @@ export default class PDSEncoder implements IEncoder {
      * id=>[request declaration,response declaration] map
      */
     _rpc:[IPDSDeSerializer,IPDSDeSerializer][]=[];
-    _worker:IRemoteWorker[]=[];
     _events:IPDSDeSerializer[]=[];
 
     /**
      * event name=>id map
      */
     rpcToId:{[key:string]:number}={};
-    workerToId:{[key:string]:number}={};
     eventToId:{[key:string]:number}={};
 
     /**
@@ -256,13 +250,6 @@ export default class PDSEncoder implements IEncoder {
         this._rpc[id]=[request,response];
     }
 
-    processWorker(eventPath:string,worker:IRemoteWorker){
-        let id=this.lastRpcEventId++;
-        this.rpcToId[eventPath]=id;
-        this.idToRpc[id]=eventPath;
-        this._worker[id]=worker;
-    }
-
     /**
      * Add events/methods (used in initialization stage)
      * @param declaration declaration to process
@@ -293,18 +280,6 @@ export default class PDSEncoder implements IEncoder {
                 if(!responseDeclaration)
                     throw new Error(`Rpc call ${prefix} has no response declaration!`);
                 this.processAddRpcMethod(path.join('.'),requestDeclaration,responseDeclaration);
-            }
-            if(lastPart==='remoteWorkerRequest'||lastPart==='remoteWorkerResponse'){
-                let path = key.split(':::').slice(0,-2);
-                if(path[0]==='')
-                    path=path.slice(1);
-                let prefix = ket.slice(0, key.lastIndexOf(':::'));
-                if(this.workerToId[path.join(',')])
-                    return;
-                let workerDeclaration = declaration[prefix+(lastPart==='remoteWorkerResponse')?'::workerResponse':'::workerRequest'];
-                if(!workerDeclaration)
-                    throw new Error(`Unknown worker: ${prefix}`);
-                this.processWorker(path.join('.'),workerDeclaration as any as IRemoteWorker);
             }
         }
     }

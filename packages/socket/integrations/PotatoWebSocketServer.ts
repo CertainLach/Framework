@@ -30,6 +30,7 @@ export class PotatoWebSocketServerInternalClient extends PotatoSocketUniversal<I
 }
 
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Websocket potato.socket server
  */
@@ -87,7 +88,7 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonl
         }
         super.on(event, listener);
     }
-    handler(req:Request, websocket:WebSocketClient) {
+    private handler(req:Request, websocket:WebSocketClient) {
         let id = Math.random().toString(32).substr(2);
         let wrappedSocket = new PotatoWebSocketServerInternalClient(id, this, websocket);
         wrappedSocket.id = id;

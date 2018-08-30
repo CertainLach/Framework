@@ -3,6 +3,7 @@ import { PotatoSocketUniversal, IEncoder, IClientCloseHandler,
 import Logger from '@meteor-it/logger';
 import WebSocketClient from '../WebSocketClient';
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Websocket potato.socket client
  */
@@ -50,6 +51,7 @@ export default class PotatoSocketClient extends PotatoSocketUniversal<IRPCFieldW
     open() {
         this.websocket.open();
     }
+    // noinspection JSUnusedGlobalSymbols
     close() {
         this.websocket.close();
     }
