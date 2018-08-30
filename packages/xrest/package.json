@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/xrest",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Powerfull REST client library",
   "main": "index.js",
   "keywords": [
