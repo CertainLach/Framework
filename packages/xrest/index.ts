@@ -14,7 +14,7 @@ import * as zlib from 'zlib';
 
 export * from './multipart';
 
-const USER_AGENT = 'Meteor-IT XRest';
+const USER_AGENT = 'Meteor-IT XRest ';
 
 // TODO: More assertions
 
