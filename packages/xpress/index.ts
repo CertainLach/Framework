@@ -7,6 +7,7 @@ import Logger from '@meteor-it/logger';
 import {encodeHtmlSpecials} from '@meteor-it/utils';
 import URouter from "@meteor-it/router";
 import {IRouterContext} from "../router";
+import {normalize} from "path";
 
 let xpressLogger=new Logger('xpress');
 
@@ -104,7 +105,7 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
             req.originalUrl = req.url;
             req.app = this;
             req.body = req.cookies = undefined;
-            req.path = parsed.pathname;
+            req.path = normalize(parsed.pathname);
             req.secure = 'https' == req.protocol;
             req.query = parseQuerystring(parsed.query);
             req.get = (key: string) => (req.headers[key.toLowerCase()]);
