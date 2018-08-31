@@ -7,6 +7,12 @@ import {XPressRouterContext} from '../';
 function lookupMime(filename:string, gzipped:boolean){
     return lookupByPath(gzipped?(filename.substr(0,filename.lastIndexOf('.'))):filename);
 }
+
+/**
+ * Should be added on regexp url
+ * Like this: app.on('GET','/static/(.*)',staticMiddleware(__dirname));
+ * @param rootFolder
+ */
 export default function (rootFolder:string) {
     return async ({req,res,next,params}:IRouterContext<any>&XPressRouterContext) => {
         let pathname = params['0'];
