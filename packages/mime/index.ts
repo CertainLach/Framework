@@ -1072,5 +1072,5 @@ export function lookup(extension:string){
 }
 // noinspection JSUnusedGlobalSymbols
 export function lookupByPath(path:string){
-    return lookup(parsePath(path).ext);
+    return lookup(parsePath(path).ext.substr(1));
 }
