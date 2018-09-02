@@ -4,16 +4,14 @@ import middleRun from './middleRun';
 import {IKey} from "./pathToRegexp";
 import pathToRegexp from "./pathToRegexp";
 
-type IMethodString = 'ALL'|'GET'|'POST'|'PUT'|'WS'|null;
-
 const cachedPaths = new Set();
 const keysCache:Map<string,IKey[]> = new Map<string, IKey[]>();
 const regexCache:Map<string,RegExp> = new Map<string, RegExp>();
 
-const methodIsAny = (method:IMethodString)=>method===null||method==='ALL';
+const methodIsAny = (method:string)=>method===null||method==='ALL';
 const pathIsAny = (path:string)=>path===null||path==='*'||path==='/*';
 
-export function wrapMiddleware (method:IMethodString, matchPath:string|null, middleware:(URouter<any,any>|((context:IRouterContext<any>)=>void))) {
+export function wrapMiddleware (method:string, matchPath:string|null, middleware:(Router<any,any>|((context:IRouterContext<any>)=>void))) {
     const anyMethod = methodIsAny(method);
     const anyPath = pathIsAny(matchPath);
     // Filtering isn't needed
@@ -21,7 +19,7 @@ export function wrapMiddleware (method:IMethodString, matchPath:string|null, mid
 
     // Rewrite url to crosscompose routers
     // /a/b/c/ => /a/b/c/(.*)?
-    if (middleware instanceof URouter)
+    if (middleware instanceof Router)
         matchPath = `${matchPath.replace(/\/+$/, '')}/(.*)?`;
 
     // Cache parsing data
@@ -53,7 +51,7 @@ export function wrapMiddleware (method:IMethodString, matchPath:string|null, mid
 
             // Rewrite routing url back
             // /a/b/c/<DATA> => /<DATA>
-            if (middleware instanceof URouter) step.path = `/${(matches[matches.length - 1] || '').replace(/^\/+/, '')}`;
+            if (middleware instanceof Router) step.path = `/${(matches[matches.length - 1] || '').replace(/^\/+/, '')}`;
 
             // Fill step params, TODO: ignore params from previous router
             for (let i = 1, ii = matches.length; i < ii; ++i) {
@@ -63,8 +61,8 @@ export function wrapMiddleware (method:IMethodString, matchPath:string|null, mid
         }
 
         // Finally post step to middleware
-        if(middleware instanceof URouter) {
-            await (middleware as URouter<any,any> as any).route(step.path,(d:IRouterContext<any>)=>{
+        if(middleware instanceof Router) {
+            await (middleware as Router<any,any> as any).route(step.path,(d:IRouterContext<any>)=>{
                 for (let key in step)
                     if(!(key in d))
                         (d as any)[key]=(step as any)[key];
@@ -73,13 +71,13 @@ export function wrapMiddleware (method:IMethodString, matchPath:string|null, mid
     }
 }
 
-export type IRouterContext<S> = {
+export type IRouterContext<S,M=any> = {
     url:Url;
     path:string;
-    method:IMethodString;
+    method:M;
     params:{[key:string]:string};
     state:S;
-    router:URouter<any,S>;
+    router:Router<any,S>;
     next:(err?:Error)=>Promise<void>|void;
     resolve:(value:any)=>void;
     reject:(error:Error)=>void;
@@ -87,14 +85,14 @@ export type IRouterContext<S> = {
 };
 
 let requestId = 0;
-export default class URouter<E,S> {
+export default class Router<E,S,M=any> {
     private readonly defaultState:(()=>S)|null;
     constructor(defaultState:()=>S=null){
         this.defaultState = defaultState;
     }
-    middleware:(((ctx:E&IRouterContext<S>)=>void)|URouter<any,S>)[]=[];
-    on(method:IMethodString,path:string,...callbacks:(((ctx:E&IRouterContext<S>)=>void)|URouter<any,S>)[]):void{
-        if (method.toUpperCase() !== method) {
+    middleware:(((ctx:E&IRouterContext<S,M|'ALL'|null>)=>void)|Router<any,S>)[]=[];
+    on(method:M|'ALL'|null,path:string,...callbacks:(((ctx:E&IRouterContext<S,M|'ALL'|null>)=>void)|Router<any,S>)[]):void{
+        if ((method as string).toUpperCase() !== method) {
             throw new Error(`Method name should be uppercase! (Got: ${method})`);
         }
         const middleware = this.middleware;
@@ -102,10 +100,10 @@ export default class URouter<E,S> {
             middleware.push(wrapMiddleware(method,path,callback));
         }
     }
-    protected async route(path:string,fillContext:(ctx:E&IRouterContext<S>)=>void):Promise<void|{}>{
+    protected async route(path:string,fillContext:(ctx:E&IRouterContext<S,M|'ALL'|null>)=>void):Promise<void|{}>{
         requestId++;
         const url = parse(path, true);
-        const context:IRouterContext<S> = {
+        const context:IRouterContext<S,M|'ALL'|null> = {
             requestId,
             url,
             path: url.pathname,
@@ -114,7 +112,7 @@ export default class URouter<E,S> {
             router: this,
             next:(err:Error)=>{}
         } as any;
-        fillContext(context as E&IRouterContext<S>);
+        fillContext(context as E&IRouterContext<S,M|'ALL'|null>);
         return await middleRun(this.middleware as any)(context)();
     }
 }

@@ -69,11 +69,11 @@ class HttpError extends Error{
     }
 }
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Routing helper to pass default XPress context
- * Read docs of URouter
+ * Read docs of Router
  */
-// noinspection JSUnusedGlobalSymbols
 export class Router<S> extends URouter<XPressRouterContext,S>{
     constructor(defaultState:(()=>S)|null=null){
         super(defaultState);
@@ -83,7 +83,7 @@ export class Router<S> extends URouter<XPressRouterContext,S>{
 /**
  * XPress web server API
  */
-export default class XPress<S> extends URouter<XPressRouterContext,S>{
+export default class XPress<S> extends URouter<XPressRouterContext,S,'GET'|'POST'|'PUT'|'DELETE'|'HEAD'>{
     logger:Logger;
 
     constructor(name:string|Logger,defaultState:(()=>S)|null=null){
@@ -176,7 +176,7 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
             }
         };
         try{
-            await (this as URouter).route(req.path,(ctx:IRouterContext<S>&XPressRouterContext) => {
+            await (this as URouter<any,any> as any).route(req.path,(ctx:IRouterContext<S>&XPressRouterContext) => {
                 ctx.method = req.method as any;
                 ctx.query = req.query;
                 ctx.req = req;
@@ -217,7 +217,7 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
             }
         };
         try{
-            await (this as URouter).route(req.path,(ctx:IRouterContext<S>&XPressRouterContext) => {
+            await (this as URouter<any,any> as any).route(req.path,(ctx:IRouterContext<S>&XPressRouterContext) => {
                 ctx.method='WS';
                 ctx.query = req.query;
                 ctx.req=req;
@@ -229,12 +229,12 @@ export default class XPress<S> extends URouter<XPressRouterContext,S>{
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * bind()
      * @param host host to bind on
      * @param port port to bind on
      */
-    // noinspection JSUnusedGlobalSymbols
     listenHttp(host='0.0.0.0',port:number):Promise<void>{
         let server=createHttpServer(this.httpHandler.bind(this));
         const ws = new WSServer({
@@ -267,6 +267,7 @@ export function developerErrorPageHandler (title:string, desc:string, stack:stri
 	return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack?`<code style="white-space:pre;">${stack}</code>`:''}<hr><h2>uFramework xPress</h2></body></html>`;
 }
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Fancify error message for user
  * @param hello
@@ -274,7 +275,6 @@ export function developerErrorPageHandler (title:string, desc:string, stack:stri
  * @param sorry
  * @param post
  */
-// noinspection JSUnusedGlobalSymbols
 export function userErrorPageHandler (hello:string, whatHappened:string, sorry:string, post:string) {
     // User friendly
     if(hello)
