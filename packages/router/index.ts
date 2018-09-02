@@ -62,7 +62,7 @@ export function wrapMiddleware (method:string, matchPath:string|null, middleware
 
         // Finally post step to middleware
         if(middleware instanceof Router) {
-            await (middleware as Router<any,any> as any).route(step.path,(d:IRouterContext<any>)=>{
+            await (middleware as Router<any,any>).route(step.path,(d:IRouterContext<any>)=>{
                 for (let key in step)
                     if(!(key in d))
                         (d as any)[key]=(step as any)[key];
@@ -100,7 +100,7 @@ export default class Router<E,S,M=any> {
             middleware.push(wrapMiddleware(method,path,callback));
         }
     }
-    protected async route(path:string,fillContext:(ctx:E&IRouterContext<S,M|'ALL'|null>)=>void):Promise<void|{}>{
+    async route(path:string,fillContext:(ctx:E&IRouterContext<S,M|'ALL'|null>)=>void):Promise<void|{}>{
         requestId++;
         const url = parse(path, true);
         const context:IRouterContext<S,M|'ALL'|null> = {
