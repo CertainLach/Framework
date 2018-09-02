@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/router",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "Test router",
     "main": "index.js",
     "keywords": [
