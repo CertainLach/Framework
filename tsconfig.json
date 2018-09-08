@@ -11,7 +11,7 @@
     "jsx": "react",
     "noEmitHelpers": false,
     "importHelpers": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "allowUnreachableCode": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,

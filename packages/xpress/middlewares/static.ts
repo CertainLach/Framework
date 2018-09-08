@@ -26,12 +26,12 @@ export default function (rootFolder:string) {
         try {
             let stats = await stat(filename);
             if (stats.isDirectory()) {
-                return next();
+                return;
             }
             // Can be <, but if client sends newer date, then file is changed to older?
             if ((new Date(req.headers['if-modified-since']).getTime() - stats.mtime.getTime()) === 0) {
                 res.writeHead(304);
-                return res.end();
+                return;
             }
             let type = lookupMime(filename,gzippedFound);
             let charset = /^text\/|^application\/(javascript|json)/.test(type) ? 'UTF-8' : false;
@@ -47,8 +47,7 @@ export default function (rootFolder:string) {
             res.write('');
             getReadStream(filename).pipe(res);
         } catch (e) {
-            // Any error = go next
-            next();
+            // Next is not needed
         }
     };
 }
