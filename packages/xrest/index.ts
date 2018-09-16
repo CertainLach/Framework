@@ -121,7 +121,7 @@ class Request extends EventEmitter {
         this.headers = {
             'Accept': '*/*',
             'User-Agent': USER_AGENT,
-            'Host': this.parsedUrl.host,
+            'Host': this.parsedUrl.host||'none',
             'Accept-Encoding': [...decoders.keys()].join(', '),
             ...options.headers
         };

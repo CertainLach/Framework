@@ -73,6 +73,10 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonl
         return super.rpc();
     }
 
+    onopen?(socket:PotatoWebSocketServerInternalClient){
+
+    }
+    onclose?(socket:PotatoWebSocketServerInternalClient){}
     on(event: string, listener: any) {
         if (event === 'open') {
             if (listener.length !== 1)

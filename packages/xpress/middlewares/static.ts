@@ -1,25 +1,27 @@
 import {stat, getReadStream, exists} from '@meteor-it/fs';
 import {join,resolve} from 'path';
 import {lookupByPath} from '@meteor-it/mime';
-import {IRouterContext} from '@meteor-it/router';
+import {IRouterContext, RoutingMiddleware} from '@meteor-it/router';
 import {XPressRouterContext} from '../';
 
 function lookupMime(filename:string, gzipped:boolean){
     return lookupByPath(gzipped?(filename.substr(0,filename.lastIndexOf('.'))):filename);
 }
 
-/**
- * Should be added on regexp url
- * Like this: app.on('GET','/static/(.*)',staticMiddleware(__dirname));
- * @param rootFolder
- */
-export default function (rootFolder:string) {
-    return async ({req,res,next,params}:IRouterContext<any>&XPressRouterContext) => {
-        let pathname = params['0'];
+export default class StaticMiddleware extends RoutingMiddleware<XPressRouterContext,void,'GET'>{
+    private readonly rootFolder:string;
+    constructor(rootFolder:string){
+        super();
+        this.rootFolder=resolve(rootFolder);
+    }
+
+    async handle(ctx: XPressRouterContext & IRouterContext<void, "ALL" | "GET" | null>): Promise<void> {
+        const {req,res,path} = ctx;
+        let pathname = path;
         let gzippedFound = false;
-        let filename = join(resolve(rootFolder), pathname+'.gz');
+        let filename = join(this.rootFolder, pathname+'.gz');
         if(!(await exists(filename))){
-            filename = join(resolve(rootFolder), pathname);
+            filename = join(this.rootFolder, pathname);
         }else{
             gzippedFound = true;
         }
@@ -49,5 +51,5 @@ export default function (rootFolder:string) {
         } catch (e) {
             // Next is not needed
         }
-    };
+    }
 }

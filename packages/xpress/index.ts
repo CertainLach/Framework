@@ -85,7 +85,7 @@ export class Router<S> extends URouter<XPressRouterContext, S> {
 /**
  * XPress web server API
  */
-export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD'> {
+export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'WS'> {
     logger: Logger;
 
     constructor(name: string | Logger, defaultState: (() => S) | null = null) {

@@ -10,15 +10,26 @@ const regexCache: Map<string, RegExp> = new Map<string, RegExp>();
 const methodIsAny = (method: string | null) => method === null || method === 'ALL';
 const pathIsAny = (path: string | null) => path === null || path === '*' || path === '/*';
 
-export function wrapMiddleware(method: string | null, matchPath: string | null, middleware: (Router<any, any> | ((context: IRouterContext<any>) => void))) {
+// TODO: Extract types
+
+export function wrapMiddleware(method: string | null, matchPath: string | null, middleware: (SinglePathMiddleware<any, any, any> | RoutingMiddleware<any, any, any> | Router<any, any> | ((context: IRouterContext<any>) => void))) {
     const anyMethod = methodIsAny(method);
     const anyPath = pathIsAny(matchPath);
+
+    const isRouter = middleware instanceof Router;
+    const isRouting = middleware instanceof RoutingMiddleware;
+    const isSinglePath = middleware instanceof SinglePathMiddleware;
+
+    const isOOPMiddleware = isRouting||isSinglePath;
+
+    const needToRewritePath = isRouter || isRouting;
+
     // Filtering isn't needed
     if (anyMethod && anyPath) return middleware;
 
     // Rewrite url to crosscompose routers
     // /a/b/c/ => /a/b/c/(.*)?
-    if (matchPath !== null && middleware instanceof Router)
+    if (matchPath !== null && needToRewritePath)
         matchPath = `${matchPath.replace(/\/+$/, '')}/(.*)?`;
 
     // Cache parsing data
@@ -50,7 +61,8 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
 
             // Rewrite routing url back
             // /a/b/c/<DATA> => /<DATA>
-            if (middleware instanceof Router) step.path = `/${(matches[matches.length - 1] || '').replace(/^\/+/, '')}`;
+            if (needToRewritePath)
+                step.path = `/${(matches[matches.length - 1] || '').replace(/^\/+/, '')}`;
 
             // Fill step params, TODO: ignore params from previous router
             for (let i = 1, ii = matches.length; i < ii; ++i) {
@@ -59,14 +71,19 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
             }
         }
 
+        // TODO: Wtf, typescript, why are you sure isRouter isn't a typeguard?
         // Finally post step to middleware
-        if (middleware instanceof Router) {
+        if (isRouter) {
             await (middleware as Router<any, any>).route(step.path, (d: IRouterContext<any>) => {
                 for (let key in step)
                     if (!(key in d))
                         (d as any)[key] = (step as any)[key];
             });
-        } else await middleware(step);
+        } else if(isOOPMiddleware) {
+            await (middleware as SinglePathMiddleware<any,any,any>|RoutingMiddleware<any,any,any>).handle(step);
+        } else {
+            await (middleware as any)(step);
+        }
     }
 }
 
@@ -84,6 +101,19 @@ export type IRouterContext<S, M = any> = {
 };
 
 let requestId = 0;
+
+export abstract class MultiMiddleware {
+    abstract setup(router: Router<any, any, any>, path: string | null): void;
+}
+
+export abstract class SinglePathMiddleware<E, S, M> {
+    abstract async handle(ctx: E & IRouterContext<S, M | 'ALL' | null>): Promise<void>;
+}
+
+export abstract class RoutingMiddleware<E, S, M> {
+    abstract async handle(ctx: E & IRouterContext<S, M | 'ALL' | null>): Promise<void>;
+}
+
 export default class Router<E, S, M = any> {
     private readonly defaultState: (() => S) | null;
 
@@ -91,9 +121,18 @@ export default class Router<E, S, M = any> {
         this.defaultState = defaultState;
     }
 
-    middleware: (((ctx: E & IRouterContext<S, M | 'ALL' | null>) => void) | Router<any, S>)[] = [];
+    middleware: (((ctx: E & IRouterContext<S, M | 'ALL' | null>) => void) | Router<any, S> | SinglePathMiddleware<any, S, M> | RoutingMiddleware<any, S, M>)[] = [];
 
-    on(method: M | 'ALL' | null, path: string | null, ...callbacks: (((ctx: E & IRouterContext<S, M | 'ALL' | null>) => void) | Router<any, S>)[]): void {
+    /**
+     * Utility method for middlewares with multuple paths
+     * @param path
+     * @param mmw
+     */
+    use(path: string | null, mmw: MultiMiddleware) {
+        mmw.setup(this, path);
+    }
+
+    on(method: M | 'ALL' | null, path: string | null, ...callbacks: (((ctx: E & IRouterContext<S, M | 'ALL' | null>) => void) | Router<any, S> | SinglePathMiddleware<any, S, M> | RoutingMiddleware<any, S, M>)[]): void {
         if (method !== null && (method as string).toUpperCase() !== method) {
             throw new Error(`Method name should be uppercase! (Got: ${method})`);
         }

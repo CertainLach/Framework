@@ -4,6 +4,13 @@ import {Readable} from 'stream';
 export function firstUppercase(str:string):string {
     return str.substr(0,1).toUpperCase()+str.substr(1);
 }
+
+/**
+ *
+ * @deprecated Extremally slow on Proxy/getters
+ * @param x
+ * @param y
+ */
 export function objectEquals(x:any, y:any):boolean {
     if (x === null || x === undefined || y === null || y === undefined) {
         return x === y;
@@ -27,6 +34,12 @@ export function objectEquals(x:any, y:any):boolean {
     let p = Object.keys(x);
     return Object.keys(y).every(i => p.indexOf(i) !== -1) && p.every(i => objectEquals(x[i], y[i]));
 }
+
+/**
+ * Flattens array
+ * @param array
+ * @param result
+ */
 export function flatten(array:any[], result:any[] = []):any[] {
     for (let i = 0; i < array.length; i++) {
         const value = array[i];
@@ -41,9 +54,20 @@ export function flatten(array:any[], result:any[] = []):any[] {
 
     return result;
 }
+
+/**
+ * @deprecated
+ * @param array
+ */
 export function removeDuplicates<T>(array:T[]):T[] {
     return Array.from(new Set(array));
 }
+
+/**
+ * @deprecated
+ * @param array1
+ * @param array2
+ */
 export function mix(array1:any[]|Object, array2:any[]|Object):any {
     let out:any;
     if (array1 instanceof Array) {
@@ -65,12 +89,26 @@ export function mix(array1:any[]|Object, array2:any[]|Object):any {
         return out;
     }
 }
+
+/**
+ * @deprecated
+ * @param values
+ */
 export function createPrivateEnum(...values:string[]):{[key:string]:Symbol} {
     let returnObj:any = {};
     values.map(value => value.toUpperCase());
     values.forEach(value => returnObj[value] = Symbol(value));
     return returnObj;
 }
+
+/**
+ * @deprecated
+ * @param string
+ * @param length
+ * @param insertPre
+ * @param symbol
+ */
+// noinspection JSUnusedGlobalSymbols
 export function fixLength(string:string, length:number, insertPre = false, symbol = ' ') {
     return insertPre?string.padStart(length,symbol):string.padEnd(length,symbol);
 }
@@ -81,6 +119,13 @@ declare global {
         values(object:any):any;
     }
 }
+
+// noinspection JSUnusedGlobalSymbols
+/**
+ * @deprecated Object.entrys
+ * @param object
+ * @param cb
+ */
 export function objectMap(object:any,cb:(a:any,b:any,c:any)=>any):any{
     let ret = [];
     let keys=Object.keys(object);
@@ -89,6 +134,13 @@ export function objectMap(object:any,cb:(a:any,b:any,c:any)=>any):any{
         ret.push(cb(values[i],keys[i],object));
     return ret;
 }
+
+// noinspection JSUnusedGlobalSymbols
+/**
+ * @deprecated Object.entrys
+ * @param keys
+ * @param values
+ */
 export function arrayKVObject(keys:string[],values:any[]):any{
     let len=keys.length;
     if(len!==values.length)
@@ -104,6 +156,7 @@ export function sleep (time:number):Promise<void> {
 	});
 }
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Like iterable.map(cb),
  * but cb can be async
@@ -118,8 +171,10 @@ export function asyncEach<T,R>(iterable:T[], cb:(v:T)=>Promise<R>):R[] {
 	return <any>Promise.all(waitings);
 }
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Convert callback function to async
+ * @deprecated Existst in node utils
  * @param cbFunction Function to convert
  */
 export function cb2promise (cbFunction:any):(...d:any[])=>Promise<any> {
@@ -133,6 +188,7 @@ export function cb2promise (cbFunction:any):(...d:any[])=>Promise<any> {
 	};
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function hashCode(s:string){
     let hash = 0;
     if (s.length === 0) return hash;
@@ -143,6 +199,7 @@ export function hashCode(s:string){
     }
     return hash;
 }
+// noinspection JSUnusedGlobalSymbols
 export function djb2Code(str:string){
     let hash = 5381;
     for (let i = 0; i < str.length; i++) {
@@ -151,6 +208,7 @@ export function djb2Code(str:string){
     }
     return hash;
 }
+// noinspection JSUnusedGlobalSymbols
 export function sdbmCode(str:string){
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -159,6 +217,7 @@ export function sdbmCode(str:string){
     }
     return hash;
 }
+// noinspection JSUnusedGlobalSymbols
 export function loseCode(str:string){
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -167,6 +226,7 @@ export function loseCode(str:string){
     return hash;
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function encodeHtmlSpecials(str:string){
     let i = str.length;
     let aRet = [];
@@ -182,10 +242,12 @@ export function encodeHtmlSpecials(str:string){
     return aRet.join('');
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function createReadStream(object:Buffer, options = {}):MultiStream {
     return new MultiStream(object, options);
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function readStreamToBuffer(stream:Readable,maxSize:number=0): Promise<Buffer> {
     return new Promise((res, rej) => {
         const bufs:any = [];
@@ -211,7 +273,7 @@ export interface IMultiStreamOptions {
 }
 
 export class MultiStream extends Readable {
-    private object:Buffer;
+    private object:Buffer|null;
     constructor(object:Buffer, options:IMultiStreamOptions = {}) {
         super({
             highWaterMark: options.highWaterMark,
@@ -220,6 +282,7 @@ export class MultiStream extends Readable {
         this.object = object;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     _read() {
         this.push(this.object);
         this.object = null;
