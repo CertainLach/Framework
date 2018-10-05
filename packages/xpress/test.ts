@@ -1,9 +1,16 @@
 import XPress from './';
+import {readFile} from '../fs';
+import StaticMiddleware from "./middlewares/static";
 
 const app = new XPress('test');
 
-app.on('GET','/test/(.*)',({req,res,next,params})=>{
-    console.log(params);
-});
+console.log('Test');
+app.on(null,'/test',new StaticMiddleware(__dirname));
 
-app.listenHttp('0.0.0.0',8081);
+(async()=>{
+    app.listenHttp('0.0.0.0',8082);
+    app.listenHttps('0.0.0.0',8081,{
+        key:await readFile(`${__dirname}/__test/key.pem`),
+        cert:await readFile(`${__dirname}/__test/cert.pem`)
+    });
+})();

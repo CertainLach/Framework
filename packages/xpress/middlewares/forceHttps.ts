@@ -16,7 +16,7 @@ export default function (securePort:number) {
         if(req.secure) {
             next()
         } else {
-            res.redirect(createRedirectURL(req.headers['host'], req.url, securePort));
+            res.redirect(createRedirectURL(req.headers['host'] as string, req.url as string, securePort));
         }
     };
 };

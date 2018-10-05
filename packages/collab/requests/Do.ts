@@ -39,9 +39,7 @@ export default class DoRequest {
      */
     execute(state: State) {
         this.operation.apply(state.buffer);
-        console.log('incr',state.vector);
         state.vector = state.vector.incr(this.user, 1);
-        console.log('incr',state.vector);
         return this;
     }
 

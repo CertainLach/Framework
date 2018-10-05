@@ -534,8 +534,6 @@ export default class VKApi extends Api{
             server: res.body.server,
             hash: res.body.hash
         });
-        if(!res2[0])
-            console.log(res2,res.body);
         await this.sendCommonAttachment(targetId,answer,VKApi.processText(caption),`photo${res2[0].owner_id}_${res2[0].id}`,options);
     }
     async sendFileStream(targetId,answer,caption,file,options){
@@ -557,7 +555,6 @@ export default class VKApi extends Api{
         let server = await this.execute('docs.getUploadServer', {
             type:'audio_message'
         });
-        console.log(file.size,server);
         let res=await emit(`POST ${server.upload_url}`,{
             multipart: true,
             timeout:50000,

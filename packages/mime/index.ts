@@ -1067,10 +1067,10 @@ export const map:{[key:string]:string} = {
 	"ice": "x-conference/x-cooltalk"
 };
 export default map;
-export function lookup(extension:string){
+export function lookup(extension:string):string|null{
 	return map[extension];
 }
 // noinspection JSUnusedGlobalSymbols
-export function lookupByPath(path:string){
+export function lookupByPath(path:string):string|null{
     return lookup(parsePath(path).ext.substr(1));
 }

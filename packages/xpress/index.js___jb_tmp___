@@ -1,97 +1,75 @@
-import {default as WebSocket, Server as WSServer} from 'uws';
-import Logger from '@meteor-it/logger';
-import {encodeHtmlSpecials} from '@meteor-it/utils';
-import URouter from "@meteor-it/router";
-import {
-    constants,
-    createSecureServer,
-    Http2ServerRequest,
-    Http2ServerResponse,
-    IncomingHttpHeaders,
-    OutgoingHttpHeaders
-} from 'http2';
-import {createServer, IncomingMessage, ServerResponse} from 'http';
-import {parse} from 'url';
-import {normalize, sep as pathSep} from 'path';
-import {Readable} from "stream";
-import {Socket} from 'net';
-import {createReadStream} from "fs";
-
-const {
-    HTTP2_HEADER_METHOD, HTTP2_HEADER_PATH, HTTP2_HEADER_STATUS,
-    HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LAST_MODIFIED,
-    HTTP2_HEADER_CACHE_CONTROL, HTTP2_HEADER_CONTENT_LENGTH,
-    HTTP2_HEADER_CONTENT_DISPOSITION, HTTP2_HEADER_UPGRADE,
-    HTTP2_HEADER_ACCEPT_ENCODING
-} = constants;
-
-let xpressLogger = new Logger('xpress');
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const uws_1 = require("uws");
+const logger_1 = require("@meteor-it/logger");
+const utils_1 = require("@meteor-it/utils");
+const router_1 = require("@meteor-it/router");
+const http2_1 = require("http2");
+const http_1 = require("http");
+const url_1 = require("url");
+const path_1 = require("path");
+const fs_1 = require("fs");
+const { HTTP2_HEADER_METHOD, HTTP2_HEADER_PATH, HTTP2_HEADER_STATUS, HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LAST_MODIFIED, HTTP2_HEADER_CACHE_CONTROL, HTTP2_HEADER_CONTENT_LENGTH, HTTP2_HEADER_CONTENT_DISPOSITION, HTTP2_HEADER_UPGRADE, HTTP2_HEADER_ACCEPT_ENCODING } = http2_1.constants;
+let xpressLogger = new logger_1.default('xpress');
 class XpressRouterStream {
-    req: Http2ServerRequest;
-    res: Http2ServerResponse;
-    socket: WebSocket;
-    reqHeaders: IncomingHttpHeaders;
-    resHeaders: OutgoingHttpHeaders;
-
-    constructor(reqHeaders: IncomingHttpHeaders, resHeaders: OutgoingHttpHeaders) {
+    constructor(reqHeaders, resHeaders) {
+        this.hasDataSent = false;
         this.reqHeaders = reqHeaders;
         this.resHeaders = resHeaders;
     }
-
-    status(status: number): this {
-        if (status > 999 || status < 100) throw new Error('incorrect status passed');
+    status(status) {
+        if (status > 999 || status < 100)
+            throw new Error('incorrect status passed');
         this.resHeaders[HTTP2_HEADER_STATUS] = status;
         return this;
     }
-
     /**
      * Sends data
      * @param text
      */
-    send(text: string | Buffer) {
+    send(text) {
         this.hasDataSent = true;
         this.respond();
         if (this.isHttp2) {
             this.res.stream.write(text);
             this.res.stream.end();
-        } else {
+        }
+        else {
             this.res.write(text);
             this.res.end();
         }
     }
-
     // noinspection JSUnusedGlobalSymbols
     /**
      * Pipes stream to real stream
      * @param stream
      */
-    sendStream(stream: Readable) {
+    sendStream(stream) {
         this.hasDataSent = true;
         if (this.isHttp2) {
             this.respond();
             stream.pipe(this.res.stream);
-        } else {
+        }
+        else {
             this.respond();
-            stream.pipe(this.res as unknown as ServerResponse);
+            stream.pipe(this.res);
         }
     }
-
     /**
      * Just sends file, without any header modifications
      * Complex sends should be handled by users
      * @param path
      */
-    sendFile(path: string) {
+    sendFile(path) {
         this.hasDataSent = true;
         if (this.isHttp2) {
             this.res.stream.respondWithFile(path, this.resHeaders, {});
-        } else {
+        }
+        else {
             this.respond();
-            createReadStream(path).pipe(this.res as unknown as ServerResponse);
+            fs_1.createReadStream(path).pipe(this.res);
         }
     }
-
     // noinspection JSUnusedGlobalSymbols
     /**
      * After this call, developer should handle everything yourself
@@ -100,95 +78,78 @@ class XpressRouterStream {
         this.hasDataSent = true;
         if (this.isHttp2) {
             this.res.stream.respond(this.resHeaders);
-        } else {
-            const newHeaders: { [key: string]: string | number | string[] | undefined } = {};
+        }
+        else {
+            const newHeaders = {};
             for (let key in this.resHeaders) {
                 if (key !== HTTP2_HEADER_STATUS)
                     newHeaders[key] = this.resHeaders[key];
             }
-            this.res.writeHead(this.resHeaders[HTTP2_HEADER_STATUS] as number || 200, newHeaders);
+            this.res.writeHead(this.resHeaders[HTTP2_HEADER_STATUS] || 200, newHeaders);
         }
     }
-
-    acceptsEncoding(encoding: string) {
-        return ((this.reqHeaders[HTTP2_HEADER_ACCEPT_ENCODING] as string || '').split(',').map(e => e.trim()).includes(encoding));
+    acceptsEncoding(encoding) {
+        return (this.reqHeaders[HTTP2_HEADER_ACCEPT_ENCODING] || '').split(',').map(e=>e.trim()).includes(encoding);
     }
-
-
     /**
      * Define multiplex point
      * @param path
      */
-    pushStream(path: string): Promise<XpressRouterStream> {
+    pushStream(path) {
         return new Promise((res, rej) => {
-            if (!this.canPushStream) return rej(new Error("pushStream isn't supported for this session"));
+            if (!this.canPushStream)
+                return rej(new Error("pushStream isn't supported for this session"));
             // @types/node sucks for http2
-            this.res.stream.pushStream({...this.resHeaders, [HTTP2_HEADER_PATH]: path}, (err, stream, resHeaders) => {
-                if (err) return rej(err);
+            this.res.stream.pushStream({ ...this.resHeaders, [HTTP2_HEADER_PATH]: path }, (err, stream, resHeaders) => {
+                if (err)
+                    return rej(err);
                 const wrap = new XpressRouterStream(this.reqHeaders, {});
-                wrap.res = {...this.res, stream} as any;
+                wrap.res = { ...this.res, stream };
                 res(wrap);
             });
         });
-    };
-
-    hasDataSent: boolean = false;
-
-    get canPushStream(): boolean {
+    }
+    ;
+    get canPushStream() {
         return this.hasStream && this.res.stream.pushAllowed;
     }
-
-    get isHttp2(): boolean {
+    get isHttp2() {
         return this.hasStream;
     }
-
-    get hasStream(): boolean {
+    get hasStream() {
         return !!(this.res && this.res.stream);
     }
-
-    get hasSocket(): boolean {
+    get hasSocket() {
         return !!this.socket;
     }
 }
-
-export interface XPressRouterContext {
-
-    query: { [key: string]: string };
-    socket: WebSocket;
-    stream: XpressRouterStream;
-}
-
 /**
  * Throw this error if you want to customize XPress error message
  * (By default, all thrown errors are displayed as 500 Internal Server Error)
  */
 class HttpError extends Error {
-    code: number;
-
-    constructor(code: number, message: string) {
+    constructor(code, message) {
         super(message);
         this.code = code;
     }
 }
-
 // noinspection JSUnusedGlobalSymbols
 /**
  * Routing helper to pass default XPress context
  * Read docs of Router
  */
-export class Router<S> extends URouter<XPressRouterContext, S> {
-    constructor(defaultState: (() => S) | null = null) {
+class Router extends router_1.default {
+    constructor(defaultState = null) {
         super(defaultState);
     }
 }
-
+exports.Router = Router;
 // noinspection RegExpRedundantEscape
-const PATH_SEP_REGEXP = new RegExp(`\\${pathSep}`, 'g');
-
+const PATH_SEP_REGEXP = new RegExp(`\\${path_1.sep}`, 'g');
 // Default config
 const WS_SERVER_CONFIG = {
     perMessageDeflate: {
-        zlibDeflateOptions: { // See zlib defaults.
+        zlibDeflateOptions: {
             chunkSize: 1024,
             memLevel: 7,
             level: 3,
@@ -197,61 +158,57 @@ const WS_SERVER_CONFIG = {
             chunkSize: 10 * 1024
         },
         // Other options settable:
-        clientNoContextTakeover: true, // Defaults to negotiated value.
-        serverNoContextTakeover: true, // Defaults to negotiated value.
-        clientMaxWindowBits: 10,       // Defaults to negotiated value.
-        serverMaxWindowBits: 10,       // Defaults to negotiated value.
+        clientNoContextTakeover: true,
+        serverNoContextTakeover: true,
+        clientMaxWindowBits: 10,
+        serverMaxWindowBits: 10,
         // Below options specified as default values.
-        concurrencyLimit: 10,          // Limits zlib concurrency for perf.
-        threshold: 1024,               // Size (in bytes) below which messages
-                                       // should not be compressed.
+        concurrencyLimit: 10,
+        threshold: 1024,
     }
 };
-
 /**
  * XPress web server API
  */
-export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'WS'> {
-    logger: Logger;
-
-    constructor(name: string | Logger, defaultState: (() => S) | null = null) {
+class XPress extends router_1.default {
+    constructor(name, defaultState = null) {
         super(defaultState);
-        if (name instanceof Logger)
+        if (name instanceof logger_1.default)
             this.logger = name;
         else
-            this.logger = new Logger(name);
+            this.logger = new logger_1.default(name);
     }
-
     // noinspection JSMethodCanBeStatic
-    private async requestHandler(req: Http2ServerRequest, res: Http2ServerResponse) {
-        const url = req.url as string;
-        let {pathname, query} = parse(url, true);
+    async requestHandler(req, res) {
+        // console.log('HTTP/1 Request');
+        const url = req.url;
+        let { pathname, query } = url_1.parse(url, true);
         if (pathname === undefined) {
             res.stream.destroy();
             return;
         }
-        pathname = normalize(pathname).replace(PATH_SEP_REGEXP, '/');
+        pathname = path_1.normalize(pathname).replace(PATH_SEP_REGEXP, '/');
         const method = req.method;
         const wrappedMainStream = new XpressRouterStream(req.headers, {});
         wrappedMainStream.req = req;
         wrappedMainStream.res = res;
         try {
             await this.route(pathname, ctx => {
-                ctx.query = query as { [key: string]: string };
-                ctx.method = method as any;
+                ctx.query = query;
+                ctx.method = method;
                 ctx.stream = wrappedMainStream;
             });
             if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
                 wrappedMainStream.resHeaders = {};
                 wrappedMainStream.status(404).send(developerErrorPageHandler('404: Page Not Found', `Page not found at ${pathname}`, process.env.NODE_ENV === 'production' ? undefined : new Error('Reference stack').stack));
             }
-        } catch (e) {
+        }
+        catch (e) {
             this.logger.error(e.stack);
             wrappedMainStream.resHeaders = {};
             wrappedMainStream.status(500).send(developerErrorPageHandler('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
         }
     }
-
     /**
      * HTTP/2
      * (Fuck you, browsers, for not supporting HTTP/2 over TCP!)
@@ -259,7 +216,6 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param headers
      * @param flags
      */
-
     /*private async streamHandler(stream: ServerHttp2Stream, headers: IncomingHttpHeaders & IncomingHttpStatusHeader, flags: number) {
         const url = headers[HTTP2_HEADER_PATH] as string;
         let {pathname, query} = parse(url, true);
@@ -286,60 +242,59 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
             wrappedMainStream.status(500).send(developerErrorPageHandler('500: Internal Server Error',e.message,process.env.NODE_ENV==='production'?undefined:e.stack));
         }
     }*/
-
     /**
      * HTTP/1
      * @param request
      * @param socket
      * @param head
      */
-    private async upgradeHandler(request: IncomingMessage, socket: Socket, head: ArrayBuffer) {
+    async upgradeHandler(request, socket, head) {
         const headers = request.headers;
         const url = request.url;
         if (url === undefined) {
             socket.destroy();
             return;
         }
-        let {pathname, query} = parse(url, true);
+        let { pathname, query } = url_1.parse(url, true);
         if (pathname === undefined) {
             socket.destroy();
             return;
         }
-        pathname = normalize(pathname).replace(PATH_SEP_REGEXP, '/');
+        pathname = path_1.normalize(pathname).replace(PATH_SEP_REGEXP, '/');
         const method = request.method;
         const upgradeType = headers[HTTP2_HEADER_UPGRADE];
         if (upgradeType === 'websocket' && method === 'GET') {
             this.wsServer.handleUpgrade(request, socket, head, async (ws) => {
                 const wrapperMainStream = new XpressRouterStream(headers, {});
                 wrapperMainStream.socket = ws;
-                await this.route(pathname as string, ctx => {
-                    ctx.query = query as { [key: string]: string };
+                await this.route(pathname, ctx => {
+                    ctx.query = query;
                     ctx.method = method;
                     ctx.stream = wrapperMainStream;
                 });
                 // Dirty check for handled websocket
                 // Will break on UWS update
                 // https://github.com/discordjs/uws/blob/master/src/uws.js#L90
-                if ((wrapperMainStream.socket as any).internalOnMessage === (wrapperMainStream.socket as any).internalOnClose) {
+                if (wrapperMainStream.socket.internalOnMessage === wrapperMainStream.socket.internalOnClose) {
                     // 1005 - CLOSED_NO_STATUS
                     wrapperMainStream.socket.close(1005);
                 }
             });
-        } else {
+        }
+        else {
             // IDK how to handle
             socket.destroy();
         }
     }
-
     // noinspection JSUnusedGlobalSymbols
     /**
      * bind()
      * @param host host to bind on
      * @param port port to bind on
      */
-    listenHttp(host = '0.0.0.0', port: number) {
+    listenHttp(host = '0.0.0.0', port) {
         this.ensureWebSocketReady();
-        let server = createServer(this.requestHandler.bind(this));
+        let server = http_1.createServer(this.requestHandler.bind(this));
         // There is no ALPN negotigation for HTTP/1 over TLS D:
         // And, since HTTP/2 over tcp isn't supported in browsers,
         // Http server is only for HTTP/1.
@@ -353,7 +308,6 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
             });
         });
     }
-
     // noinspection JSUnusedGlobalSymbols
     /**
      * bind()
@@ -361,9 +315,9 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param port port to bind on
      * @param options settings
      */
-    listenHttps(host = '0.0.0.0', port: number, {key, cert}: { key?: Buffer, cert?: Buffer }): Promise<void> {
+    listenHttps(host = '0.0.0.0', port, { key, cert }) {
         this.ensureWebSocketReady();
-        let server = createSecureServer({
+        let server = http2_1.createSecureServer({
             key, cert,
             allowHTTP1: true
         }, this.requestHandler.bind(this));
@@ -376,32 +330,30 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
             });
         });
     }
-
-    wsServer: WSServer;
-
-    private ensureWebSocketReady() {
-        if (this.wsServer) return;
-        this.wsServer = new WSServer({noServer: true});
+    ensureWebSocketReady() {
+        if (this.wsServer)
+            return;
+        this.wsServer = new uws_1.Server({ noServer: true });
     }
 }
-
+exports.default = XPress;
 /**
  * Fancify error message for developer
  * @param title
  * @param desc
  * @param stack
  */
-export function developerErrorPageHandler(title: string, desc: string, stack: string | undefined = undefined) {
+function developerErrorPageHandler(title, desc, stack = undefined) {
     // Developer friendly
     if (title)
-        title = encodeHtmlSpecials(title).replace(/\n/g, '<br>');
+        title = utils_1.encodeHtmlSpecials(title).replace(/\n/g, '<br>');
     if (desc)
-        desc = encodeHtmlSpecials(desc).replace(/\n/g, '<br>');
+        desc = utils_1.encodeHtmlSpecials(desc).replace(/\n/g, '<br>');
     if (stack)
-        stack = encodeHtmlSpecials(stack).replace(/\n/g, '<br>');
+        stack = utils_1.encodeHtmlSpecials(stack).replace(/\n/g, '<br>');
     return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack ? `<code style="white-space:pre;">${stack}</code>` : ''}<hr><h2>uFramework xPress</h2></body></html>`;
 }
-
+exports.developerErrorPageHandler = developerErrorPageHandler;
 // noinspection JSUnusedGlobalSymbols
 /**
  * Fancify error message for user
@@ -410,15 +362,17 @@ export function developerErrorPageHandler(title: string, desc: string, stack: st
  * @param sorry
  * @param post
  */
-export function userErrorPageHandler(hello: string, whatHappened: string, sorry: string, post: string) {
+function userErrorPageHandler(hello, whatHappened, sorry, post) {
     // User friendly
     if (hello)
-        hello = encodeHtmlSpecials(hello.replace(/\n/g, '<br>'));
+        hello = utils_1.encodeHtmlSpecials(hello.replace(/\n/g, '<br>'));
     if (whatHappened)
-        whatHappened = encodeHtmlSpecials(whatHappened.replace(/\n/g, '<br>'));
+        whatHappened = utils_1.encodeHtmlSpecials(whatHappened.replace(/\n/g, '<br>'));
     if (sorry)
-        sorry = encodeHtmlSpecials(sorry.replace(/\n/g, '<br>'));
+        sorry = utils_1.encodeHtmlSpecials(sorry.replace(/\n/g, '<br>'));
     if (post)
-        post = encodeHtmlSpecials(post.replace(/\n/g, '<br>'));
+        post = utils_1.encodeHtmlSpecials(post.replace(/\n/g, '<br>'));
     return `<html><body style='font-family:Arial,sans-serif;font-size:22px;color:#CCC;background:#222;padding:40px;'>${hello}<br/><br/><span style='color:#FC0;font-weight:600;'>${whatHappened}</span><br/><br/>${sorry}<br/><br/><span style='font-size: 14px;'>${post}</span></body></html>`;
 }
+exports.userErrorPageHandler = userErrorPageHandler;
+//# sourceMappingURL=index.js.map

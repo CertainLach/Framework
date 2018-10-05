@@ -11,7 +11,6 @@ const methodIsAny = (method: string | null) => method === null || method === 'AL
 const pathIsAny = (path: string | null) => path === null || path === '*' || path === '/*';
 
 // TODO: Extract types
-
 export function wrapMiddleware(method: string | null, matchPath: string | null, middleware: (SinglePathMiddleware<any, any, any> | RoutingMiddleware<any, any, any> | Router<any, any> | ((context: IRouterContext<any>) => void))) {
     const anyMethod = methodIsAny(method);
     const anyPath = pathIsAny(matchPath);
@@ -95,8 +94,6 @@ export type IRouterContext<S, M = any> = {
     state: S;
     router: Router<any, S>;
     next: (err?: Error) => Promise<void> | void;
-    resolve: (value: any) => void;
-    reject: (error: Error) => void;
     requestId: number;
 };
 
@@ -151,11 +148,10 @@ export default class Router<E, S, M = any> {
             path: url.pathname,
             params: {},
             state: this.defaultState === null ? null : this.defaultState(),
-            router: this,
-            next: (err: Error) => {
-            }
+            router: this
         } as any;
         fillContext(context as E & IRouterContext<S, M | 'ALL' | null>);
+        if((context as any).next)throw new Error('next() in global context is deprecated, just await result instead of waiting for next() call');
         return await middleRun(this.middleware as any)(context)();
     }
 }
