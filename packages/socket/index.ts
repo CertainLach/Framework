@@ -168,11 +168,7 @@ export class PotatoSocketUniversal<F> {
 
     constructor(name: string | Logger, encoder: IEncoder, server:any = null, timeout = 20000) {
         this.timeout = timeout;
-        if (name instanceof Logger) {
-            this.logger = name;
-        } else {
-            this.logger = new Logger(name);
-        }
+        this.logger = Logger.from(name);
         if (server)
             this.server = server;
         this.encoder = encoder;

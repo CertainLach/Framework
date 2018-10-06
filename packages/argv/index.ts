@@ -52,11 +52,7 @@ export default class ArgParser {
     constructor(name: string|Logger){
         if(!name)
             throw new Error('ArgParser needs a name/logger!');
-        if(name instanceof Logger){
-            this.logger = name;
-        }else{
-            this.logger = new Logger(name);
-        }
+        this.logger = Logger.from(name);
     }
 
     command(name?:string) {

@@ -140,10 +140,7 @@ export class Api extends EventEmitter {
 
     constructor(name: string|Logger) {
         super();
-        if(name instanceof Logger)
-            this.logger=name;
-        else
-            this.logger = new Logger(name);
+        this.logger = Logger.from(name);
     }
     auth(...params:string[]): Promise<void>{
         throw new NotImplementedInApiError('auth');

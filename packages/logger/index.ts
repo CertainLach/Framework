@@ -249,7 +249,19 @@ export default class Logger {
     }
 }
 
+// Console monkey-patching
+// And named console support
+const OTHER_LOGGER_MARK  = /^\[([a-zA-Z]+)\]/;
+
 consoleLogger = new Logger('console');
+(consoleLogger as any).___write = consoleLogger.write;
+consoleLogger.write = (data:any)=>{
+	if(typeof data.line==='string'&&OTHER_LOGGER_MARK.test(data.line)){
+		data.name = data.line.match(OTHER_LOGGER_MARK);
+		data.line = data.line.replace(OTHER_LOGGER_MARK,'').trimStart();
+	}
+	return (consoleLogger as any).___write(data);
+}
 loggerLogger = new Logger('logger');
 export type logFunc=(...params:any[])=>undefined;
 declare global {

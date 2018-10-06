@@ -22,19 +22,23 @@ const EMPTY_BUFFER = Buffer.from([]);
 
 export default class StaticMiddleware extends RoutingMiddleware<XPressRouterContext, void, 'GET'> {
     private readonly rootFolder: string;
+    private readonly filter?: RegExp;
 
-    constructor(rootFolder: string, {}: {} = {}) {
+    constructor(rootFolder: string, {filter}: {filter?:RegExp} = {}) {
         super();
         this.rootFolder = resolve(rootFolder);
+        this.filter = filter;
     }
 
     async handle(ctx: XPressRouterContext & IRouterContext<void, "ALL" | "GET" | null>): Promise<void> {
         const {stream, path} = ctx;
         let pathname = path;
         let gzippedFound = false;
-        let filename = join(this.rootFolder, pathname + '.gz');
+        const normalFilePath = join(this.rootFolder, pathname);
+        if(this.filter&&!this.filter.test(pathname))return;
+        let filename = normalFilePath+'.gz';
         if (!stream.acceptsEncoding('gzip') || !(await exists(filename))) {
-            filename = join(this.rootFolder, pathname);
+            filename = normalFilePath;
         } else {
             gzippedFound = true;
         }

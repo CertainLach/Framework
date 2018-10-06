@@ -8,10 +8,10 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "noEmit": false,
-    "jsx": "react",
+    "jsx": "preserve",
     "noEmitHelpers": false,
     "importHelpers": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "allowUnreachableCode": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -26,7 +26,7 @@
       "esnext",
       "dom"
     ],
-    "allowJs": true,
+    "allowJs": false,
     "typeRoots": [
       "node_modules"
     ],

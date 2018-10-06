@@ -216,10 +216,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
 
     constructor(name: string | Logger, defaultState: (() => S) | null = null) {
         super(defaultState);
-        if (name instanceof Logger)
-            this.logger = name;
-        else
-            this.logger = new Logger(name);
+        this.logger = Logger.from(name);
     }
 
     // noinspection JSMethodCanBeStatic
