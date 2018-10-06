@@ -27,7 +27,7 @@ const {
 
 let xpressLogger = new Logger('xpress');
 
-class XpressRouterStream {
+export class XpressRouterStream {
     req: Http2ServerRequest;
     res: Http2ServerResponse;
     socket: WebSocket;
@@ -162,7 +162,7 @@ export interface XPressRouterContext {
  * Throw this error if you want to customize XPress error message
  * (By default, all thrown errors are displayed as 500 Internal Server Error)
  */
-class HttpError extends Error {
+export class HttpError extends Error {
     code: number;
 
     constructor(code: number, message: string) {

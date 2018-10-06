@@ -244,7 +244,10 @@ export default class Logger {
 	}
 	static from(name:string|Logger):Logger {
 	    if(name instanceof Logger)
-	        return name;
+			return name;
+		// From logger of another version? Should be avoided in any way
+		if(typeof name==='object'&&'timeStart' in (name as any))
+			return name;
 	    return new Logger(name);
     }
 }
