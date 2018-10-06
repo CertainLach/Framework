@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/logger",
-    "version": "2.3.4",
+    "version": "2.3.5",
     "description": "Most powerfull logger for node.js",
     "main": "index.js",
     "keywords": [
