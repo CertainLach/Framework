@@ -5,18 +5,76 @@ export enum LOGGER_ACTIONS {
 	DEENT,
 	LOG,
 	WARNING,
-	DEPRECATED,
 	ERROR,
 	DEBUG,
 	TIME_START,
 	TIME_END,
 	PROGRESS,
 	PROGRESS_START,
-	PROGRESS_END,
-	INFO = LOGGER_ACTIONS.LOG,
-	WARN = LOGGER_ACTIONS.WARNING,
-	ERR = LOGGER_ACTIONS.ERROR
+	PROGRESS_END
 }
+export type CommonLogAction<E> = {
+	type:E,
+	params:any[]
+}
+/**
+ * Normal log action
+ */
+export type InfoLogAction = CommonLogAction<LOGGER_ACTIONS.LOG>
+/**
+ * Special effect: Logged in stderr instead of stdout
+ */
+export type WarningLogAction = CommonLogAction<LOGGER_ACTIONS.WARNING>
+/**
+ * Special effect: Logged in stderr instead of stdout
+ */
+export type ErrorLogAction = CommonLogAction<LOGGER_ACTIONS.ERROR>
+/**
+ * Special effect: Debug log action willn't be logged, if name isn't specified in DEBUG env variable
+ */
+export type DebugLogAction = CommonLogAction<LOGGER_ACTIONS.DEBUG>
+export type IdentAction = {
+	type:LOGGER_ACTIONS.IDENT;
+	identName:string;
+}
+export type DeentAction = {
+	type:LOGGER_ACTIONS.DEENT;
+	identName:string;
+	identTime:number;
+}
+export type TimeStartAction = {
+	type:LOGGER_ACTIONS.TIME_START;
+	timeName:string;
+}
+export type TimeEndAction = {
+	type:LOGGER_ACTIONS.TIME_END;
+	timeName:string;
+	timeTime:number;
+}
+export type ProgressStartAction = {
+	type:LOGGER_ACTIONS.PROGRESS_START
+}
+export type ProgressEndAction = {
+	type:LOGGER_ACTIONS.PROGRESS_END
+}
+export type ProgressAction = {
+	type:LOGGER_ACTIONS.PROGRESS,
+	info:string,
+	progress:number
+}
+export type LoggerAction = {
+	repeats?:number,
+	repeated?: boolean,
+	name?:string,
+	line?:string,
+	time?:number,
+	identationLength?:number
+}&(
+	IdentAction|DeentAction|
+	InfoLogAction|WarningLogAction|ErrorLogAction|DebugLogAction|
+	TimeStartAction|TimeEndAction|
+	ProgressStartAction|ProgressEndAction|ProgressAction
+);
 
 const REPEATABLE_ACTIONS = [
 	LOGGER_ACTIONS.IDENT,
@@ -42,12 +100,13 @@ export class BasicReceiver {
 	}
 }
 
+// TODO: Logger UUID
 export default class Logger {
 	static nameLength = 12;
 	static repeatCount:number;
 	static lastProvider:string;
 	static lastMessage:any;
-	static lastType:string;
+	static lastType:LOGGER_ACTIONS;
 	static receivers:BasicReceiver[] = [];
 	name:string;
 	identation:string[] = [];
@@ -187,7 +246,7 @@ export default class Logger {
 		}
 	}
 	static noReceiversWarned = false;
-	write(data:any) {
+	write(data:LoggerAction) {
 		if (!data.time)
 			data.time = new Date().getTime();
 		if (!data.name)
@@ -196,7 +255,7 @@ export default class Logger {
 			data.identationLength = this.identation.length;
 		Logger._write(data);
 	}
-	private static _write(what:any) {
+	private static _write(what:LoggerAction) {
 		if (Logger.receivers.length === 0) {
 			if (!Logger.noReceiversWarned) {
 				console._log('No receivers are defined for logger! See docs for info about this!');
@@ -227,13 +286,13 @@ export default class Logger {
 		what.repeated = what.repeats && what.repeats > 0;
 		Logger.receivers.forEach(receiver => receiver.write(what));
 	}
-    private static resetRepeating(provider:string, message:string, type:string) {
+    private static resetRepeating(provider:string, message:string, type:LOGGER_ACTIONS) {
 		Logger.lastProvider = provider;
 		Logger.lastMessage = message;
 		Logger.lastType = type;
 		Logger.repeatCount = 0;
 	}
-    private static isRepeating(provider:string, message:string, type:string) {
+    private static isRepeating(provider:string, message:string, type:LOGGER_ACTIONS) {
 		return Logger.lastProvider === provider && Logger.lastMessage === message && Logger.lastType === type;
 	}
 	static addReceiver(receiver:BasicReceiver) {
@@ -260,7 +319,7 @@ consoleLogger = new Logger('console');
 (consoleLogger as any).___write = consoleLogger.write;
 consoleLogger.write = (data:any)=>{
 	if(typeof data.line==='string'&&OTHER_LOGGER_MARK.test(data.line)){
-		data.name = data.line.match(OTHER_LOGGER_MARK);
+		data.name = data.line.match(OTHER_LOGGER_MARK)[1];
 		data.line = data.line.replace(OTHER_LOGGER_MARK,'').trimStart();
 	}
 	return (consoleLogger as any).___write(data);
