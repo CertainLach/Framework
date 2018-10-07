@@ -86,6 +86,9 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
     }
 }
 
+/**
+ * Object, which will be passed through middleware chain
+ */
 export type IRouterContext<S, M = any> = {
     url: Url;
     path: string;

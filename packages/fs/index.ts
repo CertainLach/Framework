@@ -3,8 +3,6 @@ import {asyncEach} from '@meteor-it/utils';
 import {sep} from 'path';
 import {promisify} from 'util';
 
-// TODO: Deprecate (Because node now supports promised fs)
-
 /**
  * Returns true if path is a valid data url
  * @param path path
