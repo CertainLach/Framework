@@ -153,10 +153,3 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
     }
 
 }
-
-export function initServer<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>, { compiledClientDir, compiledServerDir }: { compiledClientDir: string, compiledServerDir: string }) {
-
-    return async function (ctx: IRouterContext<any> & XPressRouterContext) {
-
-    }
-}
