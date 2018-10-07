@@ -2,7 +2,7 @@ import {exists, stat} from '@meteor-it/fs';
 import {join, resolve} from 'path';
 import {lookupByPath} from '@meteor-it/mime';
 import {IRouterContext, RoutingMiddleware} from '@meteor-it/router';
-import {XPressRouterContext} from '../';
+import {XPressRouterContext} from '..';
 import {constants} from "http2";
 import {createReadStream} from "fs";
 import {ENOENT} from "constants";

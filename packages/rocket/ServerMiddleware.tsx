@@ -8,36 +8,43 @@ import { preloadAll } from './preload';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
 import { IDefaultStores, IUninitializedStoreMap } from './stores';
-import {constants} from 'http2';
-import {asyncEach} from "../utils/index";
-import {join} from 'path';
-const {HTTP2_HEADER_CONTENT_TYPE} = constants;
+import { constants } from 'http2';
+import { asyncEach } from "../utils/index";
+import { join } from 'path';
+import { RoutingMiddleware } from 'packages/router';
+const { HTTP2_HEADER_CONTENT_TYPE } = constants;
 
-let cachedClientStats:any = null;
-let cachedServerStats:any = null;
-
-/**
- * As different function to allow tree-shaking
- * @param rocket 
- * @param compiledClientDir Rocket will read zarbis stats to post needed code to client
- * @param compiledServerDir Rocket will read zarbis stats to transform needed chunks for client
- * @returns Middleware to use in @meteor-it/xpress
- */
-export default function initServer<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>, { compiledClientDir, compiledServerDir }: { compiledClientDir: string, compiledServerDir: string }) {
-    useStaticRendering(true);
-    return async function (ctx: IRouterContext<any> & XPressRouterContext) {
+export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends RoutingMiddleware<XPressRouterContext, void, 'GET'>{
+    private readonly rocket: Rocket<SM>;
+    private readonly compiledClientDir: string;
+    private readonly compiledServerDir: string;
+    private cachedClientStats:any = null;
+    private cachedServerStats:any = null;
+    constructor(rocket: Rocket<SM>, { compiledClientDir, compiledServerDir }: { compiledClientDir: string, compiledServerDir: string }) {
+        super();
+        this.rocket = rocket;
+        this.compiledClientDir = compiledClientDir;
+        this.compiledServerDir = compiledServerDir;
+        useStaticRendering(true);
+    }
+    /**
+     * @param ctx Typescript, wtf is wrong with you? TODO: Replace `ctx` with real typings
+     * Note: Should be fixed by this: https://github.com/Microsoft/TypeScript/pull/8486/commits/2b5bbfee60e8f441856ae2dbfc9148e14050189b
+     * But isn't fixed.
+     */
+    async handle(ctx: XPressRouterContext&IRouterContext<void>): Promise<void> {
         // Should be called only on first page load or in SSR, if code isn't shit
         await preloadAll();
-        if (cachedClientStats === null || process.env.NODE_ENV === 'development') {
-            cachedClientStats = JSON.parse((await readFile(`${compiledClientDir}/stats.json`)).toString());
-            cachedServerStats = JSON.parse((await readFile(`${compiledServerDir}/stats.json`)).toString());
+        if (this.cachedClientStats === null || process.env.NODE_ENV === 'development') {
+            this.cachedClientStats = JSON.parse((await readFile(`${this.compiledClientDir}/stats.json`)).toString());
+            this.cachedServerStats = JSON.parse((await readFile(`${this.compiledServerDir}/stats.json`)).toString());
         }
         const { params, stream, query } = ctx;
-        let files: string | string[] = cachedClientStats.assetsByChunkName.main;
+        let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
         if (!Array.isArray(files))
             files = [files];
         let currentState: IRocketRouterState<IDefaultStores> = { drawTarget: null, store: null, redirectTarget: null };
-        await rocket.router.route(`/${params['0']}`, ctx => {
+        await this.rocket.router.route(`/${params['0']}`, ctx => {
             ctx.state = currentState as any;
             ctx.query = query;
         });
@@ -57,9 +64,9 @@ export default function initServer<SM extends IUninitializedStoreMap>(rocket: Ro
         // Loaded code (For preload on client), need to transform 
         // required modules to thier chunks on client
         // Server module id => Server module path => Client module id => Client chunk file 
-        const serverModulePathList = currentState.store.helmet.ssrData.preloadModules.map(module => cachedServerStats.ssrData.moduleIdToPath[module]);
-        const clientModuleIdList = serverModulePathList.filter(e => !!e).map(module => cachedClientStats.ssrData.modulePathToId[module]);
-        const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))];
+        const serverModulePathList = currentState.store.helmet.ssrData.preloadModules.map(module => this.cachedServerStats.ssrData.moduleIdToPath[module]);
+        const clientModuleIdList = serverModulePathList.filter(e => !!e).map(module => this.cachedClientStats.ssrData.modulePathToId[module]);
+        const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => this.cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))];
 
         // No need to render script on server, because:
         //  1. Script will be executed two times (After SSR, and on initial render (After readd))
@@ -116,14 +123,14 @@ export default function initServer<SM extends IUninitializedStoreMap>(rocket: Ro
             return value;
         }, process.env.NODE_ENV === 'development' ? 4 : 0)};${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* === STORE FOR CLIENT HYDRATION END === */\n' : ''}`;
 
-        if(stream.canPushStream){
-            await asyncEach([...chunkList,...neededEntryPointScripts],async file=>{
+        if (stream.canPushStream) {
+            await asyncEach([...chunkList, ...neededEntryPointScripts], async file => {
                 const ts = await stream.pushStream(`/${file}`);
-                ts.resHeaders[HTTP2_HEADER_CONTENT_TYPE]='application/javascript; charset=utf-8';
-                ts.sendFile(join(compiledClientDir,file));
+                ts.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'application/javascript; charset=utf-8';
+                ts.sendFile(join(this.compiledClientDir, file));
             });
         }
-        stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE]='text/html; charset=utf-8';
+        stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'text/html; charset=utf-8';
         // Finally send rendered data to user
         stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(<html {...helmet.htmlAttrs.props}>
             <head>
@@ -143,5 +150,13 @@ export default function initServer<SM extends IUninitializedStoreMap>(rocket: Ro
                 {neededEntryPointScripts.map(f => <script defer src={`/${f}`} />)}
             </body>
         </html>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
+    }
+
+}
+
+export function initServer<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>, { compiledClientDir, compiledServerDir }: { compiledClientDir: string, compiledServerDir: string }) {
+
+    return async function (ctx: IRouterContext<any> & XPressRouterContext) {
+
     }
 }

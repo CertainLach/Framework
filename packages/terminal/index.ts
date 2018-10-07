@@ -83,8 +83,7 @@ export function clearLine(line?:number) {
 		moveCursor(line);
 		writeEscape('2K');
 		restore();
-	}
-	else
+	}else
 		writeEscape('2K');
 }
 /**

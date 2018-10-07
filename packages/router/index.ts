@@ -135,7 +135,7 @@ export default class Router<E, S, M = any> {
         }
         const middleware = this.middleware;
         for (let callback of callbacks) {
-            middleware.push(wrapMiddleware(method, path, callback));
+            middleware.push(wrapMiddleware(method as any, path, callback));
         }
     }
 
