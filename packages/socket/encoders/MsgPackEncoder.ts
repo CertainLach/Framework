@@ -78,7 +78,7 @@ export default class MsgPackEncoder implements IEncoder {
             case PacketType.RPC_ERROR:
                 return {
                     type:data.t,
-                    data:<string>data.d,
+                    data:data.d as string,
                     random:data.r
                 };
             case PacketType.EVENT:

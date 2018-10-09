@@ -192,7 +192,7 @@ export class PotatoSocketUniversal<F> {
                 if (this.eventHandlers[name]) {
                     handled = true;
                     for (let handler of this.eventHandlers[name]) {
-                        (<any>handler)(data);
+                        (handler as any)(data);
                     }
                 }
             } catch (e) {
@@ -291,7 +291,7 @@ export class PotatoSocketUniversal<F> {
                     return true;
                 }
             });
-            return <F>proxy;
+            return proxy as F;
         }
     };
 
@@ -306,7 +306,7 @@ export class PotatoSocketUniversal<F> {
     }
 
     on(name: string, handler: IRPCHandlerWithThis<this> | IRPCHandlerWithoutThis) {
-        this.remote.on(name, <any>handler);
+        this.remote.on(name, handler as any);
     }
 
     /**
@@ -385,9 +385,9 @@ export class PotatoSocketUniversal<F> {
         }, this.timeout);
         let methodResult;
         if (this.isManaged) {
-            methodResult = (<IRPCHandlerWithThis<this>>rpcMethods[methodName])(this, data);
+            methodResult = (rpcMethods[methodName] as IRPCHandlerWithThis<this>)(this, data);
         } else {
-            methodResult = (<IRPCHandlerWithoutThis>rpcMethods[methodName])(data);
+            methodResult = (rpcMethods[methodName] as IRPCHandlerWithoutThis)(data);
         }
         if (!((methodResult as any) instanceof Promise)) {
             this.answerErrorOnRPCCall(random, methodName, `Server failed to construct response for ${methodName}`);

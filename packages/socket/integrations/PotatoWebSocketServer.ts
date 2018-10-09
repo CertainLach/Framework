@@ -20,8 +20,11 @@ export class PotatoWebSocketServerInternalClient extends PotatoSocketUniversal<I
         this.id = id;
         this.websocket = websocket;
         this.logger = server.logger;
-        (<any>websocket).on('message', (data:Buffer|string) => {
-            this.gotBufferFromRemote(Buffer.from(<string>data));
+        (websocket as any).on('message', (data:Buffer|string) => {
+            if(data instanceof Buffer)
+                this.gotBufferFromRemote(data);
+            else
+                this.gotBufferFromRemote(Buffer.from(data as string));
         });
     }
     sendBufferToRemote(buffer:Buffer) {
@@ -96,10 +99,10 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonl
         let id = Math.random().toString(32).substr(2);
         let wrappedSocket = new PotatoWebSocketServerInternalClient(id, this, websocket);
         wrappedSocket.id = id;
-        if ((<any>req).session)
-            wrappedSocket.session = (<any>req).session;
+        if ((req as any).session)
+            wrappedSocket.session = (req as any).session;
         this.clients[id] = wrappedSocket;
-        (<any>websocket).on('close', (status:any)=>{
+        (websocket as any).on('close', (status:any)=>{
             delete this.clients[id];
             this.closeHandlers.forEach(handler => {
                 handler(wrappedSocket, status);

@@ -115,7 +115,7 @@ function tokensToFunction (tokens:Token[]):PathFunction {
     // Compile all the patterns before compilation.
     for (let i = 0; i < tokens.length; i++) {
         if (tokens[i] instanceof Key) {
-            matches[i] = new RegExp(`^(?:${(<Key>tokens[i]).pattern})$`)
+            matches[i] = new RegExp(`^(?:${(tokens[i] as Key).pattern})$`)
         }
     }
 
@@ -129,9 +129,9 @@ function tokensToFunction (tokens:Token[]):PathFunction {
                 path += token;
                 continue;
             }
-            token = <Key>token;
+            token = token as Key;
 
-            let value:any = data ? data[<number>token.name] : undefined;
+            let value:any = data ? data[token.name as number] : undefined;
             let segment;
 
             if (Array.isArray(value)) {
