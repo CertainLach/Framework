@@ -9,7 +9,6 @@ let IS_INTERNAL_REGEXP = null;
 function sameOrigin(url) {
     return !!IS_INTERNAL_REGEXP.test(url);
 }
-;
 function isLink(el) {
     while (el && el.nodeName !== 'A')
         el = el.parentNode;
@@ -17,7 +16,6 @@ function isLink(el) {
         return null;
     return el;
 }
-;
 let lastClick = 0;
 async function rerunRoute(rocket, initial) {
     lastClick++;
@@ -31,7 +29,7 @@ async function rerunRoute(rocket, initial) {
         qs = querystring_1.parse(location.search.substr(1));
     }
     let currentState = { drawTarget: null, store: null, redirectTarget: null };
-    await rocket.router.route(path, ctx => {
+    await rocket.router.route(path, (ctx) => {
         ctx.state = currentState;
         ctx.query = qs;
     });

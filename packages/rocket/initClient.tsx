@@ -7,30 +7,30 @@ import { IDefaultStores, IUninitializedStoreMap } from './stores';
 
 // Lazy initialized, because this code can be somehow processed 
 // on server, but a regexp requires access to window
-let IS_INTERNAL_REGEXP = null;
+let IS_INTERNAL_REGEXP:RegExp = null;
 
-function sameOrigin(url): boolean {
+function sameOrigin(url:string): boolean {
     return !!IS_INTERNAL_REGEXP.test(url);
-};
-function isLink(el): Element {
+}
+function isLink(el:any): Element {
     while (el && el.nodeName !== 'A') el = el.parentNode;
     if (!el || el.nodeName !== 'A') return null;
     return el;
-};
+}
 
 let lastClick = 0;
 async function rerunRoute<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>, initial: boolean) {
     lastClick++;
     let path = location.pathname;
     // substr(1) is needed, because location.search starts with "?""
-    let qs;
+    let qs:{[key:string]:string};
     if (location.search === '' || location.search === '?') {
         qs = {};
     } else if (location.search.startsWith('?')) {
-        qs = parseQuerystring(location.search.substr(1));
+        qs = parseQuerystring(location.search.substr(1)) as any;
     }
     let currentState: IRocketRouterState<IDefaultStores> = { drawTarget: null, store: null, redirectTarget: null };
-    await (rocket.router as any).route(path, ctx => {
+    await (rocket.router as any).route(path, (ctx:any) => {
         ctx.state = currentState;
         ctx.query = qs;
     });

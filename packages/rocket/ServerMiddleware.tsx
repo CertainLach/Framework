@@ -1,49 +1,52 @@
-import { readFile } from '@meteor-it/fs';
-import { IRouterContext } from '@meteor-it/router';
-import { XPressRouterContext } from '@meteor-it/xpress';
-import { useStaticRendering } from 'inferno-mobx';
-import { renderToStaticMarkup, renderToString } from 'inferno-server';
-import { toJS } from 'mobx';
-import { preloadAll } from './preload';
+import {readFile} from '@meteor-it/fs';
+import {IRouterContext, RoutingMiddleware} from '@meteor-it/router';
+import {XPressRouterContext} from '@meteor-it/xpress';
+import {useStaticRendering} from 'inferno-mobx';
+import {renderToStaticMarkup, renderToString} from 'inferno-server';
+import {toJS} from 'mobx';
+import {preloadAll} from './preload';
 import Rocket from './Rocket';
-import { IRocketRouterState } from './router';
-import { IDefaultStores, IUninitializedStoreMap } from './stores';
-import { constants } from 'http2';
-import { asyncEach } from "../utils/index";
-import { join } from 'path';
-import { RoutingMiddleware } from 'packages/router';
-const { HTTP2_HEADER_CONTENT_TYPE } = constants;
+import {IRocketRouterState} from './router';
+import {IDefaultStores, IUninitializedStoreMap} from './stores';
+import {constants} from 'http2';
+import {asyncEach} from "@meteor-it/utils";
+import {join} from 'path';
 
-export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends RoutingMiddleware<XPressRouterContext, void, 'GET'>{
+const {HTTP2_HEADER_CONTENT_TYPE} = constants;
+
+// noinspection JSUnusedGlobalSymbols
+export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends RoutingMiddleware<XPressRouterContext, void, 'GET'> {
     private readonly rocket: Rocket<SM>;
     private readonly compiledClientDir: string;
     private readonly compiledServerDir: string;
-    private cachedClientStats:any = null;
-    private cachedServerStats:any = null;
-    constructor(rocket: Rocket<SM>, { compiledClientDir, compiledServerDir }: { compiledClientDir: string, compiledServerDir: string }) {
+    private cachedClientStats: any = null;
+    private cachedServerStats: any = null;
+
+    constructor(rocket: Rocket<SM>, {compiledClientDir, compiledServerDir}: { compiledClientDir: string, compiledServerDir: string }) {
         super();
         this.rocket = rocket;
         this.compiledClientDir = compiledClientDir;
         this.compiledServerDir = compiledServerDir;
         useStaticRendering(true);
     }
+
     /**
      * @param ctx Typescript, wtf is wrong with you? TODO: Replace `ctx` with real typings
      * Note: Should be fixed by this: https://github.com/Microsoft/TypeScript/pull/8486/commits/2b5bbfee60e8f441856ae2dbfc9148e14050189b
      * But isn't fixed.
      */
-    async handle(ctx: XPressRouterContext&IRouterContext<void>): Promise<void> {
+    async handle(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
         // Should be called only on first page load or in SSR, if code isn't shit
         await preloadAll();
         if (this.cachedClientStats === null || process.env.NODE_ENV === 'development') {
             this.cachedClientStats = JSON.parse((await readFile(`${this.compiledClientDir}/stats.json`)).toString());
             this.cachedServerStats = JSON.parse((await readFile(`${this.compiledServerDir}/stats.json`)).toString());
         }
-        const { params, stream, query } = ctx;
+        const {params, stream, query} = ctx;
         let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
         if (!Array.isArray(files))
             files = [files];
-        let currentState: IRocketRouterState<IDefaultStores> = { drawTarget: null, store: null, redirectTarget: null };
+        let currentState: IRocketRouterState<IDefaultStores> = {drawTarget: null, store: null, redirectTarget: null};
         await this.rocket.router.route(`/${params['0']}`, ctx => {
             ctx.state = currentState as any;
             ctx.query = query;
@@ -112,7 +115,7 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         }
 
         // Stringify store for client, also cleanup store from unneeded data
-        let safeStore = toJS(currentState.store, { exportMapsAsObjects: true, detectCycles: true });
+        let safeStore = toJS(currentState.store, {exportMapsAsObjects: true, detectCycles: true});
         let stringStore = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* == STORE FOR CLIENT HYDRATION START == */\n' : ''}window.__SSR_STORE__=${JSON.stringify(safeStore, (key, value) => {
             if (value === safeStore.isomorphicStyleLoader)
                 return undefined;
@@ -132,24 +135,26 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         }
         stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'text/html; charset=utf-8';
         // Finally send rendered data to user
-        stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(<html {...helmet.htmlAttrs.props}>
+        stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
+            <html {...helmet.htmlAttrs.props}>
             <head>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-                <meta content="utf-8" http-equiv="encoding" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+                <meta content="utf-8" http-equiv="encoding"/>
                 {helmet.meta.map(p => <meta {...p.props} />)}
                 {helmet.link.map(p => <link {...p.props} />)}
                 <title>{currentState.store.helmet.fullTitle}</title>
-                {helmet.style.map(p => <style {...p.props} dangerouslySetInnerHTML={{ __html: p.body }} />)}
-                {currentState.store.isomorphicStyleLoader.styles.size > 0 ? <style dangerouslySetInnerHTML={{ __html: [...currentState.store.isomorphicStyleLoader.styles].join(nWhenDevelopment) }} /> : null}
+                {helmet.style.map(p => <style {...p.props} dangerouslySetInnerHTML={{__html: p.body}}/>)}
+                {currentState.store.isomorphicStyleLoader.styles.size > 0 ? <style
+                    dangerouslySetInnerHTML={{__html: [...currentState.store.isomorphicStyleLoader.styles].join(nWhenDevelopment)}}/> : null}
             </head>
             <body {...helmet.bodyAttrs.props}>
-                <div dangerouslySetInnerHTML={{ __html }} />
-                <script defer dangerouslySetInnerHTML={{ __html: stringStore }} />
-                {chunkList.map(f => <script defer src={`/${f}`} />)}
-                {neededEntryPointScripts.map(f => <script defer src={`/${f}`} />)}
+            <div dangerouslySetInnerHTML={{__html}}/>
+            <script defer dangerouslySetInnerHTML={{__html: stringStore}}/>
+            {chunkList.map(f => <script defer src={`/${f}`}/>)}
+            {neededEntryPointScripts.map(f => <script defer src={`/${f}`}/>)}
             </body>
-        </html>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
+            </html>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
     }
 
 }

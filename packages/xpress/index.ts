@@ -221,14 +221,14 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
 
     // noinspection JSMethodCanBeStatic
     private async requestHandler(req: Http2ServerRequest, res: Http2ServerResponse) {
-        const url = req.url as string;
+        const url = req.url as string || req.headers[HTTP2_HEADER_PATH] as string;
         let {pathname, query} = parse(url, true);
         if (pathname === undefined) {
             res.stream.destroy();
             return;
         }
         pathname = normalize(pathname).replace(PATH_SEP_REGEXP, '/');
-        const method = req.method;
+        const method = req.method || req.headers[HTTP2_HEADER_METHOD];
         const wrappedMainStream = new XpressRouterStream(req.headers, {});
         wrappedMainStream.req = req;
         wrappedMainStream.res = res;
