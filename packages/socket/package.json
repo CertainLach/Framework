@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/socket",
-    "version": "1.4.12",
+    "version": "1.4.13",
     "description": "Multi-protocol socket.io alternative",
     "main": "index.js",
     "keywords": [
