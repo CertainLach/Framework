@@ -311,7 +311,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 wrapperMainStream.socket = ws;
                 await this.route(pathname as string, ctx => {
                     ctx.query = query as { [key: string]: string };
-                    ctx.method = method;
+                    ctx.method = 'WS';
                     ctx.stream = wrapperMainStream;
                 });
                 // Dirty check for handled websocket
