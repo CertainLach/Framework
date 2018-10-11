@@ -5,7 +5,6 @@ import {IRouterContext, RoutingMiddleware} from '@meteor-it/router';
 import {XPressRouterContext} from '..';
 import {constants} from "http2";
 import {createReadStream} from "fs";
-import {ENOENT} from "constants";
 
 const {
     HTTP2_HEADER_IF_MODIFIED_SINCE, HTTP2_HEADER_STATUS,
@@ -24,31 +23,26 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
     private readonly rootFolder: string;
     private readonly filter?: RegExp;
 
-    constructor(rootFolder: string, {filter}: {filter?:RegExp} = {}) {
+    constructor(rootFolder: string, {filter}: { filter?: RegExp } = {}) {
         super();
         this.rootFolder = resolve(rootFolder);
         this.filter = filter;
     }
 
     async handle(ctx: XPressRouterContext & IRouterContext<void, "ALL" | "GET" | null>): Promise<void> {
-        if(ctx.stream.hasDataSent)
+        if (ctx.stream.hasDataSent)
             return;
         const {stream, path} = ctx;
         let pathname = path;
         let gzippedFound = false;
         const normalFilePath = join(this.rootFolder, pathname);
-        if(this.filter&&!this.filter.test(pathname))return;
-        let filename = normalFilePath+'.gz';
-        if (!stream.acceptsEncoding('gzip') || !(await exists(filename))) {
-            filename = normalFilePath;
-        } else {
-            gzippedFound = true;
-        }
+        if (this.filter && !this.filter.test(pathname)) return;
+        let filename = normalFilePath + '.gz';
+        if (!stream.acceptsEncoding('gzip') || !(await exists(filename))) filename = normalFilePath;
+        else gzippedFound = true;
         try {
             let stats = await stat(filename);
-            if (stats.isDirectory()) {
-                return;
-            }
+            if (stats.isDirectory()) return;
             // Can be <, but if client sends newer date, then file is changed to older?
             // No need to compare against eps
             if ((new Date(stream.reqHeaders[HTTP2_HEADER_IF_MODIFIED_SINCE] as string).getTime() - stats.mtime.getTime()) <= 0) {
@@ -61,15 +55,13 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
             stream.resHeaders[HTTP2_HEADER_LAST_MODIFIED] = stats.mtime.toISOString();
             stream.resHeaders[HTTP2_HEADER_CACHE_CONTROL] = 'public, max-age=31536000';
             stream.resHeaders[HTTP2_HEADER_ETAG] = stats.mtime.getTime().toString(36);
-            if (gzippedFound)
-                stream.resHeaders[HTTP2_HEADER_CONTENT_ENCODING] = 'gzip';
+            if (gzippedFound) stream.resHeaders[HTTP2_HEADER_CONTENT_ENCODING] = 'gzip';
             stream.resHeaders[HTTP2_HEADER_CONTENT_LENGTH] = stats.size;
-            if (type)
-                stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = (type + (charset ? '; charset=' + charset : ''));
+            if (type) stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = (type + (charset ? '; charset=' + charset : ''));
             stream.sendStream(createReadStream(filename));
         } catch (e) {
             // Next is not needed
-            if(e.code!=='ENOENT') throw e;
+            if (e.code !== 'ENOENT') throw e;
         }
     }
 }
