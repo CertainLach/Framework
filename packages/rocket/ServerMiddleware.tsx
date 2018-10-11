@@ -36,6 +36,8 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
      * But isn't fixed.
      */
     async handle(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
+        if(ctx.stream.hasDataSent)
+            return;
         // Should be called only on first page load or in SSR, if code isn't shit
         await preloadAll();
         if (this.cachedClientStats === null || process.env.NODE_ENV === 'development') {

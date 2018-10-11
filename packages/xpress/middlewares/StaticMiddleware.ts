@@ -31,6 +31,8 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
     }
 
     async handle(ctx: XPressRouterContext & IRouterContext<void, "ALL" | "GET" | null>): Promise<void> {
+        if(ctx.stream.hasDataSent)
+            return;
         const {stream, path} = ctx;
         let pathname = path;
         let gzippedFound = false;
