@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/monocle",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Zarbis update",
   "main": "index.js",
   "keywords": [
@@ -14,8 +14,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@meteor-it/argv": "^0.4.8",
+    "@meteor-it/argv": "^0.4.9",
     "@meteor-it/fs": "^1.0.5",
-    "@meteor-it/logger": "^2.3.7"
+    "@meteor-it/logger": "^2.3.8"
   }
 }

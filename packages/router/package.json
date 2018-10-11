@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/router",
-    "version": "2.1.8",
+    "version": "2.1.9",
     "description": "Test router",
     "main": "index.js",
     "keywords": [
@@ -11,7 +11,7 @@
     "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/logger": "^2.3.7",
+        "@meteor-it/logger": "^2.3.8",
         "@meteor-it/utils": "^1.3.4"
     },
     "publishConfig": {
