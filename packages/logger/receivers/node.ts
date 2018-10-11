@@ -92,7 +92,7 @@ function stringifyCommonData(nameLimit:number, escapeCode:string, provider:NodeC
 	const strings = data.string.split('\n');
 	let ret = ` \u001B[40m${stringifyName(nameLimit, provider.nameLimit, data.name, escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${strings.shift()}`;
 	for(let string of strings){
-		ret += ` \n\u001B[40m${stringifyName(nameLimit, provider.nameLimit, '|', escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${string}`;
+		ret += ` \n\u001B[40m${stringifyName(nameLimit, provider.nameLimit, ' |', escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${string}`;
 		//`${stringifyIdent(data.identationLength)}${stringifyName(provider.nameLimit,'|',escapeCode)} ${string}\n`;
 	}
 	return ret;
