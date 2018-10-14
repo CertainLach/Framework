@@ -11,8 +11,10 @@ import {IDefaultStores, IUninitializedStoreMap} from './stores';
 import {constants} from 'http2';
 import {asyncEach} from "@meteor-it/utils";
 import {join} from 'path';
+import {format} from 'url';
+import {stringify} from 'querystring';
 
-const {HTTP2_HEADER_CONTENT_TYPE} = constants;
+const {HTTP2_HEADER_CONTENT_TYPE,HTTP2_HEADER_LOCATION} = constants;
 
 // noinspection JSUnusedGlobalSymbols
 export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends RoutingMiddleware<XPressRouterContext, void, 'GET'> {
@@ -53,10 +55,16 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
             ctx.state = currentState as any;
             ctx.query = query;
         });
-        // if (currentState.redirectTarget !== null) {
-        //     stream.redirect(currentState.redirectTarget);
-        //     return;
-        // }
+        if(currentState.store.router.hasRedirect){
+            stream.status(307);
+            stream.resHeaders[HTTP2_HEADER_LOCATION] = format({
+                pathname:currentState.store.router.path,
+                search:stringify(currentState.store.router.query)
+            });
+            stream.respond();
+            stream.res.end();
+            return;
+        }
 
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
         let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;

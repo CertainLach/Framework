@@ -78,8 +78,8 @@ export function getInitialRouter<S>(stateGetter: () => IRocketRouterState<S>, st
         } else {
             proceedStore = await initStores(store);
         }
-        (proceedStore.router as RouterStore).path = path;
-        (proceedStore.router as RouterStore).query = query;
+        (proceedStore.router as RouterStore as any)._path = path;
+        (proceedStore.router as RouterStore as any)._query = query;
         state.store = proceedStore;
         try {
             await next();
