@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/rocket",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Web framework",
   "main": "index.js",
   "keywords": [
@@ -12,7 +12,7 @@
   "dependencies": {
     "@meteor-it/fs": "^1.0.5",
     "@meteor-it/router": "^2.1.9",
-    "@meteor-it/xpress": "^4.2.3",
+    "@meteor-it/xpress": "^4.2.4",
     "hoist-non-inferno-statics": "^1.1.3",
     "inferno": "^5.6.1",
     "inferno-devtools": "^5.6.1",
