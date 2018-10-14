@@ -44,12 +44,12 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
             this.cachedClientStats = JSON.parse((await readFile(`${this.compiledClientDir}/stats.json`)).toString());
             this.cachedServerStats = JSON.parse((await readFile(`${this.compiledServerDir}/stats.json`)).toString());
         }
-        const {params, stream, query} = ctx;
+        const {path, stream, query} = ctx;
         let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
         if (!Array.isArray(files))
             files = [files];
         let currentState: IRocketRouterState<IDefaultStores> = {drawTarget: null, store: null, redirectTarget: null};
-        await this.rocket.router.route(`/${params['0']}`, ctx => {
+        await this.rocket.router.route(path, ctx => {
             ctx.state = currentState as any;
             ctx.query = query;
         });
