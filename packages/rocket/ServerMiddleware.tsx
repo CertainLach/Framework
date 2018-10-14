@@ -55,6 +55,11 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
             ctx.state = currentState as any;
             ctx.query = query;
         });
+
+        let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
+        let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
+
+        // Allow redirects to be placed inside render() method
         if(currentState.store.router.hasRedirect){
             stream.status(307);
             stream.resHeaders[HTTP2_HEADER_LOCATION] = format({
@@ -65,9 +70,6 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
             stream.res.end();
             return;
         }
-
-        let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
-        let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
 
         let helmet = currentState.store.helmet;
 
