@@ -34,7 +34,7 @@ async function rerunRoute<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>,
         ctx.state = currentState;
         ctx.query = qs;
     });
-    // TODO: Fix possible stackoverflow
+    // TODO: Fix possible stackoverflow on rerender
     (currentState.store.router as any)._forceRerender=()=>{
         setTimeout(() => rerunRoute(rocket, false), 1);
     }
