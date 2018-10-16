@@ -81,7 +81,7 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         // Server module id => Server module path => Client module id => Client chunk file 
         const serverModulePathList = currentState.store.helmet.ssrData.preloadModules.map(module => this.cachedServerStats.ssrData.moduleIdToPath[module]);
         const clientModuleIdList = serverModulePathList.filter(e => !!e).map(module => this.cachedClientStats.ssrData.modulePathToId[module]);
-        const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => this.cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))];
+        const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => this.cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))].filter(e=>!!e&&e!=='');
 
         // No need to render script on server, because:
         //  1. Script will be executed two times (After SSR, and on initial render (After readd))
