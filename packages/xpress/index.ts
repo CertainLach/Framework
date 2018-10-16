@@ -22,7 +22,7 @@ const {
     HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LAST_MODIFIED,
     HTTP2_HEADER_CACHE_CONTROL, HTTP2_HEADER_CONTENT_LENGTH,
     HTTP2_HEADER_CONTENT_DISPOSITION, HTTP2_HEADER_UPGRADE,
-    HTTP2_HEADER_ACCEPT_ENCODING
+    HTTP2_HEADER_ACCEPT_ENCODING, NGHTTP2_REFUSED_STREAM
 } = constants;
 
 let xpressLogger = new Logger('xpress');
@@ -125,6 +125,13 @@ export class XpressRouterStream {
             // @types/node sucks for http2
             this.res.stream.pushStream({...this.resHeaders, [HTTP2_HEADER_PATH]: path}, (err, stream, resHeaders) => {
                 if (err) return rej(err);
+                stream.on('error', (err) => {
+                    const isRefusedStream = (err as any).code === 'ERR_HTTP2_STREAM_ERROR' &&
+                        stream.rstCode === NGHTTP2_REFUSED_STREAM;
+                    if (!isRefusedStream)
+                        throw err;
+                });
+
                 const wrap = new XpressRouterStream(this.reqHeaders, {});
                 wrap.res = {...this.res, stream} as any;
                 res(wrap);

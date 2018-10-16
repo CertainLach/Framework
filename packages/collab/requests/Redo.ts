@@ -52,7 +52,7 @@ export default class RedoRequest {
                 sequence -= 1;
 
             if (sequence == 0)
-                return <UndoRequest>log[index];
+                return log[index] as UndoRequest;
         }
         return null;
     }
