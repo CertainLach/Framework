@@ -14,7 +14,7 @@ export default class Helmet extends React.Component<IDefaultStores>{
                 const {type,props:{children,...props}} = child;
                 switch(type){
                     case 'title':
-                        data.title = (children as any).children as unknown as string;
+                        data.title = children as unknown as string;
                         break;
                     case 'meta':
                         if(props!==null)

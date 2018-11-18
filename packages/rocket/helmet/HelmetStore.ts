@@ -20,7 +20,6 @@ function recreateTags(el:Element,type:string,list:(HtmlSafeTag|HtmlSafeTagWithBo
 }
 function removeAllChildren(el:Element,children:Element[]){
     for(let child of children){
-        console.log('Removing ',child);
         el.removeChild(child);
     }
 }
@@ -56,8 +55,8 @@ export default class HelmetStore extends Store{
             document.title = this.fullTitle;
 
             // Store added elements on client side
-            let appliedHead = [];
-            let appliedBody = [];
+            let appliedHead:any = [];
+            let appliedBody:any = [];
             this.instances.forEach(instance=>{
                 recreateTags(document.head,'meta',instance.meta,appliedHead);
                 recreateTags(document.head,'link',instance.link,appliedHead);
@@ -73,13 +72,8 @@ export default class HelmetStore extends Store{
             rewriteAttrs(document.body.parentElement,this.htmlAttrs.props);
             rewriteAttrs(document.body,this.bodyAttrs.props);
 
-            console.log('Going to remove ssr data');
             // Remove all SSR elements, since client data is applied already
             if(!this.cleanedSsrData){
-                console.log('Cleaning ssr data');
-                console.log(this.ssrData.rht,this.ssrData.rbt);
-                console.log(this.ssrData.rht.reverse().map(e=>document.head.children[e]));
-                console.log(this.ssrData.rbt.reverse().map(e=>document.body.children[e]));
                 removeAllChildren(document.head,this.ssrData.rht.reverse().map(e=>document.head.children[e]));
                 removeAllChildren(document.body,this.ssrData.rbt.reverse().map(e=>document.body.children[e]));
                 delete this.ssrData;
@@ -93,11 +87,11 @@ export default class HelmetStore extends Store{
     // Page title
     titleTemplate:null|((title:string)=>string) = null;
 
-    ssrData = {
+    ssrData:{rht:number[],rbt:number[],preloadModules:number[]} = {
         rht: [],
         rbt: [],
         preloadModules: []
-    }
+    };
     
     get title(){
         for(let i=this.instances.length-1;i>=0;i--){
