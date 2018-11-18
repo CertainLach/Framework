@@ -1,4 +1,4 @@
-import {default as WebSocket, Server as WSServer} from 'uws';
+import {default as WebSocket, Server as WSServer} from '@discordjs/uws';
 import Logger from '@meteor-it/logger';
 import {encodeHtmlSpecials} from '@meteor-it/utils';
 import URouter from "@meteor-it/router";
