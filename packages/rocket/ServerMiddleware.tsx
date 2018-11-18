@@ -13,11 +13,32 @@ import {asyncEach} from "@meteor-it/utils";
 import {join} from 'path';
 import {format} from 'url';
 import {stringify} from 'querystring';
-import Router, {MultiMiddleware} from "../router/index";
+import Router, {MultiMiddleware, RoutingMiddleware} from "../router/index";
 import * as React from 'react';
 import StaticMiddleware from "@meteor-it/xpress/middlewares/StaticMiddleware";
 
 const {HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LOCATION} = constants;
+
+// Should be loaded only in development, parses stats file every time, so this middleware is very slow
+class HotHelperMiddleware extends RoutingMiddleware<XPressRouterContext,void,'GET'>{
+    compiledClientDir: string;
+    constructor(compiledClientDir:string){
+        super();
+        this.compiledClientDir = compiledClientDir;
+    }
+    async handle({stream,path}:any): Promise<void> {
+        if (!stream.hasDataSent&&path.endsWith('.hot.json')) {
+            try{
+                // Test if valid json (Webpack finished writing)
+                const buf = (await readFile(`${this.compiledClientDir}${path}`)).toString();
+                stream.status(200).send(JSON.parse(buf));
+            }catch(e){
+                await new Promise(res => setTimeout(res, 1000));
+                stream.status(404).send('<error/>');
+            }
+        }
+    }
+}
 
 // noinspection JSUnusedGlobalSymbols
 export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends MultiMiddleware {
@@ -177,8 +198,12 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
 
     // Setup all routes
     setup(router: Router<XPressRouterContext & IRouterContext<void>, any, 'GET' | 'ALL'>, path: string | null): void {
-        if(this.setupDone)throw new Error('ServerMiddleware isn\'t reusable!');
+        if(this.setupDone)throw new Error('ServerMiddleware isn\'t reusable! Create new to use in new xpress instance');
         router.on('GET',path,this.staticMiddleware);
+        // Webpack, why?
+        if(process.env.NODE_ENV==='development'){
+            router.on('GET',path,new HotHelperMiddleware(this.compiledClientDir));
+        }
         router.on('GET',path,async ctx=>await this.handleRender(ctx));
     }
 }
