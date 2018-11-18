@@ -1,5 +1,4 @@
-import { hydrate, render } from 'inferno';
-import { initDevTools } from 'inferno-devtools';
+import { hydrate, render } from 'react-dom';
 import { parse as parseQuerystring } from 'querystring';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
@@ -64,8 +63,14 @@ async function rerunRoute<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>,
  */
 export default async function initClient<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>) {
     IS_INTERNAL_REGEXP = new RegExp('^(?:(?:http[s]?:\/\/)?' + window.location.host.replace(/\./g, '\\.') + ')?\/?[#?]?', 'i');
-    if (process.env.NODE_ENV === 'development')
-        initDevTools();
+    // TODO: Patch react via babel
+    if (process.env.NODE_ENV === 'production'){
+        if (typeof window !== 'undefined' && typeof (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
+            for (let [key, value] of Object.entries((window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__)) {
+                (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__[key] = typeof value == "function" ? ()=>{} : null;
+            }
+        }
+    }
 
     await rerunRoute(rocket, true);
     // Add listeners after initial render is completed to handle <a> by internal router

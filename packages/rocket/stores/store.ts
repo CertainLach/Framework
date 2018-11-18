@@ -1,4 +1,4 @@
 export default class Store{
-    autorun?();
+    autorun?(): void;
     async init(){};
 }

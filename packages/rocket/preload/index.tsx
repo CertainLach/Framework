@@ -1,6 +1,7 @@
-import { Component } from 'inferno';
+import { Component } from 'react';
 import { inject } from '../reactive';
 import { IDefaultStores } from '../stores';
+import * as React from 'react';
 
 export let TO_PRELOAD: (() => Promise<any>)[] = [];
 

@@ -1,10 +1,11 @@
 import Router from '@meteor-it/router';
 import { configure, isObservableArray, isObservableMap } from 'mobx';
 import {IUninitializedStoreMap, initStores, IDefaultStores} from '../stores';
-import { Provider } from 'inferno-mobx';
+import { Provider } from 'mobx-react';
 import Logger from '@meteor-it/logger';
 import Store from "../stores/store";
 import RouterStore from "./RouterStore";
+import * as React from 'react';
 
 /**
  * Helper function that supports merging maps

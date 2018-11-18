@@ -1,10 +1,12 @@
-import { Component } from 'inferno';
+import { Component } from 'react';
 import { inject } from '../reactive';
 import { IDefaultStores } from '../stores';
-import hoistStatics from 'hoist-non-inferno-statics';
+import * as hoistStatics from 'hoist-non-react-statics';
+import * as React from 'react';
+import { IReactComponent } from 'mobx-react';
 
-export default function withStyles(...styles: IIsomorphicStyleLoaderMethods[]) {
-    return (InnerComponent:any) => {
+export default function withStyles(...styles: any[]) {
+    return (InnerComponent:IReactComponent) => {
         @inject('isomorphicStyleLoader')
         class StyledComponent extends Component<IDefaultStores> {
             private removeCss: any;

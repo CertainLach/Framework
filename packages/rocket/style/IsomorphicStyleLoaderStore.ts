@@ -10,7 +10,7 @@ export default class IsomorphicStyleLoaderStore extends Store {
     styles: Set<string> = new Set();
     // Not needed
     // @action
-    insertCss(...style: IIsomorphicStyleLoaderMethods[]): () => void {
+    insertCss(...style: any[]): () => void {
         if (process.env.BROWSER) {
             let fns = (style as any[]).map(style => style._insertCss());
             return () => fns.forEach(fn => fn());

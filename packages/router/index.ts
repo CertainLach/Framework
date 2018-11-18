@@ -155,6 +155,6 @@ export default class Router<E, S, M = any> {
         } as any;
         fillContext(context as E & IRouterContext<S, M | 'ALL' | null>);
         if((context as any).next)throw new Error('next() in global context is deprecated, just await result instead of waiting for next() call');
-        return await middleRun(this.middleware as any)(context)();
+        return await await middleRun(this.middleware as any)(context)();
     }
 }

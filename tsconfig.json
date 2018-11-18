@@ -8,7 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "noEmit": false,
-    "jsx": "preserve",
+    "jsx": "react",
     "noEmitHelpers": false,
     "importHelpers": false,
     "strictNullChecks": false,

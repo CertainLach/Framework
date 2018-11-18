@@ -7,7 +7,7 @@ export default async function initStores<SM extends IUninitializedStoreMap>(sm: 
     const inList = { ...(sm as {}), ...(defaultStores as {}) };
     for (let key in inList) {
         if (inList.hasOwnProperty(key)) {
-            outList[key] = new (inList[key]);
+            outList[key] = new ((inList as any)[key]);
             if(outList[key].init)
                 await outList[key].init();
         }

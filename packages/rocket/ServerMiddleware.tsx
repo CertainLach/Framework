@@ -1,8 +1,8 @@
 import {readFile} from '@meteor-it/fs';
-import {IRouterContext, RoutingMiddleware} from '@meteor-it/router';
+import {IRouterContext} from '@meteor-it/router';
 import {XPressRouterContext} from '@meteor-it/xpress';
-import {useStaticRendering} from 'inferno-mobx';
-import {renderToStaticMarkup, renderToString} from 'inferno-server';
+import {useStaticRendering} from 'mobx-react';
+import {renderToStaticMarkup, renderToString} from 'react-dom/server';
 import {toJS} from 'mobx';
 import {preloadAll} from './preload';
 import Rocket from './Rocket';
@@ -13,11 +13,14 @@ import {asyncEach} from "@meteor-it/utils";
 import {join} from 'path';
 import {format} from 'url';
 import {stringify} from 'querystring';
+import Router, {MultiMiddleware} from "../router/index";
+import * as React from 'react';
+import StaticMiddleware from "@meteor-it/xpress/middlewares/StaticMiddleware";
 
-const {HTTP2_HEADER_CONTENT_TYPE,HTTP2_HEADER_LOCATION} = constants;
+const {HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LOCATION} = constants;
 
 // noinspection JSUnusedGlobalSymbols
-export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends RoutingMiddleware<XPressRouterContext, void, 'GET'> {
+export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends MultiMiddleware {
     private readonly rocket: Rocket<SM>;
     private readonly compiledClientDir: string;
     private readonly compiledServerDir: string;
@@ -29,6 +32,7 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         this.rocket = rocket;
         this.compiledClientDir = compiledClientDir;
         this.compiledServerDir = compiledServerDir;
+        this.staticMiddleware = new StaticMiddleware(compiledClientDir);
         useStaticRendering(true);
     }
 
@@ -37,8 +41,8 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
      * Note: Should be fixed by this: https://github.com/Microsoft/TypeScript/pull/8486/commits/2b5bbfee60e8f441856ae2dbfc9148e14050189b
      * But isn't fixed.
      */
-    async handle(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
-        if(ctx.stream.hasDataSent)
+    async handleRender(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
+        if (ctx.stream.hasDataSent)
             return;
         // Should be called only on first page load or in SSR, if code isn't shit
         await preloadAll();
@@ -58,13 +62,12 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
 
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
         let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
-
         // Allow redirects to be placed inside render() method
-        if(currentState.store.router.hasRedirect){
+        if (currentState.store.router.hasRedirect) {
             stream.status(307);
             stream.resHeaders[HTTP2_HEADER_LOCATION] = format({
-                pathname:currentState.store.router.path,
-                search:stringify(currentState.store.router.query)
+                pathname: currentState.store.router.path,
+                search: stringify(currentState.store.router.query)
             });
             stream.respond();
             stream.res.end();
@@ -81,7 +84,7 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         // Server module id => Server module path => Client module id => Client chunk file 
         const serverModulePathList = currentState.store.helmet.ssrData.preloadModules.map(module => this.cachedServerStats.ssrData.moduleIdToPath[module]);
         const clientModuleIdList = serverModulePathList.filter(e => !!e).map(module => this.cachedClientStats.ssrData.modulePathToId[module]);
-        const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => this.cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))].filter(e=>!!e&&e!=='');
+        const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => this.cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))].filter(e => !!e && e !== '');
 
         // No need to render script on server, because:
         //  1. Script will be executed two times (After SSR, and on initial render (After readd))
@@ -149,24 +152,33 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         // Finally send rendered data to user
         stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
             <html {...helmet.htmlAttrs.props}>
-            <head>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
-                <meta content="utf-8" http-equiv="encoding"/>
-                {helmet.meta.map(p => <meta {...p.props} />)}
-                {helmet.link.map(p => <link {...p.props} />)}
-                <title>{currentState.store.helmet.fullTitle}</title>
-                {helmet.style.map(p => <style {...p.props} dangerouslySetInnerHTML={{__html: p.body}}/>)}
-                {currentState.store.isomorphicStyleLoader.styles.size > 0 ? <style
-                    dangerouslySetInnerHTML={{__html: [...currentState.store.isomorphicStyleLoader.styles].join(nWhenDevelopment)}}/> : null}
-            </head>
-            <body {...helmet.bodyAttrs.props}>
-            <div dangerouslySetInnerHTML={{__html}}/>
-            <script defer dangerouslySetInnerHTML={{__html: stringStore}}/>
-            {chunkList.map(f => <script defer src={`/${f}`}/>)}
-            {neededEntryPointScripts.map(f => <script defer src={`/${f}`}/>)}
-            </body>
+                <head>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                    <meta content="text/html;charset=utf-8" httpEquiv="Content-Type"/>
+                    <meta content="utf-8" httpEquiv="encoding"/>
+                    {helmet.meta.map((p,i) => <meta key={i} {...p.props} />)}
+                    {helmet.link.map((p,i) => <link key={i} {...p.props} />)}
+                    <title>{currentState.store.helmet.fullTitle}</title>
+                    {helmet.style.map((p,i) => <style {...p.props} key={i} dangerouslySetInnerHTML={{__html: p.body}}/>)}
+                    {currentState.store.isomorphicStyleLoader.styles.size > 0 ? <style
+                        dangerouslySetInnerHTML={{__html: [...currentState.store.isomorphicStyleLoader.styles].join(nWhenDevelopment)}}/> : null}
+                </head>
+                <body {...helmet.bodyAttrs.props}>
+                    <div dangerouslySetInnerHTML={{__html}}/>
+                    <script defer dangerouslySetInnerHTML={{__html: stringStore}}/>
+                    {chunkList.map((f,i) => <script defer key={i} src={`/${f}`}/>)}
+                    {neededEntryPointScripts.map((f,i) => <script key={i} defer src={`/${f}`}/>)}
+                </body>
             </html>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
     }
 
+    setupDone: boolean = false;
+    staticMiddleware: StaticMiddleware;
+
+    // Setup all routes
+    setup(router: Router<XPressRouterContext & IRouterContext<void>, any, 'GET' | 'ALL'>, path: string | null): void {
+        if(this.setupDone)throw new Error('ServerMiddleware isn\'t reusable!');
+        router.on('GET',path,this.staticMiddleware);
+        router.on('GET',path,async ctx=>await this.handleRender(ctx));
+    }
 }

@@ -1,7 +1,7 @@
 import ServerMiddleware from './ServerMiddleware';
 import initClient from './initClient';
 import Rocket from './Rocket';
-import {Component} from 'inferno';
+import {Component} from 'react';
 
 export default Rocket;
 export {ServerMiddleware,initClient};

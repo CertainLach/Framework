@@ -19,6 +19,9 @@ function lookupMime(filename: string, gzipped: boolean) {
 
 const EMPTY_BUFFER = Buffer.from([]);
 
+/**
+ * FIXME: If added before any other route somehow supresses errors thrown
+ */
 export default class StaticMiddleware extends RoutingMiddleware<XPressRouterContext, void, 'GET'> {
     private readonly rootFolder: string;
     private readonly filter?: RegExp;

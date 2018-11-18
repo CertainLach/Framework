@@ -1,17 +1,17 @@
-import {Component,VNode} from 'inferno';
+import * as React from 'react';
 import {IDefaultStores} from '../stores';
 import HelmetDataInstance from './HelmetDataInstance';
 import { ChangeDispatcher } from './ChangeDispatcher';
 
-export default class Helmet extends Component<IDefaultStores>{
+export default class Helmet extends React.Component<IDefaultStores>{
     render(){
         if(this.props.children){
-            let children:VNode[]= (this.props.children instanceof Array?this.props.children:[this.props.children]) as unknown as VNode[];
+            let children:JSX.Element[]= (this.props.children instanceof Array?this.props.children:[this.props.children]) as JSX.Element[];
             let data:HelmetDataInstance = new HelmetDataInstance();
             for (const child of children) {
                 if(!child)
                     continue;
-                const {type,children,props} = child;
+                const {type,props:{children,...props}} = child;
                 switch(type){
                     case 'title':
                         data.title = (children as any).children as unknown as string;

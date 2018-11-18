@@ -1,4 +1,4 @@
-import {Component} from 'inferno';
+import {Component} from 'react';
 import HelmetDataInstance from './HelmetDataInstance';
 import { inject } from '../reactive';
 import { IDefaultStores } from '../stores';
@@ -14,7 +14,7 @@ export class ChangeDispatcher extends Component<{data:HelmetDataInstance}&IDefau
         this.props.helmet.removeInstance(this.helmetDataInstance);
         this.props.helmet.forceUpdate();
     }
-    render():null{
+    render():JSX.Element{
         if(this.rendered){
             for(let key of Object.getOwnPropertyNames(this.helmetDataInstance))
                 (this.helmetDataInstance as any)[key] = null;
