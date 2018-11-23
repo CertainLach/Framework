@@ -13,7 +13,8 @@ export type IRocketRouterContext = {
 };
 export type IRocketRouterState = {
     drawTarget: JSX.Element | null,
-    redirectTarget: string
+    redirectTarget: string,
+    store: {}
 };
 export type IRocketRouterMethodList = any;
 
@@ -37,7 +38,7 @@ export function getInitialRouter<S>(stateGetter: () => IRocketRouterState): Rout
     const appRouter = new Router<IRocketRouterContext, IRocketRouterState, IRocketRouterMethodList>(stateGetter);
     // All of initial tree setup must be here
     appRouter.on('ALL', null, async ({ state, next, resolve, path, query }:any) => {
-        let proceedStore = {};
+        let proceedStore = state.store;
         const routerStore:RouterStore = createOrDehydrateStore(proceedStore,RouterStore);
         try {
             await next();

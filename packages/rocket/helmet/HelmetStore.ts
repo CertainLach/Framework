@@ -44,9 +44,11 @@ export default class HelmetStore extends Store{
     appliedBody: Element[] = [];
     addInstance(helmet: HelmetDataInstance){
         this.instances.push(helmet);
+        this.forceUpdate();
     }
     removeInstance(helmet: HelmetDataInstance){
         this.instances.splice(this.instances.indexOf(helmet),1);
+        this.forceUpdate();
     }
     forceUpdate(){
         

@@ -2,8 +2,8 @@ import { hydrate, render } from 'react-dom';
 import { parse as parseQuerystring } from 'querystring';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
-import { IDefaultStores, IUninitializedStoreMap } from './stores';
 import {cleanUpBrowserStoreList} from "./stores/useStore";
+import {setForceRerender} from "./router/RouterStore";
 
 // Lazy initialized, because this code can be somehow processed 
 // on server, but a regexp requires access to window
@@ -19,7 +19,7 @@ function isLink(el:any): Element {
 }
 
 let lastClick = 0;
-async function rerunRoute<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>, initial: boolean) {
+async function rerunRoute(rocket: Rocket, initial: boolean) {
     lastClick++;
     let path = location.pathname;
     // substr(1) is needed, because location.search starts with "?""
@@ -29,15 +29,15 @@ async function rerunRoute<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>,
     } else if (location.search.startsWith('?')) {
         qs = parseQuerystring(location.search.substr(1)) as any;
     }
-    let currentState: IRocketRouterState<IDefaultStores> = { drawTarget: null, store: null, redirectTarget: null };
+    let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null };
     await (rocket.router as any).route(path, (ctx:any) => {
         ctx.state = currentState;
         ctx.query = qs;
     });
     // TODO: Fix possible stackoverflow on rerender
-    (currentState.store.router as any)._forceRerender=()=>{
+    setForceRerender(()=>{
         setTimeout(() => rerunRoute(rocket, false), 1);
-    }
+    });
     lastClick--;
 
     if (currentState.redirectTarget !== null) {
@@ -49,8 +49,6 @@ async function rerunRoute<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>,
     // Render only last click result
     if (lastClick === 0) {
         const rootElement = process.env.NODE_ENV === 'development' ? document.getElementById('root') : document.body.children[0];
-        if(initial)
-            currentState.store.helmet.forceUpdate();
         if (initial && process.env.NODE_ENV === 'production')
             hydrate(currentState.drawTarget, rootElement);
         else
@@ -62,7 +60,7 @@ async function rerunRoute<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>,
  * As different function to allow tree-shaking
  * @param rocket 
  */
-export default async function initClient<SM extends IUninitializedStoreMap>(rocket: Rocket<SM>) {
+export default async function initClient(rocket: Rocket) {
     IS_INTERNAL_REGEXP = new RegExp('^(?:(?:http[s]?:\/\/)?' + window.location.host.replace(/\./g, '\\.') + ')?\/?[#?]?', 'i');
     // TODO: Patch react via babel
     if (process.env.NODE_ENV === 'production'){

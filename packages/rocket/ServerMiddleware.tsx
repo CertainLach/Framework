@@ -1,13 +1,11 @@
 import {readFile} from '@meteor-it/fs';
 import {IRouterContext} from '@meteor-it/router';
 import {XPressRouterContext} from '@meteor-it/xpress';
-import {useStaticRendering} from 'mobx-react';
 import {renderToStaticMarkup, renderToString} from 'react-dom/server';
 import {toJS} from 'mobx';
 import {preloadAll} from './preload';
 import Rocket from './Rocket';
 import {IRocketRouterState} from './router';
-import {IDefaultStores, IUninitializedStoreMap} from './stores';
 import {constants} from 'http2';
 import {asyncEach} from "@meteor-it/utils";
 import {join} from 'path';
@@ -16,6 +14,11 @@ import {stringify} from 'querystring';
 import Router, {MultiMiddleware, RoutingMiddleware} from "../router/index";
 import * as React from 'react';
 import StaticMiddleware from "@meteor-it/xpress/middlewares/StaticMiddleware";
+import {useStaticRendering} from "mobx-react-lite";
+import {createOrDehydrateStore} from "./stores/useStore";
+import RouterStore from "./router/RouterStore";
+import HelmetStore from "./helmet/HelmetStore";
+import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
 
 const {HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LOCATION} = constants;
 
@@ -41,14 +44,14 @@ class HotHelperMiddleware extends RoutingMiddleware<XPressRouterContext,void,'GE
 }
 
 // noinspection JSUnusedGlobalSymbols
-export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends MultiMiddleware {
-    private readonly rocket: Rocket<SM>;
+export default class ServerMiddleware extends MultiMiddleware {
+    private readonly rocket: Rocket;
     private readonly compiledClientDir: string;
     private readonly compiledServerDir: string;
     private cachedClientStats: any = null;
     private cachedServerStats: any = null;
 
-    constructor(rocket: Rocket<SM>, {compiledClientDir, compiledServerDir}: { compiledClientDir: string, compiledServerDir: string }) {
+    constructor(rocket: Rocket, {compiledClientDir, compiledServerDir}: { compiledClientDir: string, compiledServerDir: string }) {
         super();
         this.rocket = rocket;
         this.compiledClientDir = compiledClientDir;
@@ -75,27 +78,29 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
         if (!Array.isArray(files))
             files = [files];
-        let currentState: IRocketRouterState<IDefaultStores> = {drawTarget: null, store: null, redirectTarget: null};
+        let currentState: IRocketRouterState = {drawTarget: null, store:null, redirectTarget: null};
         await this.rocket.router.route(path, ctx => {
             ctx.state = currentState as any;
+            ctx.state.store = {};
             ctx.query = query;
         });
 
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
         let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
+        const routerStore = createOrDehydrateStore(currentState.store,RouterStore);
         // Allow redirects to be placed inside render() method
-        if (currentState.store.router.hasRedirect) {
+        if (routerStore.hasRedirect) {
             stream.status(307);
             stream.resHeaders[HTTP2_HEADER_LOCATION] = format({
-                pathname: currentState.store.router.path,
-                search: stringify(currentState.store.router.query)
+                pathname: routerStore.path,
+                search: stringify(routerStore.query)
             });
             stream.respond();
             stream.res.end();
             return;
         }
-
-        let helmet = currentState.store.helmet;
+        //
+        const helmetStore = createOrDehydrateStore(currentState.store,HelmetStore);
 
         // Required code
         let neededEntryPointScripts = files.filter(e => !!e).filter(e => e.endsWith('.js'));
@@ -103,9 +108,11 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         // Loaded code (For preload on client), need to transform 
         // required modules to thier chunks on client
         // Server module id => Server module path => Client module id => Client chunk file 
-        const serverModulePathList = currentState.store.helmet.ssrData.preloadModules.map(module => this.cachedServerStats.ssrData.moduleIdToPath[module]);
+        const serverModulePathList = helmetStore.ssrData.preloadModules.map(module => this.cachedServerStats.ssrData.moduleIdToPath[module]);
         const clientModuleIdList = serverModulePathList.filter(e => !!e).map(module => this.cachedClientStats.ssrData.modulePathToId[module]);
         const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => this.cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))].filter(e => !!e && e !== '');
+
+        const isomorphicStyleLoaderStore = createOrDehydrateStore(currentState.store,IsomorphicStyleLoaderStore);
 
         // No need to render script on server, because:
         //  1. Script will be executed two times (After SSR, and on initial render (After readd))
@@ -117,19 +124,19 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
             // Skip default meta
             let idx = 3;
             // Remove meta
-            for (let i = idx; i < helmet.meta.length + helmet.link.length + idx; i++)
-                helmet.ssrData.rht.push(i);
+            for (let i = idx; i < helmetStore.meta.length + helmetStore.link.length + idx; i++)
+                helmetStore.ssrData.rht.push(i);
             // Skip removed + title
-            idx += helmet.meta.length + helmet.link.length + 1;
+            idx += helmetStore.meta.length + helmetStore.link.length + 1;
             // Remove styles added by helmet
-            for (let i = idx; i < helmet.style.length + idx; i++)
-                helmet.ssrData.rht.push(i);
+            for (let i = idx; i < helmetStore.style.length + idx; i++)
+                helmetStore.ssrData.rht.push(i);
             // Skip removed
-            idx += helmet.style.length;
+            idx += helmetStore.style.length;
             // Remove server added isomorphicStyleLoader styles
-            if (currentState.store.isomorphicStyleLoader.styles.size > 0)
+            if (isomorphicStyleLoaderStore.styles.size > 0)
                 for (let i = idx; i < idx + 1; i++)
-                    helmet.ssrData.rht.push(i);
+                    helmetStore.ssrData.rht.push(i);
         }
         // Update unneeded ids for body
         {
@@ -137,27 +144,27 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
             let idx = 1;
             // Remove stored store
             for (let i = idx; i < 1 + idx; i++)
-                helmet.ssrData.rbt.push(i);
+                helmetStore.ssrData.rbt.push(i);
             // Skip store
             idx += 1;
             // Remove preloaded chunks
             for (let i = idx; i < chunkList.length + idx; i++)
-                helmet.ssrData.rbt.push(i);
+                helmetStore.ssrData.rbt.push(i);
             // Skip preloaded chunks
             idx += chunkList.length;
             // Remove entry point scripts
             for (let i = idx; i < neededEntryPointScripts.length + idx; i++)
-                helmet.ssrData.rbt.push(i);
+                helmetStore.ssrData.rbt.push(i);
         }
 
         // Stringify store for client, also cleanup store from unneeded data
-        let safeStore = toJS(currentState.store, {exportMapsAsObjects: true, detectCycles: true});
+        let safeStore:any = toJS(currentState.store, {exportMapsAsObjects: true, detectCycles: true});
         let stringStore = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* == STORE FOR CLIENT HYDRATION START == */\n' : ''}window.__SSR_STORE__=${JSON.stringify(safeStore, (key, value) => {
-            if (value === safeStore.isomorphicStyleLoader)
+            if (value === safeStore[IsomorphicStyleLoaderStore.id])
                 return undefined;
-            if (value === safeStore.helmet.instances)
+            if (value === safeStore[HelmetStore.id].instances)
                 return undefined;
-            if (value === safeStore.helmet.ssrData.preloadModules)
+            if (value === safeStore[HelmetStore.id].ssrData.preloadModules)
                 return undefined;
             return value;
         }, process.env.NODE_ENV === 'development' ? 4 : 0)};${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* === STORE FOR CLIENT HYDRATION END === */\n' : ''}`;
@@ -172,19 +179,19 @@ export default class ServerMiddleware<SM extends IUninitializedStoreMap> extends
         stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'text/html; charset=utf-8';
         // Finally send rendered data to user
         stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
-            <html {...helmet.htmlAttrs.props}>
+            <html {...helmetStore.htmlAttrs.props}>
                 <head>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                     <meta content="text/html;charset=utf-8" httpEquiv="Content-Type"/>
                     <meta content="utf-8" httpEquiv="encoding"/>
-                    {helmet.meta.map((p,i) => <meta key={i} {...p.props} />)}
-                    {helmet.link.map((p,i) => <link key={i} {...p.props} />)}
-                    <title>{currentState.store.helmet.fullTitle}</title>
-                    {helmet.style.map((p,i) => <style {...p.props} key={i} dangerouslySetInnerHTML={{__html: p.body}}/>)}
-                    {currentState.store.isomorphicStyleLoader.styles.size > 0 ? <style
-                        dangerouslySetInnerHTML={{__html: [...currentState.store.isomorphicStyleLoader.styles].join(nWhenDevelopment)}}/> : null}
+                    {helmetStore.meta.map((p,i) => <meta key={i} {...p.props} />)}
+                    {helmetStore.link.map((p,i) => <link key={i} {...p.props} />)}
+                    <title>{helmetStore.fullTitle}</title>
+                    {helmetStore.style.map((p,i) => <style {...p.props} key={i} dangerouslySetInnerHTML={{__html: p.body}}/>)}
+                    {isomorphicStyleLoaderStore.styles.size > 0 ? <style
+                        dangerouslySetInnerHTML={{__html: [...isomorphicStyleLoaderStore.styles].join(nWhenDevelopment)}}/> : null}
                 </head>
-                <body {...helmet.bodyAttrs.props}>
+                <body {...helmetStore.bodyAttrs.props}>
                     <div dangerouslySetInnerHTML={{__html}}/>
                     <script defer dangerouslySetInnerHTML={{__html: stringStore}}/>
                     {chunkList.map((f,i) => <script defer key={i} src={`/${f}`}/>)}

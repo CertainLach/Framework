@@ -1,11 +1,16 @@
 import Store from '../stores/store';
 
+// TODO: Oh my...
+let forceRerender:()=>void = ()=>{};
+export function setForceRerender(func:()=>void) {
+    forceRerender = func;
+}
+
 export default class RouterStore extends Store{
     static id = '$$router';
     private _query: {[key:string]:string};
     private _path: string;
     private _hasRedirect: boolean = false;
-    private _forceRerender = ()=>{};
     get hasRedirect(){
         return this._hasRedirect;
     }
@@ -15,7 +20,7 @@ export default class RouterStore extends Store{
     set path(url:string){
         this._hasRedirect = true;
         if(process.env.BROWSER)
-            this._forceRerender();
+            forceRerender();
     }
     get query(){
         return this._query;
@@ -24,7 +29,7 @@ export default class RouterStore extends Store{
         this._hasRedirect = true;
         this._query=to;
         if(process.env.BROWSER)
-            this._forceRerender();
+            forceRerender();
     }
     go(url:string){
         this._hasRedirect = true;
@@ -33,6 +38,6 @@ export default class RouterStore extends Store{
             window.history.pushState({}, '', url);
         this._path = url;
         if(process.env.BROWSER)
-            this._forceRerender();
+            forceRerender();
     }
 }
