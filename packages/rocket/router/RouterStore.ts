@@ -1,7 +1,7 @@
 import Store from '../stores/store';
-import { observable } from '../reactive';
 
 export default class RouterStore extends Store{
+    static id = '$$router';
     private _query: {[key:string]:string};
     private _path: string;
     private _hasRedirect: boolean = false;

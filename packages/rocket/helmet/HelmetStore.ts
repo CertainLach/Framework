@@ -37,6 +37,7 @@ function rewriteAttrs(el:Element, attrs:{[key:string]:string}){
 }
 
 export default class HelmetStore extends Store{
+    static id = '$$helmet';
     instances: HelmetDataInstance[] = [];
     cleanedSsrData: boolean = false;
     appliedHead: Element[] = [];

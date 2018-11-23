@@ -3,6 +3,7 @@ import { parse as parseQuerystring } from 'querystring';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
 import { IDefaultStores, IUninitializedStoreMap } from './stores';
+import {cleanUpBrowserStoreList} from "./stores/useStore";
 
 // Lazy initialized, because this code can be somehow processed 
 // on server, but a regexp requires access to window
@@ -71,7 +72,7 @@ export default async function initClient<SM extends IUninitializedStoreMap>(rock
             }
         }
     }
-
+    cleanUpBrowserStoreList();
     await rerunRoute(rocket, true);
     // Add listeners after initial render is completed to handle <a> by internal router
     window.addEventListener('popstate', e => rerunRoute(rocket, false), false);

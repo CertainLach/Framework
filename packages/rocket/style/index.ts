@@ -1,4 +1,4 @@
 import IsomorphicStyleLoaderStore from "./IsomorphicStyleLoaderStore";
-import withStyles from './withStyles';
+import useStyles from './useStyles';
 
-export { IsomorphicStyleLoaderStore, withStyles };
+export { IsomorphicStyleLoaderStore, useStyles };
