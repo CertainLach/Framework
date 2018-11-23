@@ -1,4 +1,4 @@
-import {Component, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import HelmetDataInstance from './HelmetDataInstance';
 import useStore from "../stores/useStore";
 import HelmetStore from "./HelmetStore";

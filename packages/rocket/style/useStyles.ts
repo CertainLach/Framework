@@ -1,5 +1,4 @@
-import {Component, useEffect} from 'react';
-import * as React from 'react';
+import {useEffect} from 'react';
 import useStore from "../stores/useStore";
 import IsomorphicStyleLoaderStore from "./IsomorphicStyleLoaderStore";
 

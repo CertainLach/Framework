@@ -3,7 +3,6 @@ import { configure } from 'mobx';
 import Logger from '@meteor-it/logger';
 import Store from "../stores/store";
 import RouterStore from "./RouterStore";
-import * as React from 'react';
 import {RocketStoreContext} from '../stores';
 import {createOrDehydrateStore} from "../stores";
 import {h} from "../h";

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import HelmetDataInstance from './HelmetDataInstance';
 import ChangeDispatcher from './ChangeDispatcher';
 import {h} from "../h";

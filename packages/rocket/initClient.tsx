@@ -29,7 +29,7 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
     } else if (location.search.startsWith('?')) {
         qs = parseQuerystring(location.search.substr(1)) as any;
     }
-    let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null };
+    let currentState: IRocketRouterState = { drawTarget: null, store:null, redirectTarget: null };
     await (rocket.router as any).route(path, (ctx:any) => {
         ctx.state = currentState;
         ctx.query = qs;
