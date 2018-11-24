@@ -1,0 +1,7 @@
+dependencies:
+  '@meteor-it/logger': 'link:../logger'
+registry: 'https://registry.npmjs.org/'
+shrinkwrapMinorVersion: 9
+shrinkwrapVersion: 3
+specifiers:
+  '@meteor-it/logger': ^2.3.8

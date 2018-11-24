@@ -1,0 +1,42 @@
+dependencies:
+  '@meteor-it/logger': 'link:../logger'
+optionalDependencies:
+  msgpack-lite: 0.1.26
+packages:
+  /event-lite/0.1.2:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-HnSYx1BsJ87/p6swwzv+2v6B4X+uxUteoDfRxsAb1S1BePzQqOLevVmkdA15GHJVd9A9Ok6wygUR18Hu0YeV9g==
+  /ieee754/1.1.12:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-GguP+DRY+pJ3soyIiGPTvdiVXjZ+DbXOxGpXn3eMvNW4x4irjqXm4wHKscC+TfxSJ0yw/S1F24tqdMNsMZTiLA==
+  /int64-buffer/0.1.10:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha1-J3siiofZWtd30HwTgyAiQGpHNCM=
+  /isarray/1.0.0:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=
+  /msgpack-lite/0.1.26:
+    dependencies:
+      event-lite: 0.1.2
+      ieee754: 1.1.12
+      int64-buffer: 0.1.10
+      isarray: 1.0.0
+    dev: false
+    hasBin: true
+    optional: true
+    resolution:
+      integrity: sha1-3TxQsm8FnyXn7e42REGDWOKprYk=
+registry: 'https://registry.npmjs.org/'
+shrinkwrapMinorVersion: 9
+shrinkwrapVersion: 3
+specifiers:
+  '@meteor-it/logger': ^2.3.8
+  msgpack-lite: ^0.1.26

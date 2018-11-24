@@ -1,0 +1,11 @@
+dependencies:
+  '@meteor-it/argv': 'link:../argv'
+  '@meteor-it/fs': 'link:../fs'
+  '@meteor-it/logger': 'link:../logger'
+registry: 'https://registry.npmjs.org/'
+shrinkwrapMinorVersion: 9
+shrinkwrapVersion: 3
+specifiers:
+  '@meteor-it/argv': ^0.4.9
+  '@meteor-it/fs': ^1.0.5
+  '@meteor-it/logger': ^2.3.8

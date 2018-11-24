@@ -1,0 +1,23 @@
+---
+  0 info pnpm: 
+    err: 
+      name: "Error"
+      message: "Command failed: pnpm publish"
+      code: 1
+      stack: "Error: Command failed: pnpm publish\n    at makeError (/home/f6cf/.nvm/versions/node/v10.9.0/lib/node_modules/pnpm/lib/node_modules/execa/index.js:174:9)\n    at Promise.all.then.arr (/home/f6cf/.nvm/versions/node/v10.9.0/lib/node_modules/pnpm/lib/node_modules/execa/index.js:278:16)\n    at process._tickCallback (internal/process/next_tick.js:68:7)"
+  1 error pnpm: 
+    message: 
+      code: "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL"
+      stdout: null
+      stderr: null
+      failed: true
+      signal: null
+      cmd: "pnpm publish"
+      timedOut: false
+      killed: false
+      prefix: "/mnt/c/Users/f6cf/Desktop/Projects/Frameworks/Meteor-IT"
+    err: 
+      name: "Error"
+      message: "Command failed: pnpm publish"
+      code: "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL"
+      stack: "Error: Command failed: pnpm publish\n    at makeError (/home/f6cf/.nvm/versions/node/v10.9.0/lib/node_modules/pnpm/lib/node_modules/execa/index.js:174:9)\n    at Promise.all.then.arr (/home/f6cf/.nvm/versions/node/v10.9.0/lib/node_modules/pnpm/lib/node_modules/execa/index.js:278:16)\n    at process._tickCallback (internal/process/next_tick.js:68:7)"
