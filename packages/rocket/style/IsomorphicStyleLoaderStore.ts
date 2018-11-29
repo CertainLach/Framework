@@ -5,7 +5,7 @@ import Store from "../stores/store";
  * Used for isomorphic style loader
  */
 export default class IsomorphicStyleLoaderStore extends Store {
-    static key = '$$isoStyleLoader';
+    static id = '$$isoStyleLoader';
     // Not needed
     // @observable
     styles: Set<string> = new Set();
