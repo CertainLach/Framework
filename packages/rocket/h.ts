@@ -7,7 +7,7 @@ type IH = {
     <P extends object>(el:FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & P, children: ReactNode[]):ReactElement<P>
 };
 // TODO: Optimizations
-const h:IH = ((args:any[])=>{
+const h:IH = ((...args:any[])=>{
     if(args.length===2){
         if(args[1] instanceof Array){
             if(args[1].length===1)
