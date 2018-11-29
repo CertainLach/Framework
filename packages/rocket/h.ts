@@ -24,7 +24,7 @@ type IFrag = {
     (children: ReactNode[]):ReactElement<void>,
     (props: Attributes, children: ReactNode[]):ReactElement<void>
 }
-const frag:IFrag = ((args:any[])=>{
+const frag:IFrag = ((...args:any[])=>{
     if(args.length === 1)
         return h(React.Fragment,null,args[0]);
     else
