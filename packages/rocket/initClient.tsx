@@ -29,9 +29,9 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
     } else if (location.search.startsWith('?')) {
         qs = parseQuerystring(location.search.substr(1)) as any;
     }
-    let currentState: IRocketRouterState = { drawTarget: null, store:null, redirectTarget: null };
+    let currentState: IRocketRouterState;;
     await (rocket.router as any).route(path, (ctx:any) => {
-        ctx.state = currentState;
+        currentState = ctx.state;
         ctx.query = qs;
     });
     // TODO: Fix possible stackoverflow on rerender
