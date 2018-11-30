@@ -17,6 +17,8 @@ const h:IH = ((...args:any[])=>{
             return React.createElement(args[0],args[1]);
         }
     }else{
+        if(args[2].length === 1)
+            return React.createElement(args[0],args[1],args[2][0]);
         return React.createElement(args[0],args[1],args[2]);
     }
 }) as any;
