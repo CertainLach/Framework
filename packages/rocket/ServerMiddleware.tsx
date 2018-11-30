@@ -78,10 +78,9 @@ export default class ServerMiddleware extends MultiMiddleware {
         let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
         if (!Array.isArray(files))
             files = [files];
-        let currentState: IRocketRouterState = {drawTarget: null, store:null, redirectTarget: null};
+        let currentState: IRocketRouterState;
         await this.rocket.router.route(path, ctx => {
-            ctx.state = currentState as any;
-            ctx.state.store = {};
+            currentState = ctx.state;
             ctx.query = query;
         });
 
