@@ -38,6 +38,7 @@ export function getInitialRouter<S>(stateGetter: () => IRocketRouterState): Rout
     // All of initial tree setup must be here
     appRouter.on('ALL', null, async ({ state, next, resolve, path, query }:any) => {
         let proceedStore = state.store;
+        if(proceedStore === null) throw new Error('state.store is null, incorrect use of getInitialRouter()');
         const routerStore:RouterStore = createOrDehydrateStore(proceedStore,RouterStore);
         try {
             await next();
