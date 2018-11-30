@@ -17,5 +17,8 @@
     "lerna": "^3.4.3",
     "typedoc": "^0.13.0",
     "typescript": "^3.2.1"
+  },
+  "dependencies": {
+    "rimraf": "^2.6.2"
   }
 }
