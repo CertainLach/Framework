@@ -9,7 +9,7 @@ export default class Rocket{
     private initRouter() {
         this.router = getInitialRouter(() => ({
             drawTarget: null,
-            store: null,
+            store: {},
             redirectTarget: null
         }))
     }
