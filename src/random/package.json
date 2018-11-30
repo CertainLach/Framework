@@ -1,0 +1,20 @@
+{
+  "name": "@meteor-it/random",
+  "version": "0.4.6",
+  "description": "Random util",
+  "main": "index.js",
+  "keywords": [
+    "meteor-it",
+    "random"
+  ],
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "dependencies": {
+    "@meteor-it/utils": "^1.3.5",
+    "seedrandom": "^2.4.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
+}

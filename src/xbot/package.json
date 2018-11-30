@@ -1,0 +1,30 @@
+{
+  "name": "@meteor-it/xbot",
+  "version": "1.3.15",
+  "description": "Bot engine",
+  "main": "index.js",
+  "keywords": [
+    "meteor-it",
+    "xbot",
+    "hubot"
+  ],
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "dependencies": {
+    "@meteor-it/fs": "^1.0.7",
+    "@meteor-it/logger": "^2.3.10",
+    "@meteor-it/mime": "^0.4.7",
+    "@meteor-it/queue": "^2.0.11",
+    "@meteor-it/utils": "^1.3.5",
+    "@meteor-it/xrest": "^1.3.13",
+    "canvas": "^2.0.0-alpha.13"
+  },
+  "optionalDependencies": {
+    "discord.js": "^11.4.2",
+    "node-telegram-bot-api": "^0.30.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
+}

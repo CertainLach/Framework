@@ -13,7 +13,7 @@
     "importHelpers": false,
     "strictNullChecks": false,
     "allowUnreachableCode": false,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "lib": [
@@ -39,7 +39,8 @@
         "*",
         "packages/*"
       ]
-    }
+    },
+    "declaration": true
   },
-  "compileOnSave": true
+  "compileOnSave": false,
 }

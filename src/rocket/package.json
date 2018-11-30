@@ -1,0 +1,31 @@
+{
+  "name": "@meteor-it/rocket",
+  "version": "2.4.5",
+  "description": "Web framework",
+  "main": "index.js",
+  "keywords": [
+    "meteor-it",
+    "random"
+  ],
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "dependencies": {
+    "@meteor-it/fs": "^1.0.7",
+    "@meteor-it/router": "^2.1.12",
+    "@meteor-it/xpress": "^4.2.11",
+    "@types/hoist-non-react-statics": "^3.0.1",
+    "hoist-non-react-statics": "^3.1.0",
+    "mobx": "^5.5.0",
+    "mobx-react-lite": "^0.3.0",
+    "react": "^16.7.0-alpha.2",
+    "react-dom": "^16.7.0-alpha.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2",
+  "devDependencies": {
+    "@types/react": "^16.4.18",
+    "@types/react-dom": "^16.0.9"
+  }
+}

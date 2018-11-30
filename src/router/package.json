@@ -1,0 +1,21 @@
+{
+    "name": "@meteor-it/router",
+    "version": "2.1.12",
+    "description": "Test router",
+    "main": "index.js",
+    "keywords": [
+        "meteor-it",
+        "rest",
+        "xpress"
+    ],
+    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "license": "MIT",
+    "dependencies": {
+        "@meteor-it/logger": "^2.3.10",
+        "@meteor-it/utils": "^1.3.5"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
+}

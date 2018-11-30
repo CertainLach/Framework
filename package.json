@@ -1,16 +1,21 @@
 {
   "name": "@meteor-it/all",
   "scripts": {
-    "build": "tsc -d --sourceMap -p .",
-    "buildDocs": "npx typedoc -t ES7 --jsx react --readme none --hideGenerator --name Meteor.Framework --ignoreCompilerErrors --theme minimal --out ./docs ./",
-    "fixGithubDocs": "echo 123 > ./docs/.nojekyll"
+    "build": "npm run buildSrc&&npm run buildDocs&&npm run lernaBootstrap",
+    "lernaBootstrap": "lerna bootstrap",
+    "buildSrc": "gulp",
+    "buildDocs": "cd src&&typedoc --out ../docs --name Meteor.Framework --ignoreCompilerErrors --readme none --hideGenerator ./&&cd .."
   },
   "devDependencies": {
     "@types/chokidar": "^1.7.5",
     "@types/webpack-env": "^1.13.6",
     "ava": "1.0.0-beta.8",
+    "gulp": "^4.0.0",
+    "gulp-cli": "^2.0.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-typescript": "^5.0.0-alpha.3",
     "lerna": "^3.4.3",
-    "typescript": "^3.1.0-dev.20180830"
-  },
-  "dependencies": {}
+    "typedoc": "^0.13.0",
+    "typescript": "^3.2.1"
+  }
 }
