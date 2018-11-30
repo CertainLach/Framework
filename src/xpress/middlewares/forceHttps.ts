@@ -12,11 +12,11 @@ function createRedirectURL(hostname:string, url:string, securePort:number) {
 }
 
 export default function (securePort:number) {
-    return async ({req,res,next,path}:IRouterContext<any>&XPressRouterContext) => {
-        if(req.secure) {
-            next()
-        } else {
-            res.redirect(createRedirectURL(req.headers['host'] as string, req.url as string, securePort));
-        }
-    };
+    // return async ({stream,next,path}:IRouterContext<any>&XPressRouterContext) => {
+        // if(stream.req..secure) {
+            // next()
+        // } else {
+            // res.redirect(createRedirectURL(req.headers['host'] as string, req.url as string, securePort));
+        // }
+    // };
 };

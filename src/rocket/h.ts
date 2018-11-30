@@ -6,7 +6,7 @@ type IH = {
     <P extends object>(el:FunctionComponent<P> | ComponentClass<P> | string, children: ReactNode[]):ReactElement<P>,
     <P extends object>(el:FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & P, children: ReactNode[]):ReactElement<P>
 };
-// TODO: Optimizations
+// TODO: Optimizations (use keys where applicable)
 const h:IH = ((...args:any[])=>{
     if(args.length===2){
         if(args[1] instanceof Array){
@@ -19,7 +19,7 @@ const h:IH = ((...args:any[])=>{
     }else{
         if(args[2].length === 1)
             return React.createElement(args[0],args[1],args[2][0]);
-        return React.createElement(args[0],args[1],args[2]);
+        return React.createElement(args[0],args[1],...args[2]);
     }
 }) as any;
 type IFrag = {
