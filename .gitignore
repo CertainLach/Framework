@@ -11,4 +11,5 @@
 **/*.iml
 **/*.tgz
 packages
+**/packages
 docs
