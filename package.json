@@ -1,8 +1,11 @@
 {
   "name": "@meteor-it/all",
   "scripts": {
-    "build": "npm run buildSrc&&npm run buildDocs&&npm run lernaBootstrap",
-    "lernaBootstrap": "lerna bootstrap",
+    "clean": "rm -rf packages",
+    "build": "npm run buildSrc&&npm run buildDocs",
+    "lernaBootstrap:src": "mv lerna.src.json lerna.json&&lerna bootstrap&&mv lerna.json lerna.src.json",
+    "lernaBootstrap:packages": "mv lerna.packages.json lerna.json&&lerna bootstrap&&mv lerna.json lerna.packages.json",
+    "publish": "npm run clean&&npm run build&&mv lerna.packages.json lerna.json&&lerna publish&&mv lerna.json lerna.packages.json",
     "buildSrc": "gulp",
     "buildDocs": "cd src&&typedoc --out ../docs --name Meteor.Framework --ignoreCompilerErrors --readme none --hideGenerator ./&&cd .."
   },
