@@ -13,3 +13,4 @@
 packages
 **/packages
 docs
+lerna.json
