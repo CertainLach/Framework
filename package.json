@@ -1,22 +1,25 @@
 {
   "name": "@meteor-it/all",
   "scripts": {
-    "clean": "rm -rf packages",
-    "build": "npm run buildSrc&&npm run buildDocs",
-    "dev": "cp lerna.src.json lerna.json&&lerna bootstrap;rm lerna.json",
-    "publish": "npm run clean&&npm run build&&cp lerna.packages.json lerna.json&&lerna publish;rm lerna.json",
-    "buildSrc": "gulp",
-    "buildDocs": "cd src&&typedoc --out ../docs --name Meteor.Framework --ignoreCompilerErrors --readme none --hideGenerator ./&&cd .."
+    "clean": "npm run clean:src&&npm run clean:docs&&npm run clean:dependencies",
+    "clean:src": "gulp clean",
+    "clean:docs": "rm -rf docs",
+    "clean:dependencies": "lerna clean -y",
+    "build": "npm run build:dependencies&&npm run build:src&&npm run build:docs",
+    "build:src": "gulp compile",
+    "build:docs": "cd packages&&typedoc --out ../docs --name Meteor.Framework --ignoreCompilerErrors --readme none --hideGenerator ./&&cd ..",
+    "build:dependencies": "lerna bootstrap",
+    "publish": "npm run clean&&npm run build&&lerna publish"
   },
   "devDependencies": {
     "@types/chokidar": "^1.7.5",
     "@types/webpack-env": "^1.13.6",
-    "ava": "1.0.0-beta.8",
     "gulp": "^4.0.0",
+    "gulp-clean-fix": "^0.3.4",
     "gulp-cli": "^2.0.1",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-typescript": "^5.0.0-alpha.3",
-    "lerna": "^3.4.3",
+    "lerna": "^3.5.1",
     "typedoc": "^0.13.0",
     "typescript": "^3.2.1"
   },
