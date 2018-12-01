@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/plugin-loader",
-  "version": "1.4.15",
+  "version": "1.4.16",
   "description": "Plugin loader for all porposes",
   "main": "index.js",
   "keywords": [
@@ -13,9 +13,9 @@
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/fs": "^1.0.10",
-    "@meteor-it/logger": "^2.3.13",
-    "@meteor-it/utils": "^1.3.8",
+    "@meteor-it/fs": "^1.0.11",
+    "@meteor-it/logger": "^2.3.14",
+    "@meteor-it/utils": "^1.3.9",
     "chokidar": "^2.0.4"
   },
   "publishConfig": {
