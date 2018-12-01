@@ -10,7 +10,5 @@
 **/*.jsx.map
 **/*.iml
 **/*.tgz
-packages
-**/packages
 docs
 lerna.json

@@ -1,0 +1,19 @@
+{
+    "name": "@meteor-it/ajson",
+    "version": "0.4.7",
+    "main": "index.js",
+    "scripts": {},
+    "keywords": [
+        "meteor-it",
+        "json",
+        "ejson",
+        "ajson",
+        "types"
+    ],
+    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "license": "MIT",
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
+}
