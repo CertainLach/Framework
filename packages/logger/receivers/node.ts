@@ -63,22 +63,22 @@ function stringifyName(nameLimit: number, limit: number, name: string, escapeCod
 function stringifyIdentData(nameLimit: number, provider: NodeConsoleReceiver, data: any) {
 	// writeRepeats(0, true);
 	// writeDate(data.time);
-	return ` ${stringifyName(nameLimit, provider.nameLimit, data.name)} \u001B[35m${stringifyIdent(nameLimit, data.identationLength - 1, '>')}\u001B[1m ${data.identName}\u001B[0m`;
+	return `${stringifyName(nameLimit, provider.nameLimit, data.name)} \u001B[35m${stringifyIdent(nameLimit, data.identationLength - 1, '>')}\u001B[1m ${data.identName}\u001B[0m`;
 }
 function stringifyDeentData(nameLimit: number, provider: NodeConsoleReceiver, data: any) {
 	// writeRepeats(0, true);
 	// writeDate(data.time);
-	return ` ${stringifyName(nameLimit, provider.nameLimit, data.name)} \u001B[35m${stringifyIdent(nameLimit, data.identationLength, '<')}\u001B[1m ${data.identName}\u001B[22m (Done in ${data.identTime}ms)\u001B[0m`;
+	return `${stringifyName(nameLimit, provider.nameLimit, data.name)} \u001B[35m${stringifyIdent(nameLimit, data.identationLength, '<')}\u001B[1m ${data.identName}\u001B[22m (Done in ${data.identTime}ms)\u001B[0m`;
 }
 function stringifyTimeStartData(nameLimit: number, provider: NodeConsoleReceiver, data: any) {
 	// writeRepeats(0, true);
 	// writeDate(data.time);
-	return ` \u001B[35m${stringifyName(nameLimit, provider.nameLimit, data.name, '1m')}\u001B[33m${stringifyIdent(nameLimit, data.identationLength)} T Started ${data.timeName}`;
+	return `\u001B[35m${stringifyName(nameLimit, provider.nameLimit, data.name, '1m')}\u001B[33m${stringifyIdent(nameLimit, data.identationLength)} T Started ${data.timeName}`;
 }
 function stringifyTimeEndData(nameLimit: number, provider: NodeConsoleReceiver, data: any) {
 	// writeRepeats(0, true);
 	// writeDate(data.time);
-	return ` \u001B[35m${stringifyName(nameLimit, provider.nameLimit, data.name, '1m')}\u001B[34m${stringifyIdent(nameLimit, data.identationLength)} T Finished ${data.timeName}\u001B[1m in ${data.timeTime}ms\u001B[0m`;
+	return `\u001B[35m${stringifyName(nameLimit, provider.nameLimit, data.name, '1m')}\u001B[34m${stringifyIdent(nameLimit, data.identationLength)} T Finished ${data.timeName}\u001B[1m in ${data.timeTime}ms\u001B[0m`;
 }
 function stringifyData(nameLimit: number, data: any) {
 	let uncolored = format(data.line, ...data.params || []);

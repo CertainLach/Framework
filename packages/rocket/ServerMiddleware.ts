@@ -178,7 +178,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'text/html; charset=utf-8';
         // Finally send rendered data to user
         stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
-            h('html', helmetStore.htmlAttrs.props, [frag([
+            h('html', helmetStore.htmlAttrs.props, [h([
                 h('head', [
                     h('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
                     h('meta', { content: 'text/html;charset=utf-8', httpEquiv: 'Content-Type' }),
