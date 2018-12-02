@@ -251,8 +251,10 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
             }
         } catch (e) {
             this.logger.error(e.stack);
-            wrappedMainStream.resHeaders = {};
-            wrappedMainStream.status(500).send(developerErrorPageHandler('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+            if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
+                wrappedMainStream.resHeaders = {};
+                wrappedMainStream.status(500).send(developerErrorPageHandler('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+            }
         }
     }
 
