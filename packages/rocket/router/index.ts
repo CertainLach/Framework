@@ -3,9 +3,9 @@ import { configure } from 'mobx';
 import Logger from '@meteor-it/logger';
 import Store from "../stores/store";
 import RouterStore from "./RouterStore";
-import {RocketStoreContext} from '../stores';
-import {createOrDehydrateStore} from "../stores";
-import {h} from "../h";
+import { RocketStoreContext } from '../stores';
+import { createOrDehydrateStore } from "../stores";
+import { h } from "../h";
 
 export type IRocketRouterContext = {
     query: { [key: string]: string }
@@ -32,14 +32,14 @@ configure({
 
 const logger = new Logger('Rocket.Router');
 
-let browserSavedStore:{[key:string]:Store}|null = null;
+let browserSavedStore: { [key: string]: Store } | null = null;
 export function getInitialRouter<S>(stateGetter: () => IRocketRouterState): Router<IRocketRouterContext, IRocketRouterState, IRocketRouterMethodList> {
     const appRouter = new Router<IRocketRouterContext, IRocketRouterState, IRocketRouterMethodList>(stateGetter);
     // All of initial tree setup must be here
-    appRouter.on('ALL', null, async ({ state, next, resolve, path, query }:any) => {
+    appRouter.on('ALL', null, async ({ state, next, resolve, path, query }: any) => {
         let proceedStore = state.store;
-        if(proceedStore === null) throw new Error('state.store is null, incorrect use of getInitialRouter()');
-        const routerStore:RouterStore = createOrDehydrateStore(proceedStore,RouterStore);
+        if (proceedStore === null) throw new Error('state.store is null, incorrect use of getInitialRouter()');
+        const routerStore: RouterStore = createOrDehydrateStore(proceedStore, RouterStore);
         try {
             await next();
         } catch (e) {
@@ -53,7 +53,7 @@ export function getInitialRouter<S>(stateGetter: () => IRocketRouterState): Rout
             }
             return;
         }
-        state.drawTarget = h(RocketStoreContext.Provider,proceedStore as any,[state.drawTarget]);
+        state.drawTarget = h(RocketStoreContext.Provider, { value: proceedStore }, [state.drawTarget]);
     });
     return appRouter;
 }
