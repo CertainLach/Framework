@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/socket",
-    "version": "1.4.20",
+    "version": "1.4.21",
     "description": "Multi-protocol socket.io alternative",
     "main": "index.js",
     "keywords": [
@@ -12,7 +12,7 @@
     "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/logger": "^2.3.14"
+        "@meteor-it/logger": "^2.3.15"
     },
     "optionalDependencies": {
         "msgpack-lite": "^0.1.26"
