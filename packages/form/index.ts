@@ -221,6 +221,12 @@ export default class FormValidator {
         return ret;
     }
 }
+
+/**
+ * TODO: Translation via templato
+ * @param error 
+ * @param returnKey 
+ */
 export function stringifyError(error:ValidationError,returnKey:boolean){
     let key=[];
     while(error.name in [ValidationErrorType.INNER_FORM,ValidationErrorType.INNER_MULTI]){
