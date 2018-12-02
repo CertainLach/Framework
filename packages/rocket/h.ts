@@ -1,5 +1,6 @@
 import { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode } from "react";
 import React from "react";
+import { Observer } from 'mobx-react-lite';
 
 type IH = {
     (el: ReactNode[]): ReactElement<void>,
@@ -30,7 +31,20 @@ const h: IH = ((...args: any[]) => {
         return React.createElement(args[0], args[1], ...args[2]);
     }
 }) as any;
+
+/**
+ * Fragment with the props (i.e key)
+ * @param p 
+ * @param el 
+ */
 const frag = (p: object, el: ReactNode[]) => {
     return h(React.Fragment, null, el);
 };
-export { h, frag };
+/**
+ * Observe a fragment of DOM tree, returning a node which will autoupdate of used store change
+ * @param observee function which returns a dom tree which uses some store
+ */
+function observed(observee: () => ReactNode[]): ReactNode {
+    return h(Observer, [observee])
+}
+export { h, frag, observed };

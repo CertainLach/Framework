@@ -51,7 +51,7 @@ type IComponentWithPreload = { preload: () => void }
  * as `export class MyElement extends Component`, then you should pass module=>module.MyElement to this argument
  * @param opts Loading component options
  */
-export default function loadableComponent<A, B extends new () => Component<any, any>>(importFn: () => Promise<A>, res: (a: A) => B, opts: ILoadingProps): B & IComponentWithPreload {
+export default function loadable<A, B extends new () => Component<any, any>>(importFn: () => Promise<A>, res: (a: A) => B, opts: ILoadingProps): B & IComponentWithPreload {
     // TODO: Are preloading is needed on client? May be for PWA?
     if (process.env.NODE) {
         TO_PRELOAD.push(() => importFn());

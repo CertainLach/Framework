@@ -20,7 +20,7 @@ import HelmetStore from "./helmet/HelmetStore";
 import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
 import { h, frag } from './h';
 
-const { HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LOCATION } = constants;
+const { HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LOCATION, HTTP2_HEADER_LINK } = constants;
 
 // Should be loaded only in development, parses stats file every time, so this middleware is very slow
 class HotHelperMiddleware extends RoutingMiddleware<XPressRouterContext, void, 'GET'>{
@@ -61,11 +61,9 @@ export default class ServerMiddleware extends MultiMiddleware {
     }
 
     /**
-     * @param ctx Typescript, wtf is wrong with you? TODO: Replace `ctx` with real typings
-     * Note: Should be fixed by this: https://github.com/Microsoft/TypeScript/pull/8486/commits/2b5bbfee60e8f441856ae2dbfc9148e14050189b
-     * But isn't fixed.
+     * @param ctx context, on which page will be rendered
      */
-    async handleRender(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
+    private async handleRender(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
         if (ctx.stream.hasDataSent)
             return;
         // Should be called only on first page load or in SSR, if code isn't shit
@@ -87,6 +85,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
         let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
         const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
+        
         // Allow redirects to be placed inside render() method
         if (routerStore.hasRedirect) {
             stream.status(307);
@@ -98,6 +97,7 @@ export default class ServerMiddleware extends MultiMiddleware {
             stream.res.end();
             return;
         }
+
         //
         const helmetStore = createOrDehydrateStore(currentState.store, HelmetStore);
 
@@ -111,6 +111,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         const clientModuleIdList = serverModulePathList.filter(e => !!e).map(module => this.cachedClientStats.ssrData.modulePathToId[module]);
         const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => this.cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))].filter(e => !!e && e !== '');
 
+        // 
         const isomorphicStyleLoaderStore = createOrDehydrateStore(currentState.store, IsomorphicStyleLoaderStore);
 
         // No need to render script on server, because:
@@ -158,6 +159,7 @@ export default class ServerMiddleware extends MultiMiddleware {
 
         // Stringify store for client, also cleanup store from unneeded data
         let safeStore: any = toJS(currentState.store, { exportMapsAsObjects: true, detectCycles: true });
+        // Remove data which are not used on client rendering
         let stringStore = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* == STORE FOR CLIENT HYDRATION START == */\n' : ''}window.__SSR_STORE__=${JSON.stringify(safeStore, (key, value) => {
             if (value === safeStore[IsomorphicStyleLoaderStore.id])
                 return undefined;
@@ -168,14 +170,22 @@ export default class ServerMiddleware extends MultiMiddleware {
             return value;
         }, process.env.NODE_ENV === 'development' ? 4 : 0)};${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* === STORE FOR CLIENT HYDRATION END === */\n' : ''}`;
 
+        // HTTP2 server push
         if (stream.canPushStream) {
-            await asyncEach([...chunkList, ...neededEntryPointScripts], async file => {
+            await asyncEach([...chunkList, ...neededEntryPointScripts], async (file:string) => {
                 const ts = await stream.pushStream(`/${file}`);
                 ts.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'application/javascript; charset=utf-8';
                 ts.sendFile(join(this.compiledClientDir, file));
             });
         }
+
+        // Other files are handled by StaticMiddleware
         stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'text/html; charset=utf-8';
+
+        // TODO: Full spec
+        // https://www.w3.org/TR/preload/#dfn-preload-keyword
+        stream.resHeaders[HTTP2_HEADER_LINK] = helmetStore.link.filter(e=>!!e.href).map(l=>`<${l.href}>; rel="${l.rel}"`).join(', ');
+
         // Finally send rendered data to user
         stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
             h('html', helmetStore.htmlAttrs.props, [h([
@@ -183,17 +193,17 @@ export default class ServerMiddleware extends MultiMiddleware {
                     h('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
                     h('meta', { content: 'text/html;charset=utf-8', httpEquiv: 'Content-Type' }),
                     h('meta', { content: 'utf-8', httpEquiv: 'Encoding' }),
-                    helmetStore.meta.map(p => h('meta', { ...p.props })),
-                    helmetStore.link.map(p => h('link', { ...p.props })),
+                    helmetStore.meta.map((p, key) => h('meta', { key, ...p.props })),
+                    helmetStore.link.map((p, key) => h('link', { key, ...p.props })),
                     h('title', [helmetStore.fullTitle]),
-                    helmetStore.style.map(p => h('style', { dangerouslySetInnerHTML: { __html: p.body }, ...p.props })),
+                    helmetStore.style.map((p, key) => h('style', { key, dangerouslySetInnerHTML: { __html: p.body }, ...p.props })),
                     isomorphicStyleLoaderStore.styles.size > 0 && h('style', { dangerouslySetInnerHTML: { __html: [...isomorphicStyleLoaderStore.styles].join(nWhenDevelopment) } })
                 ]),
                 h('body', helmetStore.bodyAttrs.props, [
                     h('div', { dangerouslySetInnerHTML: { __html } }),
                     h('script', { defer: true, dangerouslySetInnerHTML: { __html: stringStore } }),
-                    chunkList.map(f => h('script', { defer: true, src: `/${f}` })),
-                    neededEntryPointScripts.map(f => h('script', { defer: true, src: `/${f}` }))
+                    chunkList.map((f, key) => h('script', { key, defer: true, src: `/${f}` })),
+                    neededEntryPointScripts.map((f, key) => h('script', { key, defer: true, src: `/${f}` }))
                 ])
             ])]))}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
     }
@@ -203,6 +213,7 @@ export default class ServerMiddleware extends MultiMiddleware {
 
     // Setup all routes
     setup(router: Router<XPressRouterContext & IRouterContext<void>, any, 'GET' | 'ALL'>, path: string | null): void {
+        if (process.env.BROWSER) throw new Error('WTF are u doing?');
         if (this.setupDone) throw new Error('ServerMiddleware isn\'t reusable! Create new to use in new xpress instance');
         router.on('GET', path, this.staticMiddleware);
         // Webpack, why?
