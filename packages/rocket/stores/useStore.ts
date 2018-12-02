@@ -1,6 +1,6 @@
 import Store from "./store";
-import {useContext} from "react";
-import {isObservableArray, isObservableMap} from "mobx";
+import { useContext } from "react";
+import { isObservableArray, isObservableMap } from "mobx";
 import RocketStoreContext from "./RocketStoreContext";
 
 /**
@@ -8,7 +8,7 @@ import RocketStoreContext from "./RocketStoreContext";
  * @param target
  * @param source
  */
-function mergeObservables(target:any, source:any) {
+function mergeObservables(target: any, source: any) {
     if (!source) {
         return;
     } else {
@@ -27,7 +27,7 @@ function mergeObservables(target:any, source:any) {
 /**
  * Stores from SSR (Pulled here by cleanUpBrowserStoreList)
  */
-let storeList:{[key:string]:any} = null;
+let storeList: { [key: string]: any } = null;
 
 /**
  * Pulls __SSR_STORE__ to internal variable, must be called on client init
@@ -35,7 +35,7 @@ let storeList:{[key:string]:any} = null;
 export function cleanUpBrowserStoreList() {
     if (process.env.BROWSER) {
         storeList = (window as any).__SSR_STORE__;
-        if(storeList)
+        if (storeList)
             delete (window as any).__SSR_STORE__;
     }
 }
@@ -44,8 +44,8 @@ export function cleanUpBrowserStoreList() {
  * Reads static id field from Store subclass
  * @param e store subclass constructor
  */
-function getStoreId<T extends Store>(e:new ()=>T):string {
-    if(!('id' in e)||(e as any).id===null)
+function getStoreId<T extends Store>(e: new () => T): string {
+    if (!('id' in e) || (e as any).id === null)
         throw new Error('store must have static id field which !== null');
     return (e as any).id;
 }
@@ -55,12 +55,17 @@ function getStoreId<T extends Store>(e:new ()=>T):string {
  * @param context context
  * @param e store constructor
  */
-export function createOrDehydrateStore<T extends Store>(context:any,e:new()=>T):T{
+export function createOrDehydrateStore<T extends Store>(context: any, e: new () => T): T {
     const id = getStoreId(e);
-    if(!(id in context))
-        (context as {[key:string]:Store})[id] = new (e as any)();
-    if(storeList!==null&&id in storeList)
-        mergeObservables(context[id],storeList[id]);
+    if (!(id in context))
+        (context as { [key: string]: Store })[id] = new (e as any)();
+    if (storeList !== null && id in storeList) {
+        mergeObservables(context[id], storeList[id]);
+        delete storeList[id];
+        if(Object.keys(storeList).length===0){
+            storeList = null;
+        }
+    }
     return context[id];
 }
 
@@ -68,7 +73,7 @@ export function createOrDehydrateStore<T extends Store>(context:any,e:new()=>T):
  * React hook for accessing Rocket store
  * @param e
  */
-export default function useStore<T extends Store>(e:new ()=>T):T{
+export default function useStore<T extends Store>(e: new () => T): T {
     const context = useContext(RocketStoreContext);
-    return createOrDehydrateStore(context,e);
+    return createOrDehydrateStore(context, e);
 }

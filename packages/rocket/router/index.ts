@@ -25,11 +25,6 @@ export class InternalRedirectThrowable extends Error {
     }
 }
 
-configure({
-    enforceActions: 'never',
-    isolateGlobalState: true
-});
-
 const logger = new Logger('Rocket.Router');
 
 let browserSavedStore: { [key: string]: Store } | null = null;
