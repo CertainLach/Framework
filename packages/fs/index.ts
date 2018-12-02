@@ -1,8 +1,8 @@
-import * as fs from 'fs';
+import {promises as fs,Stats,constants as fsConstants,createReadStream,createWriteStream} from 'fs';
 import {asyncEach} from '@meteor-it/utils';
 import {sep} from 'path';
-import {promisify} from 'util';
 
+type FileHandle = fs.FileHandle;
 /**
  * Returns true if path is a valid data url
  * @param path path
@@ -30,7 +30,7 @@ function parseDataUrl(path:string):IParsedDataUrl{
  * Get all files in directory
  */
 export async function readDir (dir:string) {
-	return await promisify(fs.readdir)(dir);
+	return await fs.readdir(dir);
 }
 /**
  * Read file or parse data url
@@ -39,30 +39,26 @@ export async function readDir (dir:string) {
 export async function readFile (file:string):Promise<Buffer> {
 	if(isDataUrl(file))
 		return parseDataUrl(file).data;
-	return await promisify(fs.readFile)(file);
+	return await fs.readFile(file);
 }
 
-export async function stat (file:string):Promise<fs.Stats>{
-	return await promisify(fs.stat)(file);
+export async function stat (file:string):Promise<Stats>{
+	return await fs.stat(file);
 }
 
-export async function open (file:string,mode:string,access:string):Promise<number>{
-	return await promisify(fs.open)(file,mode,access);
+export async function open (file:string,mode:string,access:string):Promise<FileHandle>{
+	return await fs.open(file,mode,access);
 }
 
-export async function read(fd:number, buffer:Buffer, offset:number, length:number, position:number){
-	return await promisify(fs.read)(fd, buffer, offset, length, position);
-}
-
-export async function close(fd:number){
-	return await promisify(fs.close)(fd);
+export async function read(fd: FileHandle, buffer:Buffer, offset:number, length:number, position:number){
+	return await fs.read(fd, buffer, offset, length, position);
 }
 
 /**
  * Write text to file
  */
 export async function writeFile (filename:string, text:string|Buffer) {
-	return await promisify(fs.writeFile)(filename, text);
+	return await fs.writeFile(filename, text);
 }
 
 /**
@@ -104,7 +100,7 @@ export async function walkDir (dir:string, cb?:(file:string,dir:string)=>void):P
  */
 export async function exists (file:string):Promise<boolean> {
 	try {
-		let result = await promisify(fs.access)(file, fs.constants.F_OK);
+		let result = await fs.access(file, fsConstants.F_OK);
 		return result === undefined;
     } catch (e) {
         // Because only "err" field is returned if not exists
@@ -130,12 +126,12 @@ export async function isDirectory (path:string): Promise<boolean> {
  * Wrapper to fs function
  */
 export function getReadStream (path:string, options = {}) {
-	return fs.createReadStream(path, options);
+	return createReadStream(path, options);
 }
 
 /**
  * Wrapper to fs function
  */
 export function getWriteStream (path:string, options={}) {
-	return fs.createWriteStream(path, options);
+	return createWriteStream(path, options);
 }

@@ -9,6 +9,8 @@
     "build:src": "gulp compile",
     "build:docs": "cd packages&&typedoc --out ../docs --name Meteor.Framework --ignoreCompilerErrors --readme none --hideGenerator ./&&cd ..",
     "build:dependencies": "lerna bootstrap",
+    "dev": "npm run clean&&npm run dev:link&&npm run build:dependencies",
+    "dev:link": "lerna exec pnpm link",
     "publish": "npm run clean&&npm run build&&lerna publish"
   },
   "devDependencies": {
