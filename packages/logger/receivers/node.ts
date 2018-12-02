@@ -90,24 +90,24 @@ function stringifyCommonData(nameLimit:number, escapeCode:string, provider:NodeC
 	// writeRepeats(data.repeats, false);
 	// writeDate(data.time);
 	const strings = data.string.split('\n');
-	let ret = ` \u001B[40m${stringifyName(nameLimit, provider.nameLimit, data.name, escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${strings.shift()}`;
+	let ret = `\u001B[40m${stringifyName(nameLimit, provider.nameLimit, data.name, escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${strings.shift()}`;
 	for(let string of strings){
-		ret += ` \n\u001B[40m${stringifyName(nameLimit, provider.nameLimit, ' |', escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${string}`;
+		ret += `\n\u001B[40m${stringifyName(nameLimit, provider.nameLimit, ' |', escapeCode)}\u001B[0m${stringifyIdent(nameLimit, data.identationLength)}${string}`;
 		//`${stringifyIdent(data.identationLength)}${stringifyName(provider.nameLimit,'|',escapeCode)} ${string}\n`;
 	}
 	return ret;
 }
 function writeLogData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
-	writeStdout('\n'+stringifyCommonData(nameLimit, '34m',provider,data));
+	writeStdout(stringifyCommonData(nameLimit, '34m',provider,data)+'\n');
 }
 function writeErrorData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
-	writeStdout('\n'+stringifyCommonData(nameLimit, '31m',provider,data));
+	writeStdout(stringifyCommonData(nameLimit, '31m',provider,data)+'\n');
 }
 function writeWarningData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
-	writeStdout('\n'+stringifyCommonData(nameLimit, '33m',provider,data));
+	writeStdout(stringifyCommonData(nameLimit, '33m',provider,data)+'\n');
 }
 function writeDebugData(nameLimit:number, provider:NodeConsoleReceiver, data:any) {
-	writeStdout('\n'+stringifyCommonData(nameLimit, '90m',provider,data));
+	writeStdout(stringifyCommonData(nameLimit, '90m',provider,data)+'\n');
 }
 
 interface IProgressItem {
@@ -177,10 +177,10 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 		// }
 		switch (data.type) {
 			case LOGGER_ACTIONS.IDENT:
-				writeStdout('\n'+stringifyIdentData(nameLimit, this, data));
+				writeStdout(stringifyIdentData(nameLimit, this, data)+'\n');
 				break;
 			case LOGGER_ACTIONS.DEENT:
-				writeStdout('\n'+stringifyDeentData(nameLimit, this, data));
+				writeStdout(stringifyDeentData(nameLimit, this, data)+'\n');
 				break;
 			case LOGGER_ACTIONS.LOG:
 				writeLogData(nameLimit, this, data);
@@ -195,10 +195,10 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 				writeDebugData(nameLimit, this, data);
 				break;
 			case LOGGER_ACTIONS.TIME_START:
-				writeStdout('\n'+stringifyTimeStartData(nameLimit, this, data));
+				writeStdout(stringifyTimeStartData(nameLimit, this, data)+'\n');
 				break;
 			case LOGGER_ACTIONS.TIME_END:
-				writeStdout('\n'+stringifyTimeEndData(nameLimit, this, data));
+				writeStdout(stringifyTimeEndData(nameLimit, this, data)+'\n');
 				break;
 			case LOGGER_ACTIONS.PROGRESS_START:
 				progressStart(nameLimit, this, data);
