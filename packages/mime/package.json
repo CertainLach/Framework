@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/mime",
-    "version": "0.4.6",
+    "version": "0.4.11",
     "description": "All the mimetypes by extension",
     "main": "index.js",
     "keywords": [
@@ -15,5 +15,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
+    "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
 }

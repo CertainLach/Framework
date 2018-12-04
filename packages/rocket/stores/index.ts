@@ -1,8 +1,7 @@
-import initStores from "./initStores";
-import { IDefaultStores } from './defaultStores';
 import Store from './store';
-import { IUninitializedStoreMap, IInitializedStoreMap } from './utilTypes';
+import useStore, {createOrDehydrateStore} from './useStore';
+import RocketStoreContext from './RocketStoreContext';
 
-export { initStores, IDefaultStores, Store, IUninitializedStoreMap, IInitializedStoreMap };
+export {useStore,createOrDehydrateStore,RocketStoreContext};
 
 export default Store;

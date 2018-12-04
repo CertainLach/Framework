@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/xpress",
-    "version": "4.2.9",
+    "version": "4.2.18",
     "description": "The most powerfull express.js alternative",
     "main": "index.js",
     "keywords": [
@@ -13,21 +13,19 @@
     "license": "MIT",
     "dependencies": {
         "@discordjs/uws": "^11.149.1",
-        "@meteor-it/ajson": "^0.4.3",
-        "@meteor-it/fs": "^1.0.5",
-        "@meteor-it/logger": "^2.3.8",
-        "@meteor-it/mime": "^0.4.6",
-        "@meteor-it/router": "^2.1.10",
-        "@meteor-it/utils": "^1.3.4"
+        "@meteor-it/ajson": "^0.4.8",
+        "@meteor-it/fs": "^1.1.0",
+        "@meteor-it/logger": "^2.3.17",
+        "@meteor-it/mime": "^0.4.11",
+        "@meteor-it/router": "^2.1.19",
+        "@meteor-it/utils": "^1.3.10",
+        "express-session": "^1.15.6"
     },
     "devDependencies": {
         "@types/uws": "^0.13.2"
     },
-    "optionalDependencies": {
-        "express-session": "^1.15.6"
-    },
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
+    "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
 }

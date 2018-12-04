@@ -16,8 +16,8 @@ export default function (store:any, storeConfig:any={}, secret:string, sessionFi
         }
     });
 
-    return async ({req,res,next,path}:IRouterContext<any>&XPressRouterContext) => {
-        sessionParser(req, res, (e:Error)=> {
+    return async ({stream,next,path}:IRouterContext<any>&XPressRouterContext) => {
+        sessionParser(stream.req, stream.res, (e:Error)=> {
             if(e)
                 return next(e);
             next();

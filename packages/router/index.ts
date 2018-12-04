@@ -19,7 +19,8 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
     const isRouting = middleware instanceof RoutingMiddleware;
     const isSinglePath = middleware instanceof SinglePathMiddleware;
 
-    const isOOPMiddleware = isRouting||isSinglePath;
+    // TODO:
+    const isOOPMiddleware = isRouting||isSinglePath||typeof middleware !== 'function';
 
     const needToRewritePath = isRouter || isRouting;
 
@@ -73,7 +74,7 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
         // TODO: Wtf, typescript, why are you sure isRouter isn't a typeguard?
         // Finally post step to middleware
         if (isRouter) {
-            await (middleware as Router<any, any>).route(step.path, (d: IRouterContext<any>) => {
+            await (middleware as Router<any,any>).route(step.path, (d: IRouterContext<any>) => {
                 for (let key in step)
                     if (!(key in d))
                         (d as any)[key] = (step as any)[key];

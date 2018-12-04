@@ -37,15 +37,18 @@ function rewriteAttrs(el:Element, attrs:{[key:string]:string}){
 }
 
 export default class HelmetStore extends Store{
+    static id = '$$helmet';
     instances: HelmetDataInstance[] = [];
     cleanedSsrData: boolean = false;
     appliedHead: Element[] = [];
     appliedBody: Element[] = [];
     addInstance(helmet: HelmetDataInstance){
         this.instances.push(helmet);
+        this.forceUpdate();
     }
     removeInstance(helmet: HelmetDataInstance){
         this.instances.splice(this.instances.indexOf(helmet),1);
+        this.forceUpdate();
     }
     forceUpdate(){
         

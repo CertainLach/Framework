@@ -1,6 +1,6 @@
 import XPress from './';
 import {readFile} from '../fs';
-import StaticMiddleware from "./middlewares/static";
+import StaticMiddleware from "./middlewares/StaticMiddleware";
 
 const app = new XPress('test');
 

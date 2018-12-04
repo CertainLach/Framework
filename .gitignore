@@ -10,3 +10,5 @@
 **/*.jsx.map
 **/*.iml
 **/*.tgz
+docs
+lerna.json

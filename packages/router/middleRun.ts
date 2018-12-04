@@ -33,7 +33,6 @@ export default function middleRun(middleware: Function | Function[]): (context: 
                     await ctx.next();
             } catch (e) {
                 if (calledFromInside) {
-                    resolveOne();
                     throw e;
                 } else
                     prej(e);

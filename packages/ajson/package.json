@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/ajson",
-    "version": "0.4.3",
+    "version": "0.4.8",
     "main": "index.js",
     "scripts": {},
     "keywords": [
@@ -15,5 +15,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
+    "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
 }

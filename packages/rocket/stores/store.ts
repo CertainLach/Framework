@@ -1,4 +1,3 @@
 export default class Store{
-    autorun?(): void;
-    async init(){};
+    static id:string = null;
 }

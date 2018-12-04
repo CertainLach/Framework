@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/terminal",
-    "version": "0.5.8",
+    "version": "0.5.13",
     "description": "Provides utility functions for ANSI terminals",
     "main": "index.js",
     "keywords": [
@@ -14,5 +14,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
+    "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
 }

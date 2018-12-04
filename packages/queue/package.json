@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/queue",
-  "version": "2.0.9",
+  "version": "2.0.18",
   "description": "Queue decorator",
   "main": "index.js",
   "keywords": [
@@ -13,10 +13,10 @@
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/logger": "^2.3.8"
+    "@meteor-it/logger": "^2.3.17"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "7d0b20950a168a6ae5dbbe7dd47629af7ce02ea2"
+  "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
 }

@@ -1,6 +1,6 @@
-import {default as WebSocket, Server as WSServer} from '@discordjs/uws';
+import { default as WebSocket, Server as WSServer } from '@discordjs/uws';
 import Logger from '@meteor-it/logger';
-import {encodeHtmlSpecials} from '@meteor-it/utils';
+import { encodeHtmlSpecials } from '@meteor-it/utils';
 import URouter from "@meteor-it/router";
 import {
     constants,
@@ -10,12 +10,12 @@ import {
     IncomingHttpHeaders,
     OutgoingHttpHeaders
 } from 'http2';
-import {createServer, IncomingMessage, ServerResponse} from 'http';
-import {parse} from 'url';
-import {normalize, sep as pathSep} from 'path';
-import {Readable} from "stream";
-import {Socket} from 'net';
-import {createReadStream} from "fs";
+import { createServer, IncomingMessage, ServerResponse } from 'http';
+import { parse } from 'url';
+import { normalize, sep as pathSep } from 'path';
+import { Readable } from "stream";
+import { Socket } from 'net';
+import { createReadStream } from "fs";
 
 const {
     HTTP2_HEADER_METHOD, HTTP2_HEADER_PATH, HTTP2_HEADER_STATUS,
@@ -123,7 +123,7 @@ export class XpressRouterStream {
         return new Promise((res, rej) => {
             if (!this.canPushStream) return rej(new Error("pushStream isn't supported for this session"));
             // @types/node sucks for http2
-            this.res.stream.pushStream({...this.resHeaders, [HTTP2_HEADER_PATH]: path}, (err, stream, resHeaders) => {
+            this.res.stream.pushStream({ ...this.resHeaders, [HTTP2_HEADER_PATH]: path }, (err, stream, resHeaders) => {
                 if (err) return rej(err);
                 stream.on('error', (err) => {
                     const isRefusedStream = (err as any).code === 'ERR_HTTP2_STREAM_ERROR' &&
@@ -133,7 +133,7 @@ export class XpressRouterStream {
                 });
 
                 const wrap = new XpressRouterStream(this.reqHeaders, {});
-                wrap.res = {...this.res, stream} as any;
+                wrap.res = { ...this.res, stream } as any;
                 res(wrap);
             });
         });
@@ -211,7 +211,7 @@ const WS_SERVER_CONFIG = {
         // Below options specified as default values.
         concurrencyLimit: 10,          // Limits zlib concurrency for perf.
         threshold: 1024,               // Size (in bytes) below which messages
-                                       // should not be compressed.
+        // should not be compressed.
     }
 };
 
@@ -229,7 +229,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
     // noinspection JSMethodCanBeStatic
     private async requestHandler(req: Http2ServerRequest, res: Http2ServerResponse) {
         const url = req.url as string || req.headers[HTTP2_HEADER_PATH] as string;
-        let {pathname, query} = parse(url, true);
+        let { pathname, query } = parse(url, true);
         if (pathname === undefined) {
             res.stream.destroy();
             return;
@@ -251,8 +251,10 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
             }
         } catch (e) {
             this.logger.error(e.stack);
-            wrappedMainStream.resHeaders = {};
-            wrappedMainStream.status(500).send(developerErrorPageHandler('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+            if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
+                wrappedMainStream.resHeaders = {};
+                wrappedMainStream.status(500).send(developerErrorPageHandler('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+            }
         }
     }
 
@@ -304,7 +306,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
             socket.destroy();
             return;
         }
-        let {pathname, query} = parse(url, true);
+        let { pathname, query } = parse(url, true);
         if (pathname === undefined) {
             socket.destroy();
             return;
@@ -365,7 +367,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param port port to bind on
      * @param options settings
      */
-    listenHttps(host = '0.0.0.0', port: number, {key, cert}: { key?: Buffer, cert?: Buffer }): Promise<void> {
+    listenHttps(host = '0.0.0.0', port: number, { key, cert }: { key?: Buffer, cert?: Buffer }): Promise<void> {
         this.ensureWebSocketReady();
         let server = createSecureServer({
             key, cert,
@@ -385,7 +387,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
 
     private ensureWebSocketReady() {
         if (this.wsServer) return;
-        this.wsServer = new WSServer({noServer: true});
+        this.wsServer = new WSServer({ noServer: true });
     }
 }
 
