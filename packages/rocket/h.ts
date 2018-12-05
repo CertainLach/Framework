@@ -2,13 +2,26 @@ import { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode 
 import React from "react";
 import { Observer } from 'mobx-react-lite';
 
+export type IClassList = (string|null|false)[];
+export type IAttributes = {
+    class: IClassList,
+    className: string
+};
+
 type IH = {
     (el: ReactNode[]): ReactElement<void>,
     <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string): ReactElement<void>,
-    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & P): ReactElement<P>,
+    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & IAttributes & P): ReactElement<P>,
     <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, children: ReactNode[]): ReactElement<P>,
-    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & P, children: ReactNode[]): ReactElement<P>
+    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & IAttributes & P, children: ReactNode[]): ReactElement<P>
 };
+
+function processProps(props:IAttributes){
+    if(props.class){
+        props.className = props.class.filter(e=>!!e).join(' ');
+        delete props.class;
+    }
+}
 // TODO: Optimizations (use keys where applicable)
 const h: IH = ((...args: any[]) => {
     if (args.length === 1) {
@@ -23,9 +36,11 @@ const h: IH = ((...args: any[]) => {
                 return React.createElement(args[0], null, args[1][0]);
             return React.createElement(args[0], null, ...args[1]);
         } else {
+            processProps(args[1]);
             return React.createElement(args[0], args[1]);
         }
     } else {
+        processProps(args[1]);
         if (args[2].length === 1)
             return React.createElement(args[0], args[1], args[2][0]);
         return React.createElement(args[0], args[1], ...args[2]);
