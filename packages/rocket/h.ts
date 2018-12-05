@@ -36,11 +36,13 @@ const h: IH = ((...args: any[]) => {
                 return React.createElement(args[0], null, args[1][0]);
             return React.createElement(args[0], null, ...args[1]);
         } else {
-            processProps(args[1]);
+            if(args[1]!==null)
+                processProps(args[1]);
             return React.createElement(args[0], args[1]);
         }
     } else {
-        processProps(args[1]);
+        if(args[1]!==null)
+            processProps(args[1]);
         if (args[2].length === 1)
             return React.createElement(args[0], args[1], args[2][0]);
         return React.createElement(args[0], args[1], ...args[2]);
