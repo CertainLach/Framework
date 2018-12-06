@@ -4,16 +4,16 @@ import { Observer } from 'mobx-react-lite';
 
 export type IClassList = (string|null|false)[];
 export type IAttributes = {
-    class: IClassList,
-    className: string
+    class?: IClassList,
+    className?: string
 };
 
 type IH = {
-    (el: ReactNode[]): ReactElement<void>,
+    (el: Array<ReactNode>): ReactElement<void>,
     <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string): ReactElement<void>,
     <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & IAttributes & P): ReactElement<P>,
-    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, children: ReactNode[]): ReactElement<P>,
-    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & IAttributes & P, children: ReactNode[]): ReactElement<P>
+    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, children: Array<ReactNode>): ReactElement<P>,
+    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & IAttributes & P, children: Array<ReactNode>): ReactElement<P>
 };
 
 function processProps(props:IAttributes){
@@ -59,9 +59,9 @@ const frag = (p: object, el: ReactNode[]) => {
 };
 /**
  * Observe a fragment of DOM tree, returning a node which will autoupdate of used store change
- * @param observee function which returns a dom tree which uses some store
+ * @param observee function which returns a dom tree which uses some store and rerenders on it's changes
  */
-function observed(observee: () => ReactNode[]): ReactNode {
+function observed(observee: () => Array<ReactElement<any>>): ReactElement<any> {
     return h(Observer, [observee])
 }
 export { h, frag, observed };
