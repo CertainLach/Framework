@@ -54,14 +54,14 @@ const h: IH = ((...args: any[]) => {
  * @param p 
  * @param el 
  */
-const frag = (p: object, el: ReactNode[]) => {
+const frag = (p: object, el: Array<ReactNode>) => {
     return h(React.Fragment, null, el);
 };
 /**
  * Observe a fragment of DOM tree, returning a node which will autoupdate of used store change
  * @param observee function which returns a dom tree which uses some store and rerenders on it's changes
  */
-function observed(observee: () => Array<ReactElement<any>>): ReactElement<any> {
+function observed(observee: () => ReactNode): ReactNode {
     return h(Observer, [observee])
 }
 export { h, frag, observed };
