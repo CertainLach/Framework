@@ -19,6 +19,7 @@ function isLink(el:any): Element {
 }
 
 let lastClick = 0;
+let currentState: IRocketRouterState = null;
 async function rerunRoute(rocket: Rocket, initial: boolean) {
     lastClick++;
     let path = location.pathname;
@@ -29,8 +30,9 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
     } else if (location.search.startsWith('?')) {
         qs = parseQuerystring(location.search.substr(1)) as any;
     }
-    let currentState: IRocketRouterState;;
     await (rocket.router as any).route(path, (ctx:any) => {
+        if(currentState !== null)
+            ctx.state.store = currentState.store;
         currentState = ctx.state;
         ctx.query = qs;
     });
