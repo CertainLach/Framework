@@ -65,8 +65,8 @@ export default class ServerMiddleware extends MultiMiddleware {
      * @param ctx context, on which page will be rendered
      */
     private async handleRender(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
-        if (ctx.stream.hasDataSent)
-            return;
+        if (ctx.stream.hasDataSent) return;
+
         // Should do something only on first page load or in SSR, if code isn't shit
         await preloadAll();
         if (this.cachedClientStats === null || process.env.NODE_ENV === 'development') {
@@ -83,6 +83,14 @@ export default class ServerMiddleware extends MultiMiddleware {
             ctx.query = query;
         });
 
+        // Execute every useAsync
+        const preloadStore = createOrDehydrateStore(currentState.store, PreloadStore);
+        do {
+            renderToStaticMarkup(currentState.drawTarget);
+            await preloadStore.resolveAll();
+        } while (preloadStore.countOfResolvedLastRender !== 0);
+
+        // Generate rendered client html
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
         let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
         const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
