@@ -19,6 +19,7 @@ import RouterStore from "./router/RouterStore";
 import HelmetStore from "./helmet/HelmetStore";
 import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
 import { h, frag } from './h';
+import PreloadStore from './preload/PreloadStore';
 
 const { HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LOCATION, HTTP2_HEADER_LINK } = constants;
 
@@ -161,11 +162,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         let safeStore: any = toJS(currentState.store, { exportMapsAsObjects: true, detectCycles: true });
         // Remove data which are not used on client rendering
         let stringStore = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* == STORE FOR CLIENT HYDRATION START == */\n' : ''}window.__SSR_STORE__=${JSON.stringify(safeStore, (key, value) => {
-            if (value === safeStore[IsomorphicStyleLoaderStore.id])
-                return undefined;
-            if (value === safeStore[HelmetStore.id].instances)
-                return undefined;
-            if (value === safeStore[HelmetStore.id].ssrData.preloadModules)
+            if (value === safeStore[IsomorphicStyleLoaderStore.id] || value === safeStore[HelmetStore.id].instances || value === safeStore[HelmetStore.id].ssrData.preloadModules)
                 return undefined;
             return value;
         }, process.env.NODE_ENV === 'development' ? 4 : 0)};${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* === STORE FOR CLIENT HYDRATION END === */\n' : ''}`;

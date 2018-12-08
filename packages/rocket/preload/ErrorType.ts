@@ -1,3 +1,4 @@
+// TODO: Remove "NONE", use LoadingState instead
 enum ErrorType {
     /**
      * No error
