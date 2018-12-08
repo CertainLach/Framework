@@ -1,6 +1,5 @@
 import { default as WebSocket, Server as WSServer } from '@discordjs/uws';
 import Logger from '@meteor-it/logger';
-import { encodeHtmlSpecials } from '@meteor-it/utils';
 import URouter from "@meteor-it/router";
 import {
     constants,
@@ -16,12 +15,12 @@ import { normalize, sep as pathSep } from 'path';
 import { Readable } from "stream";
 import { Socket } from 'net';
 import { createReadStream } from "fs";
+import { userErrorPage, developerErrorPage } from './errorPages';
+export { userErrorPage, developerErrorPage };
 
 const {
     HTTP2_HEADER_METHOD, HTTP2_HEADER_PATH, HTTP2_HEADER_STATUS,
-    HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LAST_MODIFIED,
-    HTTP2_HEADER_CACHE_CONTROL, HTTP2_HEADER_CONTENT_LENGTH,
-    HTTP2_HEADER_CONTENT_DISPOSITION, HTTP2_HEADER_UPGRADE,
+    HTTP2_HEADER_UPGRADE,
     HTTP2_HEADER_ACCEPT_ENCODING, NGHTTP2_REFUSED_STREAM
 } = constants;
 
@@ -247,13 +246,13 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
             });
             if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
                 wrappedMainStream.resHeaders = {};
-                wrappedMainStream.status(404).send(developerErrorPageHandler('404: Page Not Found', `Page not found at ${pathname}`, process.env.NODE_ENV === 'production' ? undefined : new Error('Reference stack').stack));
+                wrappedMainStream.status(404).send(developerErrorPage('404: Page Not Found', `Page not found at ${pathname}`, process.env.NODE_ENV === 'production' ? undefined : new Error('Reference stack').stack));
             }
         } catch (e) {
             this.logger.error(e.stack);
             if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
                 wrappedMainStream.resHeaders = {};
-                wrappedMainStream.status(500).send(developerErrorPageHandler('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+                wrappedMainStream.status(500).send(developerErrorPage('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
             }
         }
     }
@@ -391,40 +390,3 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
     }
 }
 
-/**
- * Fancify error message for developer
- * @param title
- * @param desc
- * @param stack
- */
-export function developerErrorPageHandler(title: string, desc: string, stack: string | undefined = undefined) {
-    // Developer friendly
-    if (title)
-        title = encodeHtmlSpecials(title).replace(/\n/g, '<br>');
-    if (desc)
-        desc = encodeHtmlSpecials(desc).replace(/\n/g, '<br>');
-    if (stack)
-        stack = encodeHtmlSpecials(stack).replace(/\n/g, '<br>');
-    return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack ? `<code style="white-space:pre;">${stack}</code>` : ''}<hr><h2>uFramework xPress</h2></body></html>`;
-}
-
-// noinspection JSUnusedGlobalSymbols
-/**
- * Fancify error message for user
- * @param hello
- * @param whatHappened
- * @param sorry
- * @param post
- */
-export function userErrorPageHandler(hello: string, whatHappened: string, sorry: string, post: string) {
-    // User friendly
-    if (hello)
-        hello = encodeHtmlSpecials(hello.replace(/\n/g, '<br>'));
-    if (whatHappened)
-        whatHappened = encodeHtmlSpecials(whatHappened.replace(/\n/g, '<br>'));
-    if (sorry)
-        sorry = encodeHtmlSpecials(sorry.replace(/\n/g, '<br>'));
-    if (post)
-        post = encodeHtmlSpecials(post.replace(/\n/g, '<br>'));
-    return `<html><body style='font-family:Arial,sans-serif;font-size:22px;color:#CCC;background:#222;padding:40px;'>${hello}<br/><br/><span style='color:#FC0;font-weight:600;'>${whatHappened}</span><br/><br/>${sorry}<br/><br/><span style='font-size: 14px;'>${post}</span></body></html>`;
-}
