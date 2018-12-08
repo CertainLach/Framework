@@ -258,41 +258,6 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
     }
 
     /**
-     * HTTP/2
-     * (Fuck you, browsers, for not supporting HTTP/2 over TCP!)
-     * @param stream
-     * @param headers
-     * @param flags
-     */
-
-    /*private async streamHandler(stream: ServerHttp2Stream, headers: IncomingHttpHeaders & IncomingHttpStatusHeader, flags: number) {
-        const url = headers[HTTP2_HEADER_PATH] as string;
-        let {pathname, query} = parse(url, true);
-        if (pathname === undefined) {
-            stream.end();
-            return;
-        }
-        pathname = normalize(pathname).replace(PATH_SEP_REGEXP,'/');
-        const method = headers[HTTP2_HEADER_METHOD] as any;
-        const wrappedMainStream = new XpressRouterStream(headers, {});
-        wrappedMainStream.stream=stream;
-        try {
-            await this.route(pathname, ctx => {
-                ctx.query = query as { [key: string]: string };
-                ctx.method = method;
-                ctx.stream = wrappedMainStream;
-            });
-            if (!wrappedMainStream.hasDataSent) {
-                wrappedMainStream.resHeaders = {};
-                wrappedMainStream.status(404).send(developerErrorPageHandler('404: Page Not Found',`Page not found at ${pathname}`,process.env.NODE_ENV==='production'?undefined:new Error('Reference stack').stack));
-            }
-        }catch(e){
-            wrappedMainStream.resHeaders = {};
-            wrappedMainStream.status(500).send(developerErrorPageHandler('500: Internal Server Error',e.message,process.env.NODE_ENV==='production'?undefined:e.stack));
-        }
-    }*/
-
-    /**
      * HTTP/1
      * @param request
      * @param socket
@@ -380,6 +345,16 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 res();
             });
         });
+    }
+
+    /**
+     * reserved bind() for quic (HTTP/3)
+     * @param host 
+     * @param port 
+     * @param param2 
+     */
+    listenQuic(host = '0.0.0.0', port: number, { key, cert }: { key?: Buffer, cert?: Buffer }): Promise<void> {
+        throw new Error('reserved');
     }
 
     wsServer: WSServer;
