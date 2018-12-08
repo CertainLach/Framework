@@ -3,7 +3,7 @@ import { IRouterContext } from '@meteor-it/router';
 import { XPressRouterContext } from '@meteor-it/xpress';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { toJS } from 'mobx';
-import { preloadAll } from './preload';
+import { preloadAll } from './preload/TO_PRELOAD';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
 import { constants } from 'http2';
@@ -66,7 +66,7 @@ export default class ServerMiddleware extends MultiMiddleware {
     private async handleRender(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
         if (ctx.stream.hasDataSent)
             return;
-        // Should be called only on first page load or in SSR, if code isn't shit
+        // Should do something only on first page load or in SSR, if code isn't shit
         await preloadAll();
         if (this.cachedClientStats === null || process.env.NODE_ENV === 'development') {
             this.cachedClientStats = JSON.parse((await readFile(`${this.compiledClientDir}/stats.json`)).toString());
@@ -76,16 +76,16 @@ export default class ServerMiddleware extends MultiMiddleware {
         let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
         if (!Array.isArray(files))
             files = [files];
-        let currentState: IRocketRouterState;
+        let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null, store: {} };
         await this.rocket.router.route(path, ctx => {
-            currentState = ctx.state;
+            ctx.state = currentState;
             ctx.query = query;
         });
 
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
         let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
         const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
-        
+
         // Allow redirects to be placed inside render() method
         if (routerStore.hasRedirect) {
             stream.status(307);
@@ -172,7 +172,7 @@ export default class ServerMiddleware extends MultiMiddleware {
 
         // HTTP2 server push
         if (stream.canPushStream) {
-            await asyncEach([...chunkList, ...neededEntryPointScripts], async (file:string) => {
+            await asyncEach([...chunkList, ...neededEntryPointScripts], async (file: string) => {
                 const ts = await stream.pushStream(`/${file}`);
                 ts.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'application/javascript; charset=utf-8';
                 ts.sendFile(join(this.compiledClientDir, file));
@@ -184,7 +184,9 @@ export default class ServerMiddleware extends MultiMiddleware {
 
         // TODO: Full spec
         // https://www.w3.org/TR/preload/#dfn-preload-keyword
-        stream.resHeaders[HTTP2_HEADER_LINK] = helmetStore.link.filter(e=>!!e.href).map(l=>`<${l.href}>; rel="${l.rel}"`).join(', ');
+        let availableForLink = helmetStore.link.filter(e => !!e.href);
+        if (availableForLink.length !== 0)
+            stream.resHeaders[HTTP2_HEADER_LINK] = availableForLink.map(l => `<${l.href}>; rel="${l.rel}"`).join(', ');
 
         // Finally send rendered data to user
         stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
