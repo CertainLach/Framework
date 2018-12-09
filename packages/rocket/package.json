@@ -2,6 +2,7 @@
   "name": "@meteor-it/rocket",
   "version": "2.4.26",
   "description": "Web framework",
+  "module": "index.mjs",
   "main": "index.js",
   "keywords": [
     "meteor-it",

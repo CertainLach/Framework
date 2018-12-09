@@ -1,6 +1,7 @@
 {
     "name": "@meteor-it/ajson",
     "version": "0.4.9",
+    "module": "index.mjs",
     "main": "index.js",
     "scripts": {},
     "keywords": [

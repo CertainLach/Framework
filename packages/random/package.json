@@ -2,6 +2,7 @@
   "name": "@meteor-it/random",
   "version": "0.4.12",
   "description": "Random util",
+  "module": "index.mjs",
   "main": "index.js",
   "keywords": [
     "meteor-it",
