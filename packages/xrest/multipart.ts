@@ -1,5 +1,5 @@
 import {basename} from 'path';
-import {close, open, read} from '@meteor-it/fs';
+import {open, read} from '@meteor-it/fs';
 import {Readable as ReadableStream,Writable as WritableStream} from 'stream';
 import {getReadStream} from '@meteor-it/fs';
 
@@ -104,7 +104,7 @@ export class Part {
                     }
                     else {
                         stream.write('\r\n');
-                        close(fd);
+                        await fd.close();
                         moreData = false;
                         resolve();
                     }

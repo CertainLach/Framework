@@ -16,10 +16,6 @@ export type IEmoji = {
     skins?:(IEmoji&{tone:number})[];
 };
 
-let a = ()=>{}
-
-let a = ()=>{}
-
 const EMOJIS:IEmoji[] = [
     {
         "name": "GRINNING FACE",
