@@ -80,6 +80,8 @@ export default class ServerMiddleware extends MultiMiddleware {
         let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null, store: {} };
         await this.rocket.router.route(path, ctx => {
             ctx.state = currentState;
+            const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
+            routerStore.setDataNoRerender(path, query);
             ctx.query = query;
         });
 
@@ -93,7 +95,6 @@ export default class ServerMiddleware extends MultiMiddleware {
         // Generate rendered client html
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
         let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
-        const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
 
         // Allow redirects to be placed inside render() method
         if (routerStore.hasRedirect) {
