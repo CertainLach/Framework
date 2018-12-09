@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/queue",
-  "version": "2.0.19",
+  "version": "2.0.20",
   "description": "Queue decorator",
   "module": "index.mjs",
   "main": "index.js",
@@ -14,7 +14,7 @@
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/logger": "^2.3.18"
+    "@meteor-it/logger": "^2.3.19"
   },
   "sideEffects": false,
   "publishConfig": {

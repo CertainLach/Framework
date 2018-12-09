@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/form",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Form validation",
   "module": "index.mjs",
   "main": "index.js",
