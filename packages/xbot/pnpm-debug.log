@@ -1,0 +1,2247 @@
+---
+  0 debug pnpm:package-json: 
+    initial: 
+      name: "@meteor-it/xbot"
+      version: "1.3.23"
+      description: "Bot engine"
+      main: "index.js"
+      keywords: 
+        - "meteor-it"
+        - "xbot"
+        - "hubot"
+      author: 
+        name: "Yaroslaw Bolyukin"
+        email: "iam@f6cf.pw"
+        url: "http://f6cf.pw/"
+      license: "MIT"
+      dependencies: 
+        canvas: "^2.0.0-alpha.13"
+      optionalDependencies: 
+        discord.js: "^11.4.2"
+        node-telegram-bot-api: "^0.30.0"
+      sideEffects: false
+      publishConfig: 
+        access: "public"
+      gitHead: "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
+      readme: "# xbot\nI"
+      readmeFilename: "README.MD"
+      _id: "@meteor-it/xbot@1.3.23"
+    prefix: "/home/lach/framework/packages/xbot"
+  1 info pnpm: 
+    message: "Performing headless installation"
+    prefix: "/home/lach/framework/packages/xbot"
+  2 debug pnpm:stats: 
+    prefix: "/home/lach/framework/packages/xbot"
+    removed: 0
+  3 debug pnpm:stage: "importing_started"
+  4 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/abbrev/1.1.1"
+    status: "resolving_content"
+  5 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ajv/6.5.5"
+    status: "resolving_content"
+  6 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ansi-regex/2.1.1"
+    status: "resolving_content"
+  7 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ansi-regex/3.0.0"
+    status: "resolving_content"
+  8 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/aproba/1.2.0"
+    status: "resolving_content"
+  9 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/are-we-there-yet/1.1.5"
+    status: "resolving_content"
+  10 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/array.prototype.findindex/2.0.2"
+    status: "resolving_content"
+  11 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/asn1/0.2.4"
+    status: "resolving_content"
+  12 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/assert-plus/1.0.0"
+    status: "resolving_content"
+  13 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/abbrev/1.1.1"
+    status: "found_in_store"
+  14 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/async-limiter/1.0.0"
+    status: "resolving_content"
+  15 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/asynckit/0.4.0"
+    status: "resolving_content"
+  16 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ansi-regex/2.1.1"
+    status: "found_in_store"
+  17 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/aws-sign2/0.7.0"
+    status: "resolving_content"
+  18 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ansi-regex/3.0.0"
+    status: "found_in_store"
+  19 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/aws4/1.8.0"
+    status: "resolving_content"
+  20 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/aproba/1.2.0"
+    status: "found_in_store"
+  21 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/balanced-match/1.0.0"
+    status: "resolving_content"
+  22 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/are-we-there-yet/1.1.5"
+    status: "found_in_store"
+  23 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/bcrypt-pbkdf/1.0.2"
+    status: "resolving_content"
+  24 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/array.prototype.findindex/2.0.2"
+    status: "found_in_store"
+  25 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/bl/1.2.2"
+    status: "resolving_content"
+  26 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/bluebird/3.5.3"
+    status: "resolving_content"
+  27 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/asn1/0.2.4"
+    status: "found_in_store"
+  28 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/assert-plus/1.0.0"
+    status: "found_in_store"
+  29 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/brace-expansion/1.1.11"
+    status: "resolving_content"
+  30 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/canvas/2.1.0"
+    status: "resolving_content"
+  31 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/asynckit/0.4.0"
+    status: "found_in_store"
+  32 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/caseless/0.12.0"
+    status: "resolving_content"
+  33 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/async-limiter/1.0.0"
+    status: "found_in_store"
+  34 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/chownr/1.1.1"
+    status: "resolving_content"
+  35 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/aws-sign2/0.7.0"
+    status: "found_in_store"
+  36 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/code-point-at/1.1.0"
+    status: "resolving_content"
+  37 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/balanced-match/1.0.0"
+    status: "found_in_store"
+  38 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/combined-stream/1.0.7"
+    status: "resolving_content"
+  39 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/aws4/1.8.0"
+    status: "found_in_store"
+  40 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/concat-map/0.0.1"
+    status: "resolving_content"
+  41 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/console-control-strings/1.1.0"
+    status: "resolving_content"
+  42 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/bcrypt-pbkdf/1.0.2"
+    status: "found_in_store"
+  43 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/core-util-is/1.0.2"
+    status: "resolving_content"
+  44 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/bl/1.2.2"
+    status: "found_in_store"
+  45 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/brace-expansion/1.1.11"
+    status: "found_in_store"
+  46 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/dashdash/1.14.1"
+    status: "resolving_content"
+  47 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/debug/2.6.9"
+    status: "resolving_content"
+  48 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/debug/3.2.6"
+    status: "resolving_content"
+  49 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/caseless/0.12.0"
+    status: "found_in_store"
+  50 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/chownr/1.1.1"
+    status: "found_in_store"
+  51 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/deep-extend/0.6.0"
+    status: "resolving_content"
+  52 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/code-point-at/1.1.0"
+    status: "found_in_store"
+  53 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/define-properties/1.1.3"
+    status: "resolving_content"
+  54 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/combined-stream/1.0.7"
+    status: "found_in_store"
+  55 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/delayed-stream/1.0.0"
+    status: "resolving_content"
+  56 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/concat-map/0.0.1"
+    status: "found_in_store"
+  57 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/delegates/1.0.0"
+    status: "resolving_content"
+  58 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/console-control-strings/1.1.0"
+    status: "found_in_store"
+  59 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/depd/1.1.2"
+    status: "resolving_content"
+  60 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/detect-libc/1.0.3"
+    status: "resolving_content"
+  61 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/core-util-is/1.0.2"
+    status: "found_in_store"
+  62 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/discord.js/11.4.2"
+    status: "resolving_content"
+  63 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ecc-jsbn/0.1.2"
+    status: "resolving_content"
+  64 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/canvas/2.1.0"
+    status: "found_in_store"
+  65 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/end-of-stream/1.4.1"
+    status: "resolving_content"
+  66 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/debug/2.6.9"
+    status: "found_in_store"
+  67 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/deep-extend/0.6.0"
+    status: "found_in_store"
+  68 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/es-abstract/1.12.0"
+    status: "resolving_content"
+  69 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/dashdash/1.14.1"
+    status: "found_in_store"
+  70 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/define-properties/1.1.3"
+    status: "found_in_store"
+  71 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/es-to-primitive/1.2.0"
+    status: "resolving_content"
+  72 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/debug/3.2.6"
+    status: "found_in_store"
+  73 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/delayed-stream/1.0.0"
+    status: "found_in_store"
+  74 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/eventemitter3/3.1.0"
+    status: "resolving_content"
+  75 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/delegates/1.0.0"
+    status: "found_in_store"
+  76 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/extend/3.0.2"
+    status: "resolving_content"
+  77 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/extsprintf/1.3.0"
+    status: "resolving_content"
+  78 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ajv/6.5.5"
+    status: "found_in_store"
+  79 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/depd/1.1.2"
+    status: "found_in_store"
+  80 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/extsprintf/1.4.0"
+    status: "resolving_content"
+  81 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/detect-libc/1.0.3"
+    status: "found_in_store"
+  82 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/fast-deep-equal/2.0.1"
+    status: "resolving_content"
+  83 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/fast-json-stable-stringify/2.0.0"
+    status: "resolving_content"
+  84 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/bluebird/3.5.3"
+    status: "found_in_store"
+  85 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ecc-jsbn/0.1.2"
+    status: "found_in_store"
+  86 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/end-of-stream/1.4.1"
+    status: "found_in_store"
+  87 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/file-type/3.9.0"
+    status: "resolving_content"
+  88 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/forever-agent/0.6.1"
+    status: "resolving_content"
+  89 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/form-data/2.3.3"
+    status: "resolving_content"
+  90 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/es-to-primitive/1.2.0"
+    status: "found_in_store"
+  91 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/fs-minipass/1.2.5"
+    status: "resolving_content"
+  92 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/eventemitter3/3.1.0"
+    status: "found_in_store"
+  93 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/extend/3.0.2"
+    status: "found_in_store"
+  94 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/fs.realpath/1.0.0"
+    status: "resolving_content"
+  95 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/function-bind/1.1.1"
+    status: "resolving_content"
+  96 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/extsprintf/1.3.0"
+    status: "found_in_store"
+  97 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/gauge/2.7.4"
+    status: "resolving_content"
+  98 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/es-abstract/1.12.0"
+    status: "found_in_store"
+  99 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/extsprintf/1.4.0"
+    status: "found_in_store"
+  100 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/fast-deep-equal/2.0.1"
+    status: "found_in_store"
+  101 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/getpass/0.1.7"
+    status: "resolving_content"
+  102 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/fast-json-stable-stringify/2.0.0"
+    status: "found_in_store"
+  103 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/glob/7.1.3"
+    status: "resolving_content"
+  104 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/har-schema/2.0.0"
+    status: "resolving_content"
+  105 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/file-type/3.9.0"
+    status: "found_in_store"
+  106 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/har-validator/5.1.3"
+    status: "resolving_content"
+  107 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/forever-agent/0.6.1"
+    status: "found_in_store"
+  108 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/has-symbols/1.0.0"
+    status: "resolving_content"
+  109 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/has-unicode/2.0.1"
+    status: "resolving_content"
+  110 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/fs-minipass/1.2.5"
+    status: "found_in_store"
+  111 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/has/1.0.3"
+    status: "resolving_content"
+  112 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/fs.realpath/1.0.0"
+    status: "found_in_store"
+  113 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/http-signature/1.2.0"
+    status: "resolving_content"
+  114 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/discord.js/11.4.2"
+    status: "found_in_store"
+  115 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/function-bind/1.1.1"
+    status: "found_in_store"
+  116 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/iconv-lite/0.4.24"
+    status: "resolving_content"
+  117 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/gauge/2.7.4"
+    status: "found_in_store"
+  118 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/getpass/0.1.7"
+    status: "found_in_store"
+  119 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ignore-walk/3.0.1"
+    status: "resolving_content"
+  120 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/inflight/1.0.6"
+    status: "resolving_content"
+  121 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/har-schema/2.0.0"
+    status: "found_in_store"
+  122 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/inherits/2.0.3"
+    status: "resolving_content"
+  123 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/glob/7.1.3"
+    status: "found_in_store"
+  124 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/har-validator/5.1.3"
+    status: "found_in_store"
+  125 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ini/1.3.5"
+    status: "resolving_content"
+  126 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/has-symbols/1.0.0"
+    status: "found_in_store"
+  127 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-callable/1.1.4"
+    status: "resolving_content"
+  128 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/form-data/2.3.3"
+    status: "found_in_store"
+  129 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/has-unicode/2.0.1"
+    status: "found_in_store"
+  130 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-date-object/1.0.1"
+    status: "resolving_content"
+  131 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/has/1.0.3"
+    status: "found_in_store"
+  132 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-fullwidth-code-point/1.0.0"
+    status: "resolving_content"
+  133 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-fullwidth-code-point/2.0.0"
+    status: "resolving_content"
+  134 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/http-signature/1.2.0"
+    status: "found_in_store"
+  135 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-regex/1.0.4"
+    status: "resolving_content"
+  136 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ignore-walk/3.0.1"
+    status: "found_in_store"
+  137 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-symbol/1.0.2"
+    status: "resolving_content"
+  138 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/inflight/1.0.6"
+    status: "found_in_store"
+  139 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-typedarray/1.0.0"
+    status: "resolving_content"
+  140 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/inherits/2.0.3"
+    status: "found_in_store"
+  141 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/isarray/1.0.0"
+    status: "resolving_content"
+  142 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ini/1.3.5"
+    status: "found_in_store"
+  143 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/isstream/0.1.2"
+    status: "resolving_content"
+  144 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/iconv-lite/0.4.24"
+    status: "found_in_store"
+  145 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-callable/1.1.4"
+    status: "found_in_store"
+  146 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/jsbn/0.1.1"
+    status: "resolving_content"
+  147 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-date-object/1.0.1"
+    status: "found_in_store"
+  148 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/json-schema-traverse/0.4.1"
+    status: "resolving_content"
+  149 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-fullwidth-code-point/1.0.0"
+    status: "found_in_store"
+  150 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/json-schema/0.2.3"
+    status: "resolving_content"
+  151 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-fullwidth-code-point/2.0.0"
+    status: "found_in_store"
+  152 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/json-stringify-safe/5.0.1"
+    status: "resolving_content"
+  153 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-regex/1.0.4"
+    status: "found_in_store"
+  154 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/jsprim/1.4.1"
+    status: "resolving_content"
+  155 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-symbol/1.0.2"
+    status: "found_in_store"
+  156 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/lodash/4.17.11"
+    status: "resolving_content"
+  157 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/is-typedarray/1.0.0"
+    status: "found_in_store"
+  158 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/long/4.0.0"
+    status: "resolving_content"
+  159 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/isarray/1.0.0"
+    status: "found_in_store"
+  160 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/mime-db/1.37.0"
+    status: "resolving_content"
+  161 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/isstream/0.1.2"
+    status: "found_in_store"
+  162 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/mime-types/2.1.21"
+    status: "resolving_content"
+  163 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/mime/1.6.0"
+    status: "resolving_content"
+  164 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/json-schema-traverse/0.4.1"
+    status: "found_in_store"
+  165 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minimatch/3.0.4"
+    status: "resolving_content"
+  166 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minimist/0.0.8"
+    status: "resolving_content"
+  167 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/json-stringify-safe/5.0.1"
+    status: "found_in_store"
+  168 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minimist/1.2.0"
+    status: "resolving_content"
+  169 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minipass/2.3.5"
+    status: "resolving_content"
+  170 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/jsbn/0.1.1"
+    status: "found_in_store"
+  171 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minizlib/1.1.1"
+    status: "resolving_content"
+  172 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/jsprim/1.4.1"
+    status: "found_in_store"
+  173 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/mkdirp/0.5.1"
+    status: "resolving_content"
+  174 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ms/2.0.0"
+    status: "resolving_content"
+  175 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/json-schema/0.2.3"
+    status: "found_in_store"
+  176 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/mime-types/2.1.21"
+    status: "found_in_store"
+  177 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ms/2.1.1"
+    status: "resolving_content"
+  178 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/nan/2.11.1"
+    status: "resolving_content"
+  179 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/needle/2.2.4"
+    status: "resolving_content"
+  180 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minimist/0.0.8"
+    status: "found_in_store"
+  181 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/node-pre-gyp/0.11.0"
+    status: "resolving_content"
+  182 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/mime/1.6.0"
+    status: "found_in_store"
+  183 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minimist/1.2.0"
+    status: "found_in_store"
+  184 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/node-telegram-bot-api/0.30.0"
+    status: "resolving_content"
+  185 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minimatch/3.0.4"
+    status: "found_in_store"
+  186 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/nopt/4.0.1"
+    status: "resolving_content"
+  187 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minipass/2.3.5"
+    status: "found_in_store"
+  188 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/npm-bundled/1.0.5"
+    status: "resolving_content"
+  189 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/minizlib/1.1.1"
+    status: "found_in_store"
+  190 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/mkdirp/0.5.1"
+    status: "found_in_store"
+  191 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/npm-packlist/1.1.12"
+    status: "resolving_content"
+  192 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ms/2.0.0"
+    status: "found_in_store"
+  193 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/npmlog/4.1.2"
+    status: "resolving_content"
+  194 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ms/2.1.1"
+    status: "found_in_store"
+  195 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/number-is-nan/1.0.1"
+    status: "resolving_content"
+  196 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/long/4.0.0"
+    status: "found_in_store"
+  197 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/oauth-sign/0.9.0"
+    status: "resolving_content"
+  198 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/object-assign/4.1.1"
+    status: "resolving_content"
+  199 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/object-keys/1.0.12"
+    status: "resolving_content"
+  200 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/once/1.4.0"
+    status: "resolving_content"
+  201 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/os-homedir/1.0.2"
+    status: "resolving_content"
+  202 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/needle/2.2.4"
+    status: "found_in_store"
+  203 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/npm-bundled/1.0.5"
+    status: "found_in_store"
+  204 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/nopt/4.0.1"
+    status: "found_in_store"
+  205 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/os-tmpdir/1.0.2"
+    status: "resolving_content"
+  206 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/node-pre-gyp/0.11.0"
+    status: "found_in_store"
+  207 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/npm-packlist/1.1.12"
+    status: "found_in_store"
+  208 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/osenv/0.1.5"
+    status: "resolving_content"
+  209 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/path-is-absolute/1.0.1"
+    status: "resolving_content"
+  210 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/npmlog/4.1.2"
+    status: "found_in_store"
+  211 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/number-is-nan/1.0.1"
+    status: "found_in_store"
+  212 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/performance-now/2.1.0"
+    status: "resolving_content"
+  213 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/mime-db/1.37.0"
+    status: "found_in_store"
+  214 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/prism-media/0.0.3"
+    status: "resolving_content"
+  215 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/nan/2.11.1"
+    status: "found_in_store"
+  216 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/object-assign/4.1.1"
+    status: "found_in_store"
+  217 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/process-nextick-args/2.0.0"
+    status: "resolving_content"
+  218 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/oauth-sign/0.9.0"
+    status: "found_in_store"
+  219 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/object-keys/1.0.12"
+    status: "found_in_store"
+  220 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/psl/1.1.29"
+    status: "resolving_content"
+  221 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/once/1.4.0"
+    status: "found_in_store"
+  222 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/pump/2.0.1"
+    status: "resolving_content"
+  223 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/node-telegram-bot-api/0.30.0"
+    status: "found_in_store"
+  224 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/os-homedir/1.0.2"
+    status: "found_in_store"
+  225 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/punycode/1.4.1"
+    status: "resolving_content"
+  226 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/os-tmpdir/1.0.2"
+    status: "found_in_store"
+  227 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/punycode/2.1.1"
+    status: "resolving_content"
+  228 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/osenv/0.1.5"
+    status: "found_in_store"
+  229 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/qs/6.5.2"
+    status: "resolving_content"
+  230 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/path-is-absolute/1.0.1"
+    status: "found_in_store"
+  231 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/rc/1.2.8"
+    status: "resolving_content"
+  232 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/performance-now/2.1.0"
+    status: "found_in_store"
+  233 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/readable-stream/2.3.6"
+    status: "resolving_content"
+  234 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/request-promise-core/1.1.1"
+    status: "resolving_content"
+  235 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/prism-media/0.0.3"
+    status: "found_in_store"
+  236 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/process-nextick-args/2.0.0"
+    status: "found_in_store"
+  237 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/request-promise/4.2.2"
+    status: "resolving_content"
+  238 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/request/2.88.0"
+    status: "resolving_content"
+  239 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/pump/2.0.1"
+    status: "found_in_store"
+  240 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/rimraf/2.6.2"
+    status: "resolving_content"
+  241 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/safe-buffer/5.1.2"
+    status: "resolving_content"
+  242 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/punycode/1.4.1"
+    status: "found_in_store"
+  243 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/safer-buffer/2.1.2"
+    status: "resolving_content"
+  244 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/punycode/2.1.1"
+    status: "found_in_store"
+  245 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/sax/1.2.4"
+    status: "resolving_content"
+  246 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/rc/1.2.8"
+    status: "found_in_store"
+  247 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/semver/5.6.0"
+    status: "resolving_content"
+  248 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/qs/6.5.2"
+    status: "found_in_store"
+  249 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/set-blocking/2.0.0"
+    status: "resolving_content"
+  250 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/request-promise-core/1.1.1"
+    status: "found_in_store"
+  251 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/signal-exit/3.0.2"
+    status: "resolving_content"
+  252 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/snekfetch/3.6.4"
+    status: "resolving_content"
+  253 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/readable-stream/2.3.6"
+    status: "found_in_store"
+  254 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/sshpk/1.15.2"
+    status: "resolving_content"
+  255 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/stealthy-require/1.1.1"
+    status: "resolving_content"
+  256 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/request-promise/4.2.2"
+    status: "found_in_store"
+  257 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/rimraf/2.6.2"
+    status: "found_in_store"
+  258 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/string-width/1.0.2"
+    status: "resolving_content"
+  259 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/string-width/2.1.1"
+    status: "resolving_content"
+  260 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/safe-buffer/5.1.2"
+    status: "found_in_store"
+  261 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/safer-buffer/2.1.2"
+    status: "found_in_store"
+  262 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/string_decoder/1.1.1"
+    status: "resolving_content"
+  263 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/strip-ansi/3.0.1"
+    status: "resolving_content"
+  264 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/set-blocking/2.0.0"
+    status: "found_in_store"
+  265 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/strip-ansi/4.0.0"
+    status: "resolving_content"
+  266 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/signal-exit/3.0.2"
+    status: "found_in_store"
+  267 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/strip-json-comments/2.0.1"
+    status: "resolving_content"
+  268 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/request/2.88.0"
+    status: "found_in_store"
+  269 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tar/4.4.8"
+    status: "resolving_content"
+  270 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/psl/1.1.29"
+    status: "found_in_store"
+  271 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/semver/5.6.0"
+    status: "found_in_store"
+  272 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/sax/1.2.4"
+    status: "found_in_store"
+  273 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tough-cookie/2.4.3"
+    status: "resolving_content"
+  274 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/stealthy-require/1.1.1"
+    status: "found_in_store"
+  275 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tunnel-agent/0.6.0"
+    status: "resolving_content"
+  276 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/sshpk/1.15.2"
+    status: "found_in_store"
+  277 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/string-width/1.0.2"
+    status: "found_in_store"
+  278 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tweetnacl/0.14.5"
+    status: "resolving_content"
+  279 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/snekfetch/3.6.4"
+    status: "found_in_store"
+  280 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/string-width/2.1.1"
+    status: "found_in_store"
+  281 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tweetnacl/1.0.0"
+    status: "resolving_content"
+  282 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/uri-js/4.2.2"
+    status: "resolving_content"
+  283 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/string_decoder/1.1.1"
+    status: "found_in_store"
+  284 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/strip-ansi/3.0.1"
+    status: "found_in_store"
+  285 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/util-deprecate/1.0.2"
+    status: "resolving_content"
+  286 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/strip-ansi/4.0.0"
+    status: "found_in_store"
+  287 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/uuid/3.3.2"
+    status: "resolving_content"
+  288 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/strip-json-comments/2.0.1"
+    status: "found_in_store"
+  289 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/verror/1.10.0"
+    status: "resolving_content"
+  290 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/wide-align/1.1.3"
+    status: "resolving_content"
+  291 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/wrappy/1.0.2"
+    status: "resolving_content"
+  292 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ws/4.1.0"
+    status: "resolving_content"
+  293 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tunnel-agent/0.6.0"
+    status: "found_in_store"
+  294 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/yallist/3.0.3"
+    status: "resolving_content"
+  295 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tar/4.4.8"
+    status: "found_in_store"
+  296 debug pnpm:stats: 
+    added: 152
+    prefix: "/home/lach/framework/packages/xbot"
+  297 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fast-deep-equal/2.0.1/node_modules/fast-deep-equal"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ajv/6.5.5/node_modules/fast-deep-equal"
+  298 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fast-json-stable-stringify/2.0.0/node_modules/fast-json-stable-stringify"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ajv/6.5.5/node_modules/fast-json-stable-stringify"
+  299 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/json-schema-traverse/0.4.1/node_modules/json-schema-traverse"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ajv/6.5.5/node_modules/json-schema-traverse"
+  300 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/uri-js/4.2.2/node_modules/uri-js"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ajv/6.5.5/node_modules/uri-js"
+  301 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/delegates/1.0.0/node_modules/delegates"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/are-we-there-yet/1.1.5/node_modules/delegates"
+  302 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/readable-stream"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/are-we-there-yet/1.1.5/node_modules/readable-stream"
+  303 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/define-properties/1.1.3/node_modules/define-properties"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/array.prototype.findindex/2.0.2/node_modules/define-properties"
+  304 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-abstract/1.12.0/node_modules/es-abstract"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/array.prototype.findindex/2.0.2/node_modules/es-abstract"
+  305 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safer-buffer/2.1.2/node_modules/safer-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/asn1/0.2.4/node_modules/safer-buffer"
+  306 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tweetnacl/0.14.5/node_modules/tweetnacl"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bcrypt-pbkdf/1.0.2/node_modules/tweetnacl"
+  307 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/readable-stream"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bl/1.2.2/node_modules/readable-stream"
+  308 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bl/1.2.2/node_modules/safe-buffer"
+  309 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/balanced-match/1.0.0/node_modules/balanced-match"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/brace-expansion/1.1.11/node_modules/balanced-match"
+  310 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/concat-map/0.0.1/node_modules/concat-map"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/brace-expansion/1.1.11/node_modules/concat-map"
+  311 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/nan/2.11.1/node_modules/nan"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/canvas/2.1.0/node_modules/nan"
+  312 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/node-pre-gyp"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/canvas/2.1.0/node_modules/node-pre-gyp"
+  313 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/delayed-stream/1.0.0/node_modules/delayed-stream"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/combined-stream/1.0.7/node_modules/delayed-stream"
+  314 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/assert-plus/1.0.0/node_modules/assert-plus"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/dashdash/1.14.1/node_modules/assert-plus"
+  315 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ms/2.0.0/node_modules/ms"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/debug/2.6.9/node_modules/ms"
+  316 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ms/2.1.1/node_modules/ms"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/debug/3.2.6/node_modules/ms"
+  317 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/object-keys/1.0.12/node_modules/object-keys"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/define-properties/1.1.3/node_modules/object-keys"
+  318 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/long/4.0.0/node_modules/long"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/discord.js/11.4.2/node_modules/long"
+  319 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/prism-media/0.0.3/node_modules/prism-media"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/discord.js/11.4.2/node_modules/prism-media"
+  320 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/snekfetch/3.6.4/node_modules/snekfetch"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/discord.js/11.4.2/node_modules/snekfetch"
+  321 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tweetnacl/1.0.0/node_modules/tweetnacl"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/discord.js/11.4.2/node_modules/tweetnacl"
+  322 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ws/4.1.0/node_modules/ws"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/discord.js/11.4.2/node_modules/ws"
+  323 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsbn/0.1.1/node_modules/jsbn"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ecc-jsbn/0.1.2/node_modules/jsbn"
+  324 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safer-buffer/2.1.2/node_modules/safer-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ecc-jsbn/0.1.2/node_modules/safer-buffer"
+  325 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/once/1.4.0/node_modules/once"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/end-of-stream/1.4.1/node_modules/once"
+  326 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tough-cookie/2.4.3"
+    status: "found_in_store"
+  327 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/abbrev/1.1.1/node_modules/abbrev"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/abbrev/1.1.1/node_modules/abbrev"
+    method: "hardlink"
+  328 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ajv/6.5.5/node_modules/ajv"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ajv/6.5.5/node_modules/ajv"
+    method: "hardlink"
+  329 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ansi-regex/2.1.1/node_modules/ansi-regex"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ansi-regex/2.1.1/node_modules/ansi-regex"
+    method: "hardlink"
+  330 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ansi-regex/3.0.0/node_modules/ansi-regex"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ansi-regex/3.0.0/node_modules/ansi-regex"
+    method: "hardlink"
+  331 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/aproba/1.2.0/node_modules/aproba"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/aproba/1.2.0/node_modules/aproba"
+    method: "hardlink"
+  332 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/are-we-there-yet/1.1.5/node_modules/are-we-there-yet"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/are-we-there-yet/1.1.5/node_modules/are-we-there-yet"
+    method: "hardlink"
+  333 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/array.prototype.findindex/2.0.2/node_modules/array.prototype.findindex"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/array.prototype.findindex/2.0.2/node_modules/array.prototype.findindex"
+    method: "hardlink"
+  334 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/asn1/0.2.4/node_modules/asn1"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/asn1/0.2.4/node_modules/asn1"
+    method: "hardlink"
+  335 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/assert-plus/1.0.0/node_modules/assert-plus"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/assert-plus/1.0.0/node_modules/assert-plus"
+    method: "hardlink"
+  336 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/async-limiter/1.0.0/node_modules/async-limiter"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/async-limiter/1.0.0/node_modules/async-limiter"
+    method: "hardlink"
+  337 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/asynckit/0.4.0/node_modules/asynckit"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/asynckit/0.4.0/node_modules/asynckit"
+    method: "hardlink"
+  338 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/aws-sign2/0.7.0/node_modules/aws-sign2"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/aws-sign2/0.7.0/node_modules/aws-sign2"
+    method: "hardlink"
+  339 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/aws4/1.8.0/node_modules/aws4"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/aws4/1.8.0/node_modules/aws4"
+    method: "hardlink"
+  340 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/balanced-match/1.0.0/node_modules/balanced-match"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/balanced-match/1.0.0/node_modules/balanced-match"
+    method: "hardlink"
+  341 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/bcrypt-pbkdf/1.0.2/node_modules/bcrypt-pbkdf"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bcrypt-pbkdf/1.0.2/node_modules/bcrypt-pbkdf"
+    method: "hardlink"
+  342 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/bl/1.2.2/node_modules/bl"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bl/1.2.2/node_modules/bl"
+    method: "hardlink"
+  343 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/util-deprecate/1.0.2"
+    status: "found_in_store"
+  344 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/uuid/3.3.2"
+    status: "found_in_store"
+  345 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/wide-align/1.1.3"
+    status: "found_in_store"
+  346 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tweetnacl/0.14.5"
+    status: "found_in_store"
+  347 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/verror/1.10.0"
+    status: "found_in_store"
+  348 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/wrappy/1.0.2"
+    status: "found_in_store"
+  349 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/tweetnacl/1.0.0"
+    status: "found_in_store"
+  350 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/yallist/3.0.3"
+    status: "found_in_store"
+  351 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/ws/4.1.0"
+    status: "found_in_store"
+  352 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-to-primitive/1.2.0/node_modules/es-to-primitive"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-abstract/1.12.0/node_modules/es-to-primitive"
+  353 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/function-bind/1.1.1/node_modules/function-bind"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-abstract/1.12.0/node_modules/function-bind"
+  354 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/has/1.0.3/node_modules/has"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-abstract/1.12.0/node_modules/has"
+  355 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-callable/1.1.4/node_modules/is-callable"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-abstract/1.12.0/node_modules/is-callable"
+  356 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-regex/1.0.4/node_modules/is-regex"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-abstract/1.12.0/node_modules/is-regex"
+  357 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-callable/1.1.4/node_modules/is-callable"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-to-primitive/1.2.0/node_modules/is-callable"
+  358 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-date-object/1.0.1/node_modules/is-date-object"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-to-primitive/1.2.0/node_modules/is-date-object"
+  359 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-symbol/1.0.2/node_modules/is-symbol"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-to-primitive/1.2.0/node_modules/is-symbol"
+  360 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/asynckit/0.4.0/node_modules/asynckit"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/form-data/2.3.3/node_modules/asynckit"
+  361 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/combined-stream/1.0.7/node_modules/combined-stream"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/form-data/2.3.3/node_modules/combined-stream"
+  362 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mime-types/2.1.21/node_modules/mime-types"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/form-data/2.3.3/node_modules/mime-types"
+  363 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minipass/2.3.5/node_modules/minipass"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fs-minipass/1.2.5/node_modules/minipass"
+  364 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/uri-js/4.2.2"
+    status: "found_in_store"
+  365 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/aproba/1.2.0/node_modules/aproba"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/aproba"
+  366 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/console-control-strings/1.1.0/node_modules/console-control-strings"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/console-control-strings"
+  367 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/has-unicode/2.0.1/node_modules/has-unicode"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/has-unicode"
+  368 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/object-assign/4.1.1/node_modules/object-assign"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/object-assign"
+  369 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/signal-exit/3.0.2/node_modules/signal-exit"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/signal-exit"
+  370 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/1.0.2/node_modules/string-width"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/string-width"
+  371 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-ansi/3.0.1/node_modules/strip-ansi"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/strip-ansi"
+  372 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/wide-align/1.1.3/node_modules/wide-align"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/wide-align"
+  373 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/assert-plus/1.0.0/node_modules/assert-plus"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/getpass/0.1.7/node_modules/assert-plus"
+  374 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fs.realpath/1.0.0/node_modules/fs.realpath"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/glob/7.1.3/node_modules/fs.realpath"
+  375 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/inflight/1.0.6/node_modules/inflight"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/glob/7.1.3/node_modules/inflight"
+  376 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/inherits/2.0.3/node_modules/inherits"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/glob/7.1.3/node_modules/inherits"
+  377 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minimatch/3.0.4/node_modules/minimatch"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/glob/7.1.3/node_modules/minimatch"
+  378 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/once/1.4.0/node_modules/once"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/glob/7.1.3/node_modules/once"
+  379 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/path-is-absolute/1.0.1/node_modules/path-is-absolute"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/glob/7.1.3/node_modules/path-is-absolute"
+  380 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ajv/6.5.5/node_modules/ajv"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/har-validator/5.1.3/node_modules/ajv"
+  381 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/har-schema/2.0.0/node_modules/har-schema"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/har-validator/5.1.3/node_modules/har-schema"
+  382 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/function-bind/1.1.1/node_modules/function-bind"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/has/1.0.3/node_modules/function-bind"
+  383 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/assert-plus/1.0.0/node_modules/assert-plus"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/http-signature/1.2.0/node_modules/assert-plus"
+  384 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsprim/1.4.1/node_modules/jsprim"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/http-signature/1.2.0/node_modules/jsprim"
+  385 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/sshpk"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/http-signature/1.2.0/node_modules/sshpk"
+  386 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safer-buffer/2.1.2/node_modules/safer-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/iconv-lite/0.4.24/node_modules/safer-buffer"
+  387 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minimatch/3.0.4/node_modules/minimatch"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ignore-walk/3.0.1/node_modules/minimatch"
+  388 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/bluebird/3.5.3/node_modules/bluebird"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bluebird/3.5.3/node_modules/bluebird"
+    method: "hardlink"
+  389 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/brace-expansion/1.1.11/node_modules/brace-expansion"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/brace-expansion/1.1.11/node_modules/brace-expansion"
+    method: "hardlink"
+  390 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/canvas/2.1.0/node_modules/canvas"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/canvas/2.1.0/node_modules/canvas"
+    method: "hardlink"
+  391 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/caseless/0.12.0/node_modules/caseless"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/caseless/0.12.0/node_modules/caseless"
+    method: "hardlink"
+  392 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/chownr/1.1.1/node_modules/chownr"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/chownr/1.1.1/node_modules/chownr"
+    method: "hardlink"
+  393 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/code-point-at/1.1.0/node_modules/code-point-at"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/code-point-at/1.1.0/node_modules/code-point-at"
+    method: "hardlink"
+  394 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/combined-stream/1.0.7/node_modules/combined-stream"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/combined-stream/1.0.7/node_modules/combined-stream"
+    method: "hardlink"
+  395 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/concat-map/0.0.1/node_modules/concat-map"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/concat-map/0.0.1/node_modules/concat-map"
+    method: "hardlink"
+  396 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/once/1.4.0/node_modules/once"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/inflight/1.0.6/node_modules/once"
+  397 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/wrappy/1.0.2/node_modules/wrappy"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/inflight/1.0.6/node_modules/wrappy"
+  398 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/console-control-strings/1.1.0/node_modules/console-control-strings"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/console-control-strings/1.1.0/node_modules/console-control-strings"
+    method: "hardlink"
+  399 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/number-is-nan/1.0.1/node_modules/number-is-nan"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-fullwidth-code-point/1.0.0/node_modules/number-is-nan"
+  400 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/core-util-is/1.0.2/node_modules/core-util-is"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/core-util-is/1.0.2/node_modules/core-util-is"
+    method: "hardlink"
+  401 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/has/1.0.3/node_modules/has"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-regex/1.0.4/node_modules/has"
+  402 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/has-symbols/1.0.0/node_modules/has-symbols"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-symbol/1.0.2/node_modules/has-symbols"
+  403 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/dashdash/1.14.1/node_modules/dashdash"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/dashdash/1.14.1/node_modules/dashdash"
+    method: "hardlink"
+  404 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/debug/2.6.9/node_modules/debug"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/debug/2.6.9/node_modules/debug"
+    method: "hardlink"
+  405 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/debug/3.2.6/node_modules/debug"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/debug/3.2.6/node_modules/debug"
+    method: "hardlink"
+  406 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/deep-extend/0.6.0/node_modules/deep-extend"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/deep-extend/0.6.0/node_modules/deep-extend"
+    method: "hardlink"
+  407 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/define-properties/1.1.3/node_modules/define-properties"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/define-properties/1.1.3/node_modules/define-properties"
+    method: "hardlink"
+  408 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/assert-plus/1.0.0/node_modules/assert-plus"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsprim/1.4.1/node_modules/assert-plus"
+  409 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/extsprintf/1.3.0/node_modules/extsprintf"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsprim/1.4.1/node_modules/extsprintf"
+  410 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/json-schema/0.2.3/node_modules/json-schema"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsprim/1.4.1/node_modules/json-schema"
+  411 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/verror/1.10.0/node_modules/verror"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsprim/1.4.1/node_modules/verror"
+  412 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mime-db/1.37.0/node_modules/mime-db"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mime-types/2.1.21/node_modules/mime-db"
+  413 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/delayed-stream/1.0.0/node_modules/delayed-stream"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/delayed-stream/1.0.0/node_modules/delayed-stream"
+    method: "hardlink"
+  414 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/delegates/1.0.0/node_modules/delegates"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/delegates/1.0.0/node_modules/delegates"
+    method: "hardlink"
+  415 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/brace-expansion/1.1.11/node_modules/brace-expansion"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minimatch/3.0.4/node_modules/brace-expansion"
+  416 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minipass/2.3.5/node_modules/safe-buffer"
+  417 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/yallist/3.0.3/node_modules/yallist"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minipass/2.3.5/node_modules/yallist"
+  418 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minipass/2.3.5/node_modules/minipass"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minizlib/1.1.1/node_modules/minipass"
+  419 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minimist/0.0.8/node_modules/minimist"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mkdirp/0.5.1/node_modules/minimist"
+  420 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/debug/2.6.9/node_modules/debug"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/needle/2.2.4/node_modules/debug"
+  421 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/iconv-lite/0.4.24/node_modules/iconv-lite"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/needle/2.2.4/node_modules/iconv-lite"
+  422 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sax/1.2.4/node_modules/sax"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/needle/2.2.4/node_modules/sax"
+  423 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/detect-libc/1.0.3/node_modules/detect-libc"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/detect-libc"
+  424 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mkdirp/0.5.1/node_modules/mkdirp"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/mkdirp"
+  425 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/needle/2.2.4/node_modules/needle"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/needle"
+  426 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/nopt/4.0.1/node_modules/nopt"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/nopt"
+  427 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npm-packlist/1.1.12/node_modules/npm-packlist"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/npm-packlist"
+  428 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npmlog/4.1.2/node_modules/npmlog"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/npmlog"
+  429 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rc/1.2.8/node_modules/rc"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/rc"
+  430 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rimraf/2.6.2/node_modules/rimraf"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/rimraf"
+  431 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/semver/5.6.0/node_modules/semver"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/semver"
+  432 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/tar"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/tar"
+  433 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/array.prototype.findindex/2.0.2/node_modules/array.prototype.findindex"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/array.prototype.findindex"
+  434 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bl/1.2.2/node_modules/bl"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/bl"
+  435 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bluebird/3.5.3/node_modules/bluebird"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/bluebird"
+  436 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/debug/3.2.6/node_modules/debug"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/debug"
+  437 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/depd/1.1.2/node_modules/depd"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/depd"
+  438 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/eventemitter3/3.1.0/node_modules/eventemitter3"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/eventemitter3"
+  439 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/file-type/3.9.0/node_modules/file-type"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/file-type"
+  440 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mime/1.6.0/node_modules/mime"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/mime"
+  441 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/pump/2.0.1/node_modules/pump"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/pump"
+  442 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/request"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/request"
+  443 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise/4.2.2/request@2.88.0/node_modules/request-promise"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/request-promise"
+  444 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/abbrev/1.1.1/node_modules/abbrev"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/nopt/4.0.1/node_modules/abbrev"
+  445 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/osenv/0.1.5/node_modules/osenv"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/nopt/4.0.1/node_modules/osenv"
+  446 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ignore-walk/3.0.1/node_modules/ignore-walk"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npm-packlist/1.1.12/node_modules/ignore-walk"
+  447 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npm-bundled/1.0.5/node_modules/npm-bundled"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npm-packlist/1.1.12/node_modules/npm-bundled"
+  448 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/are-we-there-yet/1.1.5/node_modules/are-we-there-yet"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npmlog/4.1.2/node_modules/are-we-there-yet"
+  449 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/console-control-strings/1.1.0/node_modules/console-control-strings"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npmlog/4.1.2/node_modules/console-control-strings"
+  450 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/gauge"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npmlog/4.1.2/node_modules/gauge"
+  451 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/set-blocking/2.0.0/node_modules/set-blocking"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npmlog/4.1.2/node_modules/set-blocking"
+  452 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/depd/1.1.2/node_modules/depd"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/depd/1.1.2/node_modules/depd"
+    method: "hardlink"
+  453 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/wrappy/1.0.2/node_modules/wrappy"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/once/1.4.0/node_modules/wrappy"
+  454 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/os-homedir/1.0.2/node_modules/os-homedir"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/osenv/0.1.5/node_modules/os-homedir"
+  455 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/os-tmpdir/1.0.2/node_modules/os-tmpdir"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/osenv/0.1.5/node_modules/os-tmpdir"
+  456 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/end-of-stream/1.4.1/node_modules/end-of-stream"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/pump/2.0.1/node_modules/end-of-stream"
+  457 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/once/1.4.0/node_modules/once"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/pump/2.0.1/node_modules/once"
+  458 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/detect-libc/1.0.3/node_modules/detect-libc"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/detect-libc/1.0.3/node_modules/detect-libc"
+    method: "hardlink"
+  459 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/discord.js/11.4.2/node_modules/discord.js"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/discord.js/11.4.2/node_modules/discord.js"
+    method: "hardlink"
+  460 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/deep-extend/0.6.0/node_modules/deep-extend"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rc/1.2.8/node_modules/deep-extend"
+  461 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ini/1.3.5/node_modules/ini"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rc/1.2.8/node_modules/ini"
+  462 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minimist/1.2.0/node_modules/minimist"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rc/1.2.8/node_modules/minimist"
+  463 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-json-comments/2.0.1/node_modules/strip-json-comments"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rc/1.2.8/node_modules/strip-json-comments"
+  464 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ecc-jsbn/0.1.2/node_modules/ecc-jsbn"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ecc-jsbn/0.1.2/node_modules/ecc-jsbn"
+    method: "hardlink"
+  465 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/end-of-stream/1.4.1/node_modules/end-of-stream"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/end-of-stream/1.4.1/node_modules/end-of-stream"
+    method: "hardlink"
+  466 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/es-abstract/1.12.0/node_modules/es-abstract"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-abstract/1.12.0/node_modules/es-abstract"
+    method: "hardlink"
+  467 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/es-to-primitive/1.2.0/node_modules/es-to-primitive"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/es-to-primitive/1.2.0/node_modules/es-to-primitive"
+    method: "hardlink"
+  468 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/core-util-is/1.0.2/node_modules/core-util-is"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/core-util-is"
+  469 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/inherits/2.0.3/node_modules/inherits"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/inherits"
+  470 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/isarray/1.0.0/node_modules/isarray"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/isarray"
+  471 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/process-nextick-args/2.0.0/node_modules/process-nextick-args"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/process-nextick-args"
+  472 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/safe-buffer"
+  473 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string_decoder/1.1.1/node_modules/string_decoder"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/string_decoder"
+  474 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/util-deprecate/1.0.2/node_modules/util-deprecate"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/util-deprecate"
+  475 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/eventemitter3/3.1.0/node_modules/eventemitter3"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/eventemitter3/3.1.0/node_modules/eventemitter3"
+    method: "hardlink"
+  476 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/extend/3.0.2/node_modules/extend"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/extend/3.0.2/node_modules/extend"
+    method: "hardlink"
+  477 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/extsprintf/1.3.0/node_modules/extsprintf"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/extsprintf/1.3.0/node_modules/extsprintf"
+    method: "hardlink"
+  478 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/lodash/4.17.11/node_modules/lodash"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise-core/1.1.1/request@2.88.0/node_modules/lodash"
+  479 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/request"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise-core/1.1.1/request@2.88.0/node_modules/request"
+  480 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bluebird/3.5.3/node_modules/bluebird"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise/4.2.2/request@2.88.0/node_modules/bluebird"
+  481 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/request"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise/4.2.2/request@2.88.0/node_modules/request"
+  482 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise-core/1.1.1/request@2.88.0/node_modules/request-promise-core"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise/4.2.2/request@2.88.0/node_modules/request-promise-core"
+  483 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/stealthy-require/1.1.1/node_modules/stealthy-require"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise/4.2.2/request@2.88.0/node_modules/stealthy-require"
+  484 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tough-cookie/2.4.3/node_modules/tough-cookie"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise/4.2.2/request@2.88.0/node_modules/tough-cookie"
+  485 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/aws-sign2/0.7.0/node_modules/aws-sign2"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/aws-sign2"
+  486 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/aws4/1.8.0/node_modules/aws4"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/aws4"
+  487 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/caseless/0.12.0/node_modules/caseless"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/caseless"
+  488 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/combined-stream/1.0.7/node_modules/combined-stream"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/combined-stream"
+  489 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/extend/3.0.2/node_modules/extend"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/extend"
+  490 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/forever-agent/0.6.1/node_modules/forever-agent"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/forever-agent"
+  491 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/form-data/2.3.3/node_modules/form-data"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/form-data"
+  492 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/har-validator/5.1.3/node_modules/har-validator"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/har-validator"
+  493 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/http-signature/1.2.0/node_modules/http-signature"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/http-signature"
+  494 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-typedarray/1.0.0/node_modules/is-typedarray"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/is-typedarray"
+  495 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/isstream/0.1.2/node_modules/isstream"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/isstream"
+  496 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/json-stringify-safe/5.0.1/node_modules/json-stringify-safe"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/json-stringify-safe"
+  497 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mime-types/2.1.21/node_modules/mime-types"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/mime-types"
+  498 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/oauth-sign/0.9.0/node_modules/oauth-sign"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/oauth-sign"
+  499 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/performance-now/2.1.0/node_modules/performance-now"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/performance-now"
+  500 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/qs/6.5.2/node_modules/qs"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/qs"
+  501 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/safe-buffer"
+  502 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tough-cookie/2.4.3/node_modules/tough-cookie"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/tough-cookie"
+  503 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tunnel-agent/0.6.0/node_modules/tunnel-agent"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/tunnel-agent"
+  504 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/uuid/3.3.2/node_modules/uuid"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/uuid"
+  505 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/glob/7.1.3/node_modules/glob"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rimraf/2.6.2/node_modules/glob"
+  506 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/extsprintf/1.4.0/node_modules/extsprintf"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/extsprintf/1.4.0/node_modules/extsprintf"
+    method: "hardlink"
+  507 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/fast-deep-equal/2.0.1/node_modules/fast-deep-equal"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fast-deep-equal/2.0.1/node_modules/fast-deep-equal"
+    method: "hardlink"
+  508 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/asn1/0.2.4/node_modules/asn1"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/asn1"
+  509 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/assert-plus/1.0.0/node_modules/assert-plus"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/assert-plus"
+  510 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/bcrypt-pbkdf/1.0.2/node_modules/bcrypt-pbkdf"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/bcrypt-pbkdf"
+  511 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/dashdash/1.14.1/node_modules/dashdash"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/dashdash"
+  512 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ecc-jsbn/0.1.2/node_modules/ecc-jsbn"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/ecc-jsbn"
+  513 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/getpass/0.1.7/node_modules/getpass"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/getpass"
+  514 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsbn/0.1.1/node_modules/jsbn"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/jsbn"
+  515 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safer-buffer/2.1.2/node_modules/safer-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/safer-buffer"
+  516 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tweetnacl/0.14.5/node_modules/tweetnacl"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/tweetnacl"
+  517 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/code-point-at/1.1.0/node_modules/code-point-at"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/1.0.2/node_modules/code-point-at"
+  518 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-fullwidth-code-point/1.0.0/node_modules/is-fullwidth-code-point"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/1.0.2/node_modules/is-fullwidth-code-point"
+  519 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-ansi/3.0.1/node_modules/strip-ansi"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/1.0.2/node_modules/strip-ansi"
+  520 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-fullwidth-code-point/2.0.0/node_modules/is-fullwidth-code-point"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/2.1.1/node_modules/is-fullwidth-code-point"
+  521 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-ansi/4.0.0/node_modules/strip-ansi"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/2.1.1/node_modules/strip-ansi"
+  522 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string_decoder/1.1.1/node_modules/safe-buffer"
+  523 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ansi-regex/2.1.1/node_modules/ansi-regex"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-ansi/3.0.1/node_modules/ansi-regex"
+  524 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ansi-regex/3.0.0/node_modules/ansi-regex"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-ansi/4.0.0/node_modules/ansi-regex"
+  525 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/chownr/1.1.1/node_modules/chownr"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/chownr"
+  526 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fs-minipass/1.2.5/node_modules/fs-minipass"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/fs-minipass"
+  527 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minipass/2.3.5/node_modules/minipass"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/minipass"
+  528 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minizlib/1.1.1/node_modules/minizlib"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/minizlib"
+  529 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mkdirp/0.5.1/node_modules/mkdirp"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/mkdirp"
+  530 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/safe-buffer"
+  531 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/yallist/3.0.3/node_modules/yallist"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/yallist"
+  532 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/psl/1.1.29/node_modules/psl"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tough-cookie/2.4.3/node_modules/psl"
+  533 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/punycode/1.4.1/node_modules/punycode"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tough-cookie/2.4.3/node_modules/punycode"
+  534 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/fast-json-stable-stringify/2.0.0/node_modules/fast-json-stable-stringify"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fast-json-stable-stringify/2.0.0/node_modules/fast-json-stable-stringify"
+    method: "hardlink"
+  535 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/file-type/3.9.0/node_modules/file-type"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/file-type/3.9.0/node_modules/file-type"
+    method: "hardlink"
+  536 debug pnpm:progress: 
+    pkgId: "registry.npmjs.org/lodash/4.17.11"
+    status: "found_in_store"
+  537 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tunnel-agent/0.6.0/node_modules/safe-buffer"
+  538 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/punycode/2.1.1/node_modules/punycode"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/uri-js/4.2.2/node_modules/punycode"
+  539 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/forever-agent/0.6.1/node_modules/forever-agent"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/forever-agent/0.6.1/node_modules/forever-agent"
+    method: "hardlink"
+  540 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/assert-plus/1.0.0/node_modules/assert-plus"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/verror/1.10.0/node_modules/assert-plus"
+  541 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/core-util-is/1.0.2/node_modules/core-util-is"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/verror/1.10.0/node_modules/core-util-is"
+  542 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/extsprintf/1.4.0/node_modules/extsprintf"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/verror/1.10.0/node_modules/extsprintf"
+  543 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/form-data/2.3.3/node_modules/form-data"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/form-data/2.3.3/node_modules/form-data"
+    method: "hardlink"
+  544 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/fs-minipass/1.2.5/node_modules/fs-minipass"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fs-minipass/1.2.5/node_modules/fs-minipass"
+    method: "hardlink"
+  545 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/2.1.1/node_modules/string-width"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/wide-align/1.1.3/node_modules/string-width"
+  546 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/fs.realpath/1.0.0/node_modules/fs.realpath"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/fs.realpath/1.0.0/node_modules/fs.realpath"
+    method: "hardlink"
+  547 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/function-bind/1.1.1/node_modules/function-bind"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/function-bind/1.1.1/node_modules/function-bind"
+    method: "hardlink"
+  548 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/async-limiter/1.0.0/node_modules/async-limiter"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ws/4.1.0/node_modules/async-limiter"
+  549 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    link: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ws/4.1.0/node_modules/safe-buffer"
+  550 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/gauge/2.7.4/node_modules/gauge"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/gauge/2.7.4/node_modules/gauge"
+    method: "hardlink"
+  551 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/getpass/0.1.7/node_modules/getpass"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/getpass/0.1.7/node_modules/getpass"
+    method: "hardlink"
+  552 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/glob/7.1.3/node_modules/glob"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/glob/7.1.3/node_modules/glob"
+    method: "hardlink"
+  553 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/har-schema/2.0.0/node_modules/har-schema"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/har-schema/2.0.0/node_modules/har-schema"
+    method: "hardlink"
+  554 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/har-validator/5.1.3/node_modules/har-validator"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/har-validator/5.1.3/node_modules/har-validator"
+    method: "hardlink"
+  555 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/has-symbols/1.0.0/node_modules/has-symbols"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/has-symbols/1.0.0/node_modules/has-symbols"
+    method: "hardlink"
+  556 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/has-unicode/2.0.1/node_modules/has-unicode"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/has-unicode/2.0.1/node_modules/has-unicode"
+    method: "hardlink"
+  557 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/has/1.0.3/node_modules/has"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/has/1.0.3/node_modules/has"
+    method: "hardlink"
+  558 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/http-signature/1.2.0/node_modules/http-signature"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/http-signature/1.2.0/node_modules/http-signature"
+    method: "hardlink"
+  559 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/iconv-lite/0.4.24/node_modules/iconv-lite"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/iconv-lite/0.4.24/node_modules/iconv-lite"
+    method: "hardlink"
+  560 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ignore-walk/3.0.1/node_modules/ignore-walk"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ignore-walk/3.0.1/node_modules/ignore-walk"
+    method: "hardlink"
+  561 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/inflight/1.0.6/node_modules/inflight"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/inflight/1.0.6/node_modules/inflight"
+    method: "hardlink"
+  562 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/inherits/2.0.3/node_modules/inherits"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/inherits/2.0.3/node_modules/inherits"
+    method: "hardlink"
+  563 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ini/1.3.5/node_modules/ini"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ini/1.3.5/node_modules/ini"
+    method: "hardlink"
+  564 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/is-callable/1.1.4/node_modules/is-callable"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-callable/1.1.4/node_modules/is-callable"
+    method: "hardlink"
+  565 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/is-date-object/1.0.1/node_modules/is-date-object"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-date-object/1.0.1/node_modules/is-date-object"
+    method: "hardlink"
+  566 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/is-fullwidth-code-point/1.0.0/node_modules/is-fullwidth-code-point"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-fullwidth-code-point/1.0.0/node_modules/is-fullwidth-code-point"
+    method: "hardlink"
+  567 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/is-fullwidth-code-point/2.0.0/node_modules/is-fullwidth-code-point"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-fullwidth-code-point/2.0.0/node_modules/is-fullwidth-code-point"
+    method: "hardlink"
+  568 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/is-regex/1.0.4/node_modules/is-regex"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-regex/1.0.4/node_modules/is-regex"
+    method: "hardlink"
+  569 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/is-symbol/1.0.2/node_modules/is-symbol"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-symbol/1.0.2/node_modules/is-symbol"
+    method: "hardlink"
+  570 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/is-typedarray/1.0.0/node_modules/is-typedarray"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/is-typedarray/1.0.0/node_modules/is-typedarray"
+    method: "hardlink"
+  571 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/isarray/1.0.0/node_modules/isarray"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/isarray/1.0.0/node_modules/isarray"
+    method: "hardlink"
+  572 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/isstream/0.1.2/node_modules/isstream"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/isstream/0.1.2/node_modules/isstream"
+    method: "hardlink"
+  573 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/jsbn/0.1.1/node_modules/jsbn"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsbn/0.1.1/node_modules/jsbn"
+    method: "hardlink"
+  574 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/json-schema-traverse/0.4.1/node_modules/json-schema-traverse"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/json-schema-traverse/0.4.1/node_modules/json-schema-traverse"
+    method: "hardlink"
+  575 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/json-schema/0.2.3/node_modules/json-schema"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/json-schema/0.2.3/node_modules/json-schema"
+    method: "hardlink"
+  576 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/json-stringify-safe/5.0.1/node_modules/json-stringify-safe"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/json-stringify-safe/5.0.1/node_modules/json-stringify-safe"
+    method: "hardlink"
+  577 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/jsprim/1.4.1/node_modules/jsprim"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/jsprim/1.4.1/node_modules/jsprim"
+    method: "hardlink"
+  578 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/long/4.0.0/node_modules/long"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/long/4.0.0/node_modules/long"
+    method: "hardlink"
+  579 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/mime-db/1.37.0/node_modules/mime-db"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mime-db/1.37.0/node_modules/mime-db"
+    method: "hardlink"
+  580 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/mime-types/2.1.21/node_modules/mime-types"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mime-types/2.1.21/node_modules/mime-types"
+    method: "hardlink"
+  581 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/mime/1.6.0/node_modules/mime"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mime/1.6.0/node_modules/mime"
+    method: "hardlink"
+  582 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/minimatch/3.0.4/node_modules/minimatch"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minimatch/3.0.4/node_modules/minimatch"
+    method: "hardlink"
+  583 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/minimist/0.0.8/node_modules/minimist"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minimist/0.0.8/node_modules/minimist"
+    method: "hardlink"
+  584 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/minimist/1.2.0/node_modules/minimist"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minimist/1.2.0/node_modules/minimist"
+    method: "hardlink"
+  585 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/minipass/2.3.5/node_modules/minipass"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minipass/2.3.5/node_modules/minipass"
+    method: "hardlink"
+  586 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/minizlib/1.1.1/node_modules/minizlib"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/minizlib/1.1.1/node_modules/minizlib"
+    method: "hardlink"
+  587 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/mkdirp/0.5.1/node_modules/mkdirp"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/mkdirp/0.5.1/node_modules/mkdirp"
+    method: "hardlink"
+  588 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ms/2.0.0/node_modules/ms"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ms/2.0.0/node_modules/ms"
+    method: "hardlink"
+  589 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ms/2.1.1/node_modules/ms"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ms/2.1.1/node_modules/ms"
+    method: "hardlink"
+  590 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/nan/2.11.1/node_modules/nan"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/nan/2.11.1/node_modules/nan"
+    method: "hardlink"
+  591 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/needle/2.2.4/node_modules/needle"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/needle/2.2.4/node_modules/needle"
+    method: "hardlink"
+  592 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/node-pre-gyp"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-pre-gyp/0.11.0/node_modules/node-pre-gyp"
+    method: "hardlink"
+  593 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/node-telegram-bot-api"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/node-telegram-bot-api"
+    method: "hardlink"
+  594 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/nopt/4.0.1/node_modules/nopt"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/nopt/4.0.1/node_modules/nopt"
+    method: "hardlink"
+  595 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/npm-bundled/1.0.5/node_modules/npm-bundled"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npm-bundled/1.0.5/node_modules/npm-bundled"
+    method: "hardlink"
+  596 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/npm-packlist/1.1.12/node_modules/npm-packlist"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npm-packlist/1.1.12/node_modules/npm-packlist"
+    method: "hardlink"
+  597 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/npmlog/4.1.2/node_modules/npmlog"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/npmlog/4.1.2/node_modules/npmlog"
+    method: "hardlink"
+  598 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/number-is-nan/1.0.1/node_modules/number-is-nan"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/number-is-nan/1.0.1/node_modules/number-is-nan"
+    method: "hardlink"
+  599 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/oauth-sign/0.9.0/node_modules/oauth-sign"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/oauth-sign/0.9.0/node_modules/oauth-sign"
+    method: "hardlink"
+  600 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/object-assign/4.1.1/node_modules/object-assign"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/object-assign/4.1.1/node_modules/object-assign"
+    method: "hardlink"
+  601 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/object-keys/1.0.12/node_modules/object-keys"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/object-keys/1.0.12/node_modules/object-keys"
+    method: "hardlink"
+  602 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/once/1.4.0/node_modules/once"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/once/1.4.0/node_modules/once"
+    method: "hardlink"
+  603 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/os-homedir/1.0.2/node_modules/os-homedir"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/os-homedir/1.0.2/node_modules/os-homedir"
+    method: "hardlink"
+  604 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/os-tmpdir/1.0.2/node_modules/os-tmpdir"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/os-tmpdir/1.0.2/node_modules/os-tmpdir"
+    method: "hardlink"
+  605 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/osenv/0.1.5/node_modules/osenv"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/osenv/0.1.5/node_modules/osenv"
+    method: "hardlink"
+  606 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/path-is-absolute/1.0.1/node_modules/path-is-absolute"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/path-is-absolute/1.0.1/node_modules/path-is-absolute"
+    method: "hardlink"
+  607 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/performance-now/2.1.0/node_modules/performance-now"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/performance-now/2.1.0/node_modules/performance-now"
+    method: "hardlink"
+  608 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/prism-media/0.0.3/node_modules/prism-media"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/prism-media/0.0.3/node_modules/prism-media"
+    method: "hardlink"
+  609 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/process-nextick-args/2.0.0/node_modules/process-nextick-args"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/process-nextick-args/2.0.0/node_modules/process-nextick-args"
+    method: "hardlink"
+  610 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/psl/1.1.29/node_modules/psl"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/psl/1.1.29/node_modules/psl"
+    method: "hardlink"
+  611 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/pump/2.0.1/node_modules/pump"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/pump/2.0.1/node_modules/pump"
+    method: "hardlink"
+  612 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/punycode/1.4.1/node_modules/punycode"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/punycode/1.4.1/node_modules/punycode"
+    method: "hardlink"
+  613 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/punycode/2.1.1/node_modules/punycode"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/punycode/2.1.1/node_modules/punycode"
+    method: "hardlink"
+  614 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/qs/6.5.2/node_modules/qs"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/qs/6.5.2/node_modules/qs"
+    method: "hardlink"
+  615 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/rc/1.2.8/node_modules/rc"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rc/1.2.8/node_modules/rc"
+    method: "hardlink"
+  616 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/readable-stream/2.3.6/node_modules/readable-stream"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/readable-stream/2.3.6/node_modules/readable-stream"
+    method: "hardlink"
+  617 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/request-promise-core/1.1.1/node_modules/request-promise-core"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise-core/1.1.1/request@2.88.0/node_modules/request-promise-core"
+    method: "hardlink"
+  618 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/request-promise/4.2.2/node_modules/request-promise"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request-promise/4.2.2/request@2.88.0/node_modules/request-promise"
+    method: "hardlink"
+  619 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/request/2.88.0/node_modules/request"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/request/2.88.0/node_modules/request"
+    method: "hardlink"
+  620 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/rimraf/2.6.2/node_modules/rimraf"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/rimraf/2.6.2/node_modules/rimraf"
+    method: "hardlink"
+  621 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safe-buffer/5.1.2/node_modules/safe-buffer"
+    method: "hardlink"
+  622 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/safer-buffer/2.1.2/node_modules/safer-buffer"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/safer-buffer/2.1.2/node_modules/safer-buffer"
+    method: "hardlink"
+  623 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/sax/1.2.4/node_modules/sax"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sax/1.2.4/node_modules/sax"
+    method: "hardlink"
+  624 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/semver/5.6.0/node_modules/semver"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/semver/5.6.0/node_modules/semver"
+    method: "hardlink"
+  625 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/set-blocking/2.0.0/node_modules/set-blocking"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/set-blocking/2.0.0/node_modules/set-blocking"
+    method: "hardlink"
+  626 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/signal-exit/3.0.2/node_modules/signal-exit"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/signal-exit/3.0.2/node_modules/signal-exit"
+    method: "hardlink"
+  627 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/snekfetch/3.6.4/node_modules/snekfetch"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/snekfetch/3.6.4/node_modules/snekfetch"
+    method: "hardlink"
+  628 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/sshpk/1.15.2/node_modules/sshpk"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/sshpk/1.15.2/node_modules/sshpk"
+    method: "hardlink"
+  629 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/stealthy-require/1.1.1/node_modules/stealthy-require"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/stealthy-require/1.1.1/node_modules/stealthy-require"
+    method: "hardlink"
+  630 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/string-width/1.0.2/node_modules/string-width"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/1.0.2/node_modules/string-width"
+    method: "hardlink"
+  631 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/string-width/2.1.1/node_modules/string-width"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string-width/2.1.1/node_modules/string-width"
+    method: "hardlink"
+  632 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/string_decoder/1.1.1/node_modules/string_decoder"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/string_decoder/1.1.1/node_modules/string_decoder"
+    method: "hardlink"
+  633 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/strip-ansi/3.0.1/node_modules/strip-ansi"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-ansi/3.0.1/node_modules/strip-ansi"
+    method: "hardlink"
+  634 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/strip-ansi/4.0.0/node_modules/strip-ansi"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-ansi/4.0.0/node_modules/strip-ansi"
+    method: "hardlink"
+  635 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/strip-json-comments/2.0.1/node_modules/strip-json-comments"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/strip-json-comments/2.0.1/node_modules/strip-json-comments"
+    method: "hardlink"
+  636 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/tar/4.4.8/node_modules/tar"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tar/4.4.8/node_modules/tar"
+    method: "hardlink"
+  637 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/tunnel-agent/0.6.0/node_modules/tunnel-agent"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tunnel-agent/0.6.0/node_modules/tunnel-agent"
+    method: "hardlink"
+  638 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/tough-cookie/2.4.3/node_modules/tough-cookie"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tough-cookie/2.4.3/node_modules/tough-cookie"
+    method: "hardlink"
+  639 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/util-deprecate/1.0.2/node_modules/util-deprecate"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/util-deprecate/1.0.2/node_modules/util-deprecate"
+    method: "hardlink"
+  640 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/uuid/3.3.2/node_modules/uuid"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/uuid/3.3.2/node_modules/uuid"
+    method: "hardlink"
+  641 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/wide-align/1.1.3/node_modules/wide-align"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/wide-align/1.1.3/node_modules/wide-align"
+    method: "hardlink"
+  642 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/tweetnacl/0.14.5/node_modules/tweetnacl"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tweetnacl/0.14.5/node_modules/tweetnacl"
+    method: "hardlink"
+  643 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/verror/1.10.0/node_modules/verror"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/verror/1.10.0/node_modules/verror"
+    method: "hardlink"
+  644 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/wrappy/1.0.2/node_modules/wrappy"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/wrappy/1.0.2/node_modules/wrappy"
+    method: "hardlink"
+  645 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/tweetnacl/1.0.0/node_modules/tweetnacl"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/tweetnacl/1.0.0/node_modules/tweetnacl"
+    method: "hardlink"
+  646 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/yallist/3.0.3/node_modules/yallist"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/yallist/3.0.3/node_modules/yallist"
+    method: "hardlink"
+  647 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/ws/4.1.0/node_modules/ws"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/ws/4.1.0/node_modules/ws"
+    method: "hardlink"
+  648 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/uri-js/4.2.2/node_modules/uri-js"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/uri-js/4.2.2/node_modules/uri-js"
+    method: "hardlink"
+  649 debug pnpm:importing: 
+    from: "/home/lach/.pnpm-store/2/registry.npmjs.org/lodash/4.17.11/node_modules/lodash"
+    to: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/lodash/4.17.11/node_modules/lodash"
+    method: "hardlink"
+  650 debug pnpm:stage: "importing_done"
+  651 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/canvas/2.1.0/node_modules/canvas"
+    link: "/home/lach/framework/packages/xbot/node_modules/canvas"
+  652 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/discord.js/11.4.2/node_modules/discord.js"
+    link: "/home/lach/framework/packages/xbot/node_modules/discord.js"
+  653 debug pnpm:link: 
+    target: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/node-telegram-bot-api/0.30.0/node_modules/node-telegram-bot-api"
+    link: "/home/lach/framework/packages/xbot/node_modules/node-telegram-bot-api"
+  654 debug pnpm:root: 
+    added: 
+      dependencyType: "prod"
+      id: "registry.npmjs.org/canvas/2.1.0"
+      name: "canvas"
+      realName: "canvas"
+      version: "2.1.0"
+    prefix: "/home/lach/framework/packages/xbot"
+  655 debug pnpm:root: 
+    added: 
+      dependencyType: "optional"
+      id: "registry.npmjs.org/discord.js/11.4.2"
+      name: "discord.js"
+      realName: "discord.js"
+      version: "11.4.2"
+    prefix: "/home/lach/framework/packages/xbot"
+  656 debug pnpm:root: 
+    added: 
+      dependencyType: "optional"
+      id: "registry.npmjs.org/node-telegram-bot-api/0.30.0"
+      name: "node-telegram-bot-api"
+      realName: "node-telegram-bot-api"
+      version: "0.30.0"
+    prefix: "/home/lach/framework/packages/xbot"
+  657 debug pnpm:root: 
+    added: 
+      dependencyType: "prod"
+      linkedFrom: "/home/lach/framework/packages/mime"
+      name: "@meteor-it/mime"
+      realName: "@meteor-it/mime"
+      version: "0.4.12"
+    prefix: "/home/lach/framework/packages/xbot"
+  658 debug pnpm:root: 
+    added: 
+      dependencyType: "prod"
+      linkedFrom: "/home/lach/framework/packages/fs"
+      name: "@meteor-it/fs"
+      realName: "@meteor-it/fs"
+      version: "1.1.1"
+    prefix: "/home/lach/framework/packages/xbot"
+  659 debug pnpm:root: 
+    added: 
+      dependencyType: "prod"
+      linkedFrom: "/home/lach/framework/packages/logger"
+      name: "@meteor-it/logger"
+      realName: "@meteor-it/logger"
+      version: "2.3.18"
+    prefix: "/home/lach/framework/packages/xbot"
+  660 debug pnpm:root: 
+    added: 
+      dependencyType: "prod"
+      linkedFrom: "/home/lach/framework/packages/queue"
+      name: "@meteor-it/queue"
+      realName: "@meteor-it/queue"
+      version: "2.0.19"
+    prefix: "/home/lach/framework/packages/xbot"
+  661 debug pnpm:root: 
+    added: 
+      dependencyType: "prod"
+      linkedFrom: "/home/lach/framework/packages/xrest"
+      name: "@meteor-it/xrest"
+      realName: "@meteor-it/xrest"
+      version: "1.3.21"
+    prefix: "/home/lach/framework/packages/xbot"
+  662 debug pnpm:root: 
+    added: 
+      dependencyType: "prod"
+      linkedFrom: "/home/lach/framework/packages/utils"
+      name: "@meteor-it/utils"
+      realName: "@meteor-it/utils"
+      version: "1.3.11"
+    prefix: "/home/lach/framework/packages/xbot"
+  663 debug pnpm:package-json: 
+    prefix: "/home/lach/framework/packages/xbot"
+    updated: 
+      name: "@meteor-it/xbot"
+      version: "1.3.23"
+      description: "Bot engine"
+      main: "index.js"
+      keywords: 
+        - "meteor-it"
+        - "xbot"
+        - "hubot"
+      author: 
+        name: "Yaroslaw Bolyukin"
+        email: "iam@f6cf.pw"
+        url: "http://f6cf.pw/"
+      license: "MIT"
+      dependencies: 
+        canvas: "^2.0.0-alpha.13"
+      optionalDependencies: 
+        discord.js: "^11.4.2"
+        node-telegram-bot-api: "^0.30.0"
+      sideEffects: false
+      publishConfig: 
+        access: "public"
+      gitHead: "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
+      readme: "# xbot\nI"
+      readmeFilename: "README.MD"
+      _id: "@meteor-it/xbot@1.3.23"
+  664 debug pnpm:lifecycle: 
+    depPath: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/canvas/2.1.0/node_modules/canvas"
+    script: "node-pre-gyp install --fallback-to-build"
+    stage: "install"
+    wd: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/canvas/2.1.0/node_modules/canvas"
+  665 debug pnpm:lifecycle: 
+    depPath: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/canvas/2.1.0/node_modules/canvas"
+    line: "node-pre-gyp WARN Using request for node-pre-gyp https download "
+    stage: "install"
+    stdio: "stderr"
+    wd: "/home/lach/framework/packages/xbot/node_modules/.registry.npmjs.org/canvas/2.1.0/node_modules/canvas"

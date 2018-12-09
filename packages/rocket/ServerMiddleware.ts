@@ -78,9 +78,9 @@ export default class ServerMiddleware extends MultiMiddleware {
         if (!Array.isArray(files))
             files = [files];
         let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null, store: {} };
+        const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
         await this.rocket.router.route(path, ctx => {
             ctx.state = currentState;
-            const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
             routerStore.setDataNoRerender(path, query);
             ctx.query = query;
         });
