@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/xpress",
-    "version": "4.2.18",
+    "version": "4.2.19",
     "description": "The most powerfull express.js alternative",
     "main": "index.js",
     "keywords": [
