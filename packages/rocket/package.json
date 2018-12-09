@@ -24,6 +24,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "sideEffects": false,
   "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043",
   "devDependencies": {
     "@types/react": "^16.4.18",

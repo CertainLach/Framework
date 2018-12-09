@@ -18,5 +18,6 @@
     "@meteor-it/fs": "^1.1.0",
     "@meteor-it/logger": "^2.3.17"
   },
+  "sideEffects": false,
   "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
 }

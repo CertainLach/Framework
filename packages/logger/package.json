@@ -13,6 +13,10 @@
         "@meteor-it/terminal": "^0.5.13",
         "@meteor-it/utils": "^1.3.10"
     },
+    "sideEffects": [
+        "index.ts",
+        "index.js"
+    ],
     "publishConfig": {
         "access": "public"
     },
