@@ -17,14 +17,13 @@ function lookupMime(filename: string, gzipped: boolean) {
     return lookupByPath(gzipped ? (filename.substr(0, filename.lastIndexOf('.'))) : filename);
 }
 
-const EMPTY_BUFFER = Buffer.from([]);
-
 /**
  * FIXME: If added before any other route somehow supresses errors thrown
  */
 export default class StaticMiddleware extends RoutingMiddleware<XPressRouterContext, void, 'GET'> {
     private readonly rootFolder: string;
     private readonly filter?: RegExp;
+    private readonly EMPTY_BUFFER = Buffer.from([]);
 
     constructor(rootFolder: string, {filter}: { filter?: RegExp } = {}) {
         super();
@@ -50,7 +49,7 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
             // No need to compare against eps
             if ((new Date(stream.reqHeaders[HTTP2_HEADER_IF_MODIFIED_SINCE] as string).getTime() - stats.mtime.getTime()) <= 0) {
                 stream.resHeaders[HTTP2_HEADER_STATUS] = 304;
-                stream.send(EMPTY_BUFFER);
+                stream.send(this.EMPTY_BUFFER);
                 return;
             }
             let type = lookupMime(filename, gzippedFound);
