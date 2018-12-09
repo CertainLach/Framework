@@ -25,7 +25,11 @@
     "devDependencies": {
         "@types/uws": "^0.13.2"
     },
-    "sideEffects": false,
+    "sideEffects": [
+        "index.js",
+        "index.mjs",
+        "index.ts"
+    ],
     "publishConfig": {
         "access": "public"
     },
