@@ -32,9 +32,9 @@ const h: IH = ((...args: any[]) => {
         }
     } else if (args.length === 2) {
         if (args[1] instanceof Array) {
-            if (args[1].length === 1)
-                return React.createElement(args[0], null, args[1][0]);
-            return React.createElement(args[0], null, ...args[1]);
+            let el = args[1];
+            while(el.length===1)el = el[0];
+            return React.createElement(args[0], null, ...el);
         } else {
             if(!!args[1])
                 processProps(args[1]);
@@ -43,9 +43,9 @@ const h: IH = ((...args: any[]) => {
     } else {
         if(!!args[1])
             processProps(args[1]);
-        if (args[2].length === 1)
-            return React.createElement(args[0], args[1], args[2][0]);
-        return React.createElement(args[0], args[1], ...args[2]);
+        let el = args[2];
+        while(el.length===1)el = el[0];
+        return React.createElement(args[0], args[1], ...el);
     }
 }) as any;
 
