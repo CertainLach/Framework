@@ -2,7 +2,6 @@
     "name": "@meteor-it/xpress",
     "version": "4.2.23",
     "description": "The most powerfull express.js alternative",
-    "module": "index.mjs",
     "main": "index.js",
     "keywords": [
         "meteor-it",
@@ -28,7 +27,8 @@
     "sideEffects": [
         "index.js",
         "index.mjs",
-        "index.ts"
+        "index.ts
+        "
     ],
     "publishConfig": {
         "access": "public"
