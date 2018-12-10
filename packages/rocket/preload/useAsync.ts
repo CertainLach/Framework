@@ -1,8 +1,10 @@
 import { useStore } from "../stores";
 import PreloadStore, { LoadingItem } from "./PreloadStore";
 import LoadingState from './LoadingState';
-import { useState, useEffect } from 'react';
+import React from 'react';
 import ErrorType from "./ErrorType";
+
+const { useState, useEffect } = React;
 
 export class SSRLoadingError extends Error { }
 

@@ -1,10 +1,10 @@
-import {Api,User,Chat,MessageEvent,/*ForwardedMessage,*/Gender,/*Location,Image,File,Audio,TitleChangeEvent,JoinEvent,LeaveEvent,ActionEvent*/} from "../";
+import { Api, User, Chat, MessageEvent,/*ForwardedMessage,*/Gender,/*Location,Image,File,Audio,TitleChangeEvent,JoinEvent,LeaveEvent,ActionEvent*/ } from "../";
 /*import XRest from "@meteor-it/xrest";
 import * as multipart from '@meteor-it/xrest/multipart';*/
-import {/*readStream,*/sleep} from '@meteor-it/utils';
-import {Client/*, User as DiscordUser, Channel as DiscordChannel*/} from 'discord.js';
+import {/*readStream,*/sleep } from '@meteor-it/utils';
+import { Client/*, User as DiscordUser, Channel as DiscordChannel*/ } from 'discord.js';
 
-const SPACE_REPLACE=String.fromCharCode(8194);
+const SPACE_REPLACE = String.fromCharCode(8194);
 
 export default class DSApi extends Api {
     logged = false;
@@ -12,7 +12,7 @@ export default class DSApi extends Api {
     constructor() {
         super('DSAPI');
     }
-    async auth(token:string) {
+    async auth(token: string) {
         const client = new Client();
         client.login(token);
         this.client = client;
@@ -24,7 +24,7 @@ export default class DSApi extends Api {
     //
     // }
     async startReceiver() {
-        this.client.on('message', (message:any) => {
+        this.client.on('message', (message: any) => {
             let user = this.getUserFromApiData(message.author);
             let chat = message.channel;
             if (message.guild)
@@ -45,7 +45,7 @@ export default class DSApi extends Api {
             this.emit('message', msgEvent);
         });
     }
-    async uGetUser(uid: string): Promise < User > {
+    async uGetUser(uid: string): Promise<User> {
         throw new Error('WIP');
         // if(!uid.startsWith('TGC.'))
         //     return null;
@@ -62,7 +62,7 @@ export default class DSApi extends Api {
         //     last_name:'Telegram API',
         // });
     }
-    async uGetChat(cid: string): Promise < Chat > {
+    async uGetChat(cid: string): Promise<Chat> {
         throw new Error('WIP');
         // if(!cid.startsWith('TGC.'))
         //     return null;
@@ -75,7 +75,7 @@ export default class DSApi extends Api {
         // return await this.getChat(id);
     }
     photoCache = new Map();
-    getUserFromApiData(data:any) {
+    getUserFromApiData(data: any) {
         return new User({
             messageId: null,
             api: this,
@@ -89,24 +89,24 @@ export default class DSApi extends Api {
             profileUrl: 'netu ego, hы'
         });
     }
-    getChatFromApiData(data:any, guild:any) {
+    getChatFromApiData(data: any, guild: any) {
         return new Chat({
             messageId: null,
             api: this,
             cid: 'DSC.' + data.id,
             targetId: data,
             title: data.topic || data.name,
-            users: guild.members.array().map((member:any) => this.getUserFromApiData(member)),
+            users: guild.members.array().map((member: any) => this.getUserFromApiData(member)),
             admins: [],
             photoUrl: guild.iconURL
         });
     }
-    async sendLocation(targetId:any, answer:any, caption:any, location:any, options:any) {
+    async sendLocation(targetId: any, answer: any, caption: any, location: any, options: any) {
 
     }
 
 
-    static *limitTextString(text:string):IterableIterator<string> {
+    static *limitTextString(text: string): IterableIterator<string> {
         let strings = text.split(' \n');
         let currentString = '';
         while (true) {
@@ -122,27 +122,27 @@ export default class DSApi extends Api {
             currentString += strings.shift() + '\n';
         }
     }
-    async sendText(targetId:any, answer:any, text:any, options:any) {
+    async sendText(targetId: any, answer: any, text: any, options: any) {
         for (let textPart of DSApi.limitTextString(SPACE_REPLACE + '\n' + text)) {
-            if(textPart!==null){
+            if (textPart !== null) {
                 await targetId.send(textPart);
                 await sleep(500);
             }
         }
     }
 
-    async sendImageStream(targetId:any, answer:any, caption:any, image:any, options:any) {
+    async sendImageStream(targetId: any, answer: any, caption: any, image: any, options: any) {
         // image.stream.path='aaaaa.jpeg';
         // await this.bot.sendPhoto(targetId, image.stream, {
         //     reply_to_message_id:answer,
         //     caption
         // });
     }
-    async sendFileStream(targetId:any, answer:any, caption:any, file:any, options:any) {
+    async sendFileStream(targetId: any, answer: any, caption: any, file: any, options: any) {
 
     }
-    async sendAudioStream(targetId:any, answer:any, caption:any, audio:any, options:any) {
+    async sendAudioStream(targetId: any, answer: any, caption: any, audio: any, options: any) {
 
     }
-    async sendCustom(targetId:any, answer:any, options:any) {}
+    async sendCustom(targetId: any, answer: any, options: any) { }
 }

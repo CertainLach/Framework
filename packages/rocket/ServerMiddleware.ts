@@ -1,25 +1,32 @@
+import http2 from 'http2';
+import path from 'path';
+import url from 'url';
+import querystring from 'querystring';
+import mobx from 'mobx';
+import ReactDOMServer from 'react-dom/server';
+import { useStaticRendering } from "mobx-react-lite";
 import { readFile } from '@meteor-it/fs';
 import { IRouterContext } from '@meteor-it/router';
 import { XPressRouterContext } from '@meteor-it/xpress';
-import { renderToStaticMarkup, renderToString } from 'react-dom/server';
-import { toJS } from 'mobx';
+import { asyncEach } from "@meteor-it/utils";
+import Router, { MultiMiddleware, RoutingMiddleware } from "@meteor-it/router";
+import { StaticMiddleware } from "@meteor-it/xpress";
 import { preloadAll } from './preload/TO_PRELOAD';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
-import { constants } from 'http2';
-import { asyncEach } from "@meteor-it/utils";
-import { join } from 'path';
-import { format } from 'url';
-import { stringify } from 'querystring';
-import Router, { MultiMiddleware, RoutingMiddleware } from "@meteor-it/router";
-import StaticMiddleware from "@meteor-it/xpress/middlewares/StaticMiddleware";
-import { useStaticRendering } from "mobx-react-lite";
 import { createOrDehydrateStore } from "./stores/useStore";
 import RouterStore from "./router/RouterStore";
 import HelmetStore from "./helmet/HelmetStore";
 import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
 import { h, frag } from './h';
 import PreloadStore from './preload/PreloadStore';
+
+const { toJS } = mobx;
+const { stringify } = querystring;
+const { format } = url;
+const { join } = path;
+const { constants } = http2;
+const { renderToStaticMarkup, renderToString } = ReactDOMServer;
 
 const { HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LOCATION, HTTP2_HEADER_LINK } = constants;
 

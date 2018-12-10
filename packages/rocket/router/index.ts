@@ -1,5 +1,4 @@
 import Router from '@meteor-it/router';
-import { configure } from 'mobx';
 import Logger from '@meteor-it/logger';
 import Store from "../stores/store";
 import RouterStore from "./RouterStore";

@@ -1,9 +1,9 @@
 import {
-    PotatoSocketUniversal, 
-    IEncoder, PacketType, IServerOpenHandler, 
+    PotatoSocketUniversal,
+    IEncoder, PacketType, IServerOpenHandler,
     IServerCloseHandler,
     IRPCFieldWithThis, IRPCFieldWithoutThis
-}from '../';
+} from '../';
 import Logger from '@meteor-it/logger';
 import WebSocketClient from '../WebSocketClient';
 
@@ -15,19 +15,19 @@ export class PotatoWebSocketServerInternalClient extends PotatoSocketUniversal<I
     session: any = {};
     id: string;
 
-    constructor(id: string, server: PotatoWebSocketServer, websocket:WebSocketClient) {
-        super(server.logger,server.encoder, server);
+    constructor(id: string, server: PotatoWebSocketServer, websocket: WebSocketClient) {
+        super(server.logger, server.encoder, server);
         this.id = id;
         this.websocket = websocket;
         this.logger = server.logger;
-        (websocket as any).on('message', (data:Buffer|string) => {
-            if(data instanceof Buffer)
+        (websocket as any).on('message', (data: Buffer | string) => {
+            if (data instanceof Buffer)
                 this.gotBufferFromRemote(data);
             else
                 this.gotBufferFromRemote(Buffer.from(data as string));
         });
     }
-    sendBufferToRemote(buffer:Buffer) {
+    sendBufferToRemote(buffer: Buffer) {
         this.websocket.send(buffer);
     }
 }
@@ -38,10 +38,10 @@ export class PotatoWebSocketServerInternalClient extends PotatoSocketUniversal<I
  * Websocket potato.socket server
  */
 export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonly<IRPCFieldWithThis<PotatoWebSocketServer>>> {
-    clients: {[key:string]:PotatoWebSocketServerInternalClient} = {};
-    constructor(name:string|Logger, encoder: IEncoder) {
+    clients: { [key: string]: PotatoWebSocketServerInternalClient } = {};
+    constructor(name: string | Logger, encoder: IEncoder) {
         super(name, encoder);
-        this.isServer=true;
+        this.isServer = true;
     }
 
     /**
@@ -49,8 +49,8 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonl
      * @param event
      * @param data
      */
-    emit(event: string, data: any):boolean {
-        if(!this.encoder.hasEvent(event))
+    emit(event: string, data: any): boolean {
+        if (!this.encoder.hasEvent(event))
             throw new Error('Trying to emit not existing packet!');
         try {
             let serialized = this.encoder.encodeData({
@@ -58,8 +58,8 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonl
                 name: event,
                 data: data
             });
-            for(let clientId in this.clients){
-                let client=this.clients[clientId];
+            for (let clientId in this.clients) {
+                let client = this.clients[clientId];
                 client.sendBufferToRemote(serialized);
             }
         } catch (e) {
@@ -72,14 +72,14 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonl
     openHandlers: IServerOpenHandler<PotatoWebSocketServerInternalClient>[] = [];
     closeHandlers: IServerCloseHandler<PotatoWebSocketServerInternalClient>[] = [];
 
-    rpc():IRPCFieldWithThis<this>{
+    rpc(): IRPCFieldWithThis<this> {
         return super.rpc();
     }
 
-    onopen?(socket:PotatoWebSocketServerInternalClient){
+    onopen?(socket: PotatoWebSocketServerInternalClient) {
 
     }
-    onclose?(socket:PotatoWebSocketServerInternalClient){}
+    onclose?(socket: PotatoWebSocketServerInternalClient) { }
     on(event: string, listener: any) {
         if (event === 'open') {
             if (listener.length !== 1)
@@ -95,14 +95,14 @@ export default class PotatoWebSocketServer extends PotatoSocketUniversal<Readonl
         }
         super.on(event, listener);
     }
-    private handler(req:Request, websocket:WebSocketClient) {
+    private handler(req: Request, websocket: WebSocketClient) {
         let id = Math.random().toString(32).substr(2);
         let wrappedSocket = new PotatoWebSocketServerInternalClient(id, this, websocket);
         wrappedSocket.id = id;
         if ((req as any).session)
             wrappedSocket.session = (req as any).session;
         this.clients[id] = wrappedSocket;
-        (websocket as any).on('close', (status:any)=>{
+        (websocket as any).on('close', (status: any) => {
             delete this.clients[id];
             this.closeHandlers.forEach(handler => {
                 handler(wrappedSocket, status);

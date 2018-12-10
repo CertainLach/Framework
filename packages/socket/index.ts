@@ -1,7 +1,7 @@
 import Logger from '@meteor-it/logger';
 
 export class RPCError extends Error {
-    constructor(message:string) {
+    constructor(message: string) {
         super(message);
     }
 }
@@ -14,8 +14,8 @@ export type IClientCloseHandler = (status: number) => PromisableVoid;
 // noinspection JSUnusedGlobalSymbols
 export type IClientOpenCloseHandler = IClientOpenHandler | IClientCloseHandler;
 
-export type IServerOpenHandler<T> = (socket:T) => PromisableVoid;
-export type IServerCloseHandler<T> = (socket:T, status: number) => PromisableVoid;
+export type IServerOpenHandler<T> = (socket: T) => PromisableVoid;
+export type IServerCloseHandler<T> = (socket: T, status: number) => PromisableVoid;
 // noinspection JSUnusedGlobalSymbols
 export type IServerOpenCloseHandler<T> = IServerOpenHandler<T> | IServerCloseHandler<T>;
 
@@ -56,10 +56,10 @@ export const IS_AOK = 0b00000010;
 export const IS_DOK = 0b00000001;
 
 export enum PacketType {
-    RPC_CALL    = 0b10000010, // IS_RPC|IS_AOK
-    RPC_ERROR   = 0b11000010, // IS_RPC|IS_RES|IS_AOK
-    RPC_OK      = 0b11100010, // IS_RPC|IS_RES|IS_OK|IS_AOK
-    EVENT       = 0b01100010  // IS_RES|IS_OK|IS_AOK
+    RPC_CALL = 0b10000010, // IS_RPC|IS_AOK
+    RPC_ERROR = 0b11000010, // IS_RPC|IS_RES|IS_AOK
+    RPC_OK = 0b11100010, // IS_RPC|IS_RES|IS_OK|IS_AOK
+    EVENT = 0b01100010  // IS_RES|IS_OK|IS_AOK
 }
 
 /**
@@ -103,7 +103,7 @@ export interface IEncoder {
 
     setRandomToRpc(random: number, rpc: string): void;
 
-    resetRandomToRpc(random: number):void;
+    resetRandomToRpc(random: number): void;
 
     hasRpcMethod(name: string): boolean;
 
@@ -121,7 +121,7 @@ export type IRPCHandlerWithoutThis = (data: any) => Promise<any>;
 export type IRPCHandlerWithThis<T> = (socket: T, data: any) => Promise<any>;
 
 export type IEventHandlerWithoutThis = (name: 'open' | 'close' | string, handler: (data: any) => PromisableVoid) => void;
-export type IEventHandlerWithThis<T> = (name: 'open' | 'close' | string, handler: (socket:T, data: any) => PromisableVoid) => void;
+export type IEventHandlerWithThis<T> = (name: 'open' | 'close' | string, handler: (socket: T, data: any) => PromisableVoid) => void;
 /**
  * Misc
  */
@@ -156,7 +156,7 @@ export class PotatoSocketUniversal<F> {
 
     //isThisNeeded: boolean;
 
-    server?:any;
+    server?: any;
     /**
      * Encoder manages data (de)serialization
      */
@@ -166,7 +166,7 @@ export class PotatoSocketUniversal<F> {
      */
     timeout: number;
 
-    constructor(name: string | Logger, encoder: IEncoder, server:any = null, timeout = 20000) {
+    constructor(name: string | Logger, encoder: IEncoder, server: any = null, timeout = 20000) {
         this.timeout = timeout;
         this.logger = Logger.from(name);
         if (server)
@@ -257,16 +257,16 @@ export class PotatoSocketUniversal<F> {
          * GET = calls remote rpc method
          * SET = sets remote (Received from other client) rpc method handler
          */
-        rpc: (): F =>{
-            let path='';
-            let self=this;
-            const proxy:ProxyHandler<IRPCField<this>> = new Proxy({}, {
-                get(target,key:string){
-                    path+='.'+key;
-                    let callbackName=path.substr(1);
-                    if(self.encoder.hasRpcMethod(callbackName)){
-                        return (...args:any[])=>{
-                            path='';
+        rpc: (): F => {
+            let path = '';
+            let self = this;
+            const proxy: ProxyHandler<IRPCField<this>> = new Proxy({}, {
+                get(target, key: string) {
+                    path += '.' + key;
+                    let callbackName = path.substr(1);
+                    if (self.encoder.hasRpcMethod(callbackName)) {
+                        return (...args: any[]) => {
+                            path = '';
                             if (args.length !== 1)
                                 throw new Error(`Wrong method call argument count: ${args.length}, methods must have only one argument passed!`);
                             return self.callRemoteMethod(callbackName, args[0]);
@@ -274,10 +274,10 @@ export class PotatoSocketUniversal<F> {
                     }
                     return proxy;
                 },
-                set(target,key:string,to:IRPCHandlerWithoutThis|IRPCHandlerWithThis<typeof self>){
-                    path+='.'+key;
-                    let callbackName=path.substr(1);
-                    path='';
+                set(target, key: string, to: IRPCHandlerWithoutThis | IRPCHandlerWithThis<typeof self>) {
+                    path += '.' + key;
+                    let callbackName = path.substr(1);
+                    path = '';
                     if (!self.encoder.hasRpcMethod(callbackName))
                         throw new Error(`Method declaration are not in pds: ${callbackName}\nExisting methods: ${self.encoder.getExistingRpcMethods().join(', ')}`);
                     if (!((to as any) instanceof Function))
@@ -504,7 +504,7 @@ export class PotatoSocketUniversal<F> {
      * Send buffer to receiver side
      * @param buffer
      */
-    sendBufferToRemote(buffer:Buffer) {
+    sendBufferToRemote(buffer: Buffer) {
         this.logger.error(buffer);
         throw new Error('PotatoSocketUniversal have no sendBufferToRemote method declaration!\nUse class extending it!');
     }
@@ -515,7 +515,7 @@ export class PotatoSocketUniversal<F> {
      * Got buffer from sender side
      * @param buffer
      */
-    gotBufferFromRemote(buffer:Buffer) {
+    gotBufferFromRemote(buffer: Buffer) {
         try {
             let packet = this.encoder.decodeData(buffer);
             switch (packet.type) {

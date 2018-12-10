@@ -1,11 +1,11 @@
 import Logger from '@meteor-it/logger';
 import EventEmitter from './EventEmitter';
-import {getReadStream,stat,isFile} from '@meteor-it/fs';
-import {emit} from '@meteor-it/xrest';
-import {readStreamToBuffer,createReadStream} from '@meteor-it/utils';
-import {Readable} from 'stream';
+import { getReadStream, stat, isFile } from '@meteor-it/fs';
+import { emit } from '@meteor-it/xrest';
+import { readStreamToBuffer, createReadStream } from '@meteor-it/utils';
+import { Readable } from 'stream';
 import TimingData from './TimingData';
-import {lookupByPath} from '@meteor-it/mime';
+import { lookupByPath } from '@meteor-it/mime';
 
 // TODO: More discord related types
 // TODO: Split logging to middlewares
@@ -28,13 +28,13 @@ import {lookupByPath} from '@meteor-it/mime';
 export default class XBot extends EventEmitter {
     logger: Logger;
     name: string;
-    apiList:Api[]=[];
-    constructor(name:string) {
+    apiList: Api[] = [];
+    constructor(name: string) {
         super();
         this.name = name;
         this.logger = new Logger(name);
     }
-    attachApi(api:Api) {
+    attachApi(api: Api) {
         if (!api.logged)
             throw new Error('You must call api.auth before adding them!');
         api.on('message', msg => this.onMessage(msg, api));
@@ -93,30 +93,30 @@ export default class XBot extends EventEmitter {
         // this.logger.log(`${inOldTitle} -> ${inNewTitle} by ${inFirstName} ${inLastName}${inChat}`);
         this.emit('title', title);
     }
-    async uGetUser(uid:string){
-        let found=null;
-        for(let i=0;i<this.apiList.length;i++){
-            try{
-                found=await this.apiList[i].uGetUser(uid);
-                if(found)
+    async uGetUser(uid: string) {
+        let found = null;
+        for (let i = 0; i < this.apiList.length; i++) {
+            try {
+                found = await this.apiList[i].uGetUser(uid);
+                if (found)
                     break;
-            }catch(e){}
+            } catch (e) { }
         }
-        if(found!==null)
-            found.xbot=this;
+        if (found !== null)
+            found.xbot = this;
         return found;
     }
-    async uGetChat(cid:string){
-        let found=null;
-        for(let i=0;i<this.apiList.length;i++){
-            try{
-                found=await this.apiList[i].uGetChat(cid);
-                if(found)
+    async uGetChat(cid: string) {
+        let found = null;
+        for (let i = 0; i < this.apiList.length; i++) {
+            try {
+                found = await this.apiList[i].uGetChat(cid);
+                if (found)
                     break;
-            }catch(e){}
+            } catch (e) { }
         }
-        if(found!==null)
-            found.xbot=this;
+        if (found !== null)
+            found.xbot = this;
         return found;
     }
     // onWaitNext(...args:any[]){
@@ -124,8 +124,8 @@ export default class XBot extends EventEmitter {
     // }
 }
 
-class NotImplementedInApiError extends Error{
-    constructor(method:string){
+class NotImplementedInApiError extends Error {
+    constructor(method: string) {
         super(`Not implemented in api: ${method}()`);
     }
 }
@@ -136,37 +136,37 @@ export type IMessageOptions = {
 
 export class Api extends EventEmitter {
     logger: Logger;
-    logged:boolean = false;
+    logged: boolean = false;
 
-    constructor(name: string|Logger) {
+    constructor(name: string | Logger) {
         super();
         this.logger = Logger.from(name);
     }
-    auth(...params:string[]): Promise<void>{
+    auth(...params: string[]): Promise<void> {
         throw new NotImplementedInApiError('auth');
     }
-    uGetUser(uid:string): Promise<User>{
+    uGetUser(uid: string): Promise<User> {
         throw new NotImplementedInApiError('uGetUser');
     }
-    uGetChat(cid:string): Promise<Chat>{
+    uGetChat(cid: string): Promise<Chat> {
         throw new NotImplementedInApiError('uGetChat');
     }
-    sendLocation(conv:Conversation, answer: boolean, caption: string,location: Location,options:IMessageOptions): Promise<void>{
+    sendLocation(conv: Conversation, answer: boolean, caption: string, location: Location, options: IMessageOptions): Promise<void> {
         throw new NotImplementedInApiError('sendLocation');
     }
-    sendText(conv:Conversation, answer: boolean, text: string, options:IMessageOptions): Promise<void>{
+    sendText(conv: Conversation, answer: boolean, text: string, options: IMessageOptions): Promise<void> {
         throw new NotImplementedInApiError('sendText');
     }
-    sendImageStream(conv:Conversation, answer: boolean, caption:string, image:Image, options:IMessageOptions): Promise<void>{
+    sendImageStream(conv: Conversation, answer: boolean, caption: string, image: Image, options: IMessageOptions): Promise<void> {
         throw new NotImplementedInApiError('sendImageStream');
     }
-    sendFileStream(conv:Conversation, answer: boolean, caption:string, file:File, options:IMessageOptions): Promise<void>{
+    sendFileStream(conv: Conversation, answer: boolean, caption: string, file: File, options: IMessageOptions): Promise<void> {
         throw new NotImplementedInApiError('sendFileStream');
     }
-    sendAudioStream(conv:Conversation, answer: boolean, caption:string, audio:Audio, options:IMessageOptions): Promise<void>{
+    sendAudioStream(conv: Conversation, answer: boolean, caption: string, audio: Audio, options: IMessageOptions): Promise<void> {
         throw new NotImplementedInApiError('sendAudioStream');
     }
-    sendCustom(conv:Conversation, answer: boolean, caption:string, options: IMessageOptions): Promise<void>{
+    sendCustom(conv: Conversation, answer: boolean, caption: string, options: IMessageOptions): Promise<void> {
         throw new NotImplementedInApiError('sendCustom');
     }
 }
@@ -175,7 +175,7 @@ export class Location {
     lat: number;
     long: number;
 
-    constructor(lat:number, long:number) {
+    constructor(lat: number, long: number) {
         this.lat = lat;
         this.long = long;
     }
@@ -183,26 +183,26 @@ export class Location {
 
 export class Attachment {
     type: string;
-    constructor(type:string){
+    constructor(type: string) {
         this.type = type;
     }
 }
 
-export class MessengerSpecific<T> extends Attachment{
+export class MessengerSpecific<T> extends Attachment {
     messengerSpecificType: string;
     data: T;
-    constructor(messengerSpecificType:string,data:T){
+    constructor(messengerSpecificType: string, data: T) {
         super('messengerSpecific');
-        this.messengerSpecificType=messengerSpecificType;
-        this.data=data;
+        this.messengerSpecificType = messengerSpecificType;
+        this.data = data;
     }
 }
 
-export class BaseFile extends Attachment{
+export class BaseFile extends Attachment {
     stream: Readable;
     size: number;
     name: string;
-    constructor(stream:Readable, size:number, name:string){
+    constructor(stream: Readable, size: number, name: string) {
         super('file');
         this.stream = stream;
         this.size = size;
@@ -211,46 +211,46 @@ export class BaseFile extends Attachment{
 }
 
 export class File extends BaseFile {
-    mime:string;
-    constructor(stream:Readable, size:number, name:string, mime='text/plain') {
+    mime: string;
+    constructor(stream: Readable, size: number, name: string, mime = 'text/plain') {
         super(stream, size, name);
-        this.mime=mime;
+        this.mime = mime;
     }
-    static async fromBuffer(buffer:Buffer, name:string, mime:string='text/plain') {
+    static async fromBuffer(buffer: Buffer, name: string, mime: string = 'text/plain') {
         return new File(createReadStream(buffer), buffer.length, name, mime);
     }
-    static async fromUrl(url:string, name:string, mime:string = null) {
+    static async fromUrl(url: string, name: string, mime: string = null) {
         let res = await emit(`GET ${url} STREAM`);
         let size = +res.headers['content-length'];
-        if(mime===null)
-            mime=res.headers['content-type']||'text/plain';
+        if (mime === null)
+            mime = res.headers['content-type'] || 'text/plain';
         return new File(res, size, name, mime);
     }
-    static async fromFilePath(path:string, name:string, mime:string = null) {
+    static async fromFilePath(path: string, name: string, mime: string = null) {
         if (!await isFile(path))
             throw new Error('This is not a file! ' + path);
         let size = (await stat(path)).size;
-        if(mime===null)
-            mime=lookupByPath(path);
+        if (mime === null)
+            mime = lookupByPath(path);
         return new File(getReadStream(path), size, name, mime);
     }
 }
 
 // Some services looks at extensions, so extension can be changed runtime in adapter
 export class Image extends BaseFile {
-    constructor(stream:Readable, size:number) {
+    constructor(stream: Readable, size: number) {
         super(stream, size, 'image.jpg');
     }
-    static async fromUrl(url:string) {
+    static async fromUrl(url: string) {
         let res = await emit(`GET ${url}`);
         let size = parseInt(res.headers['content-length'], 10);
         return new Image(createReadStream(res.raw), size);
     }
-    static async fromFilePath(path:string) {
+    static async fromFilePath(path: string) {
         let size = (await stat(path)).size;
         return new Image(getReadStream(path), size);
     }
-    static async fromCanvas(canvas:any) {
+    static async fromCanvas(canvas: any) {
         let fullStream = canvas.jpegStream({
             bufsize: 4096,
             quality: 100,
@@ -261,15 +261,15 @@ export class Image extends BaseFile {
     }
 }
 export class Audio extends BaseFile {
-    constructor(stream:Readable, size:number, artist:string, title:string) {
+    constructor(stream: Readable, size: number, artist: string, title: string) {
         super(stream, size, `${artist} ${title}.mp3`);
     }
-    static async fromUrl(url:string, artist:string, title:string) {
+    static async fromUrl(url: string, artist: string, title: string) {
         let res = await emit(`GET ${url} STREAM`);
         let size = res.headers['content-length'];
         return new Audio(res, size, artist, title);
     }
-    static async fromFilePath(path:string, artist:string, title:string) {
+    static async fromFilePath(path: string, artist: string, title: string) {
         let size = (await stat(path)).size;
         return new Audio(getReadStream(path), size, artist, title);
     }
@@ -284,16 +284,16 @@ export enum Gender {
 export class ForwardedMessage {
     text: string;
     sender: User;
-    attachment: Audio|Image|File;
+    attachment: Audio | Image | File;
 
     constructor({
         text,
         sender,
         attachment
-    }:{
-        text:string;
-        sender:User;
-        attachment?:Audio|Image|File;
+    }: {
+        text: string;
+        sender: User;
+        attachment?: Audio | Image | File;
     }) {
         this.text = text;
         this.sender = sender;
@@ -302,55 +302,55 @@ export class ForwardedMessage {
 }
 
 export class Conversation {
-    api:Api;
-    targetId:string;
-    messageId:string;
+    api: Api;
+    targetId: string;
+    messageId: string;
     xbot: XBot;
-    isUser:boolean;
-    isChat:boolean;
+    isUser: boolean;
+    isChat: boolean;
 
-    constructor(api:Api, targetId:string, messageId:string) {
+    constructor(api: Api, targetId: string, messageId: string) {
         this.api = api;
         this.targetId = targetId;
         this.messageId = messageId;
     }
 
-    async sendLocation(answer:boolean, caption:string, location:Location, options:IMessageOptions={}) {
+    async sendLocation(answer: boolean, caption: string, location: Location, options: IMessageOptions = {}) {
         // logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendLocation(this, answer, caption, location, options);
     }
-    async sendText(answer:boolean, text:string, options:IMessageOptions={}) {
+    async sendText(answer: boolean, text: string, options: IMessageOptions = {}) {
         // logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,undefined,answer, undefined,undefined,this.xbot.logger.name,text);
         return await this.api.sendText(this, answer, text, options);
     }
-    async sendImage(answer:boolean, caption:string, image:Image, options:IMessageOptions={}) {
+    async sendImage(answer: boolean, caption: string, image: Image, options: IMessageOptions = {}) {
         // logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendImageStream(this, answer, caption, image, options);
     }
-    async sendFile(answer:boolean, caption:string, file:File, options:IMessageOptions={}) {
+    async sendFile(answer: boolean, caption: string, file: File, options: IMessageOptions = {}) {
         // logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendFileStream(this, answer, caption, file, options);
     }
-    async sendAudio(answer:boolean, caption:string, audio:Audio, options:IMessageOptions={}) {
+    async sendAudio(answer: boolean, caption: string, audio: Audio, options: IMessageOptions = {}) {
         // logMessage(this.xbot.logger,(this instanceof Chat)?this:undefined,true,answer, undefined,undefined,this.xbot.logger.name,caption);
         return await this.api.sendAudioStream(this, answer, caption, audio, options);
     }
-    async sendCustom(answer:boolean, caption:string, messengerSpecific:MessengerSpecific<any>, options:IMessageOptions={}) {
+    async sendCustom(answer: boolean, caption: string, messengerSpecific: MessengerSpecific<any>, options: IMessageOptions = {}) {
         return await this.api.sendCustom(this, answer, caption, options);
     }
 }
 export class User extends Conversation {
-    uid:string;
-    nickName:string;
-    firstName:string;
-    lastName:string;
+    uid: string;
+    nickName: string;
+    firstName: string;
+    lastName: string;
     gender: Gender;
     photoUrl: string;
     config: any;
     state: any;
     profileUrl: string;
-    isUser:boolean=true;
-    isChat:boolean=false;
+    isUser: boolean = true;
+    isChat: boolean = false;
     xbot: XBot;
 
     constructor({
@@ -364,17 +364,17 @@ export class User extends Conversation {
         photoUrl,
         profileUrl,
         messageId
-    }:{
-        api:Api;
-        uid:string;
-        targetId:string;
-        nickName:string;
-        firstName:string;
-        lastName:string;
-        gender:Gender;
-        photoUrl:string;
-        profileUrl:string;
-        messageId:string;
+    }: {
+        api: Api;
+        uid: string;
+        targetId: string;
+        nickName: string;
+        firstName: string;
+        lastName: string;
+        gender: Gender;
+        photoUrl: string;
+        profileUrl: string;
+        messageId: string;
     }) {
         //assertAllIsDefined(api,uid,targetId,firstName,lastName,gender,photoUrl,config,state,profileUrl);
         super(api, targetId, messageId);
@@ -389,20 +389,20 @@ export class User extends Conversation {
     async getPhotoImage() {
         return await Image.fromUrl(this.photoUrl);
     }
-    getName(){
-        if(this.nickName)
+    getName() {
+        if (this.nickName)
             return this.nickName;
         else
             return this.firstName;
     }
-    getFullName(){
-        let name='';
-        if(this.firstName)
-            name+=this.firstName+' ';
-        if(this.lastName)
-            name+=this.lastName+' ';
-        if(this.nickName)
-            name+=`(${this.nickName}) `;
+    getFullName() {
+        let name = '';
+        if (this.firstName)
+            name += this.firstName + ' ';
+        if (this.lastName)
+            name += this.lastName + ' ';
+        if (this.nickName)
+            name += `(${this.nickName}) `;
         return name.trim();
     }
     // waitNew(...args){
@@ -410,13 +410,13 @@ export class User extends Conversation {
     // }
 }
 export class Chat extends Conversation {
-    cid:string;
-    users:User[];
-    title:string;
-    admins:User[];
-    photoUrl:string;
-    isUser:boolean=false;
-    isChat:boolean=true;
+    cid: string;
+    users: User[];
+    title: string;
+    admins: User[];
+    photoUrl: string;
+    isUser: boolean = false;
+    isChat: boolean = true;
     xbot: XBot;
 
     constructor({
@@ -428,15 +428,15 @@ export class Chat extends Conversation {
         admins,
         messageId,
         photoUrl
-    }:{
-        api:Api;
-        cid:string;
-        targetId:string;
-        title:string;
-        users:User[];
-        admins:User[];
-        messageId:string;
-        photoUrl:string;
+    }: {
+        api: Api;
+        cid: string;
+        targetId: string;
+        title: string;
+        users: User[];
+        admins: User[];
+        messageId: string;
+        photoUrl: string;
     }) {
         super(api, targetId, messageId);
         this.cid = cid;
@@ -445,10 +445,10 @@ export class Chat extends Conversation {
         this.admins = admins;
         this.photoUrl = photoUrl;
     }
-    isAdmin(user:User) {
+    isAdmin(user: User) {
         return this.admins.indexOf(user) !== -1;
     }
-    async getPhotoImage():Promise<Image> {
+    async getPhotoImage(): Promise<Image> {
         return await Image.fromUrl(this.photoUrl);
     }
     // waitNew(...args){
@@ -458,7 +458,7 @@ export class Chat extends Conversation {
 
 export interface IMessageEventConstructionData {
     api: Api;
-    attachment: File|Audio|Image;
+    attachment: File | Audio | Image;
     text: string;
     user: User;
     chat?: Chat;
@@ -467,7 +467,7 @@ export interface IMessageEventConstructionData {
     timing?: TimingData;
 }
 export class MessageEvent extends Conversation {
-    attachment: File|Audio|Image;
+    attachment: File | Audio | Image;
     text: string;
     user: User;
     chat: Chat;
@@ -475,25 +475,25 @@ export class MessageEvent extends Conversation {
     xbot: XBot = null;
     timing: TimingData;
 
-    get isChat(){
+    get isChat() {
         return !!this.chat;
     }
-    isUser: boolean=true;
-    constructor(data:IMessageEventConstructionData) {
+    isUser: boolean = true;
+    constructor(data: IMessageEventConstructionData) {
         //assertAllIsDefined(api,mid,attachment,text,user,chat);
         super(data.api, data.chat ? data.chat.targetId : data.user.targetId, data.messageId);
         this.attachment = data.attachment;
         this.text = data.text;
         this.user = data.user;
         this.chat = data.chat;
-        this.timing = data.timing||new TimingData();
+        this.timing = data.timing || new TimingData();
         this.replyTo = data.replyTo;
     }
-    attachXBot(xbot:XBot){
-        this.xbot=xbot;
-        if(this.chat&&this.chat.xbot===null)
-            this.chat.xbot=xbot;
-        this.user.xbot=xbot;
+    attachXBot(xbot: XBot) {
+        this.xbot = xbot;
+        if (this.chat && this.chat.xbot === null)
+            this.chat.xbot = xbot;
+        this.user.xbot = xbot;
     }
 }
 export interface IJoinEventConstructionData {
@@ -515,19 +515,19 @@ export class JoinEvent {
         this.user = data.user;
         this.chat = data.chat;
         this.initiator = data.initiator;
-        this.timing=data.timing||new TimingData();
+        this.timing = data.timing || new TimingData();
     }
-    attachXBot(xbot:XBot){
-        this.xbot=xbot;
-        if(this.chat.xbot===null)
-            this.chat.xbot=xbot;
-        if(this.user.xbot===null)
-            this.user.xbot=xbot;
-        if(this.initiator&&this.initiator.xbot===null)
-            this.initiator.xbot=xbot;
+    attachXBot(xbot: XBot) {
+        this.xbot = xbot;
+        if (this.chat.xbot === null)
+            this.chat.xbot = xbot;
+        if (this.user.xbot === null)
+            this.user.xbot = xbot;
+        if (this.initiator && this.initiator.xbot === null)
+            this.initiator.xbot = xbot;
     }
 }
-export interface IActionEventConstructionData{
+export interface IActionEventConstructionData {
     user: User;
     action: string;
     chat?: Chat;
@@ -543,26 +543,26 @@ export class ActionEvent {
     xbot: XBot;
     timing: TimingData;
 
-    constructor(data:IActionEventConstructionData) {
+    constructor(data: IActionEventConstructionData) {
         //assertAllIsDefined(user);
         this.action = data.action;
         this.user = data.user;
         this.chat = data.chat;
         this.data = data.data;
-        this.timing=data.timing||new TimingData();
+        this.timing = data.timing || new TimingData();
     }
-    attachXBot(xbot:XBot){
-        this.xbot=xbot;
-        if(this.chat&&this.chat.xbot===null)
-            this.chat.xbot=xbot;
-        if(this.user.xbot===null)
-            this.user.xbot=xbot;
+    attachXBot(xbot: XBot) {
+        this.xbot = xbot;
+        if (this.chat && this.chat.xbot === null)
+            this.chat.xbot = xbot;
+        if (this.user.xbot === null)
+            this.user.xbot = xbot;
     }
 }
 export interface ILeaveEventConstructionData {
-    user:User;
-    chat:Chat;
-    initiator?:User;
+    user: User;
+    chat: Chat;
+    initiator?: User;
     timing?: TimingData;
 }
 export class LeaveEvent {
@@ -577,17 +577,17 @@ export class LeaveEvent {
         this.user = data.user;
         this.chat = data.chat;
         this.initiator = data.initiator;
-        this.timing=data.timing||new TimingData();
+        this.timing = data.timing || new TimingData();
     }
-    attachXBot(xbot:XBot){
-        this.xbot=xbot;
-        if(this.chat.xbot===null)
-            this.chat.xbot=xbot;
-        if(this.user.xbot===null)
-            this.user.xbot=xbot;
+    attachXBot(xbot: XBot) {
+        this.xbot = xbot;
+        if (this.chat.xbot === null)
+            this.chat.xbot = xbot;
+        if (this.user.xbot === null)
+            this.user.xbot = xbot;
     }
 }
-export interface ITitleChangeEventConstructionData{
+export interface ITitleChangeEventConstructionData {
     oldTitle: string;
     newTitle: string;
     initiator: User;
@@ -608,20 +608,20 @@ export class TitleChangeEvent {
         this.newTitle = data.newTitle;
         this.initiator = data.initiator;
         this.chat = data.chat;
-        this.timing=data.timing||new TimingData();
+        this.timing = data.timing || new TimingData();
     }
-    attachXBot(xbot:XBot){
-        this.xbot=xbot;
-        if(this.chat.xbot===null)
-            this.chat.xbot=xbot;
-        if(this.initiator.xbot===null)
-            this.initiator.xbot=xbot;
+    attachXBot(xbot: XBot) {
+        this.xbot = xbot;
+        if (this.chat.xbot === null)
+            this.chat.xbot = xbot;
+        if (this.initiator.xbot === null)
+            this.initiator.xbot = xbot;
     }
 }
-export interface IPhotoChangeEventConstructionData{
-    newPhotoUrl:string;
-    initiator:User;
-    chat:Chat;
+export interface IPhotoChangeEventConstructionData {
+    newPhotoUrl: string;
+    initiator: User;
+    chat: Chat;
     timing?: TimingData;
 }
 export class PhotoChangeEvent {
@@ -632,18 +632,18 @@ export class PhotoChangeEvent {
     xbot: XBot;
     timing: TimingData;
 
-    constructor(data:IPhotoChangeEventConstructionData) {
+    constructor(data: IPhotoChangeEventConstructionData) {
         //assertAllIsDefined(newPhotoUrl,initiator,chat);
         this.newPhotoUrl = data.newPhotoUrl;
         this.initiator = data.initiator;
         this.chat = data.chat;
-        this.timing=data.timing||new TimingData();
+        this.timing = data.timing || new TimingData();
     }
-    attachXBot(xbot:XBot){
-        this.xbot=xbot;
-        if(this.chat.xbot===null)
-            this.chat.xbot=xbot;
-        if(this.initiator.xbot===null)
-            this.initiator.xbot=xbot;
+    attachXBot(xbot: XBot) {
+        this.xbot = xbot;
+        if (this.chat.xbot === null)
+            this.chat.xbot = xbot;
+        if (this.initiator.xbot === null)
+            this.initiator.xbot = xbot;
     }
 }

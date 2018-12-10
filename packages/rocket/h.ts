@@ -1,6 +1,7 @@
-import { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode } from "react";
-import React from "react";
-import { Observer } from 'mobx-react-lite';
+import React, { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode } from "react";
+import mobxReact from 'mobx-react-lite';
+
+const { Observer } = mobxReact;
 
 export type IClassList = (string | null | false)[];
 export type IAttributes = {

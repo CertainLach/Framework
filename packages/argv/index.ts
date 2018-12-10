@@ -1,7 +1,9 @@
 import {objectMap} from '@meteor-it/utils';
 import Logger from '@meteor-it/logger';
 
-import {basename} from 'path';
+import path from 'path';
+
+const {basename} = path;
 
 export type IOption = {
     string?:string;

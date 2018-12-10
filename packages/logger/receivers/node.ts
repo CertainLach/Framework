@@ -1,9 +1,11 @@
-import { format } from 'util';
+import util from 'util';
 import Logger, { LOGGER_ACTIONS, BasicReceiver } from '../';
 import {
 	writeStdout,
 	moveCursor, clearLine, save, restore, startBuffering, flushBuffer
 } from '@meteor-it/terminal';
+
+const { format } = util;
 
 const ansiColors: { [key: string]: number[] } = {
 	reset: [0, 0],

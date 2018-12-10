@@ -1,10 +1,12 @@
-import { Component, useEffect, useState } from 'react';
+import React from 'react';
 import useStore from "../stores/useStore";
 import HelmetStore from "../helmet/HelmetStore";
 import { h } from "../h";
 import TO_PRELOAD from './TO_PRELOAD';
 import ErrorType from './ErrorType';
 import TimeoutError from './TimeoutError';
+
+const { Component, useEffect, useState } = React;
 
 export interface ILoadingProps {
     timeout?: 0

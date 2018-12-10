@@ -1,8 +1,9 @@
 import Store from "./store";
-import { useContext } from "react";
-import { isObservableArray, isObservableMap } from "mobx";
+import React from "react";
+import mobx from "mobx";
 import RocketStoreContext from "./RocketStoreContext";
-
+const { useContext } = React;
+const { isObservableArray, isObservableMap } = mobx;
 /**
  * Helper function that supports merging maps
  * @param target

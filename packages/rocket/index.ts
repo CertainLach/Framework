@@ -5,12 +5,16 @@ import { h, frag, observed, IClassList } from './h';
 import Store, { useStore } from './stores';
 import { IsomorphicStyleLoaderStore, useStyles } from './style';
 import RouterStore from './router/RouterStore';
-import { observable, computed, action } from 'mobx';
+import mobx from 'mobx';
 import { PreloadStore, loadable, useAsync } from './preload';
 import Helmet from './helmet';
 import HelmetStore from './helmet/HelmetStore';
-import { useRef, useState, useEffect } from 'react';
-import { useComputed, useObservable } from 'mobx-react-lite';
+import React from 'react';
+import mobxReact from 'mobx-react-lite';
+
+const { observable, computed, action } = mobx;
+const { useRef, useState, useEffect } = React;
+const { useComputed, useObservable } = mobxReact;
 
 export default Rocket;
 export { ServerMiddleware, initClient };

@@ -1,12 +1,17 @@
+import path from 'path';
+import util from 'util';
+import child_process from 'child_process';
+
 import Argv from '@meteor-it/argv';
 import { readDir, read } from '@meteor-it/fs';
 import Logger from '@meteor-it/logger';
 import NodeReceiver from '@meteor-it/logger/receivers/node';
 import { asyncEach } from '@meteor-it/utils';
 import { readStreamToBuffer } from '@meteor-it/utils/stream';
-import { join } from 'path';
-import { promisify } from 'util';
-import { exec } from 'child_process';
+
+const { join } = path;
+const { promisify } = util;
+const { exec } = child_process;
 
 const execAsync = promisify(exec);
 

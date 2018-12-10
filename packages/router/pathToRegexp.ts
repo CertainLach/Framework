@@ -19,9 +19,9 @@ export interface IKey {
     pattern: string;
     partial: boolean;
 }
-export class Key implements IKey{
-    constructor(data:IKey){
-        Object.assign(this,data);
+export class Key implements IKey {
+    constructor(data: IKey) {
+        Object.assign(this, data);
     }
 
     delimiter: string;
@@ -36,7 +36,7 @@ export type Token = string | Key;
 export type Path = string | RegExp | Array<string | RegExp>;
 export type PathFunction = (data?: Object) => string;
 
-function parse (str:string):Token[] {
+function parse(str: string): Token[] {
     const tokens = [];
     let key = 0;
     let index = 0;
@@ -105,10 +105,10 @@ function parse (str:string):Token[] {
 
     return tokens
 }
-function compile (str:string):PathFunction {
+function compile(str: string): PathFunction {
     return tokensToFunction(parse(str))
 }
-function tokensToFunction (tokens:Token[]):PathFunction {
+function tokensToFunction(tokens: Token[]): PathFunction {
     // Compile all the tokens into regexps.
     const matches = new Array(tokens.length);
 
@@ -119,7 +119,7 @@ function tokensToFunction (tokens:Token[]):PathFunction {
         }
     }
 
-    return function (data:string) {
+    return function (data: string) {
         let path = '';
 
         for (let i = 0; i < tokens.length; i++) {
@@ -131,7 +131,7 @@ function tokensToFunction (tokens:Token[]):PathFunction {
             }
             token = token as Key;
 
-            let value:any = data ? data[token.name as number] : undefined;
+            let value: any = data ? data[token.name as number] : undefined;
             let segment;
 
             if (Array.isArray(value)) {
@@ -177,16 +177,16 @@ function tokensToFunction (tokens:Token[]):PathFunction {
         return path
     }
 }
-function escapeString (str:string) {
+function escapeString(str: string) {
     return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, '\\$1')
 }
-function escapeGroup (group:string) {
+function escapeGroup(group: string) {
     return group.replace(/([=!:$/()])/g, '\\$1')
 }
-function flags (options:Options) {
+function flags(options: Options) {
     return options && options.sensitive ? '' : 'i'
 }
-function regexpToRegexp (path:RegExp, keys:Key[]) {
+function regexpToRegexp(path: RegExp, keys: Key[]) {
     if (!keys) return path;
 
     // Use a negative lookahead to match only capturing groups.
@@ -208,7 +208,7 @@ function regexpToRegexp (path:RegExp, keys:Key[]) {
 
     return path
 }
-function arrayToRegexp (path:Path[], keys:Key[], options:Options) {
+function arrayToRegexp(path: Path[], keys: Key[], options: Options) {
     const parts = [];
 
     for (let i = 0; i < path.length; i++) {
@@ -217,10 +217,10 @@ function arrayToRegexp (path:Path[], keys:Key[], options:Options) {
 
     return new RegExp(`(?:${parts.join('|')})`, flags(options))
 }
-function stringToRegexp (path:string, keys:Key[], options:Options) {
+function stringToRegexp(path: string, keys: Key[], options: Options) {
     return tokensToRegExp(parse(path), keys, options)
 }
-function tokensToRegExp (tokens:Token[], keys?:Key[], options:Options={}) {
+function tokensToRegExp(tokens: Token[], keys?: Key[], options: Options = {}) {
     let strict = options.strict;
     const end = options.end !== false;
     const endsWith = [].concat(options.endsWith || []).map(escapeString).concat('$').join('|');
@@ -265,7 +265,7 @@ function tokensToRegExp (tokens:Token[], keys?:Key[], options:Options={}) {
     return new RegExp(`^${route}`, flags(options))
 }
 
-export default function pathToRegexp (path:Path, keys:Key[], options:Options):RegExp {
+export default function pathToRegexp(path: Path, keys: Key[], options: Options): RegExp {
     if (path instanceof RegExp) {
         return regexpToRegexp(path, keys)
     }

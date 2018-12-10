@@ -1,6 +1,8 @@
-import {parse as parsePath} from 'path';
+import path from 'path';
 
-export const map:{[key:string]:string} = {
+const { parse } = path;
+
+export const map: { [key: string]: string } = {
 	"123": "application/vnd.lotus-1-2-3",
 	"ez": "application/andrew-inset",
 	"aw": "application/applixware",
@@ -58,7 +60,7 @@ export const map:{[key:string]:string} = {
 	"ma": "application/mathematica",
 	"nb": "application/mathematica",
 	"mb": "application/mathematica",
-    "nex": "application/x-navigator-extension",
+	"nex": "application/x-navigator-extension",
 	"mathml": "application/mathml+xml",
 	"mbox": "application/mbox",
 	"mscml": "application/mediaservercontrol+xml",
@@ -1067,10 +1069,10 @@ export const map:{[key:string]:string} = {
 	"ice": "x-conference/x-cooltalk"
 };
 export default map;
-export function lookup(extension:string):string|null{
+export function lookup(extension: string): string | null {
 	return map[extension];
 }
 // noinspection JSUnusedGlobalSymbols
-export function lookupByPath(path:string):string|null{
-    return lookup(parsePath(path).ext.substr(1));
+export function lookupByPath(path: string): string | null {
+	return lookup(parse(path).ext.substr(1));
 }
