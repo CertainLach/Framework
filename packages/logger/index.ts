@@ -1,5 +1,3 @@
-const DEBUG = process.env.DEBUG || '';
-
 export enum LOGGER_ACTIONS {
 	IDENT,
 	DEENT,
@@ -165,9 +163,6 @@ export default class Logger {
 			this.deent();
 		}
 	}
-	isDebugging():boolean{
-        return DEBUG === '*' || DEBUG.split(',').indexOf(this.name)!==-1
-    }
 
 	// LOG
 	log(...params:any[]) {
@@ -217,12 +212,11 @@ export default class Logger {
 	debug(...params:any[]) {
 		//if(DEBUG === '-')
 		//	return;
-		if (DEBUG === '*' || ~DEBUG.split(',').indexOf(this.name))
-			this.write({
-				type: LOGGER_ACTIONS.DEBUG,
-				line: params.shift(),
-				params: params
-			});
+		this.write({
+			type: LOGGER_ACTIONS.DEBUG,
+			line: params.shift(),
+			params: params
+		});
 	}
 	// Progress
 	progress(name:string, progress: boolean | number, info?: string) {
