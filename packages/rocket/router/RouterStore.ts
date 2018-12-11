@@ -1,7 +1,5 @@
 import Store from '../stores/store';
-import mobx from 'mobx';
-
-const { observable, computed } = mobx;
+import { observable, computed } from 'mobx';
 
 // TODO: Oh my...
 let forceRerender: () => void = () => { };

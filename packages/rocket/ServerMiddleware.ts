@@ -2,7 +2,7 @@ import http2 from 'http2';
 import path from 'path';
 import url from 'url';
 import querystring from 'querystring';
-import mobx from 'mobx';
+import { toJS } from 'mobx';
 import ReactDOMServer from 'react-dom/server';
 import { useStaticRendering } from "mobx-react-lite";
 import { readFile } from '@meteor-it/fs';
@@ -21,7 +21,6 @@ import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
 import { h, frag } from './h';
 import PreloadStore from './preload/PreloadStore';
 
-const { toJS } = mobx;
 const { stringify } = querystring;
 const { format } = url;
 const { join } = path;
