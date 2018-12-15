@@ -4,7 +4,7 @@ import { Readable as ReadableStream, Writable as WritableStream } from 'stream';
 
 const { basename } = path;
 
-export const DEFAULT_BOUNDARY = '84921024METEORITXREST74819204';
+export const DEFAULT_BOUNDARY = 'ce47607d67d74a658a058ba6697de227';
 export class File {
     path: string;
     filename: string;

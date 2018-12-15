@@ -3,6 +3,7 @@ import PreloadStore, { LoadingItem } from "./PreloadStore";
 import LoadingState from './LoadingState';
 import React from 'react';
 import ErrorType from "./ErrorType";
+import useRerender from "../utils/useRerender";
 
 const { useState, useEffect } = React;
 
@@ -10,8 +11,7 @@ export class SSRLoadingError extends Error { }
 
 export default <P>(key: string, promiseGetter: () => Promise<P>): ([LoadingState.ERRORED, Error] | [LoadingState.LOADING, null] | [LoadingState.LOADED, P]) => {
     const asyncStore = useStore(PreloadStore);
-    // Setting this will force current component to rerender
-    const [dummy, setDummy] = useState(0);
+    const rerender = useRerender();
     let isMounted = true;
     useEffect(() => {
         return () => {
@@ -22,13 +22,10 @@ export default <P>(key: string, promiseGetter: () => Promise<P>): ([LoadingState
     }, [key]);
     if (key in asyncStore.items) {
         const loaded = asyncStore.items[key];
-        if (loaded.isError)
-            return [LoadingState.ERRORED, loaded.error instanceof Error ? loaded.error : new SSRLoadingError(loaded.error)];
-        else
-            return [LoadingState.LOADED, loaded.value as any as P];
+        if (loaded.isError) return [LoadingState.ERRORED, loaded.error instanceof Error ? loaded.error : new SSRLoadingError(loaded.error)];
+        else return [LoadingState.LOADED, loaded.value as any as P];
     };
-    if (key in asyncStore.promises)
-        return [LoadingState.LOADING, null];
+    if (key in asyncStore.promises) return [LoadingState.LOADING, null];
     const promise = promiseGetter();
     asyncStore.promises[key] = promise as any;
     promise.then(e => {
@@ -41,7 +38,7 @@ export default <P>(key: string, promiseGetter: () => Promise<P>): ([LoadingState
     }).finally(() => {
         delete asyncStore.promises[key];
         if (isMounted)
-            setDummy(dummy + 1);
+            rerender();
     });
     return [LoadingState.LOADING, null];
 }

@@ -8,6 +8,11 @@ export default class WebSocketClient {
     instance: WebSocket;
     safeClose = false;
 
+    /**
+     * Auto-reconnecting websocket wrapper
+     * @param url Websocket url (with protocol)
+     * @param reconnectInterval Interval on which websocket will auto-reconnect
+     */
     constructor(url: string, reconnectInterval: number = 100) {
         this.autoReconnectInterval = reconnectInterval; // ms
         this.url = url;
@@ -65,7 +70,7 @@ export default class WebSocketClient {
         this.instance.close();
     }
 
-    sendBuffer: (string | Buffer)[] = [];
+    private sendBuffer: (string | Buffer)[] = [];
 
     /**
      * Sends data to remote socket or saves to buffer if not available
