@@ -8,6 +8,10 @@
 **/*.js.map
 **/*.jsx
 **/*.jsx.map
+**/*.mjs
+**/*.mjs.map
+**/*.mjsx
+**/*.mjsx.map
 **/*.iml
 **/*.tgz
 docs

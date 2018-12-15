@@ -1,16 +1,19 @@
-
-
 /**
  * Websocket wrapper with auto-reconnection
  */
 export default class WebSocketClient {
-    number:number = 0; // Message id
-    autoReconnectInterval:number;
-    url:string;
-    instance:WebSocket;
+    number: number = 0; // Message id
+    autoReconnectInterval: number;
+    url: string;
+    instance: WebSocket;
     safeClose = false;
 
-    constructor(url:string, reconnectInterval:number = 100) {
+    /**
+     * Auto-reconnecting websocket wrapper
+     * @param url Websocket url (with protocol)
+     * @param reconnectInterval Interval on which websocket will auto-reconnect
+     */
+    constructor(url: string, reconnectInterval: number = 100) {
         this.autoReconnectInterval = reconnectInterval; // ms
         this.url = url;
     }
@@ -26,7 +29,7 @@ export default class WebSocketClient {
             this.onOpenResend();
             this.onopen();
         };
-        (<any>this.instance).onmessage = (data:any, flags:number) => {
+        (<any>this.instance).onmessage = (data: any, flags: number) => {
             this.number++;
             this.onmessage(data, flags, this.number);
         };
@@ -67,13 +70,13 @@ export default class WebSocketClient {
         this.instance.close();
     }
 
-    sendBuffer:(string|Buffer)[] = [];
+    private sendBuffer: (string | Buffer)[] = [];
 
     /**
      * Sends data to remote socket or saves to buffer if not available
      * @param data
      */
-    send(data:string|Buffer) {
+    send(data: string | Buffer) {
         try {
             this.instance.send(data);
         } catch (e) {
@@ -104,12 +107,12 @@ export default class WebSocketClient {
     onopen() {
     }
 
-    onmessage(data:{data:Buffer|string}, flags:number, number:number) {
+    onmessage(data: { data: Buffer | string }, flags: number, number: number) {
     }
 
-    onerror(e:Error) {
+    onerror(e: Error) {
     }
 
-    onclose(e:CloseEvent) {
+    onclose(e: CloseEvent) {
     }
 }

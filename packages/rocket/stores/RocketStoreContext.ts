@@ -1,3 +1,5 @@
-import * as React from "react";
+import React from "react";
 
-export default React.createContext({});
+const {createContext} = React;
+
+export default createContext({});

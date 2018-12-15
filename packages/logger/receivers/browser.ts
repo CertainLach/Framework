@@ -1,35 +1,35 @@
-import {LOGGER_ACTIONS,BasicReceiver} from '../';
-import {fixLength} from '@meteor-it/utils';
+import { LOGGER_ACTIONS, BasicReceiver } from '../';
+import { fixLength } from '@meteor-it/utils';
 
-const colors:{[key:string]:string[]} = {
-	reset: ['',''],
+const colors: { [key: string]: string[] } = {
+	reset: ['', ''],
 
-	bold: ['text-decoration:bold','text-decoration:none'],
-	dim: ['text-decoration:bold','text-decoration:none'],
-	italic: ['text-decoration:italic','text-decoration:none'],
-	underline: ['text-decoration:underline','text-decoration:none'],
-	inverse: ['color:black','text-decoration:none'],
-	hidden: ['visible:none','text-decoration:none'],
-	strikethrough: ['text-decoration:line-through','text-decoration:none'],
+	bold: ['text-decoration:bold', 'text-decoration:none'],
+	dim: ['text-decoration:bold', 'text-decoration:none'],
+	italic: ['text-decoration:italic', 'text-decoration:none'],
+	underline: ['text-decoration:underline', 'text-decoration:none'],
+	inverse: ['color:black', 'text-decoration:none'],
+	hidden: ['visible:none', 'text-decoration:none'],
+	strikethrough: ['text-decoration:line-through', 'text-decoration:none'],
 
-	black: ['color:black','color:black'],
-	red: ['color:red','color:black'],
-	green: ['color:green','color:black'],
-	yellow: ['color:yellow','color:black'],
-	blue: ['color:blue','color:black'],
-	magenta: ['color:magenta','color:black'],
-	cyan: ['color:cyan','color:black'],
-	white: ['color:white','color:black'],
-	gray: ['color:gray','color:black'],
+	black: ['color:black', 'color:black'],
+	red: ['color:red', 'color:black'],
+	green: ['color:green', 'color:black'],
+	yellow: ['color:yellow', 'color:black'],
+	blue: ['color:blue', 'color:black'],
+	magenta: ['color:magenta', 'color:black'],
+	cyan: ['color:cyan', 'color:black'],
+	white: ['color:white', 'color:black'],
+	gray: ['color:gray', 'color:black'],
 
-	bgBlack: ['background:black','background:white'],
-	bgRed: ['background:red','background:white'],
-	bgGreen: ['background:green','background:white'],
-	bgYellow: ['background:yellow','background:white'],
-	bgBlue: ['background:blue','background:white'],
-	bgMagenta: ['background:magenta','background:white'],
-	bgCyan: ['background:cyan','background:white'],
-	bgWhite: ['background:white','background:white']
+	bgBlack: ['background:black', 'background:white'],
+	bgRed: ['background:red', 'background:white'],
+	bgGreen: ['background:green', 'background:white'],
+	bgYellow: ['background:yellow', 'background:white'],
+	bgBlue: ['background:blue', 'background:white'],
+	bgMagenta: ['background:magenta', 'background:white'],
+	bgCyan: ['background:cyan', 'background:white'],
+	bgWhite: ['background:white', 'background:white']
 };
 
 
@@ -45,19 +45,19 @@ const colors:{[key:string]:string[]} = {
 
 
 export default class BrowserConsoleReceiver extends BasicReceiver {
-	nameLimit:number;
+	nameLimit: number;
 
 	constructor(nameLimit = 8) {
 		super();
 		this.nameLimit = nameLimit;
 	}
 
-	write(data:any) {
-		let line=[data.line,...data.params];
-        data.name=fixLength(data.name, this.nameLimit, true, ' ');
+	write(data: any) {
+		let line = [data.line, ...data.params];
+		data.name = fixLength(data.name, this.nameLimit, true, ' ');
 		switch (data.type) {
 			case LOGGER_ACTIONS.IDENT:
-				console.group('%cIDENT',data.name);
+				console.group('%cIDENT', data.name);
 				break;
 			case LOGGER_ACTIONS.DEENT:
 				console.groupEnd();
@@ -81,7 +81,7 @@ export default class BrowserConsoleReceiver extends BasicReceiver {
 				console._log('TIME_END');
 				break;
 			default:
-				console._error('ERROR',data.type,LOGGER_ACTIONS);
+				console._error('ERROR', data.type, LOGGER_ACTIONS);
 		}
 		//console._log(data);
 	}

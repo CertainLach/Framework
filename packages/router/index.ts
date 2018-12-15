@@ -1,7 +1,9 @@
-import {parse, Url} from 'url';
+import url, { Url } from 'url';
 
 import middleRun from './middleRun';
-import pathToRegexp, {IKey} from "./pathToRegexp";
+import pathToRegexp, { IKey } from "./pathToRegexp";
+
+const { parse } = url;
 
 const cachedPaths = new Set();
 const keysCache: Map<string, IKey[]> = new Map<string, IKey[]>();
@@ -20,7 +22,7 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
     const isSinglePath = middleware instanceof SinglePathMiddleware;
 
     // TODO:
-    const isOOPMiddleware = isRouting||isSinglePath||typeof middleware !== 'function';
+    const isOOPMiddleware = isRouting || isSinglePath || typeof middleware !== 'function';
 
     const needToRewritePath = isRouter || isRouting;
 
@@ -74,13 +76,13 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
         // TODO: Wtf, typescript, why are you sure isRouter isn't a typeguard?
         // Finally post step to middleware
         if (isRouter) {
-            await (middleware as Router<any,any>).route(step.path, (d: IRouterContext<any>) => {
+            await (middleware as Router<any, any>).route(step.path, (d: IRouterContext<any>) => {
                 for (let key in step)
                     if (!(key in d))
                         (d as any)[key] = (step as any)[key];
             });
-        } else if(isOOPMiddleware) {
-            await (middleware as SinglePathMiddleware<any,any,any>|RoutingMiddleware<any,any,any>).handle(step);
+        } else if (isOOPMiddleware) {
+            await (middleware as SinglePathMiddleware<any, any, any> | RoutingMiddleware<any, any, any>).handle(step);
         } else {
             await (middleware as any)(step);
         }
@@ -155,7 +157,7 @@ export default class Router<E, S, M = any> {
             router: this
         } as any;
         fillContext(context as E & IRouterContext<S, M | 'ALL' | null>);
-        if((context as any).next)throw new Error('next() in global context is deprecated, just await result instead of waiting for next() call');
+        if ((context as any).next) throw new Error('next() in global context is deprecated, just await result instead of waiting for next() call');
         return await await middleRun(this.middleware as any)(context)();
     }
 }

@@ -1,8 +1,7 @@
-import { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode } from "react";
-import React from "react";
+import React, { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode } from "react";
 import { Observer } from 'mobx-react-lite';
 
-export type IClassList = (string|null|false)[];
+export type IClassList = (string | null | false)[];
 export type IAttributes = {
     class?: IClassList,
     className?: string
@@ -16,9 +15,9 @@ type IH = {
     <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & IAttributes & P, children: Array<ReactNode>): ReactElement<P>
 };
 
-function processProps(props:IAttributes){
-    if(props.class){
-        props.className = props.class.filter(e=>!!e).join(' ');
+function processProps(props: IAttributes) {
+    if (props.class) {
+        props.className = props.class.filter(e => !!e).join(' ');
         delete props.class;
     }
 }
@@ -32,20 +31,20 @@ const h: IH = ((...args: any[]) => {
         }
     } else if (args.length === 2) {
         if (args[1] instanceof Array) {
-            if (args[1].length === 1)
-                return React.createElement(args[0], null, args[1][0]);
-            return React.createElement(args[0], null, ...args[1]);
+            let el = args[1];
+            while (el.length === 1 && el[0] instanceof Array) el = el[0];
+            return React.createElement(args[0], null, ...el);
         } else {
-            if(!!args[1])
+            if (!!args[1])
                 processProps(args[1]);
             return React.createElement(args[0], args[1]);
         }
     } else {
-        if(!!args[1])
+        if (!!args[1])
             processProps(args[1]);
-        if (args[2].length === 1)
-            return React.createElement(args[0], args[1], args[2][0]);
-        return React.createElement(args[0], args[1], ...args[2]);
+        let el = args[2];
+        while (el.length === 1 && el[0] instanceof Array) el = el[0];
+        return React.createElement(args[0], args[1], ...el);
     }
 }) as any;
 

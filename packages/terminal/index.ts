@@ -1,43 +1,45 @@
-import {writeSync,fsyncSync} from 'fs';
+import fs from 'fs';
+
+const { writeSync, fsyncSync } = fs;
 
 // By default using writeSync and fsyncSync to log
-let useStdoutFallback=false;
-if(process.env.STDOUT_FALLBACK)
-	useStdoutFallback=true;
+let useStdoutFallback = false;
+if (process.env.STDOUT_FALLBACK)
+	useStdoutFallback = true;
 
-let buffer='';
-let buffering=false;
+let buffer = '';
+let buffering = false;
 
 /**
  * Start buffer write
  */
-export function startBuffering (){
-    buffering=true;
-    buffer=''
+export function startBuffering() {
+	buffering = true;
+	buffer = ''
 }
 
 /**
  * Stop buffering and write buffer to stdout
  */
-export function flushBuffer (){
-    buffering=false;
-    writeStdout(buffer);
-    buffer=''
+export function flushBuffer() {
+	buffering = false;
+	writeStdout(buffer);
+	buffer = ''
 }
 
 /**
  * Write string to stdout (or to buffer, if buffering is enabled)
  * @param string 
  */
-export function writeStdout (string:string) {
-    if(buffering) {
-        buffer += string;
-        return;
-    }
+export function writeStdout(string: string) {
+	if (buffering) {
+		buffer += string;
+		return;
+	}
 	if (!useStdoutFallback) {
 		try {
 			writeSync(1, string);
-			try{fsyncSync(1);}catch(e){}
+			try { fsyncSync(1); } catch (e) { }
 		} catch (e) {
 			useStdoutFallback = true;
 			writeStdout(string);
@@ -50,40 +52,40 @@ export function writeStdout (string:string) {
  * Wrap data to escape and write to stdout
  * @param args code
  */
-export function writeEscape(args:string){
-    writeStdout('\u001B[' + args);
+export function writeEscape(args: string) {
+	writeStdout('\u001B[' + args);
 }
 /**
  * Moves cursor to specified position
  * @param line 
  * @param col
  */
-export function moveCursor(line:number, col:number=1) {
+export function moveCursor(line: number, col: number = 1) {
 	writeEscape(line + ';' + col + 'f');
 }
 /**
  * Hides cursor
  */
-export function hideCursor(){
-    writeEscape('?25l');
+export function hideCursor() {
+	writeEscape('?25l');
 }
 /**
  * Shows cursor
  */
-export function showCursor(){
-    writeEscape('?25h');
+export function showCursor() {
+	writeEscape('?25h');
 }
 /**
  * Clear line
  * @param line if not defined - current line 
  */
-export function clearLine(line?:number) {
-	if(line){
+export function clearLine(line?: number) {
+	if (line) {
 		save();
 		moveCursor(line);
 		writeEscape('2K');
 		restore();
-	}else
+	} else
 		writeEscape('2K');
 }
 /**

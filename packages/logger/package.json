@@ -1,7 +1,8 @@
 {
     "name": "@meteor-it/logger",
-    "version": "2.3.17",
+    "version": "2.3.22",
     "description": "Most powerfull logger for node.js",
+    "module": "index.mjs",
     "main": "index.js",
     "keywords": [
         "meteor-it",
@@ -10,9 +11,14 @@
     "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/terminal": "^0.5.13",
-        "@meteor-it/utils": "^1.3.10"
+        "@meteor-it/terminal": "^0.5.16",
+        "@meteor-it/utils": "^1.3.13"
     },
+    "sideEffects": [
+        "index.js",
+        "index.mjs",
+        "index.ts"
+    ],
     "publishConfig": {
         "access": "public"
     },

@@ -1,6 +1,7 @@
 {
     "name": "@meteor-it/ajson",
-    "version": "0.4.8",
+    "version": "0.4.10",
+    "module": "index.mjs",
     "main": "index.js",
     "scripts": {},
     "keywords": [
@@ -12,6 +13,7 @@
     ],
     "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
     "license": "MIT",
+    "sideEffects": false,
     "publishConfig": {
         "access": "public"
     },

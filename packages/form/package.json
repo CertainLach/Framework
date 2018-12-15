@@ -1,13 +1,15 @@
 {
   "name": "@meteor-it/form",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "description": "Form validation",
+  "module": "index.mjs",
   "main": "index.js",
   "keywords": [
     "meteor-it"
   ],
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
+  "sideEffects": false,
   "publishConfig": {
     "access": "public"
   },

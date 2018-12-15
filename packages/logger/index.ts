@@ -1,5 +1,3 @@
-const DEBUG = process.env.DEBUG || '';
-
 export enum LOGGER_ACTIONS {
 	IDENT,
 	DEENT,
@@ -14,8 +12,8 @@ export enum LOGGER_ACTIONS {
 	PROGRESS_END
 }
 export type CommonLogAction<E> = {
-	type:E,
-	params:any[]
+	type: E,
+	params: any[]
 }
 /**
  * Normal log action
@@ -34,47 +32,47 @@ export type ErrorLogAction = CommonLogAction<LOGGER_ACTIONS.ERROR>
  */
 export type DebugLogAction = CommonLogAction<LOGGER_ACTIONS.DEBUG>
 export type IdentAction = {
-	type:LOGGER_ACTIONS.IDENT;
-	identName:string;
+	type: LOGGER_ACTIONS.IDENT;
+	identName: string;
 }
 export type DeentAction = {
-	type:LOGGER_ACTIONS.DEENT;
-	identName:string;
-	identTime:number;
+	type: LOGGER_ACTIONS.DEENT;
+	identName: string;
+	identTime: number;
 }
 export type TimeStartAction = {
-	type:LOGGER_ACTIONS.TIME_START;
-	timeName:string;
+	type: LOGGER_ACTIONS.TIME_START;
+	timeName: string;
 }
 export type TimeEndAction = {
-	type:LOGGER_ACTIONS.TIME_END;
-	timeName:string;
-	timeTime:number;
+	type: LOGGER_ACTIONS.TIME_END;
+	timeName: string;
+	timeTime: number;
 }
 export type ProgressStartAction = {
-	type:LOGGER_ACTIONS.PROGRESS_START
+	type: LOGGER_ACTIONS.PROGRESS_START
 }
 export type ProgressEndAction = {
-	type:LOGGER_ACTIONS.PROGRESS_END
+	type: LOGGER_ACTIONS.PROGRESS_END
 }
 export type ProgressAction = {
-	type:LOGGER_ACTIONS.PROGRESS,
-	info:string,
-	progress:number
+	type: LOGGER_ACTIONS.PROGRESS,
+	info: string,
+	progress: number
 }
 export type LoggerAction = {
-	repeats?:number,
+	repeats?: number,
 	repeated?: boolean,
-	name?:string,
-	line?:string,
-	time?:number,
-	identationLength?:number
-}&(
-	IdentAction|DeentAction|
-	InfoLogAction|WarningLogAction|ErrorLogAction|DebugLogAction|
-	TimeStartAction|TimeEndAction|
-	ProgressStartAction|ProgressEndAction|ProgressAction
-);
+	name?: string,
+	line?: string,
+	time?: number,
+	identationLength?: number
+} & (
+		IdentAction | DeentAction |
+		InfoLogAction | WarningLogAction | ErrorLogAction | DebugLogAction |
+		TimeStartAction | TimeEndAction |
+		ProgressStartAction | ProgressEndAction | ProgressAction
+	);
 
 const REPEATABLE_ACTIONS = [
 	LOGGER_ACTIONS.IDENT,
@@ -86,16 +84,16 @@ const REPEATABLE_ACTIONS = [
 	LOGGER_ACTIONS.PROGRESS_END
 ];
 
-let consoleLogger:Logger;
-let loggerLogger:Logger;
+let consoleLogger: Logger;
+let loggerLogger: Logger;
 
 export class BasicReceiver {
-	logger:typeof Logger;
+	logger: typeof Logger;
 
-	setLogger(logger:typeof Logger) {
+	setLogger(logger: typeof Logger) {
 		this.logger = logger;
 	}
-	write(data:any) {
+	write(data: LoggerAction) {
 		throw new Error('write(): Not implemented!');
 	}
 }
@@ -103,49 +101,49 @@ export class BasicReceiver {
 // TODO: Logger UUID
 export default class Logger {
 	static nameLength = 12;
-	static repeatCount:number;
-	static lastProvider:string;
-	static lastMessage:any;
-	static lastType:LOGGER_ACTIONS;
-	static receivers:BasicReceiver[] = [];
-	name:string;
-	identation:string[] = [];
-	identationTime:number[] = [];
-	times:{[key:string]:number} = {};
+	static repeatCount: number;
+	static lastProvider: string;
+	static lastMessage: any;
+	static lastType: LOGGER_ACTIONS;
+	static receivers: BasicReceiver[] = [];
+	name: string;
+	identation: string[] = [];
+	identationTime: number[] = [];
+	times: { [key: string]: number } = {};
 
-	static setNameLength(length:number) {
+	static setNameLength(length: number) {
 		Logger.nameLength = length;
 	}
-	constructor(name:string) {
+	constructor(name: string) {
 		this.name = name.toUpperCase();
 	}
-	timeStart(name:string) {
+	timeStart(name: string) {
 		if (this.times[name]) {
 			loggerLogger.warn('timeStart(%s) called 2 times with same name!', name);
 			return;
 		}
 		this.times[name] = new Date().getTime();
-		this.write({
+		this._write({
 			type: LOGGER_ACTIONS.TIME_START,
 			timeName: name
 		});
 	}
-	timeEnd(name:string) {
+	timeEnd(name: string) {
 		if (!this.times[name]) {
 			loggerLogger.warn('timeEnd(%s) called with unknown name!', name);
 			return;
 		}
-		this.write({
+		this._write({
 			type: LOGGER_ACTIONS.TIME_END,
 			timeName: name,
 			timeTime: new Date().getTime() - this.times[name]
 		});
 		delete this.times[name];
 	}
-	ident(name:string) {
+	ident(name: string) {
 		this.identation.push(name);
 		this.identationTime.push(new Date().getTime());
-		this.write({
+		this._write({
 			type: LOGGER_ACTIONS.IDENT,
 			identName: name
 		});
@@ -154,7 +152,7 @@ export default class Logger {
 		if (this.identation.length === 0) {
 			return;
 		}
-		this.write({
+		this._write({
 			type: LOGGER_ACTIONS.DEENT,
 			identName: this.identation.pop(),
 			identTime: new Date().getTime() - this.identationTime.pop()
@@ -165,79 +163,75 @@ export default class Logger {
 			this.deent();
 		}
 	}
-	isDebugging():boolean{
-        return DEBUG === '*' || DEBUG.split(',').indexOf(this.name)!==-1
-    }
 
 	// LOG
-	log(...params:any[]) {
-		this.write({
+	log(...params: any[]) {
+		this._write({
 			type: LOGGER_ACTIONS.LOG,
 			line: params.shift(),
 			params: params
 		});
 	}
-	info(...params:any[]) {
-		this.write({
+	info(...params: any[]) {
+		this._write({
 			type: LOGGER_ACTIONS.LOG,
 			line: params.shift(),
 			params: params
 		});
 	}
 	// WARNING
-	warning(...params:any[]) {
-		this.write({
+	warning(...params: any[]) {
+		this._write({
 			type: LOGGER_ACTIONS.WARNING,
 			line: params.shift(),
 			params: params
 		});
 	}
-	warn(...params:any[]) {
-		this.write({
+	warn(...params: any[]) {
+		this._write({
 			type: LOGGER_ACTIONS.WARNING,
 			line: params.shift(),
 			params: params
 		});
 	}
-	error(...params:any[]) {
-		this.write({
+	error(...params: any[]) {
+		this._write({
 			type: LOGGER_ACTIONS.ERROR,
 			line: params.shift(),
 			params: params
 		});
 	}
-	err(...params:any[]) {
-		this.write({
+	err(...params: any[]) {
+		this._write({
 			type: LOGGER_ACTIONS.ERROR,
 			line: params.shift(),
 			params: params
 		});
 	}
 	// DEBUG
-	debug(...params:any[]) {
+	debug(...params: any[]) {
 		//if(DEBUG === '-')
 		//	return;
-		if (DEBUG === '*' || ~DEBUG.split(',').indexOf(this.name))
-			this.write({
-				type: LOGGER_ACTIONS.DEBUG,
-				line: params.shift(),
-				params: params
-			});
+		this._write({
+			type: LOGGER_ACTIONS.DEBUG,
+			line: params.shift(),
+			params: params
+		});
 	}
 	// Progress
-	progress(name:string, progress: boolean | number, info?: string) {
+	progress(name: string, progress: boolean | number, info?: string) {
 		if (progress === true) {
-			this.write({
+			this._write({
 				type: LOGGER_ACTIONS.PROGRESS_START,
 				name
 			});
 		} else if (progress === false) {
-			this.write({
+			this._write({
 				type: LOGGER_ACTIONS.PROGRESS_END,
 				name
 			});
 		} else {
-			this.write({
+			this._write({
 				type: LOGGER_ACTIONS.PROGRESS,
 				name,
 				progress,
@@ -246,19 +240,19 @@ export default class Logger {
 		}
 	}
 	static noReceiversWarned = false;
-	write(data:LoggerAction) {
+	_write(data: LoggerAction) {
 		if (!data.time)
 			data.time = new Date().getTime();
 		if (!data.name)
 			data.name = this.name;
 		if (!data.identationLength)
 			data.identationLength = this.identation.length;
-		Logger._write(data);
+		Logger.__write(data);
 	}
-	private static _write(what:LoggerAction) {
+	private static __write(what: LoggerAction) {
 		if (Logger.receivers.length === 0) {
 			if (!Logger.noReceiversWarned) {
-				console._log('No receivers are defined for logger! See docs for info about this!');
+				console._log('No receivers are defined for logger!\nSee docs for @meteor-it/logger for more info!');
 				Logger.noReceiversWarned = true;
 			}
 			switch (what.type) {
@@ -286,59 +280,59 @@ export default class Logger {
 		what.repeated = what.repeats && what.repeats > 0;
 		Logger.receivers.forEach(receiver => receiver.write(what));
 	}
-    private static resetRepeating(provider:string, message:string, type:LOGGER_ACTIONS) {
+	private static resetRepeating(provider: string, message: string, type: LOGGER_ACTIONS) {
 		Logger.lastProvider = provider;
 		Logger.lastMessage = message;
 		Logger.lastType = type;
 		Logger.repeatCount = 0;
 	}
-    private static isRepeating(provider:string, message:string, type:LOGGER_ACTIONS) {
+	private static isRepeating(provider: string, message: string, type: LOGGER_ACTIONS) {
 		return Logger.lastProvider === provider && Logger.lastMessage === message && Logger.lastType === type;
 	}
-	static addReceiver(receiver:BasicReceiver) {
+	static addReceiver(receiver: BasicReceiver) {
 		if (Logger.receivers.length === 4)
 			loggerLogger.warn('Possible memory leak detected: 4 or more receivers are added.');
 		receiver.setLogger(Logger);
 		Logger.receivers.push(receiver);
 	}
-	static from(name:string|Logger):Logger {
-	    if(name instanceof Logger)
+	static from(name: string | Logger): Logger {
+		if (name instanceof Logger)
 			return name;
 		// From logger of another version? Should be avoided in any way
-		if(typeof name==='object'&&'timeStart' in (name as any))
+		if (typeof name === 'object' && 'timeStart' in (name as any))
 			return name;
-	    return new Logger(name);
-    }
+		return new Logger(name);
+	}
 }
 
 // Console monkey-patching
 // And named console support
-const OTHER_LOGGER_MARK  = /^\[([a-zA-Z]+)\]/;
+const OTHER_LOGGER_MARK = /^\[([a-zA-Z]+)\]/;
 
 consoleLogger = new Logger('console');
-(consoleLogger as any).___write = consoleLogger.write;
-consoleLogger.write = (data:any)=>{
-	if(typeof data.line==='string'&&OTHER_LOGGER_MARK.test(data.line)){
+(consoleLogger as any).___write = consoleLogger._write;
+consoleLogger._write = (data: any) => {
+	if (typeof data.line === 'string' && OTHER_LOGGER_MARK.test(data.line)) {
 		data.name = data.line.match(OTHER_LOGGER_MARK)[1];
-		data.line = data.line.replace(OTHER_LOGGER_MARK,'').trimStart();
+		data.line = data.line.replace(OTHER_LOGGER_MARK, '').trimStart();
 	}
 	return (consoleLogger as any).___write(data);
 }
 loggerLogger = new Logger('logger');
-export type logFunc=(...params:any[])=>undefined;
+export type logFunc = (...params: any[]) => undefined;
 declare global {
-    interface Console {
-        _log:logFunc;
-        _error:logFunc;
-        _warn:logFunc;
-        _err:logFunc;
-        _warning:logFunc;
-    }
+	interface Console {
+		_log: logFunc;
+		_error: logFunc;
+		_warn: logFunc;
+		_err: logFunc;
+		_warning: logFunc;
+	}
 }
 if (!(console as any)._patchedByLogger) {
 	for (let method of ['log', 'error', 'warn', 'err', 'warning', 'info']) {
 		(console as any)['_' + method] = (console as any)[method];
-        (console as any)[method] = (...args:any[]) => (consoleLogger as any)[method](...args);
+		(console as any)[method] = (...args: any[]) => (consoleLogger as any)[method](...args);
 	}
-    (console as any)._patchedByLogger = true;
+	(console as any)._patchedByLogger = true;
 }

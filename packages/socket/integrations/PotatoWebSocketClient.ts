@@ -1,5 +1,7 @@
-import { PotatoSocketUniversal, IEncoder, IClientCloseHandler, 
-    IClientOpenHandler, IRPCFieldWithoutThis } from '../';
+import {
+    PotatoSocketUniversal, IEncoder, IClientCloseHandler,
+    IClientOpenHandler, IRPCFieldWithoutThis
+} from '../';
 import Logger from '@meteor-it/logger';
 import WebSocketClient from '../WebSocketClient';
 
@@ -18,19 +20,19 @@ export default class PotatoSocketClient extends PotatoSocketUniversal<IRPCFieldW
         this.websocket.onopen = () => {
             this.openHandlers.forEach(handler => handler());
         };
-        this.websocket.onclose = (e:CloseEvent)=> {
+        this.websocket.onclose = (e: CloseEvent) => {
             this.closeHandlers.forEach(handler => handler(e.code));
         };
-        this.websocket.onerror = (error:Error) => {
+        this.websocket.onerror = (error: Error) => {
             this.logger.error(error.stack || error);
         };
-        this.websocket.onmessage = (data:{data:Buffer}) => {
+        this.websocket.onmessage = (data: { data: Buffer }) => {
             this.gotBufferFromRemote(Buffer.from(data.data));
         };
     }
     openHandlers: IClientOpenHandler[] = [];
     closeHandlers: IClientCloseHandler[] = [];
-    on(event: 'open'|'close'|string, handler: any) {
+    on(event: 'open' | 'close' | string, handler: any) {
         if (event === 'open') {
             if (handler.length !== 0)
                 throw new Error('"open" listener should receive 0 arguments!');
@@ -45,7 +47,7 @@ export default class PotatoSocketClient extends PotatoSocketUniversal<IRPCFieldW
         }
         super.on(event, handler);
     }
-    sendBufferToRemote(buffer:Buffer) {
+    sendBufferToRemote(buffer: Buffer) {
         this.websocket.send(buffer);
     }
     open() {

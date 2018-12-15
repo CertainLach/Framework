@@ -1,9 +1,13 @@
-import { format } from 'util';
+import util from 'util';
 import Logger, { LOGGER_ACTIONS, BasicReceiver } from '../';
 import {
 	writeStdout,
 	moveCursor, clearLine, save, restore, startBuffering, flushBuffer
 } from '@meteor-it/terminal';
+
+const DEBUG = process.env.DEBUG || '';
+
+const { format } = util;
 
 const ansiColors: { [key: string]: number[] } = {
 	reset: [0, 0],
@@ -194,7 +198,8 @@ export default class NodeConsoleReceiver extends BasicReceiver {
 				writeWarningData(nameLimit, this, data);
 				break;
 			case LOGGER_ACTIONS.DEBUG:
-				writeDebugData(nameLimit, this, data);
+				if (DEBUG === '*' || ~DEBUG.split(',').indexOf(data.name))
+					writeDebugData(nameLimit, this, data);
 				break;
 			case LOGGER_ACTIONS.TIME_START:
 				writeStdout(stringifyTimeStartData(nameLimit, this, data) + '\n');

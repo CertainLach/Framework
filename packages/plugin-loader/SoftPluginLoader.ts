@@ -1,10 +1,12 @@
 import Logger from '@meteor-it/logger';
 import {readDir} from '@meteor-it/fs';
 import {asyncEach} from '@meteor-it/utils';
-import {resolve} from 'path';
-import * as chokidar from 'chokidar';
+import path from 'path';
+import chokidar from 'chokidar';
 import EventEmitter from "events";
 import IPlugin from "./IPlugin";
+
+const {resolve} = path;
 
 /**
  * Node.JS plugin loader

@@ -6,11 +6,15 @@ import Store, { useStore } from './stores';
 import { IsomorphicStyleLoaderStore, useStyles } from './style';
 import RouterStore from './router/RouterStore';
 import { observable, computed, action } from 'mobx';
-import loadable from './preload';
+import { PreloadStore, loadable, useAsync } from './preload';
 import Helmet from './helmet';
 import HelmetStore from './helmet/HelmetStore';
-import { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { useComputed, useObservable } from 'mobx-react-lite';
+import useRerender from './utils/useRerender';
+import { useTimeout, useInterval } from './utils/timerHooks';
+
+const { useRef, useState, useEffect } = React;
 
 export default Rocket;
 export { ServerMiddleware, initClient };
@@ -19,7 +23,9 @@ export { Store, useStore };
 export { IsomorphicStyleLoaderStore, useStyles };
 export { RouterStore };
 export { action, computed, observable };
-export { loadable };
+export { PreloadStore, loadable, useAsync };
 export { Helmet, HelmetStore };
 export { useRef, useState, useEffect };
 export { useComputed, useObservable };
+export { useRerender };
+export { useInterval, useTimeout }

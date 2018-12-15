@@ -1,18 +1,21 @@
-import { hydrate, render } from 'react-dom';
-import { parse as parseQuerystring } from 'querystring';
+import ReactDOM from 'react-dom';
+import querystring from 'querystring';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
-import {cleanUpBrowserStoreList} from "./stores/useStore";
-import {setForceRerender} from "./router/RouterStore";
+import { cleanUpBrowserStoreList, createOrDehydrateStore } from "./stores/useStore";
+import RouterStore, { setForceRerender } from "./router/RouterStore";
+
+const { parse: parseQuerystring } = querystring;
+const { hydrate, render } = ReactDOM;
 
 // Lazy initialized, because this code can be somehow processed 
 // on server, but a regexp requires access to window
-let IS_INTERNAL_REGEXP:RegExp = null;
+let IS_INTERNAL_REGEXP: RegExp = null;
 
-function sameOrigin(url:string): boolean {
+function sameOrigin(url: string): boolean {
     return !!IS_INTERNAL_REGEXP.test(url);
 }
-function isLink(el:any): Element {
+function isLink(el: any): Element {
     while (el && el.nodeName !== 'A') el = el.parentNode;
     if (!el || el.nodeName !== 'A') return null;
     return el;
@@ -24,20 +27,23 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
     lastClick++;
     let path = location.pathname;
     // substr(1) is needed, because location.search starts with "?""
-    let qs:{[key:string]:string};
+    let qs: { [key: string]: string };
     if (location.search === '' || location.search === '?') {
         qs = {};
     } else if (location.search.startsWith('?')) {
         qs = parseQuerystring(location.search.substr(1)) as any;
     }
-    await (rocket.router as any).route(path, (ctx:any) => {
-        if(currentState !== null)
+    await (rocket.router as any).route(path, (ctx: any) => {
+        if (currentState !== null) {
             ctx.state.store = currentState.store;
+            const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
+            routerStore.setDataNoRerender(path, qs);
+        }
         currentState = ctx.state;
         ctx.query = qs;
     });
     // TODO: Fix possible stackoverflow on rerender
-    setForceRerender(()=>{
+    setForceRerender(() => {
         setTimeout(() => rerunRoute(rocket, false), 1);
     });
     lastClick--;
@@ -65,10 +71,10 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
 export default async function initClient(rocket: Rocket) {
     IS_INTERNAL_REGEXP = new RegExp('^(?:(?:http[s]?:\/\/)?' + window.location.host.replace(/\./g, '\\.') + ')?\/?[#?]?', 'i');
     // TODO: Patch react via babel
-    if (process.env.NODE_ENV === 'production'){
+    if (process.env.NODE_ENV === 'production') {
         if (typeof window !== 'undefined' && typeof (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
             for (let [key, value] of Object.entries((window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__)) {
-                (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__[key] = typeof value == "function" ? ()=>{} : null;
+                (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__[key] = typeof value == "function" ? () => { } : null;
             }
         }
     }
