@@ -9,7 +9,7 @@ const { useState, useEffect } = React;
 
 export class SSRLoadingError extends Error { }
 
-export default <P>(key: string, promiseGetter: () => Promise<P>): ([LoadingState.ERRORED, Error] | [LoadingState.LOADING, null] | [LoadingState.LOADED, P]) => {
+export default <P>(key: string, promiseGetter: () => Promise<P>): [LoadingState.ERRORED, Error] | [LoadingState.LOADING, null] | [LoadingState.LOADED, P] => {
     const asyncStore = useStore(PreloadStore);
     const rerender = useRerender();
     let isMounted = true;
