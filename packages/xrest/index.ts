@@ -9,6 +9,7 @@ import { stringify } from 'querystring';
 import iconv from 'iconv-lite';
 import { IMultiPartData, sizeOf, DEFAULT_BOUNDARY, write } from "./multipart";
 import zlib from 'zlib';
+import { Transform, Readable, Stream } from 'stream';
 
 export { IMultiPartData };
 
@@ -16,13 +17,9 @@ const USER_AGENT = '@meteor-it/xrest';
 
 // TODO: More assertions
 
-const decoders: Map<string, (buffer: Buffer) => Promise<Buffer>> = new Map<string, (buffer: Buffer) => Promise<Buffer>>();
-decoders.set('gzip', buffer => new Promise((res, rej) => {
-    zlib.gunzip(buffer, (err: Error, result: Buffer) => err ? rej(err) : res(result));
-}));
-decoders.set('deflate', buffer => new Promise((res, rej) => {
-    zlib.inflate(buffer, (err: Error, result: Buffer) => err ? rej(err) : res(result));
-}));
+const decoders: Map<string, () => Transform> = new Map();
+decoders.set('gzip', () => zlib.createGunzip());
+decoders.set('deflate', () => zlib.createInflate());
 const parsers: Map<string, (data: string) => Promise<unknown>> = new Map<string, (data: string) => Promise<unknown>>();
 parsers.set('json', data => Promise.resolve(JSON.parse(data)));
 
@@ -93,7 +90,7 @@ export type IRequestOptions = {
      */
     accessToken?: string;
 }
-export type IExtendedIncomingMessage = IncomingMessage & { raw: Buffer, rawEncoded: Buffer };
+export type IExtendedIncomingMessage = IncomingMessage;
 class Request extends EventEmitter {
     url: string;
     parsedUrl: Url;
@@ -246,54 +243,43 @@ class Request extends EventEmitter {
             }
         }
         else {
-            let bodyParts: Buffer[] = [];
-
             // Browserify/some webpack-provided stubs doesn't supports this
             if (typeof response.setEncoding === 'function')
                 response.setEncoding('binary');
-
-            response.on('data', chunk => {
+            let stream: Stream = response;
+            const decoder = response.headers['content-encoding'];
+            const needsToBeDecoded = !!decoder;
+            const decodeable = decoder && decoders.has(decoder);
+            if (needsToBeDecoded && !decodeable)
+                logger.warn(`Stream possibly can't be decoded, unknown encoding: ${response.headers['content-encoding']}`);
+            if (decoder && decoders.has(decoder))
+                stream = stream.pipe(decoders.get(decoder)());
+            let contentType = response.headers['content-type'];
+            if (contentType) {
+                let charsetRegexpResult = /\bcharset=(.+)(?:;|$)/i.exec(contentType);
+                if (charsetRegexpResult) {
+                    let charset = charsetRegexpResult[1].trim().toUpperCase();
+                    if (charset !== 'UTF-8')
+                        stream = stream.pipe(iconv.decodeStream(charset));
+                }
+            }
+            const bodyParts = [];
+            stream.on('data', chunk => {
                 bodyParts.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
             });
-
-            response.on('end', async () => {
-                let body = Buffer.concat(bodyParts);
-                response.rawEncoded = body;
+            stream.on('end', async () => {
+                const body = Buffer.concat(bodyParts);
                 try {
-                    body = await Request.decode(body, response);
-                    response.raw = body;
-                    body = await Request.iconv(body, response);
                     let encoded = await this.encode(body);
                     this.fireSuccess(encoded, response);
                 } catch (e) {
                     this.fireError(e, response);
                 }
             });
+            stream.on('error', e => {
+                this.fireError(e, response);
+            });
         }
-    }
-
-    static async decode(body: Buffer, response: IExtendedIncomingMessage) {
-        const decoder = response.headers['content-encoding'];
-        if (decoders.has(decoder)) {
-            return await decoders.get(decoder)(body);
-        } else {
-            return body;
-        }
-    }
-
-    static iconv(body: Buffer, response: IExtendedIncomingMessage): Promise<Buffer> {
-        let contentType = response.headers['content-type'];
-        if (contentType) {
-            let charsetRegexpResult = /\bcharset=(.+)(?:;|$)/i.exec(contentType);
-            if (charsetRegexpResult) {
-                let charset = charsetRegexpResult[1].trim().toUpperCase();
-                if (charset !== 'UTF-8')
-                    try {
-                        return Promise.resolve(Buffer.from(iconv.decode(body, charset)));
-                    } catch (e) { }
-            }
-        }
-        return Promise.resolve(body);
     }
 
     encode(body: Buffer): Promise<unknown> {

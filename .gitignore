@@ -15,4 +15,3 @@
 **/*.iml
 **/*.tgz
 docs
-lerna.json

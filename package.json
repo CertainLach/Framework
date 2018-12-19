@@ -10,7 +10,7 @@
     "build:docs": "cd packages&&typedoc --out ../docs --name Meteor.Framework --ignoreCompilerErrors --readme none --hideGenerator ./&&cd ..",
     "build:dependencies": "lerna bootstrap",
     "dev": "npm run clean&&npm run dev:link&&npm run build:dependencies",
-    "dev:link": "lerna exec pnpm link",
+    "dev:link": "lerna exec yarn link",
     "publish": "npm run clean&&npm run build&&lerna publish"
   },
   "devDependencies": {
@@ -21,7 +21,7 @@
     "gulp-cli": "^2.0.1",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-typescript": "^5.0.0-alpha.3",
-    "lerna": "^3.5.1",
+    "lerna": "^3.7.0",
     "typedoc": "^0.13.0",
     "typescript": "^3.2.1"
   },
