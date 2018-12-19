@@ -472,7 +472,7 @@ export default class XRest {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    static registerDecoder(name: string, decoder: (data: Buffer) => Promise<Buffer>): void {
+    static registerDecoder(name: string, decoder: () => Transform): void {
         decoders.set(name, decoder);
     }
 }
