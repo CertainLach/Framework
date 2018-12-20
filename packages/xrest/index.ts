@@ -106,11 +106,6 @@ class Request extends EventEmitter {
     }
 
     prepare(url: string, options: IRequestOptions) {
-        logger.debug('prepare(%s)', url);
-        if (url.indexOf('undefined') + 1) {
-            logger.warn('undefined found in request url! Stack for reference:');
-            logger.warn(new Error('reference stack').stack);
-        }
         this.parsedUrl = parseUrl(url);
         this.options = options;
         this.headers = {
