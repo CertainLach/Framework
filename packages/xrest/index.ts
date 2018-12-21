@@ -399,7 +399,7 @@ class Request extends EventEmitter {
 
 const logger = new Logger('xrest');
 
-function emit(method: string, path: string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
+export function emit(method: string, path: string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
     if (method.toUpperCase() !== method) {
         throw new Error(`Method name should be uppercase! (Got: ${method})`);
     }
