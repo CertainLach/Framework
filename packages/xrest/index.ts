@@ -445,7 +445,6 @@ export default class XRest {
     defaultOptions: IRequestOptions;
 
     constructor(url: string, defaultOptions: IRequestOptions) {
-        logger.debug(`new XRest(${url})`);
         this.baseUrl = url;
         this.defaultOptions = defaultOptions;
     }
