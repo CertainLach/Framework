@@ -90,7 +90,7 @@ export type IRequestOptions = {
      */
     accessToken?: string;
 }
-export type IExtendedIncomingMessage = IncomingMessage;
+export type IExtendedIncomingMessage = IncomingMessage & { body: any };
 class Request extends EventEmitter {
     url: string;
     parsedUrl: Url;
@@ -238,24 +238,26 @@ class Request extends EventEmitter {
             }
         }
         else {
-            // Browserify/some webpack-provided stubs doesn't supports this
-            if (typeof response.setEncoding === 'function')
-                response.setEncoding('binary');
             let stream: Stream = response;
+            stream.on('error', e => {
+                this.fireError(e, response);
+            });
             const decoder = response.headers['content-encoding'];
             const needsToBeDecoded = !!decoder;
             const decodeable = decoder && decoders.has(decoder);
             if (needsToBeDecoded && !decodeable)
                 logger.warn(`Stream possibly can't be decoded, unknown encoding: ${response.headers['content-encoding']}`);
-            if (decoder && decoders.has(decoder))
+            if (decoder && decoders.has(decoder)) {
                 stream = stream.pipe(decoders.get(decoder)());
+            }
             let contentType = response.headers['content-type'];
             if (contentType) {
                 let charsetRegexpResult = /\bcharset=(.+)(?:;|$)/i.exec(contentType);
                 if (charsetRegexpResult) {
                     let charset = charsetRegexpResult[1].trim().toUpperCase();
-                    if (charset !== 'UTF-8')
+                    if (charset !== 'UTF-8') {
                         stream = stream.pipe(iconv.decodeStream(charset));
+                    }
                 }
             }
             const bodyParts = [];
@@ -270,9 +272,6 @@ class Request extends EventEmitter {
                 } catch (e) {
                     this.fireError(e, response);
                 }
-            });
-            stream.on('error', e => {
-                this.fireError(e, response);
             });
         }
     }
@@ -305,7 +304,7 @@ class Request extends EventEmitter {
     }
 
     fireTimeout(time: number) {
-        this.emit('timeout', new Error(`Request isn't completed in ${time}ms`));
+        this.emit('timeout', new Error(`request isn't completed in ${time}ms`));
         this.aborted = true;
         this.timedout = true;
         this.request.abort();
@@ -429,7 +428,7 @@ export function emit(method: string, path: string, options: IRequestOptions = {}
             } else
                 rej(e);
         });
-        request.on('complete', (result, response) => {
+        request.on('complete', (result, response: IExtendedIncomingMessage) => {
             if (result instanceof Error) {
                 rej(result);
                 return;
