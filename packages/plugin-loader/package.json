@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/plugin-loader",
-  "version": "1.4.25",
+  "version": "1.4.26",
   "description": "Plugin loader for all porposes",
   "module": "index.mjs",
   "main": "index.js",
