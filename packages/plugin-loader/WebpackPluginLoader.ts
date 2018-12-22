@@ -6,8 +6,8 @@ import IPlugin from './IPlugin';
 type Module = __WebpackModuleApi.Module;
 type RequireContext = __WebpackModuleApi.RequireContext;
 
-type IAcceptor = (acceptor:()=>void,getContext:()=>Module)=>void;
-type IRequireContextGetter = ()=>RequireContext;
+type IAcceptor = (acceptor: () => void, getContext: () => Module) => void;
+type IRequireContextGetter = () => RequireContext;
 
 /**
  * HMR Plugin Loader
@@ -17,19 +17,19 @@ type IRequireContextGetter = ()=>RequireContext;
  *      (acceptor, getContext) => module.hot.accept(getContext().id, acceptor));
  */
 export default class WebpackPluginLoader<C> {
-    plugins:IPlugin[] = [];
-    acceptor:IAcceptor;
+    plugins: IPlugin[] = [];
+    acceptor: IAcceptor;
     logger: Logger;
     requireContextGetter: IRequireContextGetter;
-    pluginContext:C;
-    constructor(name:string|Logger, requireContextGetter:IRequireContextGetter, acceptor:IAcceptor) {
+    pluginContext: C;
+    constructor(name: string | Logger, requireContextGetter: IRequireContextGetter, acceptor: IAcceptor) {
         this.logger = Logger.from(name);
         this.requireContextGetter = requireContextGetter;
-        this.acceptor=acceptor;
+        this.acceptor = acceptor;
     }
     // TODO: Queue
     // @queue(1)
-    async customReloadLogic(key:string, module:any, reloaded:boolean) {
+    async customReloadLogic(key: string, module: any, reloaded: boolean) {
         this.logger.ident(key);
         if (!reloaded) {
             this.logger.log(`${key} is loading`);
@@ -43,7 +43,7 @@ export default class WebpackPluginLoader<C> {
             Object.assign(plugin, this.pluginContext);
             if (!plugin.init) {
                 this.logger.log('Plugin has no init() method, skipping call');
-            }else{
+            } else {
                 this.logger.log('Calling init()');
                 await plugin.init();
             }
@@ -66,11 +66,11 @@ export default class WebpackPluginLoader<C> {
             else {
                 this.logger.log('Plugin was loaded before, unloading old instances');
                 let instances = this.plugins.length;
-                for(let alreadyLoadedPlugin of alreadyLoaded){
+                for (let alreadyLoadedPlugin of alreadyLoaded) {
                     // Deinit plugin
-                    if(!alreadyLoadedPlugin.deinit){
+                    if (!alreadyLoadedPlugin.deinit) {
                         this.logger.log('Plugin has no deinit() method, skipping call');
-                    }else{
+                    } else {
                         this.logger.log('Calling deinit()');
                         await alreadyLoadedPlugin.deinit();
                     }
@@ -87,7 +87,7 @@ export default class WebpackPluginLoader<C> {
             }
             if (!plugin.init) {
                 this.logger.log('Plugin has no deinit() method, skipping call');
-            }else{
+            } else {
                 this.logger.log('Calling init()');
                 await plugin.init();
             }
@@ -95,10 +95,10 @@ export default class WebpackPluginLoader<C> {
         }
         this.logger.deent();
     }
-    async load(pluginContext:C) {
+    async load(pluginContext: C) {
         this.pluginContext = pluginContext;
         let context = this.requireContextGetter();
-        let modules:{[key:string]:any} = {};
+        let modules: { [key: string]: any } = {};
         context.keys().forEach((key) => {
             let module = context(key);
             modules[key] = module;
@@ -106,14 +106,13 @@ export default class WebpackPluginLoader<C> {
         });
 
         if (module.hot) {
-            console.log('Adding HMR to',(context as any).id);
             this.acceptor(() => {
                 let reloadedContext = this.requireContextGetter();
-                reloadedContext.keys().map(key=>[key, reloadedContext(key)]).filter(reloadedModule=>modules[reloadedModule[0]] !== reloadedModule[1]).forEach((module) => {
+                reloadedContext.keys().map(key => [key, reloadedContext(key)]).filter(reloadedModule => modules[reloadedModule[0]] !== reloadedModule[1]).forEach((module) => {
                     modules[module[0]] = module[1];
                     this.customReloadLogic(module[0], module[1], true);
                 });
-            },this.requireContextGetter as any);
+            }, this.requireContextGetter as any);
         }
 
         return this.plugins;
