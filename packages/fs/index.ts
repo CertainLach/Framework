@@ -2,8 +2,6 @@ import fsNative, { Stats } from 'fs';
 import path from 'path';
 import { asyncEach } from '@meteor-it/utils';
 
-const { promises: fs, constants: fsConstants, createReadStream, createWriteStream } = fsNative;
-const { sep } = path;
 type FileHandle = fsNative.promises.FileHandle;
 /**
  * Returns true if path is a valid data url
@@ -32,7 +30,7 @@ function parseDataUrl(path: string): IParsedDataUrl {
  * Get all files in directory
  */
 export async function readDir(dir: string) {
-	return await fs.readdir(dir);
+	return await fsNative.promises.readdir(dir);
 }
 /**
  * Read file or parse data url
@@ -41,26 +39,26 @@ export async function readDir(dir: string) {
 export async function readFile(file: string): Promise<Buffer> {
 	if (isDataUrl(file))
 		return parseDataUrl(file).data;
-	return await fs.readFile(file);
+	return await fsNative.promises.readFile(file);
 }
 
 export async function stat(file: string): Promise<Stats> {
-	return await fs.stat(file);
+	return await fsNative.promises.stat(file);
 }
 
 export async function open(file: string, mode: string, access: string): Promise<FileHandle> {
-	return await fs.open(file, mode, access);
+	return await fsNative.promises.open(file, mode, access);
 }
 
 export async function read(fd: FileHandle, buffer: Buffer, offset: number, length: number, position: number) {
-	return await fs.read(fd, buffer, offset, length, position);
+	return await fsNative.promises.read(fd, buffer, offset, length, position);
 }
 
 /**
  * Write text to file
  */
 export async function writeFile(filename: string, text: string | Buffer) {
-	return await fs.writeFile(filename, text);
+	return await fsNative.promises.writeFile(filename, text);
 }
 
 /**
@@ -76,20 +74,20 @@ export async function walkDir(dir: string, cb?: (file: string, dir: string) => v
 		returnValue = [];
 		shouldReturn = true;
 		cb = (file: string, dir: string) => {
-			returnValue.push(dir + sep + file);
+			returnValue.push(dir + path.sep + file);
 		};
 	}
 	let dirList: string[] = [];
 	await asyncEach(await readDir(dir), async (file: string) => {
-		let path = dir + sep + file;
-		if (await isFile(path)) {
+		let pathStr = dir + path.sep + file;
+		if (await isFile(pathStr)) {
 			cb(file, dir);
-		} else if (await isDirectory(path)) {
+		} else if (await isDirectory(pathStr)) {
 			dirList.push(file);
 		}
 	});
 	await asyncEach(dirList, async (dirLevelDown: string) => {
-		await walkDir(dir + sep + dirLevelDown, cb);
+		await walkDir(dir + path.sep + dirLevelDown, cb);
 	});
 	if (shouldReturn) {
 		return returnValue.sort();
@@ -102,7 +100,7 @@ export async function walkDir(dir: string, cb?: (file: string, dir: string) => v
  */
 export async function exists(file: string): Promise<boolean> {
 	try {
-		let result = await fs.access(file, fsConstants.F_OK);
+		let result = await fsNative.promises.access(file, fsNative.constants.F_OK);
 		return result === undefined;
 	} catch (e) {
 		// Because only "err" field is returned if not exists
@@ -128,12 +126,12 @@ export async function isDirectory(path: string): Promise<boolean> {
  * Wrapper to fs function
  */
 export function getReadStream(path: string, options = {}) {
-	return createReadStream(path, options);
+	return fsNative.createReadStream(path, options);
 }
 
 /**
  * Wrapper to fs function
  */
 export function getWriteStream(path: string, options = {}) {
-	return createWriteStream(path, options);
+	return fsNative.createWriteStream(path, options);
 }
