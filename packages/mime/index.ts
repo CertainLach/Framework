@@ -1,7 +1,5 @@
 import path from 'path';
 
-const { parse } = path;
-
 export const map: { [key: string]: string } = {
 	"123": "application/vnd.lotus-1-2-3",
 	"ez": "application/andrew-inset",
@@ -1073,6 +1071,6 @@ export function lookup(extension: string): string | null {
 	return map[extension];
 }
 // noinspection JSUnusedGlobalSymbols
-export function lookupByPath(path: string): string | null {
-	return lookup(parse(path).ext.substr(1));
+export function lookupByPath(pathStr: string): string | null {
+	return lookup(path.parse(pathStr).ext.substr(1));
 }

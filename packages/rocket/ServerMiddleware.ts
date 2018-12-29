@@ -21,13 +21,7 @@ import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
 import { h, frag } from './h';
 import PreloadStore from './preload/PreloadStore';
 
-const { stringify } = querystring;
-const { format } = url;
-const { join } = path;
-const { constants } = http2;
 const { renderToStaticMarkup, renderToString } = ReactDOMServer;
-
-const { HTTP2_HEADER_CONTENT_TYPE, HTTP2_HEADER_LOCATION, HTTP2_HEADER_LINK } = constants;
 
 // Should be loaded only in development, parses stats file every time, so this middleware is very slow
 class HotHelperMiddleware extends RoutingMiddleware<XPressRouterContext, void, 'GET'>{
@@ -105,9 +99,9 @@ export default class ServerMiddleware extends MultiMiddleware {
         // Allow redirects to be placed inside render() method
         if (routerStore.hasRedirect) {
             stream.status(307);
-            stream.resHeaders[HTTP2_HEADER_LOCATION] = format({
+            stream.resHeaders[http2.constants.HTTP2_HEADER_LOCATION] = url.format({
                 pathname: routerStore.path,
-                search: stringify(routerStore.query)
+                search: querystring.stringify(routerStore.query)
             });
             stream.respond();
             stream.res.end();
@@ -120,14 +114,14 @@ export default class ServerMiddleware extends MultiMiddleware {
         // Required code
         let neededEntryPointScripts = files.filter(e => !!e).filter(e => e.endsWith('.js'));
 
-        // Loaded code (For preload on client), need to transform 
+        // Loaded code (For preload on client), need to transform
         // required modules to thier chunks on client
-        // Server module id => Server module path => Client module id => Client chunk file 
+        // Server module id => Server module path => Client module id => Client chunk file
         const serverModulePathList = helmetStore.ssrData.preloadModules.map(module => this.cachedServerStats.ssrData.moduleIdToPath[module]);
         const clientModuleIdList = serverModulePathList.filter(e => !!e).map(module => this.cachedClientStats.ssrData.modulePathToId[module]);
         const chunkList = [...new Set([].concat(...clientModuleIdList.filter(e => !!e).map(id => this.cachedClientStats.ssrData.moduleIdToChunkFile[id])).filter(chunk => neededEntryPointScripts.indexOf(chunk) === -1))].filter(e => !!e && e !== '');
 
-        // 
+        //
         const isomorphicStyleLoaderStore = createOrDehydrateStore(currentState.store, IsomorphicStyleLoaderStore);
 
         // No need to render script on server, because:
@@ -186,19 +180,19 @@ export default class ServerMiddleware extends MultiMiddleware {
         if (stream.canPushStream) {
             await asyncEach([...chunkList, ...neededEntryPointScripts], async (file: string) => {
                 const ts = await stream.pushStream(`/${file}`);
-                ts.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'application/javascript; charset=utf-8';
-                ts.sendFile(join(this.compiledClientDir, file));
+                ts.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'application/javascript; charset=utf-8';
+                ts.sendFile(path.join(this.compiledClientDir, file));
             });
         }
 
         // Other files are handled by StaticMiddleware
-        stream.resHeaders[HTTP2_HEADER_CONTENT_TYPE] = 'text/html; charset=utf-8';
+        stream.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'text/html; charset=utf-8';
 
         // TODO: Full spec
         // https://www.w3.org/TR/preload/#dfn-preload-keyword
         let availableForLink = helmetStore.link.filter(e => !!e.href);
         if (availableForLink.length !== 0)
-            stream.resHeaders[HTTP2_HEADER_LINK] = availableForLink.map(l => `<${l.href}>; rel="${l.rel}"`).join(', ');
+            stream.resHeaders[http2.constants.HTTP2_HEADER_LINK] = availableForLink.map(l => `<${l.href}>; rel="${l.rel}"`).join(', ');
 
         // Finally send rendered data to user
         stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
