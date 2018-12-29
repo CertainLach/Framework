@@ -368,6 +368,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                     ctx.query = query as { [key: string]: string };
                     ctx.method = 'WS';
                     ctx.stream = wrapperMainStream;
+                    ctx.socket = ws;
                 });
                 // Dirty check for handled websocket
                 // Will break on UWS update
