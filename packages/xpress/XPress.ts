@@ -325,6 +325,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 ctx.query = query as { [key: string]: string };
                 ctx.method = method as any;
                 ctx.stream = wrappedMainStream;
+                ctx.socket = null;
             });
             if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
                 wrappedMainStream.resHeaders = {};
