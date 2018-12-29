@@ -7,22 +7,10 @@ import { Socket } from 'net';
 import fs from "fs";
 import { EventEmitter } from 'events';
 
-
 import Logger from '@meteor-it/logger';
 import URouter from "@meteor-it/router";
 import { userErrorPage, developerErrorPage } from './errorPages';
 export { userErrorPage, developerErrorPage };
-
-const { constants, createSecureServer } = http2;
-const { createServer } = http;
-const { parse } = url;
-const { normalize, sep: pathSep } = path;
-const { createReadStream } = fs;
-const {
-    HTTP2_HEADER_METHOD, HTTP2_HEADER_PATH, HTTP2_HEADER_STATUS,
-    HTTP2_HEADER_UPGRADE,
-    HTTP2_HEADER_ACCEPT_ENCODING, NGHTTP2_REFUSED_STREAM
-} = constants;
 
 export interface IClientOptions {
     protocol?: string;
@@ -120,7 +108,7 @@ export class XpressRouterStream {
 
     status(status: number): this {
         if (status > 999 || status < 100) throw new Error('incorrect status passed');
-        this.resHeaders[HTTP2_HEADER_STATUS] = status;
+        this.resHeaders[http2.constants.HTTP2_HEADER_STATUS] = status;
         return this;
     }
 
@@ -167,7 +155,7 @@ export class XpressRouterStream {
             this.res.stream.respondWithFile(path, this.resHeaders, {});
         } else {
             this.respond();
-            createReadStream(path).pipe(this.res as unknown as ServerResponse);
+            fs.createReadStream(path).pipe(this.res as unknown as ServerResponse);
         }
     }
 
@@ -182,15 +170,15 @@ export class XpressRouterStream {
         } else {
             const newHeaders: { [key: string]: string | number | string[] | undefined } = {};
             for (let key in this.resHeaders) {
-                if (key !== HTTP2_HEADER_STATUS)
+                if (key !== http2.constants.HTTP2_HEADER_STATUS)
                     newHeaders[key] = this.resHeaders[key];
             }
-            this.res.writeHead(this.resHeaders[HTTP2_HEADER_STATUS] as number || 200, newHeaders);
+            this.res.writeHead(this.resHeaders[http2.constants.HTTP2_HEADER_STATUS] as number || 200, newHeaders);
         }
     }
 
     acceptsEncoding(encoding: string) {
-        return ((this.reqHeaders[HTTP2_HEADER_ACCEPT_ENCODING] as string || '').split(',').map(e => e.trim()).includes(encoding));
+        return ((this.reqHeaders[http2.constants.HTTP2_HEADER_ACCEPT_ENCODING] as string || '').split(',').map(e => e.trim()).includes(encoding));
     }
 
 
@@ -202,11 +190,11 @@ export class XpressRouterStream {
         return new Promise((res, rej) => {
             if (!this.canPushStream) return rej(new Error("pushStream isn't supported for this session"));
             // @types/node sucks for http2
-            this.res.stream.pushStream({ ...this.resHeaders, [HTTP2_HEADER_PATH]: path }, (err, stream, resHeaders) => {
+            this.res.stream.pushStream({ ...this.resHeaders, [http2.constants.HTTP2_HEADER_PATH]: path }, (err, stream, resHeaders) => {
                 if (err) return rej(err);
                 stream.on('error', (err) => {
                     const isRefusedStream = (err as any).code === 'ERR_HTTP2_STREAM_ERROR' &&
-                        stream.rstCode === NGHTTP2_REFUSED_STREAM;
+                        stream.rstCode === http2.constants.NGHTTP2_REFUSED_STREAM;
                     if (!isRefusedStream)
                         throw err;
                 });
@@ -269,7 +257,7 @@ export class Router<S> extends URouter<XPressRouterContext, S> {
 }
 
 // noinspection RegExpRedundantEscape
-const PATH_SEP_REGEXP = new RegExp(`\\${pathSep}`, 'g');
+let PATH_SEP_REGEXP = null;
 
 // Default config
 const WS_SERVER_CONFIG = {
@@ -320,14 +308,15 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
 
     // noinspection JSMethodCanBeStatic
     private async requestHandler(req: Http2ServerRequest, res: Http2ServerResponse) {
-        const url = req.url as string || req.headers[HTTP2_HEADER_PATH] as string;
-        let { pathname, query } = parse(url, true);
+        if (PATH_SEP_REGEXP === null) PATH_SEP_REGEXP = new RegExp(`\\${path.sep}`, 'g');
+        const urlString = req.url as string || req.headers[http2.constants.HTTP2_HEADER_PATH] as string;
+        let { pathname, query } = url.parse(urlString, true);
         if (pathname === undefined) {
             res.stream.destroy();
             return;
         }
-        pathname = normalize(pathname).replace(PATH_SEP_REGEXP, '/');
-        const method = req.method || req.headers[HTTP2_HEADER_METHOD];
+        pathname = path.normalize(pathname).replace(PATH_SEP_REGEXP, '/');
+        const method = req.method || req.headers[http2.constants.HTTP2_HEADER_METHOD];
         const wrappedMainStream = new XpressRouterStream(req.headers, {});
         wrappedMainStream.req = req;
         wrappedMainStream.res = res;
@@ -358,19 +347,19 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     private async upgradeHandler(request: IncomingMessage, socket: Socket, head: ArrayBuffer) {
         const headers = request.headers;
-        const url = request.url;
-        if (url === undefined) {
+        const urlString = request.url;
+        if (urlString === undefined) {
             socket.destroy();
             return;
         }
-        let { pathname, query } = parse(url, true);
+        let { pathname, query } = url.parse(urlString, true);
         if (pathname === undefined) {
             socket.destroy();
             return;
         }
-        pathname = normalize(pathname).replace(PATH_SEP_REGEXP, '/');
+        pathname = path.normalize(pathname).replace(PATH_SEP_REGEXP, '/');
         const method = request.method;
-        const upgradeType = headers[HTTP2_HEADER_UPGRADE];
+        const upgradeType = headers[http2.constants.HTTP2_HEADER_UPGRADE];
         if (upgradeType === 'websocket' && method === 'GET') {
             this.wsServer.handleUpgrade(request, socket, head, async (ws) => {
                 const wrapperMainStream = new XpressRouterStream(headers, {});
@@ -402,7 +391,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     listenHttp(host = '0.0.0.0', port: number) {
         this.ensureWebSocketReady();
-        let server = createServer(this.requestHandler.bind(this));
+        let server = http.createServer(this.requestHandler.bind(this));
         // There is no ALPN negotigation for HTTP/1 over TLS D:
         // And, since HTTP/2 over tcp isn't supported in browsers,
         // Http server is only for HTTP/1.
@@ -426,7 +415,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     listenHttps(host = '0.0.0.0', port: number, { key, cert }: { key?: Buffer, cert?: Buffer }): Promise<void> {
         this.ensureWebSocketReady();
-        let server = createSecureServer({
+        let server = http2.createSecureServer({
             key, cert,
             allowHTTP1: true
         }, this.requestHandler.bind(this));

@@ -29,7 +29,7 @@ export default class WebSocketClient {
             this.onOpenResend();
             this.onopen();
         };
-        (<any>this.instance).onmessage = (data: any, flags: number) => {
+        (this.instance as any).onmessage = (data: any, flags: number) => {
             this.number++;
             this.onmessage(data, flags, this.number);
         };
@@ -48,15 +48,15 @@ export default class WebSocketClient {
             }
         };
         this.instance.onerror = (e) => {
-            switch ((<any>e).code) {
+            switch ((e as any).code) {
                 case 'ECONNREFUSED':
                     if (!this.safeClose)
                         this.reconnect();
                     else
-                        this.onclose(<any>e);
+                        this.onerror(e as any);
                     break;
                 default:
-                    this.onerror(<any>e);
+                    this.onerror(e as any);
                     break;
             }
         };
