@@ -34,9 +34,13 @@ let storeList: { [key: string]: any } = null;
  */
 export function cleanUpBrowserStoreList() {
     if (process.env.BROWSER) {
-        storeList = (window as any).__SSR_STORE__;
-        if (storeList)
+        if ('__SSR_STORE__' in window) {
+            storeList = (window as any).__SSR_STORE__;
             delete (window as any).__SSR_STORE__;
+            if (!storeList) storeList = {};
+        } else {
+            storeList = {};
+        }
     }
 }
 
@@ -62,7 +66,7 @@ export function createOrDehydrateStore<T extends Store>(context: any, e: new () 
     if (storeList !== null && id in storeList) {
         mergeObservables(context[id], storeList[id]);
         delete storeList[id];
-        if(Object.keys(storeList).length===0){
+        if (Object.keys(storeList).length === 0) {
             storeList = null;
         }
     }
