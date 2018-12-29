@@ -4,11 +4,12 @@ import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
 import { cleanUpBrowserStoreList, createOrDehydrateStore } from "./stores/useStore";
 import RouterStore, { setForceRerender } from "./router/RouterStore";
+import { ReactElement } from 'react';
 
 const { parse: parseQuerystring } = querystring;
 const { hydrate, render } = ReactDOM;
 
-// Lazy initialized, because this code can be somehow processed 
+// Lazy initialized, because this code can be somehow processed
 // on server, but a regexp requires access to window
 let IS_INTERNAL_REGEXP: RegExp = null;
 
@@ -58,15 +59,15 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
     if (lastClick === 0) {
         const rootElement = process.env.NODE_ENV === 'development' ? document.getElementById('root') : document.body.children[0];
         if (initial && process.env.NODE_ENV === 'production')
-            hydrate(currentState.drawTarget, rootElement);
+            hydrate(currentState.drawTarget as ReactElement<any>, rootElement);
         else
-            render(currentState.drawTarget, rootElement);
+            render(currentState.drawTarget as ReactElement<any>, rootElement);
     }
 }
 
 /**
  * As different function to allow tree-shaking
- * @param rocket 
+ * @param rocket
  */
 export default async function initClient(rocket: Rocket) {
     IS_INTERNAL_REGEXP = new RegExp('^(?:(?:http[s]?:\/\/)?' + window.location.host.replace(/\./g, '\\.') + ')?\/?[#?]?', 'i');

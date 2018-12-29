@@ -1,4 +1,4 @@
-import React, { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode } from "react";
+import React, { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode, RefAttributes } from "react";
 import { Observer } from 'mobx-react-lite';
 
 export type IClassList = (string | null | false)[];
@@ -8,11 +8,19 @@ export type IAttributes = {
 };
 
 type IH = {
-    (el: Array<ReactNode>): ReactElement<void>,
-    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string): ReactElement<void>,
-    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & IAttributes & P): ReactElement<P>,
-    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, children: Array<ReactNode>): ReactElement<P>,
-    <P extends object>(el: FunctionComponent<P> | ComponentClass<P> | string, props: Attributes & IAttributes & P, children: Array<ReactNode>): ReactElement<P>
+    (el: ReactNode): ReactNode,
+
+    (el: () => (ReactNode | ReactNode[]) | (new () => React.Component) | string): ReactNode,
+
+    <P extends object>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & P): ReactNode,
+    <P extends object>(el: (new () => React.Component<P>), props: Attributes & IAttributes & P): ReactNode,
+    (el: string, props: Attributes & IAttributes & any): ReactNode,
+
+    (el: () => (ReactNode | ReactNode[]) | (new () => React.Component) | string, children: ReactNode[]): ReactNode,
+
+    <P extends object>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & P, children: ReactNode[]): ReactNode,
+    <P extends object>(el: (new () => React.Component<P>), props: Attributes & IAttributes & P, children: ReactNode[]): ReactNode,
+    (el: string, props: Attributes & IAttributes & any, children: ReactNode[]): ReactNode
 };
 
 function processProps(props: IAttributes) {
@@ -50,8 +58,8 @@ const h: IH = ((...args: any[]) => {
 
 /**
  * Fragment with the props (i.e key)
- * @param p 
- * @param el 
+ * @param p
+ * @param el
  */
 const frag = (p: object, el: Array<ReactNode>) => {
     return h(React.Fragment, null, el);

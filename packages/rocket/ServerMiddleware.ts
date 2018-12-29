@@ -3,6 +3,7 @@ import path from 'path';
 import url from 'url';
 import querystring from 'querystring';
 import { toJS } from 'mobx';
+import { ReactElement } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { useStaticRendering } from "mobx-react-lite";
 import { readFile } from '@meteor-it/fs';
@@ -88,13 +89,13 @@ export default class ServerMiddleware extends MultiMiddleware {
         // Execute every useAsync
         const preloadStore = createOrDehydrateStore(currentState.store, PreloadStore);
         do {
-            renderToStaticMarkup(currentState.drawTarget);
+            renderToStaticMarkup(currentState.drawTarget as ReactElement<any>);
             await preloadStore.resolveAll();
         } while (preloadStore.countOfResolvedLastRender !== 0);
 
         // Generate rendered client html
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
-        let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
+        let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
 
         // Allow redirects to be placed inside render() method
         if (routerStore.hasRedirect) {
