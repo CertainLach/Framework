@@ -1,6 +1,6 @@
-const definedTypes:any = {};
+const definedTypes: any = {};
 
-function processAny (object:any, reverse:boolean, advancedTypes:any):any {
+function processAny(object: any, reverse: boolean, advancedTypes: any): any {
 	if (object instanceof Array) {
 		return processArray(object, reverse);
 	}
@@ -24,15 +24,15 @@ function processAny (object:any, reverse:boolean, advancedTypes:any):any {
 	}
 	return object.toString();
 }
-function processArray (array:any[], reverse:boolean) {
+function processArray(array: any[], reverse: boolean) {
 	let out = [];
 	for (let value of array) {
 		out.push(processAny(value, reverse, null));
 	}
 	return out;
 }
-function processObject (object:any, reverse:boolean) {
-	let out:any = {};
+function processObject(object: any, reverse: boolean) {
+	let out: any = {};
 	for (let key in object) {
 		if (object.hasOwnProperty(key)) {
 			out[key] = processAny(object[key], reverse, null);
@@ -40,9 +40,9 @@ function processObject (object:any, reverse:boolean) {
 	}
 	return out;
 }
-function processDefined (object:any, reverse:boolean, advancedTypes:any) {
+function processDefined(object: any, reverse: boolean, advancedTypes: any) {
 	for (let typeName in advancedTypes) {
-		if(!advancedTypes.hasOwnProperty(typeName))
+		if (!advancedTypes.hasOwnProperty(typeName))
 			continue;
 		let type = advancedTypes[typeName];
 		if (reverse) {
@@ -60,8 +60,8 @@ function processDefined (object:any, reverse:boolean, advancedTypes:any) {
 		}
 	}
 	for (let typeName in definedTypes) {
-        if(!definedTypes.hasOwnProperty(typeName))
-            continue;
+		if (!definedTypes.hasOwnProperty(typeName))
+			continue;
 		let type = definedTypes[typeName];
 		if (reverse) {
 			if (!type.testJson) throw new Error('Every type must be deserializable!');
@@ -78,7 +78,7 @@ function processDefined (object:any, reverse:boolean, advancedTypes:any) {
 		nothing: 1
 	};
 }
-function processNumber (number:number, reverse:boolean) {
+function processNumber(number: number, reverse: boolean) {
 	if (isNaN(number)) {
 		return {
 			$InfNaN: 0
@@ -110,7 +110,7 @@ export default class AJSON {
      * @param space Spaces
      * @param advancedTypes Custom types to serialize
      */
-	static stringify (object:any, replacer?:any, space?:any, advancedTypes:any = {}) {
+	static stringify(object: any, replacer?: any, space?: any, advancedTypes: any = {}) {
 		return JSON.stringify(processAny(object, false, advancedTypes), replacer, space);
 	}
 
@@ -120,19 +120,19 @@ export default class AJSON {
      * @param reviver
      * @param advancedTypes
      */
-	static parse (string?: string, reviver?:any, advancedTypes:any = {}) {
+	static parse(string?: string, reviver?: any, advancedTypes: any = {}) {
 		return processAny(JSON.parse(string, reviver), true, advancedTypes);
 	}
     /**
      * Only deserialize, dont de-stringify
      */
-	static deserialize (object:any, advancedTypes:any = {}) {
+	static deserialize(object: any, advancedTypes: any = {}) {
 		return processAny(object, true, advancedTypes);
 	}
     /**
      * Only serialize, dont stringify
      */
-	static serialize (object:any, advancedTypes:any = {}) {
+	static serialize(object: any, advancedTypes: any = {}) {
 		return processAny(object, false, advancedTypes);
 	}
 
@@ -141,92 +141,92 @@ export default class AJSON {
      * @param name must be unique
      * @param typeDef type definition
      */
-	static defineType (name:string, typeDef:any) {
+	static defineType(name: string, typeDef: any) {
 		if (definedTypes[name]) {
 			throw new Error('Type is already defined!');
 		}
 		definedTypes[name] = typeDef;
 	}
-	static get definedTypes () {
+	static get definedTypes() {
 		return definedTypes;
 	}
 }
 
 AJSON.defineType('regexp', {
-	testObj (obj:any) {
+	testObj(obj: any) {
 		return obj instanceof RegExp;
 	},
-	serialize (obj:any) {
+	serialize(obj: any) {
 		return {
 			$regex: obj.source,
 			$options: (obj.global ? 'g' : '') + (obj.ignoreCase ? 'i' : '') + (obj.multiline ? 'm' : '') + (obj.extended ? 'x' : '') + (obj.sticky ? 'y' : '')
 		};
 	},
 
-	testJson (obj:any) {
+	testJson(obj: any) {
 		return !!obj.$regex;
 	},
-	deserialize (obj:any) {
+	deserialize(obj: any) {
 		return new RegExp(obj.$regex, obj.$options);
 	}
 });
 AJSON.defineType('date', {
-	testObj (obj:any) {
+	testObj(obj: any) {
 		return obj instanceof Date;
 	},
-	serialize (obj:any) {
+	serialize(obj: any) {
 		return {
 			$date: obj.getTime()
 		};
 	},
 
-	testJson (obj:any) {
+	testJson(obj: any) {
 		return !!obj.$date;
 	},
-	deserialize (obj:any) {
+	deserialize(obj: any) {
 		return new Date(obj.$date);
 	}
 });
 // TODO: ArrayBuffer
 AJSON.defineType('binary', {
-	testObj (obj:Buffer) {
+	testObj(obj: Buffer) {
 		if (typeof Buffer === 'undefined') return false;
 		return obj instanceof Buffer;
 	},
-	serialize (obj:Buffer) {
+	serialize(obj: Buffer) {
 		return {
 			$binary: obj.toString('base64')
 		};
 	},
 
-	testJson (obj:any) {
+	testJson(obj: any) {
 		return obj.hasOwnProperty('$binary');
 	},
-	deserialize (obj:any) {
+	deserialize(obj: any) {
 		return new Buffer(obj.$binary, 'base64');
 	}
 });
 AJSON.defineType('InfNaN', {
-	testJson (obj:any) {
+	testJson(obj: any) {
 		return '$InfNaN' in obj;
 	},
-	deserialize (obj:any) {
+	deserialize(obj: any) {
 		if (obj.$InfNaN === 0) {
 			return NaN;
 		} else {
 			return obj.$InfNaN / 0;
 		}
 	}
-    // Only deserialization, serialization is hardcoded
+	// Only deserialization, serialization is hardcoded
 });
 AJSON.defineType('undefined', {
-	testJson (obj:any) {
+	testJson(obj: any) {
 		return obj.$undefined === true;
 	},
-	deserialize ():any {
+	deserialize(): any {
 		return undefined;
 	}
-    // Only deserialization, serialization is hardcoded
+	// Only deserialization, serialization is hardcoded
 });
 
 // TODO: Allow function to be serialized

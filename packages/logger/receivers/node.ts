@@ -7,8 +7,6 @@ import {
 
 const DEBUG = process.env.DEBUG || '';
 
-const { format } = util;
-
 const ansiColors: { [key: string]: number[] } = {
 	reset: [0, 0],
 
@@ -85,7 +83,7 @@ function stringifyTimeEndData(nameLimit: number, provider: NodeConsoleReceiver, 
 	return `\u001B[35m${stringifyName(nameLimit, provider.nameLimit, data.name, '1m')}\u001B[34m${stringifyIdent(nameLimit, data.identationLength)} T Finished ${data.timeName}\u001B[1m in ${data.timeTime}ms\u001B[0m`;
 }
 function stringifyData(nameLimit: number, data: any) {
-	let uncolored = format(data.line, ...data.params || []);
+	let uncolored = util.format(data.line, ...data.params || []);
 	return uncolored.replace(/{(\/?)([^}]+)}/g, (...d: any[]) => {
 		if (!ansiColors[d[2]]) return d[0];
 		return '\u001B[' + ansiColors[d[2]][d[1] === '/' ? 1 : 0] + 'm';

@@ -1,64 +1,62 @@
-import {objectMap} from '@meteor-it/utils';
+import { objectMap } from '@meteor-it/utils';
 import Logger from '@meteor-it/logger';
 
 import path from 'path';
 
-const {basename} = path;
-
 export type IOption = {
-    string?:string;
-    abbr?:string;
-    full?:string;
-    metavar?:string;
-    position?:number;
-    name?:string;
-    list?:boolean;
-    matches?:(arg:string|number)=>boolean;
-    required?:boolean;
-    default?:string|boolean;
-    help?:string;
-    hidden?:boolean;
-    callback?:(value:any)=>string;
-    transform?:(value:any)=>any;
-    choices?:string[];
-    type?:'string';
-    flag?:boolean;
+    string?: string;
+    abbr?: string;
+    full?: string;
+    metavar?: string;
+    position?: number;
+    name?: string;
+    list?: boolean;
+    matches?: (arg: string | number) => boolean;
+    required?: boolean;
+    default?: string | boolean;
+    help?: string;
+    hidden?: boolean;
+    callback?: (value: any) => string;
+    transform?: (value: any) => any;
+    choices?: string[];
+    type?: 'string';
+    flag?: boolean;
 }
 export type IArgument = {
-    str?:string;
-    chars?:string[];
-    full?:string;
-    value?:string|boolean;
-    isValue?:boolean;
+    str?: string;
+    chars?: string[];
+    full?: string;
+    value?: string | boolean;
+    isValue?: boolean;
 }
 export type ISpecs = {
-    [key:string]:IOption|IOption[]
+    [key: string]: IOption | IOption[]
 };
 export type ICommand = {
-    name?:string;
-    specs?:ISpecs;
-    usage?:string;
-    help?:string;
-    cb?:(args:any)=>void;
+    name?: string;
+    specs?: ISpecs;
+    usage?: string;
+    help?: string;
+    cb?: (args: any) => void;
 }
 export default class ArgParser {
-    private specs:ISpecs = {};
-    private commands:{[key:string]:ICommand}={};
-    private currentCommand:ICommand;
-    logger:Logger;
-    private fallback:ICommand;
-    usage:string;
-    help:string = '';
-    script:string;
+    private specs: ISpecs = {};
+    private commands: { [key: string]: ICommand } = {};
+    private currentCommand: ICommand;
+    logger: Logger;
+    private fallback: ICommand;
+    usage: string;
+    help: string = '';
+    script: string;
 
-    constructor(name: string|Logger){
-        if(!name)
+    constructor(name: string | Logger) {
+        if (!name)
             throw new Error('ArgParser needs a name/logger!');
         this.logger = Logger.from(name);
     }
 
-    command(name?:string) {
-        let command:ICommand;
+    command(name?: string) {
+        let command: ICommand;
         if (name) {
             command = this.commands[name] = {
                 name,
@@ -72,23 +70,23 @@ export default class ArgParser {
         }
         // Chaining api
         const chain = {
-            options(specs:ISpecs) {
+            options(specs: ISpecs) {
                 command.specs = specs;
                 return chain;
             },
-            option(name:string, spec:IOption) {
+            option(name: string, spec: IOption) {
                 command.specs[name] = spec;
                 return chain;
             },
-            callback(cb:(args:any)=>void) {
+            callback(cb: (args: any) => void) {
                 command.cb = cb;
                 return chain;
             },
-            help(help:string) {
+            help(help: string) {
                 command.help = help;
                 return chain;
             },
-            usage(usage:string) {
+            usage(usage: string) {
                 command.usage = usage;
                 return chain;
             }
@@ -100,32 +98,32 @@ export default class ArgParser {
         return this.command();
     }
 
-    options(specs:ISpecs) {
+    options(specs: ISpecs) {
         this.specs = specs;
         return this;
     }
 
-    option(name:string, spec:IOption) {
+    option(name: string, spec: IOption) {
         this.specs[name] = spec;
         return this;
     }
 
-    print(str:string, code:number|null=null) {
+    print(str: string, code: number | null = null) {
         this.logger.log(str.trim());
-        if(code!=null)
+        if (code != null)
             process.exit(code);
     }
 
     parse(argv = process.argv.slice(2)) {
-        this.script = this.script || `${process.argv[0]} ${basename(process.argv[1])}`;
+        this.script = this.script || `${process.argv[0]} ${path.basename(process.argv[1])}`;
 
         let arg = normalizeArgumentString(argv[0]).isValue && argv[0];
-        let command:ICommand = arg && this.commands[arg];
+        let command: ICommand = arg && this.commands[arg];
         let commandExpected = Object.keys(this.commands).length !== 0;
-        
+
         if (commandExpected) {
             if (command) {
-                this.specs={...this.specs,...command.specs};
+                this.specs = { ...this.specs, ...command.specs };
                 this.script += " " + command.name;
                 if (command.help) {
                     this.help = command.help;
@@ -133,20 +131,20 @@ export default class ArgParser {
                 this.currentCommand = command;
             }
             else if (arg) {
-                return this.print(this.script + ": "+("{red}{bold}No such command '" + arg + "'{/bold}{/red}"), 1);
+                return this.print(this.script + ": " + ("{red}{bold}No such command '" + arg + "'{/bold}{/red}"), 1);
             }
             else {
                 // no command but command expected e.g. 'git -v'
-                let helpStringBuilder:{[key:string]:()=>string} = {
-                    list:():string=>{
+                let helpStringBuilder: { [key: string]: () => string } = {
+                    list: (): string => {
                         return 'One of: ' + Object.keys(this.commands).join(", ");
                     },
-                    twoColumn:():string=>{
+                    twoColumn: (): string => {
                         // find the longest command name to ensure horizontal alignment
-                        let maxLength = Object.values(this.commands).sort((a:ICommand,b:ICommand)=>a.name.length<b.name.length)[0].name.length;
+                        let maxLength = Object.values(this.commands).sort((a: ICommand, b: ICommand) => a.name.length < b.name.length)[0].name.length;
 
                         // create the two column text strings
-                        let cmdHelp = objectMap(this.commands, (cmd:ICommand,name:string)=>{
+                        let cmdHelp = objectMap(this.commands, (cmd: ICommand, name: string) => {
                             let diff = maxLength - name.length;
                             let pad = new Array(diff + 4).join(" ");
                             return "  " + [`{green}${name}{/green}`, pad, cmd.help].join(" ");
@@ -161,7 +159,7 @@ export default class ArgParser {
                 // displays as "common commands"
                 let helpType = 'list';
                 if (Object.keys(this.commands).length <= 20) {
-                    if(Object.values(this.commands).filter((cmd:ICommand)=>!!cmd.help).length!==0)
+                    if (Object.values(this.commands).filter((cmd: ICommand) => !!cmd.help).length !== 0)
                         helpType = 'twoColumn';
                 }
 
@@ -172,7 +170,7 @@ export default class ArgParser {
                 };
 
                 if (this.fallback) {
-                    this.specs={...this.specs,...this.fallback.specs};
+                    this.specs = { ...this.specs, ...this.fallback.specs };
                     this.help = this.fallback.help;
                 }
                 else {
@@ -183,24 +181,24 @@ export default class ArgParser {
 
         if (this.specs.length === undefined) {
             // specs is a hash not an array
-            (this.specs as any) = objectMap(this.specs, (opt:IOption, name:string) => {
+            (this.specs as any) = objectMap(this.specs, (opt: IOption, name: string) => {
                 opt.name = name;
                 return opt;
             });
         }
-        Object.keys(this.specs).forEach(key=>{
-            this.specs[key]=normalizeOption(this.specs[key] as IOption);
+        Object.keys(this.specs).forEach(key => {
+            this.specs[key] = normalizeOption(this.specs[key] as IOption);
         });
 
         if (argv.includes("--help") || argv.includes("-h")) {
             return this.print(this.getUsage());
         }
 
-        const options:any = {};
+        const options: any = {};
         const args = argv.map(arg => normalizeArgumentString(arg))
             .concat(normalizeArgumentString(null));
 
-        const positionals:(string|boolean)[] = [];
+        const positionals: (string | boolean)[] = [];
 
         /* parse the args */
         const that = this;
@@ -258,20 +256,20 @@ export default class ArgParser {
             return val;
         });
 
-        positionals.forEach((pos, index)=>{
+        positionals.forEach((pos, index) => {
             this.setOption(options, index as any as string, pos);
         });
 
         options._ = positionals;
 
-        Object.values(this.specs).forEach((opt:IOption) => {
+        Object.values(this.specs).forEach((opt: IOption) => {
             if (opt.default !== undefined && options[opt.name] === undefined) {
                 options[opt.name] = opt.default;
             }
         }, this);
 
         // exit if required arg isn't present
-        Object.values(this.specs).forEach((opt:IOption)=>{
+        Object.values(this.specs).forEach((opt: IOption) => {
             if (opt.required && options[opt.name] === undefined) {
                 let msg = `{red}{bold}"${opt.name}" argument is required{/bold}{/red}`;
 
@@ -299,14 +297,14 @@ export default class ArgParser {
 
         // todo: use a template
         let str = "{blue}{bold}Usage:{/bold}{/blue}";
-        str += ` ${basename(this.script)}`;
+        str += ` ${path.basename(this.script)}`;
 
-        let positionals = Object.values(this.specs).filter((opt:IOption) => opt.position != undefined);
-        positionals = positionals.sort((opt:IOption) => opt.position);
-        const options = Object.values(this.specs).filter((opt:IOption) => opt.position === undefined);
+        let positionals = Object.values(this.specs).filter((opt: IOption) => opt.position != undefined);
+        positionals = positionals.sort((opt: IOption) => opt.position);
+        const options = Object.values(this.specs).filter((opt: IOption) => opt.position === undefined);
 
         // assume there are no gaps in the specified pos. args
-        positionals.forEach((pos:IOption) => {
+        positionals.forEach((pos: IOption) => {
             str += " ";
             let posStr = pos.string;
             if (!posStr) {
@@ -332,9 +330,9 @@ export default class ArgParser {
             str += "\n\n";
         }
 
-        let longest = positionals.reduce((max:IOption, pos:IOption) => pos.name.length > max ? pos.name.length : max, 0);
+        let longest = positionals.reduce((max: IOption, pos: IOption) => pos.name.length > max ? pos.name.length : max, 0);
 
-        positionals.forEach((pos:IOption)=>{
+        positionals.forEach((pos: IOption) => {
             const posStr = pos.string || pos.name;
             str += `${posStr + ' '.repeat(longest - posStr.length)}     `;
             str += `{gray}${(pos.help || "")}{/gray}\n`;
@@ -347,9 +345,9 @@ export default class ArgParser {
             str += "{blue}Options:{/blue}";
             str += "\n";
 
-            let longest = options.reduce((max:IOption, opt:IOption) => opt.string.length > max && !opt.hidden ? opt.string.length : max, 0);
+            let longest = options.reduce((max: IOption, opt: IOption) => opt.string.length > max && !opt.hidden ? opt.string.length : max, 0);
 
-            options.forEach((opt:IOption)=>{
+            options.forEach((opt: IOption) => {
                 if (!opt.hidden) {
                     str += `   ${opt.string}${' '.repeat(longest - opt.string.length)}   {gray}${opt.help ? opt.help + (opt.default != null ? ` {bold}[Default: ${opt.default}]{/bold}` : "") : ""}{/gray}\n`;
                 }
@@ -362,10 +360,10 @@ export default class ArgParser {
         return str;
     }
 
-    private opt(arg:string):IOption {
+    private opt(arg: string): IOption {
         // get the specified opt for this parsed arg
         let match = normalizeOption({});
-        Object.values(this.specs).forEach((opt:IOption) => {
+        Object.values(this.specs).forEach((opt: IOption) => {
             if (opt.matches(arg)) {
                 match = opt;
             }
@@ -373,7 +371,7 @@ export default class ArgParser {
         return match;
     }
 
-    private setOption(options:ISpecs, arg:string, value:any) {
+    private setOption(options: ISpecs, arg: string, value: any) {
         const option = this.opt(arg);
         if (option.callback) {
             const message = option.callback(value);
@@ -388,7 +386,7 @@ export default class ArgParser {
                 // infer type by JSON parsing the string
                 value = JSON.parse(value);
             }
-            catch (e) {}
+            catch (e) { }
         }
 
         if (option.transform) {
@@ -414,7 +412,7 @@ export default class ArgParser {
     }
 }
 
-function normalizeArgumentString(str:string):IArgument {
+function normalizeArgumentString(str: string): IArgument {
     const abbrRegex = /^-(\w+?)$/;
     const fullRegex = /^--(no-)?(.+?)(?:=(.+))?$/;
     const valRegex = /^[^\-].*/;
@@ -440,7 +438,7 @@ function normalizeArgumentString(str:string):IArgument {
         isValue
     };
 }
-function normalizeOption(opt:IOption):IOption{
+function normalizeOption(opt: IOption): IOption {
     const strings = (opt.string || "").split(",");
     let abbr;
     let full;
@@ -491,7 +489,7 @@ function normalizeOption(opt:IOption):IOption{
         abbr,
         full,
         metavar,
-        matches(arg:string|number) {
+        matches(arg: string | number) {
             return opt.full == arg || opt.abbr == arg || opt.position == arg ||
                 opt.name == arg || (opt.list && arg >= opt.position);
         }

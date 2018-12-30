@@ -1,4 +1,4 @@
-import Logger, { BasicReceiver, LoggerAction } from "@meteor-it/logger";
+import { BasicReceiver, LoggerAction } from "@meteor-it/logger";
 import PotatoSocketClient from "packages/socket/integrations/PotatoWebSocketClient";
 import MsgPackEncoder from "packages/socket/encoders/MsgPackEncoder";
 

@@ -1,12 +1,10 @@
 import Logger from '@meteor-it/logger';
-import {readDir} from '@meteor-it/fs';
-import {asyncEach} from '@meteor-it/utils';
+import { readDir } from '@meteor-it/fs';
+import { asyncEach } from '@meteor-it/utils';
 import path from 'path';
 import chokidar from 'chokidar';
 import EventEmitter from "events";
 import IPlugin from "./IPlugin";
-
-const {resolve} = path;
 
 /**
  * Node.JS plugin loader
@@ -14,17 +12,17 @@ const {resolve} = path;
  * events with chokidar
  */
 export default class SoftPluginLoader<D> {
-    logger:Logger;
-    folder:string;
-    watcher:EventEmitter;
-    autoData:D;
+    logger: Logger;
+    folder: string;
+    watcher: EventEmitter;
+    autoData: D;
     plugins: IPlugin[];
 
-    constructor(name:Logger|string, folder:string) {
+    constructor(name: Logger | string, folder: string) {
         this.logger = Logger.from(name);
         this.folder = folder;
     }
-    async load(data:D) {
+    async load(data: D) {
         this.autoData = data;
         try {
             this.logger.log('Started soft plugin loader...');
@@ -32,23 +30,23 @@ export default class SoftPluginLoader<D> {
             let files = await readDir(this.folder);
             this.logger.log('Found {blue}%d{/blue} candidats', files.length);
             this.logger.ident('Requiring them');
-            const plugins:IPlugin[] = files.map((file:string) => {
-                try{
+            const plugins: IPlugin[] = files.map((file: string) => {
+                try {
                     this.logger.log('Loading {magenta}%s{/magenta}', file);
-                    return this.loadPlugin(resolve(this.folder, file));
-                }catch(e){
-                    this.logger.error('Error loading %s! Plugin will load at change!',file);
+                    return this.loadPlugin(path.resolve(this.folder, file));
+                } catch (e) {
+                    this.logger.error('Error loading %s! Plugin will load at change!', file);
                     this.logger.error(e.stack);
                     return null;
                 }
-            }).filter((plugin:IPlugin)=>plugin!==null);
+            }).filter((plugin: IPlugin) => plugin !== null);
             this.logger.log('All plugins are loaded.');
             this.logger.deent();
             this.logger.ident('Validating and displaying copyrights');
-            await asyncEach(plugins, async (plugin:IPlugin) => {
-                try{
+            await asyncEach(plugins, async (plugin: IPlugin) => {
+                try {
                     this.validatePlugin(plugin);
-                }catch(e){
+                } catch (e) {
                     this.logger.error('Error at plugin validation! Plugin will load at change!');
                     this.logger.error(e.stack);
                     plugins.splice(plugins.indexOf(plugin), 1);
@@ -57,16 +55,16 @@ export default class SoftPluginLoader<D> {
             this.logger.deent();
             this.logger.ident('Init');
             for (let plugin of plugins) {
-                try{
+                try {
                     await this.callInit(plugin);
-                }catch(e){
+                } catch (e) {
                     this.logger.error('Error at plugin init call! Plugin will load at change!');
                     this.logger.error(e.stack);
                     plugins.splice(plugins.indexOf(plugin), 1);
                 }
             }
             this.logger.deent();
-            this.logger.log('Total added plugins: %d',plugins.length);
+            this.logger.log('Total added plugins: %d', plugins.length);
             this.logger.log('Plugin loader finished thier work, starting watcher');
             this.plugins = plugins;
             this.watch();
@@ -77,7 +75,7 @@ export default class SoftPluginLoader<D> {
             throw e;
         }
     }
-    findPluginAtPath(pluginPath:string):[IPlugin,number] {
+    findPluginAtPath(pluginPath: string): [IPlugin, number] {
         let found = null;
         let foundId = -1;
         this.plugins.forEach((plugin, id) => {
@@ -88,11 +86,11 @@ export default class SoftPluginLoader<D> {
         });
         return [found, foundId];
     }
-    async unloadPlugin(pluginPath:string) {
+    async unloadPlugin(pluginPath: string) {
         this.logger.log('Unloading...');
         let [found, foundId] = this.findPluginAtPath(pluginPath);
         this.logger.log('Calling deinit()...');
-        if(found.deinit){
+        if (found.deinit) {
             this.logger.ident(found.constructor.name + '.deinit()');
             await found.deinit();
             this.logger.deent();
@@ -110,7 +108,7 @@ export default class SoftPluginLoader<D> {
             this.plugins.splice(foundId, 1);
         }
     }
-    loadPlugin(pluginPath:string) {
+    loadPlugin(pluginPath: string) {
         this.logger.log('Loading...');
         let plugin = require(pluginPath);
         if (plugin.default)
@@ -119,24 +117,24 @@ export default class SoftPluginLoader<D> {
         Object.keys(this.autoData).forEach(key => {
             plugin[key] = (this.autoData as any)[key];
         });
-        plugin.file=pluginPath;
+        plugin.file = pluginPath;
         return plugin;
     }
-    validatePlugin(plugin:IPlugin) {
+    validatePlugin(plugin: IPlugin) {
         this.logger.log('Revalidating...');
-        if(!plugin.name)
+        if (!plugin.name)
             throw new Error('name is required for plugin!');
-        if(!plugin.author)
-            plugin.author='Anonymous';
-        if(!plugin.description)
-            plugin.description='Empty description';
+        if (!plugin.author)
+            plugin.author = 'Anonymous';
+        if (!plugin.description)
+            plugin.description = 'Empty description';
         this.logger.ident(plugin.constructor.name);
         this.logger.log(`Name:         {blue}${plugin.name}{/blue}`);
         this.logger.log(`Author:       {blue}${plugin.author}{/blue}`);
         this.logger.log(`Description:  {blue}${plugin.description}{/blue}`);
         this.logger.deent();
     }
-    async callInit(plugin:IPlugin) {
+    async callInit(plugin: IPlugin) {
         this.logger.log('Calling init()...');
         if (plugin.init) {
             this.logger.ident(plugin.name + '.init()');
@@ -149,7 +147,7 @@ export default class SoftPluginLoader<D> {
     }
     // TODO: Queue
     // @queue(1)
-    async onChange(pluginPath:string) {
+    async onChange(pluginPath: string) {
         let [found, foundId] = this.findPluginAtPath(pluginPath);
         if (found) {
             this.logger.log('Plugin changed: %s (%d,%s)', found.constructor.name, foundId, found.file);
@@ -162,13 +160,13 @@ export default class SoftPluginLoader<D> {
             this.plugins.push(plugin);
         }
         else {
-            setTimeout(()=>this.onAdd(pluginPath),1);
+            setTimeout(() => this.onAdd(pluginPath), 1);
         }
     }
     watcherReady = false;
     // TODO: Queue
     // @queue(1)
-    async onAdd(pluginPath:string) {
+    async onAdd(pluginPath: string) {
         let [found] = this.findPluginAtPath(pluginPath);
         if (found) {
             this.logger.error('Plugin already added! %s', pluginPath);
@@ -185,7 +183,7 @@ export default class SoftPluginLoader<D> {
     }
     // TODO: Queue
     // @queue(1)
-    async onRemove(pluginPath:string) {
+    async onRemove(pluginPath: string) {
         let [found, foundId] = this.findPluginAtPath(pluginPath);
         if (found) {
             this.logger.log('Plugin removed: %s (%d,%s)', found.constructor.name, foundId, found.file);
@@ -207,15 +205,15 @@ export default class SoftPluginLoader<D> {
                 if (!this.watcherReady) // To prevent adding files from initial scan
                     return;
                 this.logger.log(`File ${path} has been added, loading plugins...`);
-                setTimeout(()=>this.onAdd(path),1);
+                setTimeout(() => this.onAdd(path), 1);
             })
             .on('change', path => {
                 this.logger.log(`File ${path} has been changed, reloading plugins...`);
-                setTimeout(()=>this.onChange(path),1);
+                setTimeout(() => this.onChange(path), 1);
             })
             .on('unlink', path => {
                 this.logger.log(`File ${path} has been removed, removing plugins...`);
-                setTimeout(()=>this.onRemove(path),1);
+                setTimeout(() => this.onRemove(path), 1);
             });
 
         // More possible events.

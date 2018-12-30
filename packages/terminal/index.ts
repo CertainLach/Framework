@@ -1,7 +1,5 @@
 import fs from 'fs';
 
-const { writeSync, fsyncSync } = fs;
-
 // By default using writeSync and fsyncSync to log
 let useStdoutFallback = false;
 if (process.env.STDOUT_FALLBACK)
@@ -29,7 +27,7 @@ export function flushBuffer() {
 
 /**
  * Write string to stdout (or to buffer, if buffering is enabled)
- * @param string 
+ * @param string
  */
 export function writeStdout(string: string) {
 	if (buffering) {
@@ -38,8 +36,8 @@ export function writeStdout(string: string) {
 	}
 	if (!useStdoutFallback) {
 		try {
-			writeSync(1, string);
-			try { fsyncSync(1); } catch (e) { }
+			fs.writeSync(1, string);
+			try { fs.fsyncSync(1); } catch (e) { }
 		} catch (e) {
 			useStdoutFallback = true;
 			writeStdout(string);
@@ -57,7 +55,7 @@ export function writeEscape(args: string) {
 }
 /**
  * Moves cursor to specified position
- * @param line 
+ * @param line
  * @param col
  */
 export function moveCursor(line: number, col: number = 1) {
@@ -77,7 +75,7 @@ export function showCursor() {
 }
 /**
  * Clear line
- * @param line if not defined - current line 
+ * @param line if not defined - current line
  */
 export function clearLine(line?: number) {
 	if (line) {

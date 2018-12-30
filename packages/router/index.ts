@@ -3,8 +3,6 @@ import url, { Url } from 'url';
 import middleRun from './middleRun';
 import pathToRegexp, { IKey } from "./pathToRegexp";
 
-const { parse } = url;
-
 const cachedPaths = new Set();
 const keysCache: Map<string, IKey[]> = new Map<string, IKey[]>();
 const regexCache: Map<string, RegExp> = new Map<string, RegExp>();
@@ -147,11 +145,11 @@ export default class Router<E, S, M = any> {
 
     async route(path: string, fillContext: (ctx: E & IRouterContext<S, M | 'ALL' | null>) => void): Promise<void | {}> {
         requestId++;
-        const url = parse(path, true);
+        const urlStr = url.parse(path, true);
         const context: IRouterContext<S, M | 'ALL' | null> = {
             requestId,
-            url,
-            path: url.pathname,
+            url: urlStr,
+            path: urlStr.pathname,
             params: {},
             state: this.defaultState === null ? null : this.defaultState(),
             router: this

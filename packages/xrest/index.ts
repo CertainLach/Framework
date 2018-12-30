@@ -1,15 +1,14 @@
 import Logger from '@meteor-it/logger';
 
 import { EventEmitter } from 'events';
-import http from 'http';
-import { METHODS, IncomingMessage, Agent, ClientRequest } from 'http';
+import http, { IncomingMessage, Agent, ClientRequest } from 'http';
 import https from 'https';
-import { parse as parseUrl, resolve, Url } from 'url';
-import { stringify } from 'querystring';
+import url, { Url } from 'url';
+import querystring from 'querystring';
 import iconv from 'iconv-lite';
 import { IMultiPartData, sizeOf, DEFAULT_BOUNDARY, write } from "./multipart";
 import zlib from 'zlib';
-import { Transform, Readable, Stream } from 'stream';
+import { Transform, Stream } from 'stream';
 
 export { IMultiPartData };
 
@@ -105,8 +104,8 @@ class Request extends EventEmitter {
         this.prepare(url, options);
     }
 
-    prepare(url: string, options: IRequestOptions) {
-        this.parsedUrl = parseUrl(url);
+    prepare(urlStr: string, options: IRequestOptions) {
+        this.parsedUrl = url.parse(urlStr);
         this.options = options;
         this.headers = {
             'Accept': '*/*',
@@ -135,7 +134,7 @@ class Request extends EventEmitter {
         // stringify query given in options of not given in URL
         if (this.options.query) {
             if (typeof this.options.query === 'object')
-                this.parsedUrl.query = stringify(this.options.query);
+                this.parsedUrl.query = querystring.stringify(this.options.query);
             else this.parsedUrl.query = this.options.query;
         }
         this.applyAuth();
@@ -154,7 +153,7 @@ class Request extends EventEmitter {
         }
         else {
             if (typeof this.options.data === 'object' && !Buffer.isBuffer(this.options.data)) {
-                this.options.data = stringify(this.options.data);
+                this.options.data = querystring.stringify(this.options.data);
                 this.headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 this.headers['Content-Length'] = this.options.data.length;
             }
@@ -221,13 +220,13 @@ class Request extends EventEmitter {
                 // 303 should redirect and retrieve content with the GET method
                 // http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.4
                 if (response.statusCode === 303) {
-                    this.parsedUrl = parseUrl(resolve(this.parsedUrl.href, response.headers['location']));
+                    this.parsedUrl = url.parse(url.resolve(this.parsedUrl.href, response.headers['location']));
                     this.options.method = 'GET';
                     delete this.options.data;
                     this.reRetry();
                 }
                 else {
-                    this.parsedUrl = parseUrl(resolve(this.parsedUrl.href, response.headers['location']));
+                    this.parsedUrl = url.parse(url.resolve(this.parsedUrl.href, response.headers['location']));
                     this.reRetry();
                     // TODO: Handle somehow infinite redirects
                 }
@@ -402,8 +401,8 @@ export function emit(method: string, path: string, options: IRequestOptions = {}
     if (method.toUpperCase() !== method) {
         throw new Error(`Method name should be uppercase! (Got: ${method})`);
     }
-    if (METHODS.indexOf(method) === -1) {
-        throw new Error(`Unknown method: ${method}, possible methods are ${METHODS.join(', ')}!`);
+    if (http.METHODS.indexOf(method) === -1) {
+        throw new Error(`Unknown method: ${method}, possible methods are ${http.METHODS.join(', ')}!`);
     }
     options.method = method;
     const request = new Request(path, options);
@@ -450,7 +449,7 @@ export default class XRest {
 
     // noinspection JSUnusedGlobalSymbols
     emit(event: string, path: string, options: IRequestOptions) {
-        path = resolve(this.baseUrl, path);
+        path = url.resolve(this.baseUrl, path);
         return emit(event, path, { ...this.defaultOptions, ...options });
     }
 
