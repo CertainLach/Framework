@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/argv",
-  "version": "0.4.25",
+  "version": "0.4.26",
   "description": "Command line argument parser",
   "module": "index.mjs",
   "main": "index.js",

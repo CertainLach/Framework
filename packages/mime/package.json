@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/mime",
-    "version": "0.4.17",
+    "version": "0.4.18",
     "description": "All the mimetypes by extension",
     "module": "index.mjs",
     "main": "index.js",
