@@ -1,26 +1,34 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import useStore from "../stores/useStore";
 import HelmetStore from "../helmet/HelmetStore";
 import { h } from "../h";
 import TO_PRELOAD from './TO_PRELOAD';
 import ErrorType from './ErrorType';
 import TimeoutError from './TimeoutError';
+import LoadingState from './LoadingState';
 
 const { Component, useEffect, useState } = React;
 
+export type ILoadingStatus = {
+    state: LoadingState;
+    error: ErrorType;
+    tryAgain: () => void;
+}
+
 export interface ILoadingProps {
-    timeout?: 0
+    timeout?: 0,
+    loading: (e: ILoadingStatus) => ReactNode
 }
 export type IComponentPreloadMixin = { preload: () => void }
 
 /**
  * Transform import to lazy loaded component
  * @param importFn Function which return promise from import() call
- * @param res Resolver for import, i.e if in imported module component is exported 
+ * @param res Resolver for import, i.e if in imported module component is exported
  * as `export class MyElement extends Component`, then you should pass module=>module.MyElement to this argument
  * @param opts Loading component options
  */
-export default function loadable<A, B extends new () => Component<any, any>>(importFn: () => Promise<A>, res: (a: A) => B, opts: ILoadingProps): B & IComponentPreloadMixin {
+export default function loadable<A, B>(importFn: () => Promise<A>, res: (a: A) => B, opts: ILoadingProps): B & IComponentPreloadMixin {
     // TODO: Are preloading is needed on client? May be for PWA?
     if (process.env.NODE) {
         TO_PRELOAD.push(() => importFn());
@@ -67,13 +75,18 @@ export default function loadable<A, B extends new () => Component<any, any>>(imp
         // Save module id to send all the required chunks on client request
         if (process.env.NODE) helmetStore.ssrData.preloadModules.push((importPromise as any)['a']);
         if (loadedModule) LoadedComponent = res(loadedModule);
-        // TODO: Make user return the Loading Element
-        // TODO: Handle errors
-        return LoadedComponent !== null ? h(LoadedComponent, props) : 'Загрузка';
+        return LoadedComponent !== null ? h(LoadedComponent, props) : opts.loading({
+            state: error !== ErrorType.NONE ? LoadingState.ERRORED : LoadingState.LOADING,
+            error,
+            tryAgain: error === ErrorType.NONE ? () => { } : () => {
+                setEffectRequired(true);
+                setError(ErrorType.NONE);
+            }
+        });
     };
     Loading.preload = () => {
         if (importPromise === null)
             importPromise = importFn();
     };
     return Loading as any;
-}
+};

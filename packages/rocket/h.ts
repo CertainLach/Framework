@@ -7,19 +7,21 @@ export type IAttributes = {
     className?: string
 };
 
+
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 type IH = {
     (el: ReactNode): ReactNode,
 
     (el: () => (ReactNode | ReactNode[]) | (new () => React.Component) | string): ReactNode,
 
-    <P extends object>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & P): ReactNode,
-    <P extends object>(el: (new () => React.Component<P>), props: Attributes & IAttributes & P): ReactNode,
+    <P extends { [key: string]: unknown }>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & Omit<P, 'children'>): ReactNode,
+    <P extends { [key: string]: unknown }>(el: (new () => React.Component<P>), props: Attributes & IAttributes & Omit<P, 'children'>): ReactNode,
     (el: string, props: Attributes & IAttributes & any): ReactNode,
 
     (el: () => (ReactNode | ReactNode[]) | (new () => React.Component) | string, children: ReactNode[]): ReactNode,
 
-    <P extends object>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & P, children: ReactNode[]): ReactNode,
-    <P extends object>(el: (new () => React.Component<P>), props: Attributes & IAttributes & P, children: ReactNode[]): ReactNode,
+    <P extends { [key: string]: unknown }>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & Omit<P, 'children'>, children: ReactNode[]): ReactNode,
+    <P extends { [key: string]: unknown }>(el: (new () => React.Component<P>), props: Attributes & IAttributes & Omit<P, 'children'>, children: ReactNode[]): ReactNode,
     (el: string, props: Attributes & IAttributes & any, children: ReactNode[]): ReactNode
 };
 
@@ -69,6 +71,6 @@ const frag = (p: object, el: Array<ReactNode>) => {
  * @param observee function which returns a dom tree which uses some store and rerenders on it's changes
  */
 function observed(observee: () => ReactNode): ReactNode {
-    return h(Observer, [observee])
+    return h(Observer as any, [observee])
 }
 export { h, frag, observed };
