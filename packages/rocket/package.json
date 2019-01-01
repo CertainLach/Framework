@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/rocket",
-  "version": "2.4.44",
+  "version": "2.4.45",
   "description": "Web framework",
   "module": "index.mjs",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "@meteor-it/fs": "^1.1.7",
     "@meteor-it/router": "^2.1.28",
     "@meteor-it/utils": "^1.3.16",
-    "@meteor-it/xpress": "^4.2.36",
+    "@meteor-it/xpress": "^4.2.37",
     "@types/hoist-non-react-statics": "^3.0.1",
     "hoist-non-react-statics": "^3.2.1",
     "mobx": "^5.8.0",
