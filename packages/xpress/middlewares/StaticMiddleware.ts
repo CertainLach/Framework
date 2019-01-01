@@ -43,6 +43,7 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
         const tasks = [];
         for (let file of fileList) {
             tasks.push((async () => {
+                if (this.filter && !this.filter.test(path.basename(file))) return;
                 const stats = await stat(path.join(this.rootFolder, file));
                 const headers = {};
                 this.fillHeader(headers, file, file.endsWith('.gz'), stats);
@@ -70,6 +71,7 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
     async serve(pathname: string, stream: XpressRouterStream) {
         if (this.hasCachePrepared) {
             pathname = pathname.replace(/^\/+/g, '');
+            if (!this.cached.has(pathname)) return;
             if (stream.acceptsEncoding('gzip') && this.cached.has(pathname + '.gz')) {
                 pathname += '.gz';
             }
