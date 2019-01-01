@@ -60,6 +60,8 @@ export default class ServerMiddleware extends MultiMiddleware {
         this.compiledClientDir = compiledClientDir;
         this.compiledServerDir = compiledServerDir;
         this.staticMiddleware = new StaticMiddleware(compiledClientDir, { filter: /^(?!(?:report\.html|stats.json))/ });
+        if (process.env.NODE_ENV === 'production')
+            this.staticMiddleware.prepareCache();
         useStaticRendering(true);
     }
 
@@ -190,8 +192,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         if (stream.canPushStream) {
             await asyncEach([...chunkList, ...neededEntryPointScripts], async (file: string) => {
                 const ts = await stream.pushStream(`/${file}`);
-                ts.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'application/javascript; charset=utf-8';
-                ts.sendFile(path.join(this.compiledClientDir, file));
+                await this.staticMiddleware.serve(file, ts);
             });
         }
 
