@@ -31,7 +31,7 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
         const { stream, path: pathname } = ctx;
         let gzippedFound = false;
         const normalFilePath = path.join(this.rootFolder, pathname);
-        if (this.filter && !this.filter.test(pathname)) return;
+        if (this.filter && !this.filter.test(path.basename(pathname))) return;
         let filename = normalFilePath + '.gz';
         if (!stream.acceptsEncoding('gzip') || !(await exists(filename))) filename = normalFilePath;
         else gzippedFound = true;

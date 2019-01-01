@@ -48,17 +48,18 @@ class HotHelperMiddleware extends RoutingMiddleware<XPressRouterContext, void, '
 // noinspection JSUnusedGlobalSymbols
 export default class ServerMiddleware extends MultiMiddleware {
     private readonly rocket: Rocket;
-    private readonly compiledClientDir: string;
-    private readonly compiledServerDir: string;
-    private cachedClientStats: any = null;
-    private cachedServerStats: any = null;
+    private readonly compiledClientDir?: string;
+    private readonly compiledServerDir?: string;
+    private cachedClientStats?: any = null;
+    private cachedServerStats?: any = null;
+    private statsLoaded: boolean = false;
 
-    constructor(rocket: Rocket, { compiledClientDir, compiledServerDir }: { compiledClientDir: string, compiledServerDir: string }) {
+    constructor(rocket: Rocket, { compiledClientDir, compiledServerDir }: { compiledClientDir?: string, compiledServerDir?: string }) {
         super();
         this.rocket = rocket;
         this.compiledClientDir = compiledClientDir;
         this.compiledServerDir = compiledServerDir;
-        this.staticMiddleware = new StaticMiddleware(compiledClientDir);
+        this.staticMiddleware = new StaticMiddleware(compiledClientDir, { filter: /^(?!(?:report\.html|stats.json))/ });
         useStaticRendering(true);
     }
 
@@ -67,22 +68,30 @@ export default class ServerMiddleware extends MultiMiddleware {
      */
     private async handleRender(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
         if (ctx.stream.hasDataSent) return;
+        const clientNeeded = !!this.compiledClientDir;
+        const serverNeeded = !!this.compiledServerDir;
 
         // Should do something only on first page load or in SSR, if code isn't shit
         await preloadAll();
-        if (this.cachedClientStats === null || process.env.NODE_ENV === 'development') {
-            this.cachedClientStats = JSON.parse((await readFile(`${this.compiledClientDir}/stats.json`)).toString());
-            this.cachedServerStats = JSON.parse((await readFile(`${this.compiledServerDir}/stats.json`)).toString());
+        if (!this.statsLoaded || process.env.NODE_ENV === 'development') {
+            this.statsLoaded = true;
+            if (clientNeeded)
+                this.cachedClientStats = JSON.parse((await readFile(`${this.compiledClientDir}/stats.json`)).toString());
+            if (serverNeeded)
+                this.cachedServerStats = JSON.parse((await readFile(`${this.compiledServerDir}/stats.json`)).toString());
         }
-        const { path, stream, query } = ctx;
+        // TODO: Support setups without server or client
+        if (!clientNeeded || !serverNeeded) throw new Error('Setups without server or client are not currently supported');
+        // if (clientNeeded && serverNeeded) {
+        const { path: pathStr, stream, query } = ctx;
         let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
         if (!Array.isArray(files))
             files = [files];
         let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null, store: {} };
         const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
-        await this.rocket.router.route(path, ctx => {
+        await this.rocket.router.route(pathStr, ctx => {
             ctx.state = currentState;
-            routerStore.setDataNoRerender(path, query);
+            routerStore.setDataNoRerender(pathStr, query);
             ctx.query = query;
         });
 
@@ -214,7 +223,8 @@ export default class ServerMiddleware extends MultiMiddleware {
                     chunkList.map((f, key) => h('script', { key, defer: true, src: `/${f}` })),
                     neededEntryPointScripts.map((f, key) => h('script', { key, defer: true, src: `/${f}` }))
                 ])
-            ])]))}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
+            ])]) as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
+        // }
     }
 
     setupDone: boolean = false;
@@ -224,6 +234,7 @@ export default class ServerMiddleware extends MultiMiddleware {
     setup(router: Router<XPressRouterContext & IRouterContext<void>, any, 'GET' | 'ALL'>, path: string | null): void {
         if (process.env.BROWSER) throw new Error('WTF are u doing?');
         if (this.setupDone) throw new Error('ServerMiddleware isn\'t reusable! Create new to use in new xpress instance');
+        this.setupDone = true;
         router.on('GET', path, this.staticMiddleware);
         // Webpack, why?
         if (process.env.NODE_ENV === 'development') {
