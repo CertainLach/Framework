@@ -11,12 +11,12 @@ import { encodeHtmlSpecials } from "@meteor-it/utils";
 export default function userErrorPage(hello: string, whatHappened: string, sorry: string, post: string) {
     // User friendly
     if (hello)
-        hello = encodeHtmlSpecials(hello.replace(/\n/g, '<br>'));
+        hello = encodeHtmlSpecials(hello).replace(/&#10;/g, '<br/>');
     if (whatHappened)
-        whatHappened = encodeHtmlSpecials(whatHappened.replace(/\n/g, '<br>'));
+        whatHappened = encodeHtmlSpecials(whatHappened).replace(/\n/g, '<br/>');
     if (sorry)
-        sorry = encodeHtmlSpecials(sorry.replace(/\n/g, '<br>'));
+        sorry = encodeHtmlSpecials(sorry).replace(/&#10;/g, '<br/>');
     if (post)
-        post = encodeHtmlSpecials(post.replace(/\n/g, '<br>'));
+        post = encodeHtmlSpecials(post).replace(/&#10;/g, '<br/>');
     return `<html><body style='font-family:Arial,sans-serif;font-size:22px;color:#CCC;background:#222;padding:40px;'>${hello}<br/><br/><span style='color:#FC0;font-weight:600;'>${whatHappened}</span><br/><br/>${sorry}<br/><br/><span style='font-size: 14px;'>${post}</span></body></html>`;
 }
