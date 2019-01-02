@@ -200,6 +200,7 @@ export class XpressRouterStream {
                 });
 
                 const wrap = new XpressRouterStream(this.reqHeaders, {});
+                wrap.isSecure = this.isSecure;
                 wrap.res = { ...this.res, stream } as any;
                 res(wrap);
             });
@@ -215,6 +216,8 @@ export class XpressRouterStream {
     get isHttp2(): boolean {
         return this.hasStream;
     }
+
+    isSecure: boolean;
 
     get hasStream(): boolean {
         return !!(this.res && this.res.stream);
@@ -307,7 +310,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
     }
 
     // noinspection JSMethodCanBeStatic
-    private async requestHandler(req: Http2ServerRequest, res: Http2ServerResponse) {
+    private async requestHandler(isSecure: boolean, req: Http2ServerRequest, res: Http2ServerResponse) {
         if (PATH_SEP_REGEXP === null) PATH_SEP_REGEXP = new RegExp(`\\${path.sep}`, 'g');
         const urlString = req.url as string || req.headers[http2.constants.HTTP2_HEADER_PATH] as string;
         let { pathname, query } = url.parse(urlString, true);
@@ -318,6 +321,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         pathname = path.normalize(pathname).replace(PATH_SEP_REGEXP, '/');
         const method = req.method || req.headers[http2.constants.HTTP2_HEADER_METHOD];
         const wrappedMainStream = new XpressRouterStream(req.headers, {});
+        wrappedMainStream.isSecure = isSecure;
         wrappedMainStream.req = req;
         wrappedMainStream.res = res;
         try {
@@ -346,7 +350,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param socket
      * @param head
      */
-    private async upgradeHandler(request: IncomingMessage, socket: Socket, head: ArrayBuffer) {
+    private async upgradeHandler(isSecure: boolean, request: IncomingMessage, socket: Socket, head: ArrayBuffer) {
         const headers = request.headers;
         const urlString = request.url;
         if (urlString === undefined) {
@@ -364,6 +368,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         if (upgradeType === 'websocket' && method === 'GET') {
             this.wsServer.handleUpgrade(request, socket, head, async (ws) => {
                 const wrapperMainStream = new XpressRouterStream(headers, {});
+                wrapperMainStream.isSecure = isSecure;
                 wrapperMainStream.socket = ws;
                 await this.route(pathname as string, ctx => {
                     ctx.query = query as { [key: string]: string };
@@ -393,13 +398,13 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     listenHttp(host = '0.0.0.0', port: number) {
         this.ensureWebSocketReady();
-        let server = http.createServer(this.requestHandler.bind(this));
+        let server = http.createServer(this.requestHandler.bind(this, false));
         // There is no ALPN negotigation for HTTP/1 over TLS D:
         // And, since HTTP/2 over tcp isn't supported in browsers,
         // Http server is only for HTTP/1.
         // TODO: Add option for listening HTTP/2 over TCP for reverse-proxy purposes
         // server.on('stream', this.streamHandler.bind(this));
-        server.on('upgrade', this.upgradeHandler.bind(this));
+        server.on('upgrade', this.upgradeHandler.bind(this, false));
         return new Promise((res, rej) => {
             server.listen(port, host, () => {
                 this.logger.debug('Listening (http) on %s:%d...', host, port);
@@ -420,9 +425,9 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         let server = http2.createSecureServer({
             key, cert,
             allowHTTP1: true
-        }, this.requestHandler.bind(this));
+        }, this.requestHandler.bind(true));
         // server.on('stream', this.streamHandler.bind(this));
-        server.on('upgrade', this.upgradeHandler.bind(this));
+        server.on('upgrade', this.upgradeHandler.bind(this, true));
         return new Promise((res, rej) => {
             server.listen(port, host, () => {
                 this.logger.debug('Listening (https) on %s:%d...', host, port);
