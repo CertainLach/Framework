@@ -25,7 +25,19 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
     const needToRewritePath = isRouter || isRouting;
 
     // Filtering isn't needed
-    if (anyMethod && anyPath) return middleware;
+    if (anyMethod && anyPath) {
+        if (!isRouter && !isOOPMiddleware)
+            return middleware;
+        if (isRouter) {
+            return async step => await (middleware as Router<any, any>).route(step.path, (d: IRouterContext<any>) => {
+                for (let key in step)
+                    if (!(key in d))
+                        (d)[key] = (step)[key];
+            });
+        } else if (isOOPMiddleware) {
+            return async step => await (middleware as SinglePathMiddleware<any, any, any> | RoutingMiddleware<any, any, any>).handle(step);
+        }
+    }
 
     // Rewrite url to crosscompose routers
     // /a/b/c/ => /a/b/c/(.*)?

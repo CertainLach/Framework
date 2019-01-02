@@ -443,7 +443,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param port
      * @param param2
      */
-    listenQuic(host = '0.0.0.0', port: number, { key, cert }: { key?: Buffer, cert?: Buffer }): Promise<void> {
+    listenQuic(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca: Buffer }): Promise<void> {
         throw new Error('reserved');
     }
 
