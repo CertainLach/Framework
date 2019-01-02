@@ -420,10 +420,11 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param port port to bind on
      * @param options settings
      */
-    listenHttps(host = '0.0.0.0', port: number, { key, cert }: { key?: Buffer, cert?: Buffer }): Promise<void> {
+    listenHttps(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca: Buffer }): Promise<void> {
         this.ensureWebSocketReady();
+        let caList = ca.toString().match(/-----BEGIN CERTIFICATE-----[a-zA-Z0-9/+\n=]+-----END CERTIFICATE-----/gm).map(e => Buffer.from(e));
         let server = http2.createSecureServer({
-            key, cert,
+            key, cert, ca: caList,
             allowHTTP1: true
         }, this.requestHandler.bind(true));
         // server.on('stream', this.streamHandler.bind(this));
