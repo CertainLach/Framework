@@ -426,7 +426,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         let server = http2.createSecureServer({
             key, cert, ca: caList,
             allowHTTP1: true
-        }, this.requestHandler.bind(true));
+        }, this.requestHandler.bind(this, true));
         // server.on('stream', this.streamHandler.bind(this));
         server.on('upgrade', this.upgradeHandler.bind(this, true));
         return new Promise((res, rej) => {
