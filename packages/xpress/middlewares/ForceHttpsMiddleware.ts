@@ -3,6 +3,7 @@ import { XPressRouterContext } from "../index";
 import http2 from 'http2';
 
 function createRedirectURL(hostname: string, url: string, securePort: number) {
+    if (hostname.includes(':')) hostname = hostname.slice(0, hostname.indexOf(':'));
     let secureHostname;
     if (securePort === 443) {
         secureHostname = hostname;
