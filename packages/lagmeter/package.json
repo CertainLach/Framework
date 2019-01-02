@@ -1,0 +1,17 @@
+{
+  "name": "@meteor-it/lagmeter",
+  "version": "1.0.0",
+  "description": "Port of toobusy",
+  "module": "index.mjs",
+  "main": "index.js",
+  "keywords": [
+    "meteor-it",
+    "lagmeter"
+  ],
+  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "license": "MIT",
+  "sideEffects": true,
+  "publishConfig": {
+    "access": "public"
+  }
+}
