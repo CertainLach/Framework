@@ -88,6 +88,11 @@ export type IRequestOptions = {
      * token for the bearer auth
      */
     accessToken?: string;
+
+    /**
+     * Should not parse response
+     */
+    streaming?: boolean;
 }
 export type IExtendedIncomingMessage = IncomingMessage & { body: any };
 class Request extends EventEmitter {
@@ -124,9 +129,9 @@ class Request extends EventEmitter {
             this.options.followRedirects = true;
         if (this.options.timeout === undefined)
             this.options.timeout = 12000;
-        if (!this.options.parser)
+        if (!this.options.parser && this.options.parser !== null)
             this.options.parser = 'json';
-        else if (!parsers.has(this.options.parser))
+        else if (!parsers.has(this.options.parser) && this.options.parser !== null)
             throw new Error(`parser ${this.options.parser} is not registered, registered parsers: ${[...parsers.keys()].join(', ')}. Did you forgot to call XRest.registerParser(name, parser)?`);
         if (this.options.method === 'GET' && this.options.data)
             throw new Error('GET requests doesn\'t supports request body!');
@@ -259,19 +264,32 @@ class Request extends EventEmitter {
                     }
                 }
             }
-            const bodyParts = [];
-            stream.on('data', chunk => {
-                bodyParts.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
-            });
-            stream.on('end', async () => {
-                const body = Buffer.concat(bodyParts);
-                try {
-                    let encoded = await this.encode(body);
-                    this.fireSuccess(encoded, response);
-                } catch (e) {
-                    this.fireError(e, response);
-                }
-            });
+            if (!this.options.streaming) {
+                // Read fully and output to body
+                const bodyParts = [];
+                stream.on('data', chunk => {
+                    bodyParts.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+                });
+                stream.on('end', async () => {
+                    const body = Buffer.concat(bodyParts);
+                    try {
+                        let encoded = await this.encode(body);
+                        this.fireSuccess(encoded, response);
+                    } catch (e) {
+                        this.fireError(e, response);
+                    }
+                });
+            } else {
+                const incomingMessage: IncomingMessage = stream as IncomingMessage;
+                const { httpVersion, httpVersionMajor, httpVersionMinor, connection, headers, rawHeaders,
+                    trailers, rawTrailers, statusCode, statusMessage, socket } = response;
+                Object.assign(incomingMessage, {
+                    httpVersion, httpVersionMajor, httpVersionMinor, connection, headers, rawHeaders,
+                    trailers, rawTrailers, statusCode, statusMessage, socket
+                });
+                // Return stream
+                this.fireSuccess(null, incomingMessage as IExtendedIncomingMessage)
+            }
         }
     }
 
@@ -397,14 +415,55 @@ class Request extends EventEmitter {
 
 const logger = new Logger('xrest');
 
-export function emit(method: string, path: string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
+function testMethod(method: string) {
     if (method.toUpperCase() !== method) {
         throw new Error(`Method name should be uppercase! (Got: ${method})`);
     }
     if (http.METHODS.indexOf(method) === -1) {
         throw new Error(`Unknown method: ${method}, possible methods are ${http.METHODS.join(', ')}!`);
     }
+}
+
+export function emitStreaming(method: string, path: string, options: IRequestOptions = {}): Promise<IncomingMessage> {
+    testMethod(method);
     options.method = method;
+    options.streaming = true;
+    const request = new Request(path, options);
+    return new Promise((res, rej) => {
+        request.run();
+        let repeats = 0;
+        request.on('timeout', async (e: Error) => {
+            if (options.repeat && options.repeat.shouldRepeatOnTimeout) {
+                repeats++;
+                let repeatIn = options.repeat.repeatIn || 5000;
+                if (options.repeat.shouldRepeatBeIncrementing) {
+                    repeatIn *= Math.min(options.repeat.maxRepeatIncrementMultipler || 12, repeats);
+                }
+                logger.debug(`Timeout, repeat in ${repeatIn}ms`);
+                await new Promise(res => setTimeout(res, repeatIn));
+                try {
+                    let data = await emit(method, path, options);
+                    res(data);
+                } catch (e) {
+                    rej(e);
+                }
+            } else
+                rej(e);
+        });
+        request.on('complete', (result, response: IncomingMessage) => {
+            if (result instanceof Error) {
+                rej(result);
+                return;
+            }
+            res(response);
+        });
+    });
+}
+
+export function emit(method: string, path: string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
+    testMethod(method);
+    options.method = method;
+    options.streaming = false;
     const request = new Request(path, options);
     return new Promise((res, rej) => {
         request.run();
@@ -448,14 +507,25 @@ export default class XRest {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    emit(event: string, path: string, options: IRequestOptions) {
+    emit(event: string, path: string, options: IRequestOptions): Promise<IExtendedIncomingMessage> {
         path = url.resolve(this.baseUrl, path);
         return emit(event, path, { ...this.defaultOptions, ...options });
     }
 
     // noinspection JSUnusedGlobalSymbols
+    emitStreaming(event: string, path: string, options: IRequestOptions): Promise<IncomingMessage> {
+        path = url.resolve(this.baseUrl, path);
+        return emitStreaming(event, path, { ...this.defaultOptions, ...options });
+    }
+
+    // noinspection JSUnusedGlobalSymbols
     static emit(event: string, path: string, options: IRequestOptions): Promise<IExtendedIncomingMessage> {
         return emit(event, path, options);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    static emitStreaming(event: string, path: string, options: IRequestOptions): Promise<IncomingMessage> {
+        return emitStreaming(event, path, options);
     }
 
     // noinspection JSUnusedGlobalSymbols
