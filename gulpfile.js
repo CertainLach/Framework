@@ -20,7 +20,7 @@ exports.compileMjs = () => src('./packages/**/*.ts')
     .on('error', () => { })
     .pipe(sourcemaps.write())
     .pipe(rename((path) => {
-        path.extname = path.extname.replace('js','mjs');
+        path.extname = path.extname.replace('js', 'mjs');
     }))
     .pipe(dest('./packages'));
 exports.compile = parallel(exports.compileJs, exports.compileMjs);
