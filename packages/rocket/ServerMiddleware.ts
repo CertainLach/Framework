@@ -82,13 +82,32 @@ export default class ServerMiddleware extends MultiMiddleware {
             if (serverNeeded)
                 this.cachedServerStats = JSON.parse((await readFile(`${this.compiledServerDir}/stats.json`)).toString());
         }
-        // TODO: Support setups without server or client
-        if (!clientNeeded || !serverNeeded) throw new Error('Setups without server or client are not currently supported');
-        // if (clientNeeded && serverNeeded) {
+        if (!clientNeeded && !serverNeeded)
+            throw new Error('At least one needed side is required');
+
+        let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
+
         const { path: pathStr, stream, query } = ctx;
         let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
         if (!Array.isArray(files))
             files = [files];
+
+        if (!serverNeeded) {
+            // Different routine for only-client rendering
+            stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
+                h('html', [h([
+                    h('head', [
+                        h('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
+                        h('meta', { content: 'text/html;charset=utf-8', httpEquiv: 'Content-Type' }),
+                        h('meta', { content: 'utf-8', httpEquiv: 'Encoding' })
+                    ]),
+                    h('body', [
+                        h('div', process.env.NODE_ENV === 'development' ? [h('div', { id: 'root' })] : []),
+                        files.filter(e => e.endsWith('.js')).map((f, key) => h('script', { key, defer: true, src: `/${f}` }))
+                    ])
+                ])]) as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
+            return;
+        }
         let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null, store: {} };
         const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
         await this.rocket.router.route(pathStr, ctx => {
@@ -105,7 +124,6 @@ export default class ServerMiddleware extends MultiMiddleware {
         } while (preloadStore.countOfResolvedLastRender !== 0);
 
         // Generate rendered client html
-        let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
         let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
 
         // Allow redirects to be placed inside render() method
@@ -141,55 +159,61 @@ export default class ServerMiddleware extends MultiMiddleware {
         //  2. If main script isn't executed, then added script will also won't execute (NoScript)
         //  3. To prevent core monkeypatching (Antipattern)
 
-        // Update unneeded ids for head
-        {
-            // Skip default meta
-            let idx = 3;
-            // Remove meta
-            for (let i = idx; i < helmetStore.meta.length + helmetStore.link.length + idx; i++)
-                helmetStore.ssrData.rht.push(i);
-            // Skip removed + title
-            idx += helmetStore.meta.length + helmetStore.link.length + 1;
-            // Remove styles added by helmet
-            for (let i = idx; i < helmetStore.style.length + idx; i++)
-                helmetStore.ssrData.rht.push(i);
-            // Skip removed
-            idx += helmetStore.style.length;
-            // Remove server added isomorphicStyleLoader styles
-            if (isomorphicStyleLoaderStore.styles.size > 0)
-                for (let i = idx; i < idx + 1; i++)
+        if (clientNeeded) {
+            // Update unneeded ids for head
+            {
+                // Skip default meta
+                let idx = 3;
+                // Remove meta
+                for (let i = idx; i < helmetStore.meta.length + helmetStore.link.length + idx; i++)
                     helmetStore.ssrData.rht.push(i);
-        }
-        // Update unneeded ids for body
-        {
-            // Skip rendered root
-            let idx = 1;
-            // Remove stored store
-            for (let i = idx; i < 1 + idx; i++)
-                helmetStore.ssrData.rbt.push(i);
-            // Skip store
-            idx += 1;
-            // Remove preloaded chunks
-            for (let i = idx; i < chunkList.length + idx; i++)
-                helmetStore.ssrData.rbt.push(i);
-            // Skip preloaded chunks
-            idx += chunkList.length;
-            // Remove entry point scripts
-            for (let i = idx; i < neededEntryPointScripts.length + idx; i++)
-                helmetStore.ssrData.rbt.push(i);
+                // Skip removed + title
+                idx += helmetStore.meta.length + helmetStore.link.length + 1;
+                // Remove styles added by helmet
+                for (let i = idx; i < helmetStore.style.length + idx; i++)
+                    helmetStore.ssrData.rht.push(i);
+                // Skip removed
+                idx += helmetStore.style.length;
+                // Remove server added isomorphicStyleLoader styles
+                if (isomorphicStyleLoaderStore.styles.size > 0)
+                    for (let i = idx; i < idx + 1; i++)
+                        helmetStore.ssrData.rht.push(i);
+            }
+            // Update unneeded ids for body
+            {
+                // Skip rendered root
+                let idx = 1;
+                // Remove stored store
+                for (let i = idx; i < 1 + idx; i++)
+                    helmetStore.ssrData.rbt.push(i);
+                // Skip store
+                idx += 1;
+                // Remove preloaded chunks
+                for (let i = idx; i < chunkList.length + idx; i++)
+                    helmetStore.ssrData.rbt.push(i);
+                // Skip preloaded chunks
+                idx += chunkList.length;
+                // Remove entry point scripts
+                for (let i = idx; i < neededEntryPointScripts.length + idx; i++)
+                    helmetStore.ssrData.rbt.push(i);
+            }
         }
 
-        // Stringify store for client, also cleanup store from unneeded data
-        let safeStore: any = toJS(currentState.store, { exportMapsAsObjects: true, detectCycles: true });
-        // Remove data which are not used on client rendering
-        let stringStore = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* == STORE FOR CLIENT HYDRATION START == */\n' : ''}window.__SSR_STORE__=${JSON.stringify(safeStore, (key, value) => {
-            if (value === safeStore[IsomorphicStyleLoaderStore.id] || value === safeStore[HelmetStore.id].instances || value === safeStore[HelmetStore.id].ssrData.preloadModules)
-                return undefined;
-            return value;
-        }, process.env.NODE_ENV === 'development' ? 4 : 0)};${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* === STORE FOR CLIENT HYDRATION END === */\n' : ''}`;
+        let stringStore = '';
+
+        if (clientNeeded) {
+            // Stringify store for client, also cleanup store from unneeded data
+            let safeStore: any = toJS(currentState.store, { exportMapsAsObjects: true, detectCycles: true });
+            // Remove data which are not used on client rendering
+            stringStore = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* == STORE FOR CLIENT HYDRATION START == */\n' : ''}window.__SSR_STORE__=${JSON.stringify(safeStore, (key, value) => {
+                if (value === safeStore[IsomorphicStyleLoaderStore.id] || value === safeStore[HelmetStore.id].instances || value === safeStore[HelmetStore.id].ssrData.preloadModules)
+                    return undefined;
+                return value;
+            }, process.env.NODE_ENV === 'development' ? 4 : 0)};${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* === STORE FOR CLIENT HYDRATION END === */\n' : ''}`;
+        }
 
         // HTTP2 server push
-        if (stream.canPushStream) {
+        if (clientNeeded && stream.canPushStream) {
             await asyncEach([...chunkList, ...neededEntryPointScripts], async (file: string) => {
                 const ts = await stream.pushStream(`/${file}`);
                 await this.staticMiddleware.serve(file, ts);
@@ -220,9 +244,9 @@ export default class ServerMiddleware extends MultiMiddleware {
                 ]),
                 h('body', helmetStore.bodyAttrs.props, [
                     h('div', { dangerouslySetInnerHTML: { __html } }),
-                    h('script', { defer: true, dangerouslySetInnerHTML: { __html: stringStore } }),
-                    chunkList.map((f, key) => h('script', { key, defer: true, src: `/${f}` })),
-                    neededEntryPointScripts.map((f, key) => h('script', { key, defer: true, src: `/${f}` }))
+                    clientNeeded && h('script', { defer: true, dangerouslySetInnerHTML: { __html: stringStore } }),
+                    clientNeeded && chunkList.map((f, key) => h('script', { key, defer: true, src: `/${f}` })),
+                    clientNeeded && neededEntryPointScripts.map((f, key) => h('script', { key, defer: true, src: `/${f}` }))
                 ])
             ])]) as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
         // }
