@@ -54,6 +54,44 @@ export async function read(fd: FileHandle, buffer: Buffer, offset: number, lengt
 	return await fsNative.promises.read(fd, buffer, offset, length, position);
 }
 
+export async function mkdir(pathStr: string, recursive: boolean = false): Promise<void> {
+	pathStr = path.resolve(pathStr);
+	if (recursive) {
+		// TODO: there is recursive option in new versions of node.js,
+		// check for availability of them
+		// TODO: Avoid recursion
+		try {
+			return await mkdir(pathStr);
+		} catch (e) {
+			if (e.code === 'ENOENT') {
+				await mkdir(path.dirname(pathStr), true);
+				return await mkdir(pathStr);
+			} else if (!(await exists(pathStr))) {
+				throw e;
+			} else {
+				// Success
+				return;
+			}
+		}
+	} else {
+		return await fsNative.promises.mkdir(pathStr);
+	}
+}
+
+export async function unlink(pathStr: string, recursive: boolean = false) {
+	pathStr = path.resolve(pathStr);
+	if (recursive) {
+		// Empty all dirs
+		await walkDir(pathStr).then(files => Promise.all(files.map((n) => unlink(n))));
+		// TODO: Remove empty directories
+	} else {
+		if (await isDirectory(pathStr)) {
+			return await fsNative.promises.rmdir(pathStr);
+		}
+		await fsNative.promises.unlink(pathStr);
+	}
+}
+
 /**
  * Write text to file
  */
