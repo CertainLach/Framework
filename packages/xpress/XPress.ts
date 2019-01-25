@@ -1,4 +1,4 @@
-import http2, { Http2ServerRequest, Http2ServerResponse, IncomingHttpHeaders } from 'http2';
+import http2, { Http2ServerRequest, Http2ServerResponse, IncomingHttpHeaders, Http2Stream, ServerHttp2Stream } from 'http2';
 import http, { OutgoingHttpHeaders, ServerResponse, IncomingMessage } from 'http';
 import url from 'url';
 import path from 'path';
@@ -97,6 +97,7 @@ declare class WebSocket extends EventEmitter {
 export class XpressRouterStream {
     req: Http2ServerRequest;
     res: Http2ServerResponse;
+    stream: ServerHttp2Stream;
     socket: WebSocket;
     reqHeaders: IncomingHttpHeaders;
     resHeaders: OutgoingHttpHeaders;
@@ -120,8 +121,8 @@ export class XpressRouterStream {
         this.hasDataSent = true;
         this.respond();
         if (this.isHttp2) {
-            this.res.stream.write(text);
-            this.res.stream.end();
+            this.http2Stream.write(text);
+            this.http2Stream.end();
         } else {
             this.res.write(text);
             this.res.end();
@@ -137,7 +138,7 @@ export class XpressRouterStream {
         this.hasDataSent = true;
         if (this.isHttp2) {
             this.respond();
-            stream.pipe(this.res.stream);
+            stream.pipe(this.http2Stream);
         } else {
             this.respond();
             stream.pipe(this.res as unknown as ServerResponse);
@@ -152,7 +153,7 @@ export class XpressRouterStream {
     sendFile(path: string) {
         this.hasDataSent = true;
         if (this.isHttp2) {
-            this.res.stream.respondWithFile(path, this.resHeaders, {});
+            this.http2Stream.respondWithFile(path, this.resHeaders, {});
         } else {
             this.respond();
             fs.createReadStream(path).pipe(this.res as unknown as ServerResponse);
@@ -166,7 +167,7 @@ export class XpressRouterStream {
     respond() {
         this.hasDataSent = true;
         if (this.isHttp2) {
-            this.res.stream.respond(this.resHeaders);
+            this.http2Stream.respond(this.resHeaders);
         } else {
             const newHeaders: { [key: string]: string | number | string[] | undefined } = {};
             for (let key in this.resHeaders) {
@@ -190,7 +191,7 @@ export class XpressRouterStream {
         return new Promise((res, rej) => {
             if (!this.canPushStream) return rej(new Error("pushStream isn't supported for this session"));
             // @types/node sucks for http2
-            this.res.stream.pushStream({ ...this.resHeaders, [http2.constants.HTTP2_HEADER_PATH]: path }, (err, stream, resHeaders) => {
+            this.http2Stream.pushStream({ ...this.resHeaders, [http2.constants.HTTP2_HEADER_PATH]: path }, (err, stream, resHeaders) => {
                 if (err) return rej(err);
                 stream.on('error', (err) => {
                     const isRefusedStream = (err as any).code === 'ERR_HTTP2_STREAM_ERROR' &&
@@ -201,7 +202,11 @@ export class XpressRouterStream {
 
                 const wrap = new XpressRouterStream(this.reqHeaders, {});
                 wrap.isSecure = this.isSecure;
-                wrap.res = { ...this.res, stream } as any;
+                if (this.supportsHttp1Fallback) {
+                    wrap.res = { ...this.res, stream } as any;
+                } else {
+                    wrap.stream = { ...this.stream, stream } as any;
+                }
                 res(wrap);
             });
         });
@@ -210,7 +215,7 @@ export class XpressRouterStream {
     hasDataSent: boolean = false;
 
     get canPushStream(): boolean {
-        return this.hasStream && this.res.stream.pushAllowed;
+        return this.hasStream && this.http2Stream.pushAllowed;
     }
 
     get isHttp2(): boolean {
@@ -219,8 +224,14 @@ export class XpressRouterStream {
 
     isSecure: boolean;
 
+    get http2Stream(): ServerHttp2Stream {
+        return this.res && this.res.stream || this.stream;
+    }
+    get supportsHttp1Fallback(): boolean {
+        return !!this.res;
+    }
     get hasStream(): boolean {
-        return !!(this.res && this.res.stream);
+        return !!this.http2Stream;
     }
 
     get hasSocket(): boolean {
@@ -307,6 +318,38 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
     constructor(name: string | Logger, defaultState: (() => S) | null = null) {
         super(defaultState);
         this.logger = Logger.from(name);
+    }
+
+    private async streamHandler(isSecure: boolean, stream: ServerHttp2Stream, headers: IncomingHttpHeaders, flags: number) {
+        const urlStr = headers[http2.constants.HTTP2_HEADER_PATH] as string;
+        let { pathname, query } = url.parse(urlStr, true);
+        if (pathname === undefined) {
+            stream.end();
+            return;
+        }
+        pathname = path.normalize(pathname).replace(PATH_SEP_REGEXP, '/');
+        const method = headers[http2.constants.HTTP2_HEADER_METHOD] as any;
+        const wrappedMainStream = new XpressRouterStream(headers, {});
+        wrappedMainStream.isSecure = isSecure;
+        wrappedMainStream.stream = stream;
+        try {
+            await this.route(pathname, ctx => {
+                ctx.query = query as { [key: string]: string };
+                ctx.method = method as any;
+                ctx.stream = wrappedMainStream;
+                ctx.socket = null;
+            });
+            if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
+                wrappedMainStream.resHeaders = {};
+                wrappedMainStream.status(404).send(developerErrorPage('404: Page Not Found', `Page not found at ${pathname}`, process.env.NODE_ENV === 'production' ? undefined : new Error('Reference stack').stack));
+            }
+        } catch (e) {
+            this.logger.error(e.stack);
+            if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
+                wrappedMainStream.resHeaders = {};
+                wrappedMainStream.status(500).send(developerErrorPage('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+            }
+        }
     }
 
     // noinspection JSMethodCanBeStatic
@@ -399,11 +442,27 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
     listenHttp(host = '0.0.0.0', port: number) {
         this.ensureWebSocketReady();
         let server = http.createServer(this.requestHandler.bind(this, false));
-        // There is no ALPN negotigation for HTTP/1 over TLS D:
-        // And, since HTTP/2 over tcp isn't supported in browsers,
-        // Http server is only for HTTP/1.
-        // TODO: Add option for listening HTTP/2 over TCP for reverse-proxy purposes
-        // server.on('stream', this.streamHandler.bind(this));
+        server.on('upgrade', this.upgradeHandler.bind(this, false));
+        return new Promise((res, rej) => {
+            server.listen(port, host, () => {
+                this.logger.debug('Listening (http) on %s:%d...', host, port);
+                res();
+            });
+        });
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * bind()
+     * This option is only for reverse proxy use, because browsers doesn't supports http/2 without tls
+     * @param host host to bind on
+     * @param port port to bind on
+     */
+    listenHttp2(host = '0.0.0.0', port: number) {
+        this.ensureWebSocketReady();
+        let server = http2.createServer();
+        // There is no ALPN negotigation for HTTP/1 over TLS
+        server.on('stream', this.streamHandler.bind(this, false));
         server.on('upgrade', this.upgradeHandler.bind(this, false));
         return new Promise((res, rej) => {
             server.listen(port, host, () => {
@@ -427,7 +486,30 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
             key, cert, ca: caList,
             allowHTTP1: true
         }, this.requestHandler.bind(this, true));
-        // server.on('stream', this.streamHandler.bind(this));
+        server.on('upgrade', this.upgradeHandler.bind(this, true));
+        return new Promise((res, rej) => {
+            server.listen(port, host, () => {
+                this.logger.debug('Listening (https) on %s:%d...', host, port);
+                res();
+            });
+        });
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * bind()
+     * @param host host to bind on
+     * @param port port to bind on
+     * @param options settings
+     */
+    listenHttps2(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca: Buffer }): Promise<void> {
+        this.ensureWebSocketReady();
+        let caList = ca.toString().match(/-----BEGIN CERTIFICATE-----[a-zA-Z0-9/+\n=]+-----END CERTIFICATE-----/gm).map(e => Buffer.from(e));
+        let server = http2.createSecureServer({
+            key, cert, ca: caList,
+            allowHTTP1: false
+        });
+        server.on('stream', this.streamHandler.bind(this, true));
         server.on('upgrade', this.upgradeHandler.bind(this, true));
         return new Promise((res, rej) => {
             server.listen(port, host, () => {
