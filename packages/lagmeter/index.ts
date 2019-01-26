@@ -33,7 +33,3 @@ export function toobusy() {
 	const pctToBlock = (currentLag - highWater) / highWater;
 	return Math.random() < pctToBlock;
 };
-
-function shutdown() {
-	clearInterval(checkInterval);
-};

@@ -54,12 +54,30 @@ export async function read(fd: FileHandle, buffer: Buffer, offset: number, lengt
 	return await fsNative.promises.read(fd, buffer, offset, length, position);
 }
 
+type IWalkOptions = {
+	filter?: (name: string) => boolean;
+}
+
+export async function copy(from: string, to: string, options?: IWalkOptions) {
+	from = path.resolve(from);
+	to = path.resolve(to);
+	console.log(from, to);
+	if ((await isDirectory(from))) {
+		const dirStruct = (await walkDirStruct(from)).map(e => e.replace(from, to));
+		await asyncEach(dirStruct, dir => mkdir(dir, true));
+		await asyncEach(await walkDir(from), f => options && options.filter && !options.filter(f) && Promise.resolve(true) as any as Promise<void> || copy(f, f.replace(from, to)));
+		return;
+	}
+	await fsNative.promises.copyFile(from, to);
+}
+
+copy('node_modules', 'node_new_modules');
+
 export async function mkdir(pathStr: string, recursive: boolean = false): Promise<void> {
 	pathStr = path.resolve(pathStr);
 	if (recursive) {
 		// TODO: there is recursive option in new versions of node.js,
 		// check for availability of them
-		// TODO: Avoid recursion
 		try {
 			return await mkdir(pathStr);
 		} catch (e) {
@@ -78,12 +96,21 @@ export async function mkdir(pathStr: string, recursive: boolean = false): Promis
 	}
 }
 
-export async function unlink(pathStr: string, recursive: boolean = false) {
+async function unlinkDirectoryStructure(pathStr: string) {
+	pathStr = path.resolve(pathStr);
+	const dirs = await readDir(pathStr);
+	await asyncEach(dirs, async dir => {
+		const dirPath = path.resolve(pathStr, dir);
+		await unlinkDirectoryStructure(dirPath);
+		await unlink(dirPath);
+	});
+}
+export async function unlink(pathStr: string, recursive: boolean = false, options?: IWalkOptions) {
 	pathStr = path.resolve(pathStr);
 	if (recursive) {
 		// Empty all dirs
-		await walkDir(pathStr).then(files => Promise.all(files.map((n) => unlink(n))));
-		// TODO: Remove empty directories
+		await walkDir(pathStr, options).then(files => Promise.all(files.map((n) => unlink(n))));
+		await unlinkDirectoryStructure(pathStr);
 	} else {
 		if (await isDirectory(pathStr)) {
 			return await fsNative.promises.rmdir(pathStr);
@@ -104,28 +131,59 @@ export async function writeFile(filename: string, text: string | Buffer) {
  * @param dir Directory to walk
  * @param cb If provided, found files will returned realtime. If not - function will return all found files
  */
-export async function walkDir(dir: string, cb?: (file: string, dir: string) => void): Promise<string[] | null> {
+export async function walkDir(dir: string, options?: IWalkOptions, cb?: (file: string) => void): Promise<string[] | null> {
 	if (!await exists(dir)) { throw new Error('No such file or directory: ' + dir); }
 	let returnValue: string[];
 	let shouldReturn = false;
 	if (!cb) {
 		returnValue = [];
 		shouldReturn = true;
-		cb = (file: string, dir: string) => {
-			returnValue.push(dir + path.sep + file);
+		cb = (file: string) => {
+			returnValue.push(path.resolve(dir, file));
 		};
 	}
 	let dirList: string[] = [];
 	await asyncEach(await readDir(dir), async (file: string) => {
 		let pathStr = dir + path.sep + file;
 		if (await isFile(pathStr)) {
-			cb(file, dir);
+			if (options && options.filter && !options.filter(pathStr)) return;
+			cb(pathStr);
 		} else if (await isDirectory(pathStr)) {
 			dirList.push(file);
 		}
 	});
 	await asyncEach(dirList, async (dirLevelDown: string) => {
-		await walkDir(dir + path.sep + dirLevelDown, cb);
+		await walkDir(dir + path.sep + dirLevelDown, options, cb);
+	});
+	if (shouldReturn) {
+		return returnValue.sort();
+	}
+	return null;
+}
+
+export async function walkDirStruct(dir: string, options?: IWalkOptions, cb?: (dir: string) => void): Promise<string[] | null> {
+	if (!await exists(dir)) { throw new Error('No such file or directory: ' + dir); }
+	let returnValue: string[];
+	let shouldReturn = false;
+	if (!cb) {
+		returnValue = [];
+		shouldReturn = true;
+		cb = (dir: string) => {
+			returnValue.push(dir);
+		};
+	}
+	let dirList: string[] = [];
+	await asyncEach(await readDir(dir), async (file: string) => {
+		let pathStr = path.resolve(dir, file);
+		if (await isDirectory(pathStr)) {
+			dirList.push(pathStr);
+		}
+	});
+	await asyncEach(dirList, async (dirLevelDown: string) => {
+		const dirPath = path.resolve(dir, dirLevelDown);
+		await walkDirStruct(dirPath, options, cb);
+		if (options && options.filter && !options.filter(dirPath)) return;
+		cb(dirPath);
 	});
 	if (shouldReturn) {
 		return returnValue.sort();
