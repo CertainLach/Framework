@@ -1,6 +1,7 @@
 import fsNative, { Stats } from 'fs';
 import path from 'path';
 import { asyncEach } from '@meteor-it/utils';
+import constants from 'constants';
 
 type FileHandle = fsNative.promises.FileHandle;
 /**
@@ -64,8 +65,14 @@ export async function copy(from: string, to: string, options?: IWalkOptions) {
 	console.log(from, to);
 	if ((await isDirectory(from))) {
 		const dirStruct = (await walkDirStruct(from)).map(e => e.replace(from, to));
-		await asyncEach(dirStruct, dir => mkdir(dir, true));
-		await asyncEach(await walkDir(from), f => options && options.filter && !options.filter(f) && Promise.resolve(true) as any as Promise<void> || copy(f, f.replace(from, to)));
+		try {
+			await asyncEach(dirStruct, dir => mkdir(dir, true));
+		} catch (e) { }
+		try {
+			await asyncEach(await walkDir(from), f => options && options.filter && !options.filter(f) && Promise.resolve(true) as any as Promise<void> || copy(f, f.replace(from, to)));
+		} catch (e) {
+			if (e.code != constants.ENOENT) throw e;
+		}
 		return;
 	}
 	await fsNative.promises.copyFile(from, to);
