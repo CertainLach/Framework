@@ -71,8 +71,6 @@ export async function copy(from: string, to: string, options?: IWalkOptions) {
 	await fsNative.promises.copyFile(from, to);
 }
 
-copy('node_modules', 'node_new_modules');
-
 export async function mkdir(pathStr: string, recursive: boolean = false): Promise<void> {
 	pathStr = path.resolve(pathStr);
 	if (recursive) {
