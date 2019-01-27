@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/xpress",
-    "version": "4.2.45",
+    "version": "4.2.46",
     "description": "The most powerfull express.js alternative",
     "module": "index.mjs",
     "main": "index.js",
@@ -15,7 +15,7 @@
     "dependencies": {
         "@discordjs/uws": "^11.149.1",
         "@meteor-it/ajson": "^0.4.14",
-        "@meteor-it/fs": "^1.2.2",
+        "@meteor-it/fs": "^1.2.3",
         "@meteor-it/logger": "^2.3.26",
         "@meteor-it/mime": "^0.4.19",
         "@meteor-it/router": "^2.1.29",
