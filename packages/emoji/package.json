@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/emoji",
-    "version": "1.0.16",
+    "version": "1.0.17",
     "description": "Emoji4 list",
     "module": "index.mjs",
     "main": "index.js",
