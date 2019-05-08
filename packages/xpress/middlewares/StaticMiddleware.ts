@@ -5,8 +5,6 @@ import { exists, stat, walkDir, readFile } from '@meteor-it/fs';
 import { lookupByPath } from '@meteor-it/mime';
 import { IRouterContext, RoutingMiddleware } from '@meteor-it/router';
 import { XPressRouterContext, XpressRouterStream } from '..';
-import { Server } from 'tls';
-
 
 function lookupMime(filename: string, gzipped: boolean) {
     return lookupByPath(gzipped ? (filename.substr(0, filename.lastIndexOf('.'))) : filename);

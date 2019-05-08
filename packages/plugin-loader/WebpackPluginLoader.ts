@@ -16,7 +16,7 @@ type IRequireContextGetter = () => RequireContext;
  *      () => require.context(__dirname + '/publicPlugins', false, /Plugin\/index\.js$/),
  *      (acceptor, getContext) => module.hot.accept(getContext().id, acceptor));
  */
-export default class WebpackPluginLoader<C> {
+export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     plugins: IPlugin[] = [];
     acceptor: IAcceptor;
     logger: Logger;
@@ -27,6 +27,7 @@ export default class WebpackPluginLoader<C> {
         this.requireContextGetter = requireContextGetter;
         this.acceptor = acceptor;
     }
+    abstract async onReload(module: P): Promise<void>;
     // TODO: Queue
     // @queue(1)
     async customReloadLogic(key: string, module: any, reloaded: boolean) {
@@ -92,6 +93,7 @@ export default class WebpackPluginLoader<C> {
                 await plugin.init();
             }
             this.plugins.push(plugin);
+            this.onReload(plugin);
         }
         this.logger.deent();
     }

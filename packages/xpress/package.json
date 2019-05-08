@@ -20,7 +20,8 @@
         "@meteor-it/mime": "^0.4.19",
         "@meteor-it/router": "^2.1.30",
         "@meteor-it/utils": "^1.3.17",
-        "express-session": "^1.15.6"
+        "express-session": "^1.16.1",
+        "@types/express-session":"^1.15.12"
     },
     "devDependencies": {
         "@types/uws": "^0.13.2"

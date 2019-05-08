@@ -14,7 +14,7 @@
   "dependencies": {
     "@meteor-it/fs": "^1.2.4",
     "@meteor-it/logger": "^2.3.27",
-    "iconv-lite": "^0.4.23"
+    "iconv-lite": "^0.4.24"
   },
   "sideEffects": false,
   "publishConfig": {

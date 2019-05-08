@@ -1,6 +1,6 @@
-import { BasicReceiver, LoggerAction } from "@meteor-it/logger";
-import PotatoSocketClient from "packages/socket/integrations/PotatoWebSocketClient";
-import MsgPackEncoder from "packages/socket/encoders/MsgPackEncoder";
+import { BasicReceiver, LoggerAction } from "../";
+import PotatoSocketClient from "@meteor-it/socket/integrations/PotatoWebSocketClient";
+import MsgPackEncoder from "@meteor-it/socket/encoders/MsgPackEncoder";
 
 export default class RemoteReceiver extends BasicReceiver {
 	socket: PotatoSocketClient;

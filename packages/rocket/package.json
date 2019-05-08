@@ -12,15 +12,16 @@
   "license": "MIT",
   "dependencies": {
     "@meteor-it/fs": "^1.2.4",
+    "@meteor-it/logger": "^2.3.27",
     "@meteor-it/router": "^2.1.30",
     "@meteor-it/utils": "^1.3.17",
     "@meteor-it/xpress": "^4.2.47",
-    "@types/hoist-non-react-statics": "^3.0.1",
-    "hoist-non-react-statics": "^3.2.1",
-    "mobx": "^5.8.0",
-    "mobx-react-lite": "0.3.4",
-    "react": "16.7.0-alpha.2",
-    "react-dom": "16.7.0-alpha.2"
+    "@types/hoist-non-react-statics": "^3.3.1",
+    "hoist-non-react-statics": "^3.3.0",
+    "mobx": "^5.9.4",
+    "mobx-react-lite": "1.3.1",
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   },
   "publishConfig": {
     "access": "public"

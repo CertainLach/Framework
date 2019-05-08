@@ -12,7 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "@meteor-it/utils": "^1.3.17",
-    "seedrandom": "^2.4.4"
+    "seedrandom": "^3.0.1",
+    "@types/seedrandom": "^2.4.28"
   },
   "sideEffects": false,
   "publishConfig": {

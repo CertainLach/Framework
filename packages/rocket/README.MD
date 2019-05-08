@@ -41,5 +41,13 @@ initClient(rocket);
 ```
 ### web/index.ts
 ```ts
+import Rocket from '@meteor-it/rocket';
 
+const rocket = new Rocket();
+rocket.router.on(null, null, async ctx => {
+    // drawTarget = element which will be rendered on page finally
+    ctx.state.drawTarget = h([
+        'Hello, world!'
+    ]);
+});
 ```

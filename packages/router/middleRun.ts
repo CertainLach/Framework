@@ -1,4 +1,4 @@
-import {IRouterContext} from "./";
+import { IRouterContext } from "./";
 
 // TODO: Make function jump forward instead of deep (To prevent stackoverflow)
 export default function middleRun(middleware: Function | Function[]): (context: IRouterContext<any>) => () => Promise<void> {
@@ -12,7 +12,7 @@ export default function middleRun(middleware: Function | Function[]): (context: 
 
         async function loop(index: number, calledFromInside: boolean, resolveOne: () => void, pres: () => void, prej: (e: Error) => void) {
             if (index >= middleware.length) return pres();
-            const ctx: IRouterContext<any> = {...parent, state};
+            const ctx: IRouterContext<any> = { ...parent, state };
             let nextPromise: Promise<any> | null = null;
             ctx.next = () => {
                 try {

@@ -14,19 +14,18 @@
     "publish": "npm run clean&&npm run build&&lerna publish"
   },
   "devDependencies": {
-    "@types/chokidar": "^1.7.5",
-    "@types/webpack-env": "^1.13.6",
-    "gulp": "^4.0.0",
+    "@types/chokidar": "^2.1.3",
+    "@types/webpack-env": "^1.13.9",
+    "gulp": "^4.0.2",
     "gulp-clean-fix": "^0.3.4",
-    "gulp-cli": "^2.0.1",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-typescript": "^5.0.0-alpha.3",
-    "lerna": "^3.7.0",
-    "typedoc": "^0.13.0",
-    "typescript": "^3.2.2"
-  },
-  "dependencies": {
+    "gulp-cli": "^2.2.0",
     "gulp-rename": "^1.4.0",
-    "rimraf": "^2.6.2"
-  }
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-typescript": "^5.0.1",
+    "lerna": "^3.13.4",
+    "rimraf": "^2.6.3",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.4.5"
+  },
+  "version": "0.0.0"
 }

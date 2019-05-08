@@ -1,4 +1,4 @@
-enum LoadingState{
+enum LoadingState {
     /**
      * On pending promise
      */

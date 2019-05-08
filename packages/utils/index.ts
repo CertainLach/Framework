@@ -276,16 +276,12 @@ export function loseCode(str: string) {
 
 // noinspection JSUnusedGlobalSymbols
 export function encodeHtmlSpecials(str: string) {
-    let i = str.length;
-    let aRet = [];
-
-    while (i--) {
-        let iC = str[i].charCodeAt(0);
-        if (iC < 65 || iC > 127 || (iC > 90 && iC < 97)) {
-            aRet[i] = '&#' + iC + ';';
-        } else {
-            aRet[i] = str[i];
-        }
+    let ret = '';
+    for (let i = 0; i < str.length; i++) {
+        if (str.codePointAt(i) > 127)
+            ret += `&#${str.codePointAt(i)};`;
+        else
+            ret += str.charAt(i);
     }
-    return aRet.join('');
+    return ret;
 }

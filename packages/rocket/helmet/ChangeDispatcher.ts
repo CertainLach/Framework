@@ -3,12 +3,12 @@ import HelmetDataInstance from './HelmetDataInstance';
 import useStore from "../stores/useStore";
 import HelmetStore from "./HelmetStore";
 
-const {useEffect, useState} = React;
+const { useEffect, useState } = React;
 
-export default (props:{data:HelmetDataInstance}):JSX.Element=>{
+export default (props: { data: HelmetDataInstance }): JSX.Element => {
     const helmetStore = useStore(HelmetStore);
-    useEffect(()=>{
-        return ()=>{
+    useEffect(() => {
+        return () => {
             helmetStore.removeInstance(props.data);
             helmetStore.forceUpdate();
         }

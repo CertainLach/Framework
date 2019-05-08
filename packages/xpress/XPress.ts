@@ -28,71 +28,6 @@ export interface IClientOptions {
     rejectUnauthorized?: boolean;
 }
 
-declare class WebSocket extends EventEmitter {
-    static CONNECTING: number;
-    static OPEN: number;
-    static CLOSING: number;
-    static CLOSED: number;
-
-    bytesReceived: number;
-    readyState: number;
-    protocolVersion: string;
-    url: string;
-    supports: any;
-    upgradeReq: http.IncomingMessage;
-    protocol: string;
-
-    CONNECTING: number;
-    OPEN: number;
-    CLOSING: number;
-    CLOSED: number;
-
-    onopen: (event: { target: WebSocket }) => void;
-    onerror: (err: Error) => void;
-    onclose: (event: { wasClean: boolean; code: number; reason: string; target: WebSocket }) => void;
-    onmessage: (event: { data: any; type: string; target: WebSocket }) => void;
-
-    constructor(address: string, options?: IClientOptions);
-    constructor(address: string, protocols?: string | string[], options?: IClientOptions);
-
-    close(code?: number, data?: any): void;
-    pause(): void;
-    resume(): void;
-    ping(data?: any, options?: { mask?: boolean; binary?: boolean }, dontFail?: boolean): void;
-    pong(data?: any, options?: { mask?: boolean; binary?: boolean }, dontFail?: boolean): void;
-    send(data: any, cb?: (err: Error) => void): void;
-    send(data: any, options: { mask?: boolean; binary?: boolean }, cb?: (err: Error) => void): void;
-    stream(options: { mask?: boolean; binary?: boolean }, cb?: (err: Error, final: boolean) => void): void;
-    stream(cb?: (err: Error, final: boolean) => void): void;
-    terminate(): void;
-
-    // HTML5 WebSocket events
-    addEventListener(method: 'message', cb?: (event: { data: any; type: string; target: WebSocket }) => void): void;
-    addEventListener(method: 'close', cb?: (event: {
-        wasClean: boolean; code: number;
-        reason: string; target: WebSocket
-    }) => void): void;
-    addEventListener(method: 'error', cb?: (err: Error) => void): void;
-    addEventListener(method: 'open', cb?: (event: { target: WebSocket }) => void): void;
-    addEventListener(method: string, listener?: (...args: any[]) => void): void;
-
-    // Events
-    on(event: 'error', cb: (this: this, err: Error) => void): this;
-    on(event: 'close', cb: (this: this, code: number, message: string) => void): this;
-    on(event: 'message', cb: (this: this, data: any, flags: { binary: boolean }) => void): this;
-    on(event: 'ping', cb: (this: this, data: any, flags: { binary: boolean }) => void): this;
-    on(event: 'pong', cb: (this: this, data: any, flags: { binary: boolean }) => void): this;
-    on(event: 'open', cb: (this: this) => void): this;
-    on(event: string, listener: (this: this, ...args: any[]) => void): this;
-
-    addListener(event: 'error', cb: (err: Error) => void): this;
-    addListener(event: 'close', cb: (code: number, message: string) => void): this;
-    addListener(event: 'message', cb: (data: any, flags: { binary: boolean }) => void): this;
-    addListener(event: 'ping', cb: (data: any, flags: { binary: boolean }) => void): this;
-    addListener(event: 'pong', cb: (data: any, flags: { binary: boolean }) => void): this;
-    addListener(event: 'open', cb: () => void): this;
-    addListener(event: string, listener: (...args: any[]) => void): this;
-}
 
 export class XpressRouterStream {
     req: Http2ServerRequest;
@@ -272,29 +207,6 @@ export class Router<S> extends URouter<XPressRouterContext, S> {
 
 // noinspection RegExpRedundantEscape
 let PATH_SEP_REGEXP = null;
-
-// Default config
-const WS_SERVER_CONFIG = {
-    perMessageDeflate: {
-        zlibDeflateOptions: { // See zlib defaults.
-            chunkSize: 1024,
-            memLevel: 7,
-            level: 3,
-        },
-        zlibInflateOptions: {
-            chunkSize: 10 * 1024
-        },
-        // Other options settable:
-        clientNoContextTakeover: true, // Defaults to negotiated value.
-        serverNoContextTakeover: true, // Defaults to negotiated value.
-        clientMaxWindowBits: 10,       // Defaults to negotiated value.
-        serverMaxWindowBits: 10,       // Defaults to negotiated value.
-        // Below options specified as default values.
-        concurrencyLimit: 10,          // Limits zlib concurrency for perf.
-        threshold: 1024,               // Size (in bytes) below which messages
-        // should not be compressed.
-    }
-};
 
 let INTWebSocket;
 let INTWSServer;
@@ -479,7 +391,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param port port to bind on
      * @param options settings
      */
-    listenHttps(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca: Buffer }): Promise<void> {
+    listenHttps(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca?: Buffer }): Promise<void> {
         this.ensureWebSocketReady();
         let caList = ca.toString().match(/-----BEGIN CERTIFICATE-----[a-zA-Z0-9/+\n=]+-----END CERTIFICATE-----/gm).map(e => Buffer.from(e));
         let server = http2.createSecureServer({

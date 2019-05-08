@@ -14,5 +14,5 @@ export default function developerErrorPage(title: string, desc: string, stack: s
         desc = encodeHtmlSpecials(desc).replace(/\n/g, '<br>');
     if (stack)
         stack = encodeHtmlSpecials(stack).replace(/\n/g, '<br>');
-    return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack ? `<code style="white-space:pre;">${stack}</code>` : ''}<hr><h2>uFramework xPress</h2></body></html>`;
+    return `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${desc}</h1><hr>${stack ? `<code style="white-space:pre;">${stack}</code><hr>` : ''}<h2>uFramework xPress</h2></body></html>`;
 }
