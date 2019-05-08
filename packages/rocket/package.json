@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/rocket",
-  "version": "2.4.57",
+  "version": "2.4.58",
   "description": "Web framework",
   "module": "index.mjs",
   "main": "index.js",
@@ -12,10 +12,10 @@
   "license": "MIT",
   "dependencies": {
     "@meteor-it/fs": "^1.2.6",
-    "@meteor-it/logger": "^2.3.29",
-    "@meteor-it/router": "^2.1.32",
+    "@meteor-it/logger": "^2.3.30",
+    "@meteor-it/router": "^2.1.33",
     "@meteor-it/utils": "^1.3.19",
-    "@meteor-it/xpress": "^4.2.49",
+    "@meteor-it/xpress": "^4.2.50",
     "@types/hoist-non-react-statics": "^3.3.1",
     "hoist-non-react-statics": "^3.3.0",
     "mobx": "^5.9.4",
