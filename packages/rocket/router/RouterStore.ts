@@ -1,5 +1,6 @@
 import Store from '../stores/store';
 import { observable, computed } from 'mobx';
+import { isBrowserEnvironment } from '@meteor-it/utils';
 
 // TODO: Oh my...
 let forceRerender: () => void = () => { };
@@ -27,7 +28,7 @@ export default class RouterStore extends Store {
     }
     set path(url: string) {
         this._hasRedirect = true;
-        if (process.env.BROWSER)
+        if (isBrowserEnvironment())
             forceRerender();
     }
     @computed
@@ -37,16 +38,16 @@ export default class RouterStore extends Store {
     set query(to: { [key: string]: string }) {
         this._hasRedirect = true;
         this._query = to;
-        if (process.env.BROWSER)
+        if (isBrowserEnvironment())
             forceRerender();
     }
     go(url: string) {
         this._hasRedirect = true;
         this._path = url;
-        if (process.env.BROWSER)
+        if (isBrowserEnvironment())
             window.history.pushState({}, '', url);
         this._path = url;
-        if (process.env.BROWSER)
+        if (isBrowserEnvironment())
             forceRerender();
     }
 }

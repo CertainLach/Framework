@@ -1,5 +1,6 @@
 import Store from '../stores/store';
 import HelmetDataInstance, { HtmlSafeTag, HtmlSafeTagWithBody } from './HelmetDataInstance';
+import { isBrowserEnvironment } from '@meteor-it/utils';
 
 function elementFromTag(name: string, tag: HtmlSafeTag | HtmlSafeTagWithBody): Element {
     let elem = document.createElement(name);
@@ -51,8 +52,7 @@ export default class HelmetStore extends Store {
         this.forceUpdate();
     }
     forceUpdate() {
-
-        if (process.env.BROWSER) {
+        if (isBrowserEnvironment()) {
             // Safer way to change title without touching title node itself
             // (It is still touched internally, but we don't care)
             document.title = this.fullTitle;
@@ -138,7 +138,7 @@ export default class HelmetStore extends Store {
 
     async init() {
         // TODO: Get rid of this costyl
-        if (process.env.NODE_ENV === 'development' && process.env.BROWSER) {
+        if (process.env.NODE_ENV === 'development' && isBrowserEnvironment()) {
             this.ssrData = (window as any).__SSR_STORE__.helmet.ssrData;
         }
     }

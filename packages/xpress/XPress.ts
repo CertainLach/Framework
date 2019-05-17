@@ -10,6 +10,7 @@ import { EventEmitter } from 'events';
 import Logger from '@meteor-it/logger';
 import URouter from "@meteor-it/router";
 import { userErrorPage, developerErrorPage } from './errorPages';
+import { externalRequire, isNodeEnvironment } from '@meteor-it/utils';
 export { userErrorPage, developerErrorPage };
 
 export interface IClientOptions {
@@ -215,7 +216,7 @@ let INTWSServer;
  * Because uws module imports it's own native library and throws if them doesn't exits.
  */
 function fixNotPure() {
-    const uws = __non_webpack_require__('@discordjs/uws');
+    const uws = externalRequire('@discordjs/uws');
     let { default: WebSocket, Server } = uws;
     INTWSServer = Server;
     INTWebSocket = WebSocket;
@@ -445,7 +446,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
 
     private ensureWebSocketReady() {
         if (this.wsServer) return;
-        if (process.env.NODE) fixNotPure();
+        if (isNodeEnvironment()) fixNotPure();
         this.wsServer = new INTWSServer({ noServer: true });
     }
 }

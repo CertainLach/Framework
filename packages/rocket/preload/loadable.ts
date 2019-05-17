@@ -6,6 +6,7 @@ import TO_PRELOAD from './TO_PRELOAD';
 import ErrorType from './ErrorType';
 import TimeoutError from './TimeoutError';
 import LoadingState from './LoadingState';
+import { isNodeEnvironment } from '@meteor-it/utils';
 
 const { Component, useEffect, useState } = React;
 
@@ -30,7 +31,7 @@ export type IComponentPreloadMixin = { preload: () => void }
  */
 export default function loadable<A, B>(importFn: () => Promise<A>, res: (a: A) => B, opts: ILoadingProps): B & IComponentPreloadMixin {
     // TODO: Are preloading is needed on client? May be for PWA?
-    if (process.env.NODE) {
+    if (isNodeEnvironment()) {
         TO_PRELOAD.push(() => importFn());
     }
     let importPromise: Promise<any> = null;
@@ -73,7 +74,7 @@ export default function loadable<A, B>(importFn: () => Promise<A>, res: (a: A) =
             }
         }
         // Save module id to send all the required chunks on client request
-        if (process.env.NODE) helmetStore.ssrData.preloadModules.push((importPromise as any)['a']);
+        if (isNodeEnvironment()) helmetStore.ssrData.preloadModules.push((importPromise as any)['a']);
         if (loadedModule) LoadedComponent = res(loadedModule);
         return LoadedComponent !== null ? h(LoadedComponent, props) : opts.loading({
             state: error !== ErrorType.NONE ? LoadingState.ERRORED : LoadingState.LOADING,

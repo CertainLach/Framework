@@ -2,6 +2,7 @@ import Store from "./store";
 import React from "react";
 import { isObservableArray, isObservableMap } from "mobx";
 import RocketStoreContext from "./RocketStoreContext";
+import { isBrowserEnvironment } from "@meteor-it/utils";
 const { useContext } = React;
 /**
  * Helper function that supports merging maps
@@ -33,7 +34,7 @@ let storeList: { [key: string]: any } = null;
  * Pulls __SSR_STORE__ to internal variable, must be called on client init
  */
 export function cleanUpBrowserStoreList() {
-    if (process.env.BROWSER) {
+    if (isBrowserEnvironment()) {
         if ('__SSR_STORE__' in window) {
             storeList = (window as any).__SSR_STORE__;
             delete (window as any).__SSR_STORE__;

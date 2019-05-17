@@ -1,4 +1,5 @@
 import Store from "../stores/store";
+import { isBrowserEnvironment } from "@meteor-it/utils";
 
 /**
  * Internal store to store styles while loading/server rendering
@@ -12,7 +13,7 @@ export default class IsomorphicStyleLoaderStore extends Store {
     // Not needed
     // @action
     insertCss(...style: any[]): () => void {
-        if (process.env.BROWSER) {
+        if (isBrowserEnvironment()) {
             let fns = (style as any[]).map(style => style._insertCss());
             return () => fns.forEach(fn => fn());
         } else {

@@ -285,3 +285,72 @@ export function encodeHtmlSpecials(str: string) {
     }
     return ret;
 }
+
+function _getGlobal(): any {
+    if (typeof window !== "undefined") {
+        return window;
+    } else if (typeof global !== "undefined") {
+        return global;
+    } else if (typeof self !== "undefined") {
+        return self;
+    }
+    throw new Error('global not found!');
+}
+let global = null;
+export function getGlobal(): any {
+    if (global !== null)
+        return global;
+    return global = _getGlobal();
+}
+
+/**
+ * Calls __non_webpack_require__ or plain require to work around webpack, 
+ * and make still possible to use this in non-webpack code
+ * @param module 
+ */
+export function externalRequire(module: string): any {
+    const global = getGlobal();
+    if (typeof __non_webpack_require__ !== 'undefined') {
+        return __non_webpack_require__(module);
+    } else if (typeof global.require !== 'undefined') {
+        // Webpack hack
+        return global[59664743546..toString(36)](module);
+    } else {
+        throw new Error('require not found!');
+    }
+}
+
+function _isNodeEnvironment(): boolean {
+    if (typeof __webpack_require__ === 'function') {
+        try {
+            // Direct bypass for webpack+terser
+            if (process.env.NODE)
+                return true;
+        } catch (e) { }
+    }
+    return !!((typeof process !== 'undefined') && process.env && (process.env.NODE || ((typeof global !== 'undefined' && typeof global.require !== 'undefined'))));
+}
+let isNodeEnvironmentCache = null;
+export function isNodeEnvironment() {
+    if (isNodeEnvironmentCache !== null)
+        return isNodeEnvironmentCache;
+    return isNodeEnvironmentCache = _isNodeEnvironment();
+}
+function _isBrowserEnvironment(): boolean {
+    if (typeof __webpack_require__ === 'function') {
+        try {
+            // Direct bypass for webpack+terser
+            if (process.env.BROWSER)
+                return true;
+        } catch (e) { }
+    }
+    if (typeof window !== 'undefined' && window.document)
+        return true;
+    return !isNodeEnvironment();
+}
+let isBrowserEnvironmentCache = null;
+export function isBrowserEnvironment() {
+    if (isNodeEnvironmentCache !== null)
+        return isNodeEnvironmentCache;
+    return isNodeEnvironmentCache = _isBrowserEnvironment();
+}

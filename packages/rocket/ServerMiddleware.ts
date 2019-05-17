@@ -21,6 +21,7 @@ import HelmetStore from "./helmet/HelmetStore";
 import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
 import { h, frag } from './h';
 import PreloadStore from './preload/PreloadStore';
+import { isBrowserEnvironment } from '@meteor-it/utils';
 
 const { renderToStaticMarkup, renderToString } = ReactDOMServer;
 
@@ -53,12 +54,14 @@ export default class ServerMiddleware extends MultiMiddleware {
     private cachedClientStats?: any = null;
     private cachedServerStats?: any = null;
     private statsLoaded: boolean = false;
+    private commentString?: string = null;
 
-    constructor(rocket: Rocket, { compiledClientDir, compiledServerDir }: { compiledClientDir?: string, compiledServerDir?: string }) {
+    constructor(rocket: Rocket, { compiledClientDir, compiledServerDir, commentString }: { compiledClientDir?: string, compiledServerDir?: string, commentString?: string }) {
         super();
         this.rocket = rocket;
         this.compiledClientDir = compiledClientDir;
         this.compiledServerDir = compiledServerDir;
+        this.commentString = commentString;
         this.staticMiddleware = new StaticMiddleware(compiledClientDir, { filter: /^(?!(?:report\.html|stats.json))/ });
         if (process.env.NODE_ENV === 'production')
             this.staticMiddleware.prepareCache();
@@ -105,7 +108,7 @@ export default class ServerMiddleware extends MultiMiddleware {
                         h('div', process.env.NODE_ENV === 'development' ? [h('div', { id: 'root' })] : []),
                         files.filter(e => e.endsWith('.js')).map((f, key) => h('script', { key, defer: true, src: `/${f}` }))
                     ])
-                ])]) as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
+                ])]) as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}${this.commentString ? `\n${this.commentString}` : ''}`);
             return;
         }
         let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null, store: {} };
@@ -124,7 +127,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         } while (preloadStore.countOfResolvedLastRender !== 0);
 
         // Generate rendered client html
-        let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}`;
+        let __html = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '<!-- == SERVER SIDE RENDERED HTML START == -->\n<div id="root">' : ''}${renderToString(currentState.drawTarget as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '</div>\n<!-- === SERVER SIDE RENDERED HTML END === -->\n' : ''}${this.commentString ? `\n${this.commentString}` : ''}`;
 
         // Allow redirects to be placed inside render() method
         if (routerStore.hasRedirect) {
@@ -257,7 +260,7 @@ export default class ServerMiddleware extends MultiMiddleware {
 
     // Setup all routes
     setup(router: Router<XPressRouterContext & IRouterContext<void>, any, 'GET' | 'ALL'>, path: string | null): void {
-        if (process.env.BROWSER) throw new Error('WTF are u doing?');
+        if (isBrowserEnvironment()) throw new Error('WTF are u doing?');
         if (this.setupDone) throw new Error('ServerMiddleware isn\'t reusable! Create new to use in new xpress instance');
         this.setupDone = true;
         router.on('GET', path, this.staticMiddleware);

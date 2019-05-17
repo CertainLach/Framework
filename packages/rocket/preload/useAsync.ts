@@ -4,6 +4,7 @@ import LoadingState from './LoadingState';
 import React from 'react';
 import ErrorType from "./ErrorType";
 import useRerender from "../utils/useRerender";
+import { isBrowserEnvironment } from "@meteor-it/utils";
 
 const { useState, useEffect } = React;
 
@@ -34,7 +35,7 @@ export default <P>(key: string, promiseGetter: () => Promise<P>): [LoadingState.
         /**
          * Avoid creating full stack trace on SSR
          */
-        asyncStore.items[key] = LoadingItem.fromError(process.env.BROWSER ? e : e.message, ErrorType.LOADING_ERROR);
+        asyncStore.items[key] = LoadingItem.fromError(isBrowserEnvironment() ? e : e.message, ErrorType.LOADING_ERROR);
     }).finally(() => {
         delete asyncStore.promises[key];
         if (isMounted)

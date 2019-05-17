@@ -1,4 +1,4 @@
-import { asyncEach } from "@meteor-it/utils";
+import { asyncEach, isNodeEnvironment } from "@meteor-it/utils";
 import ErrorType from "./ErrorType";
 
 export class LoadingItem {
@@ -47,7 +47,7 @@ export default class PreloadStore {
     countOfResolvedLastRender: number = 0;
     firstTimeRender = true;
     async resolveAll() {
-        if (!process.env.NODE) throw new Error('this method is for node only, use .preload() on client instead');
+        if (!isNodeEnvironment()) throw new Error('this method is for node only, use .preload() on client instead');
         this.countOfResolvedLastRender = 0;
         // TODO: Use @meteor-it/queue (in case of big amount of promises)
         await asyncEach(Object.keys(this.promises), async key => {
