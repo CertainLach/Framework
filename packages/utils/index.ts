@@ -296,11 +296,11 @@ function _getGlobal(): any {
     }
     throw new Error('global not found!');
 }
-let global = null;
+let cachedGlobal = null;
 export function getGlobal(): any {
-    if (global !== null)
-        return global;
-    return global = _getGlobal();
+    if (cachedGlobal !== null)
+        return cachedGlobal;
+    return cachedGlobal = _getGlobal();
 }
 
 /**
