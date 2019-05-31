@@ -216,7 +216,7 @@ export function asyncEach<T, R>(iterable: T[], cb: (v: T) => Promise<R>): R[] {
     iterable.forEach(iter => {
         waitings.push(cb(iter));
     });
-    return <any>Promise.all(waitings);
+    return Promise.all(waitings) as any;
 }
 
 // noinspection JSUnusedGlobalSymbols
@@ -350,7 +350,7 @@ function _isBrowserEnvironment(): boolean {
 }
 let isBrowserEnvironmentCache = null;
 export function isBrowserEnvironment() {
-    if (isNodeEnvironmentCache !== null)
-        return isNodeEnvironmentCache;
-    return isNodeEnvironmentCache = _isBrowserEnvironment();
+    if (isBrowserEnvironmentCache !== null)
+        return isBrowserEnvironmentCache;
+    return isBrowserEnvironmentCache = _isBrowserEnvironment();
 }
