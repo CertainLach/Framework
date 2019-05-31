@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/xrest",
-  "version": "1.3.42",
+  "version": "1.3.43",
   "description": "Powerfull REST client library",
   "module": "index.mjs",
   "main": "index.js",
@@ -12,8 +12,8 @@
   "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/fs": "^1.2.8",
-    "@meteor-it/logger": "^2.3.32",
+    "@meteor-it/fs": "^1.2.9",
+    "@meteor-it/logger": "^2.3.33",
     "iconv-lite": "^0.4.24"
   },
   "sideEffects": false,
