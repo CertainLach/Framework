@@ -54,7 +54,6 @@ export function firstUppercase(str: string): string {
 }
 
 /**
- *
  * @deprecated Extremally slow on Proxy/getters
  * @param x
  * @param y
@@ -274,6 +273,11 @@ export function loseCode(str: string) {
     return hash;
 }
 
+/**
+ * Encodes bad html characters in string to codepoint format
+ * @param str string to encode
+ * @returns encoded string
+ */
 // noinspection JSUnusedGlobalSymbols
 export function encodeHtmlSpecials(str: string) {
     let ret = '';
@@ -297,6 +301,9 @@ function _getGlobal(): any {
     throw new Error('global not found!');
 }
 let cachedGlobal = null;
+/**
+ * Returns global, for node it is just global, for browser it is window
+ */
 export function getGlobal(): any {
     if (cachedGlobal !== null)
         return cachedGlobal;
@@ -333,6 +340,9 @@ function _isNodeEnvironment(): boolean {
     return !!((typeof process !== 'undefined') && process.env && (process.env.NODE || ((typeof global !== 'undefined' && typeof (global as any).require !== 'undefined'))));
 }
 let isNodeEnvironmentCache = null;
+/**
+ * Check if running in node
+ */
 export function isNodeEnvironment() {
     if (isNodeEnvironmentCache !== null)
         return isNodeEnvironmentCache;
@@ -351,6 +361,9 @@ function _isBrowserEnvironment(): boolean {
     return !isNodeEnvironment();
 }
 let isBrowserEnvironmentCache = null;
+/**
+ * Check if running in browser
+ */
 export function isBrowserEnvironment() {
     if (isBrowserEnvironmentCache !== null)
         return isBrowserEnvironmentCache;
