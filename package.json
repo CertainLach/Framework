@@ -22,10 +22,10 @@
     "gulp-rename": "^1.4.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^5.0.1",
-    "lerna": "^3.13.4",
+    "lerna": "^3.15.0",
     "rimraf": "^2.6.3",
     "typedoc": "^0.14.2",
-    "typescript": "^3.4.5"
+    "typescript": "^3.5.2"
   },
   "version": "0.0.0"
 }
