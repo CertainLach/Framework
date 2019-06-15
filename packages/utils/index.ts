@@ -303,6 +303,7 @@ export function getGlobal(): any {
     return cachedGlobal = _getGlobal();
 }
 
+declare var __non_webpack_require__: any;
 /**
  * Calls __non_webpack_require__ or plain require to work around webpack, 
  * and make still possible to use this in non-webpack code
@@ -320,6 +321,7 @@ export function externalRequire(module: string): any {
     }
 }
 
+declare var __webpack_require__: any;
 function _isNodeEnvironment(): boolean {
     if (typeof __webpack_require__ === 'function') {
         try {
@@ -328,7 +330,7 @@ function _isNodeEnvironment(): boolean {
                 return true;
         } catch (e) { }
     }
-    return !!((typeof process !== 'undefined') && process.env && (process.env.NODE || ((typeof global !== 'undefined' && typeof global.require !== 'undefined'))));
+    return !!((typeof process !== 'undefined') && process.env && (process.env.NODE || ((typeof global !== 'undefined' && typeof (global as any).require !== 'undefined'))));
 }
 let isNodeEnvironmentCache = null;
 export function isNodeEnvironment() {
