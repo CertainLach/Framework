@@ -4,8 +4,8 @@ function processAny(object: any, reverse: boolean, advancedTypes: any): any {
 	if (object instanceof Array) {
 		return processArray(object, reverse);
 	}
-	if (!reverse && typeof (object as any) === 'number') {
-		return processNumber(object, reverse);
+	if (!reverse && typeof (object as any) === 'number' || typeof (object as any) === 'bigint') {
+		return processNumber(object);
 	}
 	if (typeof object === 'object' || typeof object === 'function') {
 		let out = processDefined(object, reverse, advancedTypes);
@@ -78,7 +78,7 @@ function processDefined(object: any, reverse: boolean, advancedTypes: any) {
 		nothing: 1
 	};
 }
-function processNumber(number: number, reverse: boolean) {
+function processNumber(number: number) {
 	if (isNaN(number)) {
 		return {
 			$InfNaN: 0
