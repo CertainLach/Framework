@@ -279,8 +279,8 @@ export default class State {
 
         translated.execute(this);
 
-        if ((<any>this).onexecute)
-            (<any>this).onexecute(translated);
+        if ((this as any).onexecute)
+            (this as any).onexecute(translated);
 
         return translated;
     }
@@ -323,7 +323,7 @@ export default class State {
                 const w = r.vector;
                 return w.incr(r.user).causallyBefore(vector);
             } else {
-                const assocReq = (<any>r).associatedRequest(this.log);
+                const assocReq = (r as any).associatedRequest(this.log);
                 n = assocReq.vector.get(user);
             }
         }

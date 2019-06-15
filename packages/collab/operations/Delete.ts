@@ -1,4 +1,4 @@
-import {Operation} from '../Operation';
+import { Operation } from '../Operation';
 import SegmentBuffer from "../SegmentBuffer";
 import Split from "./Split";
 import NoOp from "./NoOp";
@@ -47,7 +47,7 @@ export default class Delete implements Operation {
     /**
      * Determines whether this Delete operation is reversible.
      */
-    isReversible():boolean {
+    isReversible(): boolean {
         return (this.what instanceof SegmentBuffer);
     }
 
@@ -59,7 +59,7 @@ export default class Delete implements Operation {
         buffer.splice(this.position, this.getLength());
     }
 
-    cid(other:Delete) {
+    cid(other: Delete) {
     }
 
     /**
@@ -67,9 +67,9 @@ export default class Delete implements Operation {
      */
     getLength(): number {
         if (this.isReversible())
-            return (<SegmentBuffer>this.what).getLength();
+            return (this.what as SegmentBuffer).getLength();
         else
-            return <number>this.what;
+            return this.what as number;
     }
 
     /**
@@ -79,13 +79,13 @@ export default class Delete implements Operation {
      * original Delete operation.
      * @param at Offset at which to split the Delete operation.
      */
-    split(at:number):Split {
+    split(at: number): Split {
         if (this.isReversible()) {
             // This is a reversible Delete operation. No need to to any
             // processing for recon data.
             return new Split(
-                new Delete(this.position, (<SegmentBuffer>this.what).slice(0, at)),
-                new Delete(this.position + at, (<SegmentBuffer>this.what).slice(at))
+                new Delete(this.position, (this.what as SegmentBuffer).slice(0, at)),
+                new Delete(this.position + at, (this.what as SegmentBuffer).slice(at))
             );
         } else {
             // This is a non-reversible Delete operation that might carry recon
@@ -106,7 +106,7 @@ export default class Delete implements Operation {
 
             return new Split(
                 new Delete(this.position, at, recon1),
-                new Delete(this.position + at, <number>this.what - at, recon2)
+                new Delete(this.position + at, this.what as number - at, recon2)
             );
         }
     }
@@ -117,7 +117,7 @@ export default class Delete implements Operation {
      * @param operation A Split-Delete or Delete operation
      * @param buffer
      */
-    static getAffectedString(operation:Operation, buffer:SegmentBuffer):SegmentBuffer {
+    static getAffectedString(operation: Operation, buffer: SegmentBuffer): SegmentBuffer {
         if (operation instanceof Split) {
             // The other operation is a Split operation. We call this function
             // again recursively for each component.
@@ -150,7 +150,7 @@ export default class Delete implements Operation {
      * @param transformed A transformed version of this operation.
      * @param state The state in which the transformed operation could be applied.
      */
-    makeReversible(transformed: Operation, state: State):Delete {
+    makeReversible(transformed: Operation, state: State): Delete {
         if (this.what instanceof SegmentBuffer)
             return new Delete(this.position, this.what);
         else {
@@ -166,13 +166,13 @@ export default class Delete implements Operation {
      * when executed sequentially.
      * @param other
      */
-    merge(other:Delete):Delete {
+    merge(other: Delete): Delete {
         if (this.isReversible()) {
             if (!other.isReversible())
                 throw "Cannot merge reversible operations with non-reversible ones";
 
-            const newSegmentBuffer = (<SegmentBuffer>this.what).copy();
-            newSegmentBuffer.splice(newSegmentBuffer.getLength(), 0, <SegmentBuffer>other.what);
+            const newSegmentBuffer = (this.what as SegmentBuffer).copy();
+            newSegmentBuffer.splice(newSegmentBuffer.getLength(), 0, other.what as SegmentBuffer);
             return new Delete(this.position, newSegmentBuffer);
         } else {
             const newLength = this.getLength() + other.getLength();
@@ -185,7 +185,7 @@ export default class Delete implements Operation {
      * @param other 
      * @param cid 
      */
-    transform(other: Operation, cid?: Operation):Operation {
+    transform(other: Operation, cid?: Operation): Operation {
         if (other instanceof NoOp)
             return new Delete(this.position, this.what, this.recon);
 
@@ -209,7 +209,7 @@ export default class Delete implements Operation {
         const len1 = this.getLength();
 
         const pos2 = other.position;
-        const len2 = (<any>other).getLength();
+        const len2 = (other as any).getLength();
 
         if (other instanceof Insert) {
             if (pos2 >= pos1 + len1)
@@ -236,7 +236,7 @@ export default class Delete implements Operation {
                  */
                 const newData = (this.isReversible() ? new SegmentBuffer() : 0);
                 const newRecon = this.recon.update(0,
-                    (<SegmentBuffer>other.what).slice(pos1 - pos2, pos1 - pos2 + len1));
+                    (other.what as SegmentBuffer).slice(pos1 - pos2, pos1 - pos2 + len1));
                 return new Delete(pos2, newData, newRecon);
             }
             if (pos2 <= pos1 && pos2 + len2 < pos1 + len1) {
@@ -248,8 +248,8 @@ export default class Delete implements Operation {
                  */
                 let result = this.split(pos2 + len2 - pos1);
                 result.second.position = pos2;
-                (<Delete>result.second).recon = this.recon.update(0,
-                    (<SegmentBuffer>other.what).slice(pos1 - pos2));
+                (result.second as Delete).recon = this.recon.update(0,
+                    (other.what as SegmentBuffer).slice(pos1 - pos2));
                 return result.second;
             }
             if (pos2 > pos1 && pos2 + len2 >= pos1 + len1) {
@@ -260,7 +260,7 @@ export default class Delete implements Operation {
                  * another.
                  */
                 let result = this.split(pos2 - pos1);
-                (<Delete>result.first).recon = this.recon.update((<Delete>result.first).getLength(), (<SegmentBuffer>other.what).slice(0, pos1 + len1 - pos2));
+                (result.first as Delete).recon = this.recon.update((result.first as Delete).getLength(), (other.what as SegmentBuffer).slice(0, pos1 + len1 - pos2));
                 return result.first;
             }
             if (pos2 > pos1 && pos2 + len2 < pos1 + len1) {
@@ -274,12 +274,12 @@ export default class Delete implements Operation {
                 // We split this operation two times: first at the beginning of
                 // the second operation, then at the end of the second operation.
                 const r1 = this.split(pos2 - pos1);
-                const r2 = (<Delete>r1.second).split(len2);
+                const r2 = (r1.second as Delete).split(len2);
 
                 // The resulting Delete operation consists of the first and the
                 // last part, which are merged back into a single operation.
-                let result = (<Delete>r1.first).merge(<Delete>r2.second);
-                result.recon = this.recon.update(pos2 - pos1, (<SegmentBuffer>other.what));
+                let result = (r1.first as Delete).merge(r2.second as Delete);
+                result.recon = this.recon.update(pos2 - pos1, (other.what as SegmentBuffer));
                 return result;
             }
         }
@@ -291,9 +291,9 @@ export default class Delete implements Operation {
      * that this Delete operation would remove. If this Delete operation is not
      * reversible, the return value is undefined.
      */
-    mirror():Insert {
+    mirror(): Insert {
         if (this.isReversible())
-            return new Insert(this.position, (<SegmentBuffer>this.what).copy());
+            return new Insert(this.position, (this.what as SegmentBuffer).copy());
         return null;
     }
 }

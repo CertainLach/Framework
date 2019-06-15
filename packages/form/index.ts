@@ -75,22 +75,22 @@ export class FieldValidator {
         this.placeholder = data.placeholder;
         switch (this.type) {
             case FieldType.TEXT:
-                data = <TextFieldData>data;
+                data = data as TextFieldData;
                 this.min = data.min;
                 this.max = data.max;
                 this.regex = data.regex;
                 return;
             case FieldType.SELECT:
-                data = <SelectData>data;
+                data = data as SelectData;
                 this.possible = data.possible;
                 return;
             case FieldType.NUMBER:
-                data = <NumberData>data;
+                data = data as NumberData;
                 this.min = data.min;
                 this.max = data.max;
                 return;
             case FieldType.MULTIFIELD:
-                data = <MultiFieldData>data;
+                data = data as MultiFieldData;
                 this.min = data.min;
                 this.max = data.max;
                 this.inner = new FormValidator(data.inner);

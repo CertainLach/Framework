@@ -288,8 +288,8 @@ export default class ArgParser {
     }
 
     getUsage() {
-        if (this.command && (<any>this.command)._usage) {
-            return (<any>this.command)._usage;
+        if (this.command && (this.command as any)._usage) {
+            return (this.command as any)._usage;
         }
         if (this.usage) {
             return this.usage;

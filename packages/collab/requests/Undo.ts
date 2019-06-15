@@ -51,7 +51,7 @@ export default class UndoRequest {
                 sequence -= 1;
 
             if (sequence == 0)
-                return <DoRequest>log[index];
+                return log[index] as DoRequest;
         }
         return null;
     }
