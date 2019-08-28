@@ -8,7 +8,7 @@
         "meteor-it",
         "logger"
     ],
-    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "author": "CertainLach <iam@lach.pw>",
     "license": "MIT",
     "dependencies": {
         "@meteor-it/terminal": "^0.5.21",

@@ -10,7 +10,7 @@
         "xpress",
         "express"
     ],
-    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "author": "CertainLach <iam@lach.pw>",
     "license": "MIT",
     "dependencies": {
         "@discordjs/uws": "^11.149.1",
@@ -20,8 +20,8 @@
         "@meteor-it/mime": "^0.4.20",
         "@meteor-it/router": "^2.1.38",
         "@meteor-it/utils": "^1.3.24",
-        "@types/express-session": "^1.15.12",
-        "express-session": "^1.16.1"
+        "@types/express-session": "^1.15.14",
+        "express-session": "^1.16.2"
     },
     "devDependencies": {
         "@types/uws": "^0.13.2"

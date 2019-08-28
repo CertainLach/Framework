@@ -8,7 +8,7 @@
     "meteor-it",
     "random"
   ],
-  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "CertainLach <iam@lach.pw>",
   "license": "MIT",
   "dependencies": {
     "@meteor-it/fs": "^1.2.11",
@@ -18,10 +18,11 @@
     "@meteor-it/xpress": "^4.2.56",
     "@types/hoist-non-react-statics": "^3.3.1",
     "hoist-non-react-statics": "^3.3.0",
-    "mobx": "^5.9.4",
-    "mobx-react-lite": "1.3.1",
-    "react": "16.8.6",
-    "react-dom": "16.8.6"
+    "mobx": "^5.13.0",
+    "mobx-react-lite": "2.0.0-alpha.2",
+    "mobx-remotedev": "0.3.6",
+    "react": "16.9.0",
+    "react-dom": "16.9.0"
   },
   "publishConfig": {
     "access": "public"

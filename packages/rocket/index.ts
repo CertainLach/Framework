@@ -10,7 +10,7 @@ import { PreloadStore, loadable, useAsync } from './preload';
 import Helmet from './helmet';
 import HelmetStore from './helmet/HelmetStore';
 import React from 'react';
-import { useComputed, useObservable } from 'mobx-react-lite';
+import { useLocalStore } from 'mobx-react-lite';
 import useRerender from './utils/useRerender';
 import { useTimeout, useInterval } from './utils/timerHooks';
 
@@ -26,6 +26,6 @@ export { action, computed, observable };
 export { PreloadStore, loadable, useAsync };
 export { Helmet, HelmetStore };
 export { useRef, useState, useEffect };
-export { useComputed, useObservable };
+export { useLocalStore };
 export { useRerender };
 export { useInterval, useTimeout }

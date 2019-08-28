@@ -5,8 +5,8 @@ import path from 'path';
 import { Readable } from "stream";
 import { Socket } from 'net';
 import fs from "fs";
-import { EventEmitter } from 'events';
 
+import AJSON from '@meteor-it/ajson';
 import Logger from '@meteor-it/logger';
 import URouter from "@meteor-it/router";
 import { userErrorPage, developerErrorPage } from './errorPages';
@@ -65,6 +65,16 @@ export class XpressRouterStream {
         }
     }
 
+    sendJSON(object: any, space: number = null) {
+        this.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'application/json; charset=utf-8';
+        this.send(JSON.stringify(object, null, space));
+    }
+
+    sendAJSON(object: any, space: number = null) {
+        this.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'application/json; charset=utf-8';
+        this.send(AJSON.stringify(object, null, space));
+    }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * Pipes stream to real stream
@@ -98,6 +108,7 @@ export class XpressRouterStream {
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * Unsafe
      * After this call, developer should handle everything yourself
      */
     respond() {
@@ -114,10 +125,13 @@ export class XpressRouterStream {
         }
     }
 
+    /**
+     * Returns true if encoding specified in Accept-Encoding header
+     * @param encoding encoding
+     */
     acceptsEncoding(encoding: string) {
         return ((this.reqHeaders[http2.constants.HTTP2_HEADER_ACCEPT_ENCODING] as string || '').split(',').map(e => e.trim()).includes(encoding));
     }
-
 
     /**
      * Define multiplex point
@@ -150,14 +164,30 @@ export class XpressRouterStream {
 
     hasDataSent: boolean = false;
 
+    /**
+     * True - if response is not sent, and it's possible to call send()
+     */
+    get canSendMoreData(): boolean {
+        return !this.hasDataSent && !this.res.headersSent
+    }
+
+    /**
+     * True if request is done via http2, and there is http2 push allowed
+     */
     get canPushStream(): boolean {
         return this.hasStream && this.http2Stream.pushAllowed;
     }
 
+    /**
+     * Is stream sent over http2
+     */
     get isHttp2(): boolean {
         return this.hasStream;
     }
 
+    /**
+     * Is request sent via tls
+     */
     isSecure: boolean;
 
     get http2Stream(): ServerHttp2Stream {
@@ -170,13 +200,15 @@ export class XpressRouterStream {
         return !!this.http2Stream;
     }
 
+    /**
+     * If request == websocket
+     */
     get hasSocket(): boolean {
         return !!this.socket;
     }
 }
 
 export interface XPressRouterContext {
-
     query: { [key: string]: string };
     socket: WebSocket;
     stream: XpressRouterStream;
@@ -187,8 +219,15 @@ export interface XPressRouterContext {
  * (By default, all thrown errors are displayed as 500 Internal Server Error)
  */
 export class HttpError extends Error {
+    /**
+     * Http status code
+     */
     code: number;
 
+    /**
+     * @param code http status code
+     * @param message server message
+     */
     constructor(code: number, message: string) {
         super(message);
         this.code = code;
@@ -233,6 +272,13 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         this.logger = Logger.from(name);
     }
 
+    /**
+     * Handles http2 streams
+     * @param isSecure is stream sent over https
+     * @param stream stream
+     * @param headers stream headers
+     * @param flags http2 stream flags
+     */
     private async streamHandler(isSecure: boolean, stream: ServerHttp2Stream, headers: IncomingHttpHeaders, flags: number) {
         const urlStr = headers[http2.constants.HTTP2_HEADER_PATH] as string;
         let { pathname, query } = url.parse(urlStr, true);
@@ -257,15 +303,28 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 wrappedMainStream.status(404).send(developerErrorPage('404: Page Not Found', `Page not found at ${pathname}`, process.env.NODE_ENV === 'production' ? undefined : new Error('Reference stack').stack));
             }
         } catch (e) {
-            this.logger.error(e.stack);
-            if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
-                wrappedMainStream.resHeaders = {};
-                wrappedMainStream.status(500).send(developerErrorPage('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+            if (e instanceof HttpError) {
+                if (wrappedMainStream.canSendMoreData) {
+                    wrappedMainStream.status(e.code).send(developerErrorPage(`${e.code}: ${http.STATUS_CODES[e.code]}`, e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack))
+                } else {
+                    this.logger.error(`HttpError was thrown, but there is already data sent!`);
+                }
+            } else {
+                this.logger.error(e.stack);
+                if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
+                    wrappedMainStream.resHeaders = {};
+                    wrappedMainStream.status(500).send(developerErrorPage('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+                }
             }
         }
     }
 
-    // noinspection JSMethodCanBeStatic
+    /**
+     * Handles HTTP/1.1 requests (both real and negotigated)
+     * @param isSecure is request sent over http
+     * @param req request stream
+     * @param res response stream
+     */
     private async requestHandler(isSecure: boolean, req: Http2ServerRequest, res: Http2ServerResponse) {
         if (PATH_SEP_REGEXP === null) PATH_SEP_REGEXP = new RegExp(`\\${path.sep}`, 'g');
         const urlString = req.url as string || req.headers[http2.constants.HTTP2_HEADER_PATH] as string;
@@ -292,10 +351,18 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 wrappedMainStream.status(404).send(developerErrorPage('404: Page Not Found', `Page not found at ${pathname}`, process.env.NODE_ENV === 'production' ? undefined : new Error('Reference stack').stack));
             }
         } catch (e) {
-            this.logger.error(e.stack);
-            if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
-                wrappedMainStream.resHeaders = {};
-                wrappedMainStream.status(500).send(developerErrorPage('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+            if (e instanceof HttpError) {
+                if (wrappedMainStream.canSendMoreData) {
+                    wrappedMainStream.status(e.code).send(developerErrorPage(`${e.code}: ${http.STATUS_CODES[e.code]}`, e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack))
+                } else {
+                    this.logger.error(`HttpError was thrown, but there is already data sent!`);
+                }
+            } else {
+                this.logger.error(e.stack);
+                if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
+                    wrappedMainStream.resHeaders = {};
+                    wrappedMainStream.status(500).send(developerErrorPage('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
+                }
             }
         }
     }

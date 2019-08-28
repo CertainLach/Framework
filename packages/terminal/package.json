@@ -10,7 +10,7 @@
         "stdout",
         "ansi"
     ],
-    "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+    "author": "CertainLach <iam@lach.pw>",
     "license": "MIT",
     "sideEffects": false,
     "publishConfig": {

@@ -11,7 +11,7 @@
     "await",
     "decorator"
   ],
-  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "CertainLach <iam@lach.pw>",
   "license": "MIT",
   "dependencies": {
     "@meteor-it/logger": "^2.3.35"

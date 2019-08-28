@@ -147,6 +147,10 @@ export default class AJSON {
 		}
 		definedTypes[name] = typeDef;
 	}
+
+	/**
+	 * Returns all defined default ajson types
+	 */
 	static get definedTypes() {
 		return definedTypes;
 	}

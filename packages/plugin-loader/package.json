@@ -11,13 +11,13 @@
     "webpack",
     "hmr"
   ],
-  "author": "Yaroslaw Bolyukin <iam@f6cf.pw> (http://f6cf.pw/)",
+  "author": "CertainLach <iam@lach.pw>",
   "license": "MIT",
   "dependencies": {
     "@meteor-it/fs": "^1.2.11",
     "@meteor-it/logger": "^2.3.35",
     "@meteor-it/utils": "^1.3.24",
-    "chokidar": "^2.0.4"
+    "chokidar": "^3.0.2"
   },
   "sideEffects": false,
   "publishConfig": {
