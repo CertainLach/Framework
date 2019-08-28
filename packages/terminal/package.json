@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/terminal",
-    "version": "0.5.22",
+    "version": "0.5.23",
     "description": "Provides utility functions for ANSI terminals",
     "module": "index.mjs",
     "main": "index.js",

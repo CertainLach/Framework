@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/lagmeter",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Port of toobusy",
   "module": "index.mjs",
   "main": "index.js",
