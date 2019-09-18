@@ -13,7 +13,7 @@
     "author": "CertainLach <iam@lach.pw>",
     "license": "MIT",
     "dependencies": {
-        "@discordjs/uws": "^11.149.1",
+        "ws": "^7.1.2",
         "@meteor-it/ajson": "^0.4.18",
         "@meteor-it/fs": "^1.2.13",
         "@meteor-it/logger": "^2.3.37",
@@ -24,7 +24,7 @@
         "express-session": "^1.16.2"
     },
     "devDependencies": {
-        "@types/uws": "^0.13.2"
+        "@types/ws": "^6.0.3"
     },
     "sideEffects": false,
     "publishConfig": {

@@ -10,8 +10,9 @@ import AJSON from '@meteor-it/ajson';
 import Logger from '@meteor-it/logger';
 import URouter from "@meteor-it/router";
 import { userErrorPage, developerErrorPage } from './errorPages';
-import { externalRequire, isNodeEnvironment } from '@meteor-it/utils';
 export { userErrorPage, developerErrorPage };
+
+import { Server as WSServer } from 'ws';
 
 export interface IClientOptions {
     protocol?: string;
@@ -248,19 +249,6 @@ export class Router<S> extends URouter<XPressRouterContext, S> {
 // noinspection RegExpRedundantEscape
 let PATH_SEP_REGEXP = null;
 
-let INTWebSocket;
-let INTWSServer;
-
-/**
- * Because uws module imports it's own native library and throws if them doesn't exits.
- */
-function fixNotPure() {
-    const uws = externalRequire('@discordjs/uws');
-    let { default: WebSocket, Server } = uws;
-    INTWSServer = Server;
-    INTWebSocket = WebSocket;
-}
-
 /**
  * XPress web server API
  */
@@ -400,9 +388,9 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                     ctx.socket = ws;
                 });
                 // Dirty check for handled websocket
-                // Will break on UWS update
-                // https://github.com/discordjs/uws/blob/master/src/uws.js#L90
-                if ((wrapperMainStream.socket as any).internalOnMessage === (wrapperMainStream.socket as any).internalOnClose) {
+                // Will break on WS update
+                // https://github.com/websockets/ws/blob/master/lib/websocket.js#L384
+                if (wrapperMainStream.socket.onmessage as any === wrapperMainStream.socket.onclose as any) {
                     // 1005 - CLOSED_NO_STATUS
                     wrapperMainStream.socket.close(1005);
                 }
@@ -513,7 +501,6 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
 
     private ensureWebSocketReady() {
         if (this.wsServer) return;
-        if (isNodeEnvironment()) fixNotPure();
-        this.wsServer = new INTWSServer({ noServer: true });
+        this.wsServer = new WSServer({ noServer: true });
     }
 }
