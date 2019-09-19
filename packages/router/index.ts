@@ -1,4 +1,4 @@
-import url, { Url } from 'url';
+import * as url from 'url';
 
 import middleRun from './middleRun';
 import pathToRegexp, { IKey } from "./pathToRegexp";
@@ -29,13 +29,13 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
         if (!isRouter && !isOOPMiddleware)
             return middleware;
         if (isRouter) {
-            return async step => await (middleware as Router<any, any>).route(step.path, (d: IRouterContext<any>) => {
+            return async (step: IRouterContext<unknown>) => await (middleware as Router<any, any>).route(step.path, (d: IRouterContext<any>) => {
                 for (let key in step)
                     if (!(key in d))
-                        (d)[key] = (step)[key];
+                        (d as any)[key] = (step as any)[key];
             });
         } else if (isOOPMiddleware) {
-            return async step => await (middleware as SinglePathMiddleware<any, any, any> | RoutingMiddleware<any, any, any>).handle(step);
+            return async (step: IRouterContext<unknown>) => await (middleware as SinglePathMiddleware<any, any, any> | RoutingMiddleware<any, any, any>).handle(step);
         }
     }
 
@@ -103,7 +103,7 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
  * Object, which will be passed through middleware chain
  */
 export type IRouterContext<S, M = any> = {
-    url: Url;
+    url: url.Url;
     path: string;
     method: M;
     params: { [key: string]: string };
@@ -167,7 +167,6 @@ export default class Router<E, S, M = any> {
             router: this
         } as any;
         fillContext(context as E & IRouterContext<S, M | 'ALL' | null>);
-        if ((context as any).next) throw new Error('next() in global context is deprecated, just await result instead of waiting for next() call');
         return await await middleRun(this.middleware as any)(context)();
     }
 }

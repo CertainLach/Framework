@@ -11,19 +11,21 @@ const { hydrate, render } = ReactDOM;
 
 // Lazy initialized, because this code can be somehow processed
 // on server, but a regexp requires access to window
-let IS_INTERNAL_REGEXP: RegExp = null;
+let IS_INTERNAL_REGEXP: RegExp | null = null;
 
 function sameOrigin(url: string): boolean {
+    if (IS_INTERNAL_REGEXP === null)
+        return false;
     return !!IS_INTERNAL_REGEXP.test(url);
 }
-function isLink(el: any): Element {
+function isLink(el: any): Element | null {
     while (el && el.nodeName !== 'A') el = el.parentNode;
     if (!el || el.nodeName !== 'A') return null;
     return el;
 }
 
 let lastClick = 0;
-let currentState: IRocketRouterState = null;
+let currentState: IRocketRouterState | null = null;
 async function rerunRoute(rocket: Rocket, initial: boolean) {
     lastClick++;
     let path = location.pathname;
@@ -49,8 +51,8 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
     });
     lastClick--;
 
-    if (currentState.redirectTarget !== null) {
-        history.replaceState(history.state, null, currentState.redirectTarget);
+    if (currentState!.redirectTarget !== null) {
+        history.replaceState(history.state, null, currentState!.redirectTarget);
         setTimeout(() => rerunRoute(rocket, initial), 1);
         return;
     }
@@ -59,9 +61,9 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
     if (lastClick === 0) {
         const rootElement = process.env.NODE_ENV === 'development' ? document.getElementById('root') : document.body.children[0];
         if (initial && process.env.NODE_ENV === 'production')
-            hydrate(currentState.drawTarget as ReactElement<any>, rootElement);
+            hydrate(currentState!.drawTarget as ReactElement<any>, rootElement);
         else
-            render(currentState.drawTarget as ReactElement<any>, rootElement);
+            render(currentState!.drawTarget as ReactElement<any>, rootElement);
     }
 }
 

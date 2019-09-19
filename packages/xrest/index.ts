@@ -1,13 +1,13 @@
 import Logger from '@meteor-it/logger';
 
 import { EventEmitter } from 'events';
-import http, { IncomingMessage, Agent, ClientRequest } from 'http';
-import https from 'https';
-import url, { Url } from 'url';
-import querystring from 'querystring';
+import * as http from 'http';
+import * as https from 'https';
+import * as url from 'url';
+import * as querystring from 'querystring';
 import iconv from 'iconv-lite';
 import { IMultiPartData, sizeOf, DEFAULT_BOUNDARY, write } from "./multipart";
-import zlib from 'zlib';
+import * as zlib from 'zlib';
 import { Transform, Stream } from 'stream';
 
 export { IMultiPartData };
@@ -66,10 +66,10 @@ export type IRequestOptions = {
      * Should data field to be handled as IMultiPartData
      */
     multipart?: boolean;
-    encoding?: string;
+    encoding?: "ascii" | "utf8" | "utf-8" | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex";
     decoding?: string;
     rejectUnauthorized?: boolean;
-    agent?: Agent;
+    agent?: http.Agent;
     /**
      * Internal
      * TODO: Move to Request
@@ -94,13 +94,13 @@ export type IRequestOptions = {
      */
     streaming?: boolean;
 }
-export type IExtendedIncomingMessage = IncomingMessage & { body: any };
+export type IExtendedIncomingMessage = http.IncomingMessage & { body: any };
 class Request extends EventEmitter {
     url: string;
-    parsedUrl: Url;
+    parsedUrl: url.Url;
     options: IRequestOptions;
     headers: IRequestHeaders;
-    request: ClientRequest;
+    request: http.ClientRequest;
     aborted: boolean;
     timedout: boolean;
 
@@ -190,18 +190,20 @@ class Request extends EventEmitter {
      * Test if response is a redirect to the another page
      * @param response
      */
-    static isRedirect(response: IExtendedIncomingMessage) {
+    static isRedirect(response: IExtendedIncomingMessage): boolean {
+        if (!response.statusCode)
+            return false;
         return ([301, 302, 303, 307, 308].includes(response.statusCode));
     }
 
-    get fullPath() {
+    get fullPath(): string {
         let path = this.parsedUrl.pathname || '/';
         if (this.parsedUrl.hash) path += this.parsedUrl.hash;
         if (this.parsedUrl.query) path += `?${this.parsedUrl.query}`;
         return path;
     }
 
-    applyAuth() {
+    applyAuth(): void {
         let authParts;
 
         if (this.parsedUrl.auth) {
@@ -222,16 +224,18 @@ class Request extends EventEmitter {
     responseHandler(response: IExtendedIncomingMessage) {
         if (Request.isRedirect(response) && this.options.followRedirects) {
             try {
+                if (!response.headers['location'])
+                    throw new Error('Location header is missing in response');
                 // 303 should redirect and retrieve content with the GET method
                 // http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.4
                 if (response.statusCode === 303) {
-                    this.parsedUrl = url.parse(url.resolve(this.parsedUrl.href, response.headers['location']));
+                    this.parsedUrl = url.parse(url.resolve(this.parsedUrl.href!, response.headers['location']));
                     this.options.method = 'GET';
                     delete this.options.data;
                     this.reRetry();
                 }
                 else {
-                    this.parsedUrl = url.parse(url.resolve(this.parsedUrl.href, response.headers['location']));
+                    this.parsedUrl = url.parse(url.resolve(this.parsedUrl!.href!, response.headers['location']));
                     this.reRetry();
                     // TODO: Handle somehow infinite redirects
                 }
@@ -252,7 +256,7 @@ class Request extends EventEmitter {
             if (needsToBeDecoded && !decodeable)
                 logger.warn(`Stream possibly can't be decoded, unknown encoding: ${response.headers['content-encoding']}`);
             if (decoder && decoders.has(decoder)) {
-                stream = stream.pipe(decoders.get(decoder)());
+                stream = stream.pipe(decoders.get(decoder)!());
             }
             let contentType = response.headers['content-type'];
             if (contentType) {
@@ -266,7 +270,7 @@ class Request extends EventEmitter {
             }
             if (!this.options.streaming) {
                 // Read fully and output to body
-                const bodyParts = [];
+                const bodyParts: Buffer[] = [];
                 stream.on('data', chunk => {
                     bodyParts.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
                 });
@@ -280,7 +284,7 @@ class Request extends EventEmitter {
                     }
                 });
             } else {
-                const incomingMessage: IncomingMessage = stream as IncomingMessage;
+                const incomingMessage: http.IncomingMessage = stream as http.IncomingMessage;
                 const { httpVersion, httpVersionMajor, httpVersionMinor, connection, headers, rawHeaders,
                     trailers, rawTrailers, statusCode, statusMessage, socket } = response;
                 Object.assign(incomingMessage, {
@@ -300,7 +304,9 @@ class Request extends EventEmitter {
         else {
             let bodyString = body.toString(this.options.decoding);
             if (this.options.parser) {
-                return parsers.get(this.options.parser)(bodyString);
+                if (!parsers.has(this.options.parser))
+                    throw new Error(`Missing parser: ${this.options.parser}`);
+                return parsers.get(this.options.parser)!(bodyString);
             }
             else {
                 return Promise.resolve(body);
@@ -308,7 +314,7 @@ class Request extends EventEmitter {
         }
     }
 
-    fireError(err: Error, response: IExtendedIncomingMessage) {
+    fireError(err: Error, response?: IExtendedIncomingMessage) {
         this.fireCancelTimeout();
         this.emit('error', err, response);
         this.emit('complete', err, response);
@@ -328,14 +334,16 @@ class Request extends EventEmitter {
     }
 
     fireSuccess(body: unknown, response: IExtendedIncomingMessage) {
-        if (response.statusCode >= 400) {
+        if (!response.statusCode || response.statusCode >= 400) {
             this.emit('fail', body, response);
         }
         else {
             this.emit('success', body, response);
         }
-        this.emit(response.statusCode.toString().replace(/\d{2}$/, 'XX'), body, response);
-        this.emit(response.statusCode.toString(), body, response);
+        if (response.statusCode) {
+            this.emit(response.statusCode.toString().replace(/\d{2}$/, 'XX'), body, response);
+            this.emit(response.statusCode.toString(), body, response);
+        }
         this.emit('complete', body, response);
     }
 
@@ -353,7 +361,7 @@ class Request extends EventEmitter {
         }).on('error', (err: Error) => {
             this.fireCancelTimeout();
             if (!this.aborted) {
-                this.fireError(err, null);
+                this.fireError(err, undefined);
             }
         });
     }
@@ -364,7 +372,7 @@ class Request extends EventEmitter {
         if (this.request.finished) {
             this.request.abort();
         }
-        this.prepare(this.parsedUrl.href, this.options); // reusing request object to handle recursive calls and remember listeners
+        this.prepare(this.parsedUrl.href!, this.options); // reusing request object to handle recursive calls and remember listeners
         this.run();
     }
 
@@ -387,7 +395,7 @@ class Request extends EventEmitter {
     abort(err: Error) {
         this.request.on('close', () => {
             if (err) {
-                this.fireError(err, null);
+                this.fireError(err, undefined);
             }
             else {
                 this.emit('complete', null, null);
@@ -424,7 +432,7 @@ function testMethod(method: string) {
     }
 }
 
-export function emitStreaming(method: string, path: string, options: IRequestOptions = {}): Promise<IncomingMessage> {
+export function emitStreaming(method: string, path: string, options: IRequestOptions = {}): Promise<http.IncomingMessage> {
     testMethod(method);
     options.method = method;
     options.streaming = true;
@@ -450,7 +458,7 @@ export function emitStreaming(method: string, path: string, options: IRequestOpt
             } else
                 rej(e);
         });
-        request.on('complete', (result, response: IncomingMessage) => {
+        request.on('complete', (result, response: http.IncomingMessage) => {
             if (result instanceof Error) {
                 rej(result);
                 return;
@@ -513,7 +521,7 @@ export default class XRest {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    emitStreaming(event: string, path: string, options: IRequestOptions): Promise<IncomingMessage> {
+    emitStreaming(event: string, path: string, options: IRequestOptions): Promise<http.IncomingMessage> {
         path = url.resolve(this.baseUrl, path);
         return emitStreaming(event, path, { ...this.defaultOptions, ...options });
     }
@@ -524,7 +532,7 @@ export default class XRest {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    static emitStreaming(event: string, path: string, options: IRequestOptions): Promise<IncomingMessage> {
+    static emitStreaming(event: string, path: string, options: IRequestOptions): Promise<http.IncomingMessage> {
         return emitStreaming(event, path, options);
     }
 

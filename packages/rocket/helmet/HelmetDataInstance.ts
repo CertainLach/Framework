@@ -8,16 +8,16 @@ export class HtmlSafeTagWithBody {
 }
 
 export default class HelmetDataInstance {
-    title?: string = null;
+    title: string | null = null;
 
-    meta?: HtmlSafeTag[] = [];
-    link?: HtmlSafeTag[] = [];
+    meta: HtmlSafeTag[] = [];
+    link: HtmlSafeTag[] = [];
 
-    htmlAttrs?: HtmlSafeTag = null;
-    bodyAttrs?: HtmlSafeTag = null;
+    htmlAttrs: HtmlSafeTag | null = null;
+    bodyAttrs: HtmlSafeTag | null = null;
 
-    script?: HtmlSafeTagWithBody[] = [];
-    style?: HtmlSafeTagWithBody[] = [];
+    script: HtmlSafeTagWithBody[] = [];
+    style: HtmlSafeTagWithBody[] = [];
 
     appliedHead?: Element[] = [];
 }

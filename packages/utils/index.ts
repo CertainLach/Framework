@@ -282,7 +282,7 @@ export function loseCode(str: string) {
 export function encodeHtmlSpecials(str: string) {
     let ret = '';
     for (let i = 0; i < str.length; i++) {
-        if (str.codePointAt(i) > 127)
+        if (str.codePointAt(i)! > 127)
             ret += `&#${str.codePointAt(i)};`;
         else
             ret += str.charAt(i);
@@ -300,7 +300,7 @@ function _getGlobal(): any {
     }
     throw new Error('global not found!');
 }
-let cachedGlobal = null;
+let cachedGlobal: any = null;
 /**
  * Returns global, for node it is just global, for browser it is window
  */
@@ -339,11 +339,11 @@ function _isNodeEnvironment(): boolean {
     }
     return !!((typeof process !== 'undefined') && process.env && (process.env.NODE || ((typeof global !== 'undefined' && typeof (global as any).require !== 'undefined'))));
 }
-let isNodeEnvironmentCache = null;
+let isNodeEnvironmentCache: any = null;
 /**
  * Check if running in node
  */
-export function isNodeEnvironment() {
+export function isNodeEnvironment(): boolean {
     if (isNodeEnvironmentCache !== null)
         return isNodeEnvironmentCache;
     return isNodeEnvironmentCache = _isNodeEnvironment();
@@ -360,11 +360,11 @@ function _isBrowserEnvironment(): boolean {
         return true;
     return !isNodeEnvironment();
 }
-let isBrowserEnvironmentCache = null;
+let isBrowserEnvironmentCache: any = null;
 /**
  * Check if running in browser
  */
-export function isBrowserEnvironment() {
+export function isBrowserEnvironment(): boolean {
     if (isBrowserEnvironmentCache !== null)
         return isBrowserEnvironmentCache;
     return isBrowserEnvironmentCache = _isBrowserEnvironment();

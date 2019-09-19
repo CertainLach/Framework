@@ -66,12 +66,12 @@ export class XpressRouterStream {
         }
     }
 
-    sendJSON(object: any, space: number = null) {
+    sendJSON(object: any, space?: number) {
         this.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'application/json; charset=utf-8';
         this.send(JSON.stringify(object, null, space));
     }
 
-    sendAJSON(object: any, space: number = null) {
+    sendAJSON(object: any, space?: number) {
         this.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'application/json; charset=utf-8';
         this.send(AJSON.stringify(object, null, space));
     }
@@ -211,7 +211,7 @@ export class XpressRouterStream {
 
 export interface XPressRouterContext {
     query: { [key: string]: string };
-    socket: WebSocket;
+    socket?: WebSocket;
     stream: XpressRouterStream;
 }
 
@@ -247,7 +247,7 @@ export class Router<S> extends URouter<XPressRouterContext, S> {
 }
 
 // noinspection RegExpRedundantEscape
-let PATH_SEP_REGEXP = null;
+let PATH_SEP_REGEXP = new RegExp(`\\${path.sep}`, 'g');
 
 /**
  * XPress web server API
@@ -284,7 +284,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 ctx.query = query as { [key: string]: string };
                 ctx.method = method as any;
                 ctx.stream = wrappedMainStream;
-                ctx.socket = null;
+                ctx.socket = undefined;
             });
             if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
                 wrappedMainStream.resHeaders = {};
@@ -314,7 +314,6 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param res response stream
      */
     private async requestHandler(isSecure: boolean, req: Http2ServerRequest, res: Http2ServerResponse) {
-        if (PATH_SEP_REGEXP === null) PATH_SEP_REGEXP = new RegExp(`\\${path.sep}`, 'g');
         const urlString = req.url as string || req.headers[http2.constants.HTTP2_HEADER_PATH] as string;
         let { pathname, query } = url.parse(urlString, true);
         if (pathname === undefined) {
@@ -332,7 +331,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 ctx.query = query as { [key: string]: string };
                 ctx.method = method as any;
                 ctx.stream = wrappedMainStream;
-                ctx.socket = null;
+                ctx.socket = undefined;
             });
             if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
                 wrappedMainStream.resHeaders = {};
@@ -377,7 +376,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         const method = request.method;
         const upgradeType = headers[http2.constants.HTTP2_HEADER_UPGRADE];
         if (upgradeType === 'websocket' && method === 'GET') {
-            this.wsServer.handleUpgrade(request, socket, head, async (ws) => {
+            this.wsServer.handleUpgrade(request, socket, head, async (ws: WebSocket) => {
                 const wrapperMainStream = new XpressRouterStream(headers, {});
                 wrapperMainStream.isSecure = isSecure;
                 wrapperMainStream.socket = ws;
@@ -440,6 +439,17 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         });
     }
 
+    private static parseCaString(ca?: Buffer): Buffer[] | undefined {
+        let caList: Buffer[] | undefined = undefined;
+        if (ca) {
+            let parsedCa = ca.toString().match(/-----BEGIN CERTIFICATE-----[a-zA-Z0-9/+\n=]+-----END CERTIFICATE-----/gm);
+            if (parsedCa === null)
+                throw new Error('Bad CA format');
+            caList = parsedCa.map(e => Buffer.from(e));
+        }
+        return caList;
+    }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * bind()
@@ -449,7 +459,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     listenHttps(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca?: Buffer }): Promise<void> {
         this.ensureWebSocketReady();
-        let caList = ca.toString().match(/-----BEGIN CERTIFICATE-----[a-zA-Z0-9/+\n=]+-----END CERTIFICATE-----/gm).map(e => Buffer.from(e));
+        let caList = XPress.parseCaString(ca);
         let server = http2.createSecureServer({
             key, cert, ca: caList,
             allowHTTP1: true
@@ -472,7 +482,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     listenHttps2(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca: Buffer }): Promise<void> {
         this.ensureWebSocketReady();
-        let caList = ca.toString().match(/-----BEGIN CERTIFICATE-----[a-zA-Z0-9/+\n=]+-----END CERTIFICATE-----/gm).map(e => Buffer.from(e));
+        let caList = XPress.parseCaString(ca);
         let server = http2.createSecureServer({
             key, cert, ca: caList,
             allowHTTP1: false

@@ -12,16 +12,18 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 type IH = {
     (el: ReactNode): ReactNode,
 
-    (el: () => (ReactNode | ReactNode[]) | (new () => React.Component) | string): ReactNode,
+    (el: () => (ReactNode | ReactNode[]) | (new () => (React.Component)) | React.ExoticComponent | string): ReactNode,
 
     <P extends { [key: string]: unknown }>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & Omit<P, 'children'>): ReactNode,
-    <P extends { [key: string]: unknown }>(el: (new () => React.Component<P>), props: Attributes & IAttributes & Omit<P, 'children'>): ReactNode,
+    <P extends { [key: string]: unknown }>(el: (new () => (React.Component<P>)) | React.ExoticComponent<P>, props: Attributes & IAttributes & Omit<P, 'children'>): ReactNode,
     (el: string, props: Attributes & IAttributes & any): ReactNode,
 
-    (el: () => (ReactNode | ReactNode[]) | (new () => React.Component) | string, children: ReactNode[]): ReactNode,
+    (el: () => (ReactNode | ReactNode[]) | (new () => React.Component) | React.ExoticComponent | string, children: ReactNode[]): ReactNode,
 
     <P extends { [key: string]: unknown }>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & Omit<P, 'children'>, children: ReactNode[]): ReactNode,
     <P extends { [key: string]: unknown }>(el: (new () => React.Component<P>), props: Attributes & IAttributes & Omit<P, 'children'>, children: ReactNode[]): ReactNode,
+    <P extends { [key: string]: unknown }>(el: React.ExoticComponent<P>, props: Attributes & IAttributes & Omit<P, 'children'>, children: ReactNode[]): ReactNode,
+
     (el: string, props: Attributes & IAttributes & any, children: ReactNode[]): ReactNode
 };
 
@@ -35,7 +37,7 @@ function processProps(props: IAttributes) {
 const h: IH = ((...args: any[]) => {
     if (args.length === 1) {
         if (args[0] instanceof Array) {
-            return h(React.Fragment, null, args[0]);
+            return h(React.Fragment, {}, args[0]);
         } else {
             return React.createElement(args[0]);
         }
@@ -64,7 +66,7 @@ const h: IH = ((...args: any[]) => {
  * @param el
  */
 const frag = (p: object, el: Array<ReactNode>) => {
-    return h(React.Fragment, null, el);
+    return h(React.Fragment, {}, el);
 };
 /**
  * Observe a fragment of DOM tree, returning a node which will autoupdate of used store change

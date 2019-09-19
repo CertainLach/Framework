@@ -34,7 +34,7 @@ export type ISpecs = {
 };
 export type ICommand = {
     name?: string;
-    specs?: ISpecs;
+    specs: ISpecs;
     usage?: string;
     help?: string;
     cb?: (args: any) => void;

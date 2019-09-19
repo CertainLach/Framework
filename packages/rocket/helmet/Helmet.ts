@@ -31,10 +31,11 @@ export default (props: { children: JSX.Element[] | Element }) => {
                         data.bodyAttrs = { props: props as any };
                     break;
                 case 'script':
-                    data.script.push({
-                        props: props as any,
-                        body: children === null ? null : (children as any).children as unknown as string
-                    });
+                    if (children !== null)
+                        data.script.push({
+                            props: props as any,
+                            body: children.children as unknown as string
+                        });
                     break;
                 case 'style':
                     data.style.push({

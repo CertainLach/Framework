@@ -77,7 +77,7 @@ export default class PDSEncoder implements IEncoder {
     encodeData(data: IEncoderPacket): Buffer {
         let length = this.sizeOf(data);
         let buffer = Buffer.allocUnsafe(length);
-        buffer.writeUInt8(data.type, 0, true);
+        buffer.writeUInt8(data.type, 0);
         let id: number;
         let serializer: IPDSDeSerializer;
         switch (data.type) {
@@ -86,8 +86,8 @@ export default class PDSEncoder implements IEncoder {
                 id = this.rpcToId[data.name];
                 serializer = this._rpc[id][0];
                 // Write
-                buffer.writeUInt32LE(data.random, 1, true);
-                buffer.writeUInt8(id, 5, true);
+                buffer.writeUInt32LE(data.random, 1);
+                buffer.writeUInt8(id, 5);
                 serializer.serialize(data.data, buffer, 6);
                 return buffer;
             case PacketType.RPC_OK:
@@ -95,14 +95,14 @@ export default class PDSEncoder implements IEncoder {
                 id = this.randomToRpcId[data.random];
                 serializer = this._rpc[id][1];
                 // Write
-                buffer.writeUInt32LE(data.random, 1, true);
+                buffer.writeUInt32LE(data.random, 1);
                 serializer.serialize(data.data, buffer, 5);
                 return buffer;
             case PacketType.RPC_ERROR:
                 // Prepare
                 // Do not need to do anything, since error is always a string
                 // Write
-                buffer.writeUInt32LE(data.random, 1, true);
+                buffer.writeUInt32LE(data.random, 1);
                 Buffer.from(data.data).copy(buffer, 5);
                 return buffer;
             case PacketType.EVENT:
@@ -110,14 +110,14 @@ export default class PDSEncoder implements IEncoder {
                 id = this.eventToId[data.name];
                 serializer = this._events[id];
                 // Write
-                buffer.writeUInt8(id, 1, true);
+                buffer.writeUInt8(id, 1);
                 serializer.serialize(data.data, buffer, 2);
                 return buffer;
         }
     }
 
     decodeData(buffer: Buffer): IEncoderPacket {
-        let type = buffer.readUInt8(0, true);
+        let type = buffer.readUInt8(0);
         let id: number;
         let serializer: IPDSDeSerializer;
         let random: number;
@@ -125,8 +125,8 @@ export default class PDSEncoder implements IEncoder {
         let name: string;
         switch (type) {
             case PacketType.RPC_CALL:
-                random = buffer.readUInt32LE(1, true);
-                id = buffer.readUInt8(5, true);
+                random = buffer.readUInt32LE(1);
+                id = buffer.readUInt8(5);
                 serializer = this._rpc[id][0];
                 name = this.idToRpc[id];
                 data = serializer.deserialize(buffer, 6);
@@ -137,7 +137,7 @@ export default class PDSEncoder implements IEncoder {
                     random
                 };
             case PacketType.RPC_OK:
-                random = buffer.readUInt32LE(1, true);
+                random = buffer.readUInt32LE(1);
                 id = this.randomToRpcId[data.random];
                 serializer = this._rpc[id][1];
                 data = serializer.deserialize(buffer, 5);
@@ -147,7 +147,7 @@ export default class PDSEncoder implements IEncoder {
                     random
                 };
             case PacketType.RPC_ERROR:
-                random = buffer.readUInt32LE(1, true);
+                random = buffer.readUInt32LE(1);
                 data = buffer.slice(5).toString();
                 return {
                     type,
@@ -155,7 +155,7 @@ export default class PDSEncoder implements IEncoder {
                     random
                 };
             case PacketType.EVENT:
-                id = buffer.readUInt8(1, true);
+                id = buffer.readUInt8(1);
                 name = this.idToEvent[id];
                 serializer = this._events[id];
                 data = serializer.deserialize(buffer, 2);

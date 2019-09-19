@@ -25,9 +25,14 @@ function removeAllChildren(el: Element, children: Element[]) {
     }
 }
 
+function rewriteAttrsMulti(el: Element, attrsList: { [key: string]: string }[]) {
+    let out = {};
+    for (const attrs of attrsList)
+        Object.assign(out, attrs)
+    rewriteAttrs(el, out);
+}
+
 function rewriteAttrs(el: Element, attrs: { [key: string]: string }) {
-    if (attrs === undefined || attrs === null)
-        attrs = {};
     for (let attrName in attrs)
         el.setAttribute(attrName, attrs[attrName]);
     if (el.attributes.length === 0) return;
@@ -36,6 +41,7 @@ function rewriteAttrs(el: Element, attrs: { [key: string]: string }) {
             el.removeAttribute(attr.name);
     }
 }
+
 
 export default class HelmetStore extends Store {
     static id = '$$helmet';
@@ -55,7 +61,7 @@ export default class HelmetStore extends Store {
         if (isBrowserEnvironment()) {
             // Safer way to change title without touching title node itself
             // (It is still touched internally, but we don't care)
-            document.title = this.fullTitle;
+            document.title = this.fullTitle === null ? 'null' : this.fullTitle;
 
             // Store added elements on client side
             let appliedHead: any = [];
@@ -72,8 +78,10 @@ export default class HelmetStore extends Store {
             this.appliedHead = appliedHead;
             this.appliedBody = appliedBody;
 
-            rewriteAttrs(document.body.parentElement, this.htmlAttrs.props);
-            rewriteAttrs(document.body, this.bodyAttrs.props);
+            if (this.htmlAttrs)
+                rewriteAttrsMulti(document.body.parentElement!, this.htmlAttrs.map(e => e.props));
+            if (this.bodyAttrs)
+                rewriteAttrsMulti(document.body, this.bodyAttrs.map(e => e.props));
 
             // Remove all SSR elements, since client data is applied already
             if (!this.cleanedSsrData) {
@@ -109,31 +117,31 @@ export default class HelmetStore extends Store {
         if (this.titleTemplate === null) {
             return this.title;
         }
-        return this.titleTemplate(this.title);
+        return this.titleTemplate(this.title === null ? 'null' : this.title);
     }
 
-    get meta() {
-        return [].concat(...this.instances.map(i => i.meta).filter(m => m !== null));
+    get meta(): HtmlSafeTag[] {
+        return this.instances.map(i => i.meta).flatMap(e => e);
     }
 
-    get link() {
-        return [].concat(...this.instances.map(i => i.link).filter(m => m !== null));
+    get link(): HtmlSafeTag[] {
+        return this.instances.map(i => i.link).flatMap(e => e);
     }
 
-    get htmlAttrs() {
-        return Object.assign({}, ...this.instances.map(i => i.htmlAttrs));
+    get htmlAttrs(): HtmlSafeTag[] {
+        return this.instances.map(i => i.htmlAttrs!).filter(m => m !== null);
     }
 
-    get bodyAttrs() {
-        return Object.assign({}, ...this.instances.map(i => i.bodyAttrs));
+    get bodyAttrs(): HtmlSafeTag[] {
+        return this.instances.map(i => i.bodyAttrs!).filter(m => m !== null);
     }
 
-    get script() {
-        return [].concat(...this.instances.map(i => i.script).filter(m => m !== null));
+    get script(): HtmlSafeTagWithBody[] {
+        return this.instances.map(i => i.script).flatMap(e => e);
     }
 
-    get style() {
-        return [].concat(...this.instances.map(i => i.style).filter(m => m !== null));
+    get style(): HtmlSafeTagWithBody[] {
+        return this.instances.map(i => i.style).flatMap(e => e);
     }
 
     async init() {

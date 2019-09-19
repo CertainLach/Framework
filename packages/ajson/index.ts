@@ -120,7 +120,7 @@ export default class AJSON {
      * @param reviver
      * @param advancedTypes
      */
-	static parse(string?: string, reviver?: any, advancedTypes: any = {}) {
+	static parse(string: string, reviver?: any, advancedTypes: any = {}) {
 		return processAny(JSON.parse(string, reviver), true, advancedTypes);
 	}
     /**
