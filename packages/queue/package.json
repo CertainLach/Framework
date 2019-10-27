@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/queue",
-  "version": "2.0.39",
+  "version": "2.0.40",
   "description": "Queue decorator",
   "module": "index.mjs",
   "main": "index.js",
