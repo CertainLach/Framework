@@ -86,11 +86,12 @@ export abstract class CollapseQueueProcessor<I, O> implements IQueueProcessor<I,
     private time: number;
     private waitSameTick: boolean;
 
-    protected constructor(time: number, tasksPerTime: number, waitSameTick: boolean = false) {
+    protected constructor(time: number, tasksPerTime: number, waitSameTick: boolean) {
         if (tasksPerTime === 1)
             throw new Error('CollapseQueueProcessor is for multiple tasks running in time, but you specified only 1.');
         this.time = time;
         this.tasksPerTime = tasksPerTime;
+        this.waitSameTick = waitSameTick;
         this.boundProcessLoop = this.processLoop.bind(this);
     }
 
