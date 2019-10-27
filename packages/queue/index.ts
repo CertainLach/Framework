@@ -34,6 +34,7 @@ export abstract class QueueProcessor<I, O> implements IQueueProcessor<I, O>{
                 data
             });
             if (!this.busy) {
+                this.busy = true;
                 // noinspection JSIgnoredPromiseFromCall
                 this.processLoop();
             }
@@ -49,7 +50,7 @@ export abstract class QueueProcessor<I, O> implements IQueueProcessor<I, O>{
         }
         let startTime = Date.now();
 
-        let task = this.queued.shift();
+        let task = this.queued.shift()!;
         try {
             let data = await this.executor(task.data);
             // noinspection SuspiciousInstanceOfGuard
@@ -83,8 +84,9 @@ export abstract class CollapseQueueProcessor<I, O> implements IQueueProcessor<I,
     private queued: IQueueItem<I, O>[] = [];
     private readonly tasksPerTime: number;
     private time: number;
+    private waitSameTick: boolean;
 
-    protected constructor(time: number, tasksPerTime: number) {
+    protected constructor(time: number, tasksPerTime: number, waitSameTick: boolean = false) {
         if (tasksPerTime === 1)
             throw new Error('CollapseQueueProcessor is for multiple tasks running in time, but you specified only 1.');
         this.time = time;
@@ -101,8 +103,15 @@ export abstract class CollapseQueueProcessor<I, O> implements IQueueProcessor<I,
                 data
             });
             if (!this.busy) {
-                // noinspection JSIgnoredPromiseFromCall
-                this.processLoop();
+                this.busy = true;
+                // If multiple tasks will be pushed in same tick - then them
+                // will be collapsed
+                if (this.waitSameTick) {
+                    process.nextTick(this.boundProcessLoop);
+                } else {
+                    // noinspection JSIgnoredPromiseFromCall
+                    this.processLoop();
+                }
             }
         });
     }
