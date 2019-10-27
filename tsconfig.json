@@ -13,7 +13,6 @@
     "jsx": "react",
     "noEmitHelpers": false,
     "importHelpers": false,
-    "strictNullChecks": true,
     "allowUnreachableCode": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -42,7 +41,8 @@
         "packages/*"
       ]
     },
-    "declaration": true
+    "declaration": true,
+    "strict": true
   },
   "compileOnSave": false,
 }

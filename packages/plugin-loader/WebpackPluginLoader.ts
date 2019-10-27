@@ -21,7 +21,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     acceptor: IAcceptor;
     logger: Logger;
     requireContextGetter: IRequireContextGetter;
-    pluginContext: C;
+    pluginContext: C | null = null;
     constructor(name: string | Logger, requireContextGetter: IRequireContextGetter, acceptor: IAcceptor) {
         this.logger = Logger.from(name);
         this.requireContextGetter = requireContextGetter;

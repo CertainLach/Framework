@@ -14,9 +14,9 @@ import IPlugin from "./IPlugin";
 export default class SoftPluginLoader<D> {
     logger: Logger;
     folder: string;
-    watcher: EventEmitter;
-    autoData: D;
-    plugins: IPlugin[];
+    watcher: EventEmitter | null = null;
+    autoData: D | null = null;
+    plugins: IPlugin[] | null = null;
 
     constructor(name: Logger | string, folder: string) {
         this.logger = Logger.from(name);
@@ -75,7 +75,8 @@ export default class SoftPluginLoader<D> {
             throw e;
         }
     }
-    findPluginAtPath(pluginPath: string): [IPlugin, number] {
+    findPluginAtPath(pluginPath: string): [IPlugin | null, number] {
+        if (!this.plugins) throw new Error('plugins === null');
         let found = null;
         let foundId = -1;
         this.plugins.forEach((plugin, id) => {
@@ -87,8 +88,10 @@ export default class SoftPluginLoader<D> {
         return [found, foundId];
     }
     async unloadPlugin(pluginPath: string) {
+        if (!this.plugins) throw new Error('plugins === null');
         this.logger.log('Unloading...');
         let [found, foundId] = this.findPluginAtPath(pluginPath);
+        if (!found) throw new Error('plugin not found');
         this.logger.log('Calling deinit()...');
         if (found.deinit) {
             this.logger.ident(found.constructor.name + '.deinit()');
@@ -114,9 +117,10 @@ export default class SoftPluginLoader<D> {
         if (plugin.default)
             plugin = plugin.default;
         plugin = new plugin();
-        Object.keys(this.autoData).forEach(key => {
-            plugin[key] = (this.autoData as any)[key];
-        });
+        if (this.autoData !== null)
+            Object.keys(this.autoData).forEach(key => {
+                plugin[key] = (this.autoData as any)[key];
+            });
         plugin.file = pluginPath;
         return plugin;
     }
@@ -157,7 +161,7 @@ export default class SoftPluginLoader<D> {
             await this.callInit(plugin);
 
             this.logger.log('Returning to the plugin list...');
-            this.plugins.push(plugin);
+            this.plugins!.push(plugin);
         }
         else {
             setTimeout(() => this.onAdd(pluginPath), 1);
@@ -178,7 +182,7 @@ export default class SoftPluginLoader<D> {
             await this.callInit(plugin);
 
             this.logger.log('Returning to the plugin list...');
-            this.plugins.push(plugin);
+            this.plugins!.push(plugin);
         }
     }
     // TODO: Queue

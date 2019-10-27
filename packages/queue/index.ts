@@ -84,9 +84,9 @@ export abstract class CollapseQueueProcessor<I, O> implements IQueueProcessor<I,
     private queued: IQueueItem<I, O>[] = [];
     private readonly tasksPerTime: number;
     private time: number;
-    private waitSameTick: boolean;
+    private waitSameTick: boolean | number;
 
-    protected constructor(time: number, tasksPerTime: number, waitSameTick: boolean) {
+    protected constructor(time: number, tasksPerTime: number, waitSameTick: boolean | number) {
         if (tasksPerTime === 1)
             throw new Error('CollapseQueueProcessor is for multiple tasks running in time, but you specified only 1.');
         this.time = time;
@@ -107,8 +107,16 @@ export abstract class CollapseQueueProcessor<I, O> implements IQueueProcessor<I,
                 this.busy = true;
                 // If multiple tasks will be pushed in same tick - then them
                 // will be collapsed
-                if (this.waitSameTick) {
+                if (this.waitSameTick === true) {
                     process.nextTick(this.boundProcessLoop);
+                } else if (this.waitSameTick !== false) {
+                    if (this.waitSameTick === 0) {
+                        setImmediate(this.boundProcessLoop);
+                    } else if (this.waitSameTick < 0) {
+                        throw new Error('waitSameTick must be >= 0')
+                    } else {
+                        setTimeout(this.boundProcessLoop, this.waitSameTick);
+                    }
                 } else {
                     // noinspection JSIgnoredPromiseFromCall
                     this.processLoop();
