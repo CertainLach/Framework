@@ -33,7 +33,7 @@ class WebpackPluginLoaderQueueProcessor extends QueueProcessor<ReloadData, void>
  *      (acceptor, getContext) => module.hot.accept(getContext().id, acceptor));
  */
 export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
-    plugins: IPlugin[] = [];
+    plugins: P[] = [];
     acceptor: IAcceptor;
     logger: Logger;
     requireContextGetter: IRequireContextGetter;
@@ -47,6 +47,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     }
     abstract async onReload(module: P): Promise<void>;
     abstract async onLoad(module: P): Promise<void>;
+    abstract async onUnload(module: P): Promise<void>;
     public async queuedCustomReloadLogic(data: ReloadData) {
         this.logger.ident(data.key);
         if (!data.reloaded) {
@@ -67,11 +68,11 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                     await plugin.init();
                 }
                 await (this.onLoad(plugin));
+                this.plugins.push(plugin);
             } catch (e) {
                 this.logger.error(`Load failed`);
                 this.logger.error(e.stack);
             }
-            this.plugins.push(plugin);
         }
         else {
             this.logger.log(`${data.key} is reloading`);
@@ -90,15 +91,22 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                 this.logger.log('Plugin was loaded before, unloading old instances');
                 let instances = this.plugins.length;
                 for (let alreadyLoadedPlugin of alreadyLoaded) {
-                    // Deinit plugin
-                    if (!alreadyLoadedPlugin.deinit) {
-                        this.logger.log('Plugin has no deinit() method, skipping call');
-                    } else {
-                        this.logger.log('Calling deinit()');
-                        await alreadyLoadedPlugin.deinit();
+                    try {
+                        // Deinit plugin
+                        if (!alreadyLoadedPlugin.deinit) {
+                            this.logger.log('Plugin has no deinit() method, skipping call');
+                        } else {
+                            this.logger.log('Calling deinit()');
+                            await alreadyLoadedPlugin.deinit();
+                        }
+                    } catch (e) {
+                        this.logger.error(`Unload failed`);
+                        this.logger.error(e.stack);
+                    } finally {
+                        this.onUnload(alreadyLoadedPlugin);
+                        // Remove from list
+                        this.plugins.splice(this.plugins.indexOf(alreadyLoadedPlugin), 1);
                     }
-                    // Remove from list
-                    this.plugins.splice(this.plugins.indexOf(alreadyLoadedPlugin), 1);
                 }
                 let newInstances = this.plugins.length;
                 if (instances - newInstances !== 1) {
