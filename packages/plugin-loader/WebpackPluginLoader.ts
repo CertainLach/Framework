@@ -2,12 +2,28 @@
 
 import Logger from '@meteor-it/logger';
 import IPlugin from './IPlugin';
+import { QueueProcessor } from '@meteor-it/queue';
 
 type Module = __WebpackModuleApi.Module;
 type RequireContext = __WebpackModuleApi.RequireContext;
 
 type IAcceptor = (acceptor: () => void, getContext: () => Module) => void;
 type IRequireContextGetter = () => RequireContext;
+
+type ReloadData = {
+    key: string,
+    module: any,
+    reloaded: boolean,
+}
+
+class WebpackPluginLoaderQueueProcessor extends QueueProcessor<ReloadData, void> {
+    constructor(public loader: WebpackPluginLoader<any, any>) {
+        super(1);
+    }
+    executor(data: ReloadData): Promise<void> {
+        return this.loader.queuedCustomReloadLogic(data);
+    }
+}
 
 /**
  * HMR Plugin Loader
@@ -22,49 +38,55 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     logger: Logger;
     requireContextGetter: IRequireContextGetter;
     pluginContext: C | null = null;
+    reloadQueue: QueueProcessor<ReloadData, void>;
     constructor(name: string | Logger, requireContextGetter: IRequireContextGetter, acceptor: IAcceptor) {
         this.logger = Logger.from(name);
         this.requireContextGetter = requireContextGetter;
         this.acceptor = acceptor;
+        this.reloadQueue = new WebpackPluginLoaderQueueProcessor(this);
     }
     abstract async onReload(module: P): Promise<void>;
-    // TODO: Queue
-    // @queue(1)
-    async customReloadLogic(key: string, module: any, reloaded: boolean) {
-        this.logger.ident(key);
-        if (!reloaded) {
-            this.logger.log(`${key} is loading`);
-            if (module.default)
-                module = module.default;
-            let plugin = module;
+    abstract async onLoad(module: P): Promise<void>;
+    public async queuedCustomReloadLogic(data: ReloadData) {
+        this.logger.ident(data.key);
+        if (!data.reloaded) {
+            this.logger.log(`${data.key} is loading`);
+            if (data.module.default)
+                data.module = data.module.default;
+            let plugin = data.module;
             if (plugin.default)
                 plugin = plugin.default;
             plugin = new plugin();
-            plugin.file = key;
+            plugin.file = data.key;
             Object.assign(plugin, this.pluginContext);
-            if (!plugin.init) {
-                this.logger.log('Plugin has no init() method, skipping call');
-            } else {
-                this.logger.log('Calling init()');
-                await plugin.init();
+            try {
+                if (!plugin.init) {
+                    this.logger.log('Plugin has no init() method, skipping call');
+                } else {
+                    this.logger.log('Calling init()');
+                    await plugin.init();
+                }
+                await (this.onLoad(plugin));
+            } catch (e) {
+                this.logger.error(`Load failed`);
+                this.logger.error(e.stack);
             }
             this.plugins.push(plugin);
         }
         else {
-            this.logger.log(`${key} is reloading`);
-            if (module.default)
-                module = module.default;
-            let plugin = module;
+            this.logger.log(`${data.key} is reloading`);
+            if (data.module.default)
+                data.module = data.module.default;
+            let plugin = data.module;
             if (plugin.default)
                 plugin = plugin.default;
             plugin = new plugin();
-            plugin.file = key;
+            plugin.file = data.key;
             Object.assign(plugin, this.pluginContext);
-            let alreadyLoaded = this.plugins.filter(pl => pl.file === key);
+            let alreadyLoaded = this.plugins.filter(pl => pl.file === data.key);
             if (alreadyLoaded.length === 0) {
                 this.logger.warn('This plugin wasn\'t loaded before, may be reload is for fix');
-            }
-            else {
+            } else {
                 this.logger.log('Plugin was loaded before, unloading old instances');
                 let instances = this.plugins.length;
                 for (let alreadyLoadedPlugin of alreadyLoaded) {
@@ -81,8 +103,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                 let newInstances = this.plugins.length;
                 if (instances - newInstances !== 1) {
                     this.logger.warn('Eww... found non 1 plugin instance in memory. May be it is error? Instances found=' + (instances - newInstances));
-                }
-                else {
+                } else {
                     this.logger.log('Plugin unloaded');
                 }
             }
@@ -104,7 +125,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
         context.keys().forEach((key) => {
             let module = context(key);
             modules[key] = module;
-            this.customReloadLogic(key, module, false);
+            this.reloadQueue.runTask({ key, module, reloaded: false });
         });
 
         if (module.hot) {
@@ -112,7 +133,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                 let reloadedContext = this.requireContextGetter();
                 reloadedContext.keys().map(key => [key, reloadedContext(key)]).filter(reloadedModule => modules[reloadedModule[0]] !== reloadedModule[1]).forEach((module) => {
                     modules[module[0]] = module[1];
-                    this.customReloadLogic(module[0], module[1], true);
+                    this.reloadQueue.runTask({ key: module[0], module: module[1], reloaded: true });
                 });
             }, this.requireContextGetter as any);
         }
