@@ -74,9 +74,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
         }
         else {
             this.logger.log(`${data.key} is reloading`);
-            if (data.module.default)
-                data.module = data.module.default;
-            let plugin = data.module;
+            let plugin = await data.module;
             if (plugin.default)
                 plugin = plugin.default;
             plugin = new plugin();
