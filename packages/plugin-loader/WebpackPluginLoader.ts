@@ -20,8 +20,8 @@ class WebpackPluginLoaderQueueProcessor extends QueueProcessor<ReloadData, void>
     constructor(public loader: WebpackPluginLoader<any, any>) {
         super(1);
     }
-    executor(data: ReloadData): Promise<void> {
-        return this.loader.queuedCustomReloadLogic(data);
+    async executor(data: ReloadData): Promise<void> {
+        return await this.loader.queuedCustomReloadLogic(data);
     }
 }
 
@@ -52,73 +52,87 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
         this.logger.ident(data.key);
         if (!data.reloaded) {
             this.logger.log(`${data.key} is loading`);
-            let plugin = await data.module;
-            if (plugin.default)
-                plugin = plugin.default;
-            plugin = new plugin();
-            plugin.file = data.key;
-            Object.assign(plugin, this.pluginContext);
             try {
-                if (!plugin.init) {
-                    this.logger.log('Plugin has no init() method, skipping call');
-                } else {
-                    this.logger.log('Calling init()');
-                    await plugin.init();
+                let plugin = await data.module;
+                if (plugin.default)
+                    plugin = plugin.default;
+                plugin = new plugin();
+                plugin.file = data.key;
+                Object.assign(plugin, this.pluginContext);
+                try {
+                    if (!plugin.init) {
+                        this.logger.log('Plugin has no init() method, skipping call');
+                    } else {
+                        this.logger.log('Calling init()');
+                        await plugin.init();
+                    }
+                    await (this.onLoad(plugin));
+                    this.plugins.push(plugin);
+                } catch (e) {
+                    this.logger.error(`Load failed on init()`);
+                    this.logger.error(e.stack);
                 }
-                await (this.onLoad(plugin));
-                this.plugins.push(plugin);
             } catch (e) {
-                this.logger.error(`Load failed`);
+                this.logger.error(`Load failed on early init, webpack error?`);
                 this.logger.error(e.stack);
             }
-        }
-        else {
-            this.logger.log(`${data.key} is reloading`);
-            let plugin = await data.module;
-            if (plugin.default)
-                plugin = plugin.default;
-            plugin = new plugin();
-            plugin.file = data.key;
-            Object.assign(plugin, this.pluginContext);
-            let alreadyLoaded = this.plugins.filter(pl => pl.file === data.key);
-            if (alreadyLoaded.length === 0) {
-                this.logger.warn('This plugin wasn\'t loaded before, may be reload is for fix');
-            } else {
-                this.logger.log('Plugin was loaded before, unloading old instances');
-                let instances = this.plugins.length;
-                for (let alreadyLoadedPlugin of alreadyLoaded) {
-                    try {
-                        // Deinit plugin
-                        if (!alreadyLoadedPlugin.deinit) {
-                            this.logger.log('Plugin has no deinit() method, skipping call');
-                        } else {
-                            this.logger.log('Calling deinit()');
-                            await alreadyLoadedPlugin.deinit();
+        } else {
+            try {
+                this.logger.log(`${data.key} is reloading`);
+                let plugin = await data.module;
+                if (plugin.default)
+                    plugin = plugin.default;
+                plugin = new plugin();
+                plugin.file = data.key;
+                Object.assign(plugin, this.pluginContext);
+                let alreadyLoaded = this.plugins.filter(pl => pl.file === data.key);
+                if (alreadyLoaded.length === 0) {
+                    this.logger.warn('This plugin wasn\'t loaded before, may be reload is for fix');
+                } else {
+                    this.logger.log('Plugin was loaded before, unloading old instances');
+                    let instances = this.plugins.length;
+                    for (let alreadyLoadedPlugin of alreadyLoaded) {
+                        try {
+                            // Deinit plugin
+                            if (!alreadyLoadedPlugin.deinit) {
+                                this.logger.log('Plugin has no deinit() method, skipping call');
+                            } else {
+                                this.logger.log('Calling deinit()');
+                                await alreadyLoadedPlugin.deinit();
+                            }
+                        } catch (e) {
+                            this.logger.error(`Unload failed on deinit()`);
+                            this.logger.error(e.stack);
+                        } finally {
+                            this.onUnload(alreadyLoadedPlugin);
+                            // Remove from list
+                            this.plugins.splice(this.plugins.indexOf(alreadyLoadedPlugin), 1);
                         }
-                    } catch (e) {
-                        this.logger.error(`Unload failed`);
-                        this.logger.error(e.stack);
-                    } finally {
-                        this.onUnload(alreadyLoadedPlugin);
-                        // Remove from list
-                        this.plugins.splice(this.plugins.indexOf(alreadyLoadedPlugin), 1);
+                    }
+                    let newInstances = this.plugins.length;
+                    if (instances - newInstances !== 1) {
+                        this.logger.warn('Eww... found non 1 plugin instance in memory. May be it is error? Instances found=' + (instances - newInstances));
+                    } else {
+                        this.logger.log('Plugin unloaded');
                     }
                 }
-                let newInstances = this.plugins.length;
-                if (instances - newInstances !== 1) {
-                    this.logger.warn('Eww... found non 1 plugin instance in memory. May be it is error? Instances found=' + (instances - newInstances));
-                } else {
-                    this.logger.log('Plugin unloaded');
+                try {
+                    if (!plugin.init) {
+                        this.logger.log('Plugin has no init() method, skipping call');
+                    } else {
+                        this.logger.log('Calling init()');
+                        await plugin.init();
+                    }
+                } catch (e) {
+                    this.logger.error(`Reload failed on init()`);
+                    this.logger.error(e.stack);
                 }
+                this.plugins.push(plugin);
+                this.onReload(plugin);
+            } catch (e) {
+                this.logger.error(`Reload failed on early init, webpack error?`);
+                this.logger.error(e.stack);
             }
-            if (!plugin.init) {
-                this.logger.log('Plugin has no deinit() method, skipping call');
-            } else {
-                this.logger.log('Calling init()');
-                await plugin.init();
-            }
-            this.plugins.push(plugin);
-            this.onReload(plugin);
         }
         this.logger.deent();
     }
