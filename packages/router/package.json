@@ -13,7 +13,8 @@
     "license": "MIT",
     "dependencies": {
         "@meteor-it/logger": "^2.3.38",
-        "@meteor-it/utils": "^1.3.27"
+        "@meteor-it/utils": "^1.3.27",
+        "path-to-regexp": "6.1.0"
     },
     "sideEffects": false,
     "publishConfig": {

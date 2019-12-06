@@ -1,10 +1,9 @@
+import { Key, pathToRegexp } from "path-to-regexp";
 import * as url from 'url';
-
 import middleRun from './middleRun';
-import pathToRegexp, { IKey } from "./pathToRegexp";
 
 const cachedPaths = new Set();
-const keysCache: Map<string, IKey[]> = new Map<string, IKey[]>();
+const keysCache: Map<string, Key[]> = new Map<string, Key[]>();
 const regexCache: Map<string, RegExp> = new Map<string, RegExp>();
 
 const methodIsAny = (method: string | null) => method === null || method === 'ALL';
@@ -45,13 +44,13 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
         matchPath = `${matchPath.replace(/\/+$/, '')}/(.*)?`;
 
     // Cache parsing data
-    let keys: IKey[];
+    let keys: Key[];
     let regex: RegExp;
 
     // No need to parse path, because it is already parsed
     if (!anyPath && matchPath !== null) {
         if (cachedPaths.has(matchPath)) {
-            keys = keysCache.get(matchPath) as IKey[];
+            keys = keysCache.get(matchPath) as Key[];
             regex = regexCache.get(matchPath) as RegExp;
         } else {
             keys = [];
@@ -151,7 +150,7 @@ export default class Router<E, S, M = any> {
         }
         const middleware = this.middleware;
         for (let callback of callbacks) {
-            middleware.push(wrapMiddleware(method as any, path, callback));
+            middleware.push(wrapMiddleware(method as any, path, callback as any));
         }
     }
 
@@ -167,6 +166,6 @@ export default class Router<E, S, M = any> {
             router: this
         } as any;
         fillContext(context as E & IRouterContext<S, M | 'ALL' | null>);
-        return await await middleRun(this.middleware as any)(context)();
+        return await middleRun(this.middleware as any)(context)();
     }
 }

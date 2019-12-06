@@ -1,14 +1,14 @@
 import events from 'events';
-import stream, { Readable, Stream } from 'stream';
+import stream, { Readable } from 'stream';
 
 export class Speedometer {
 	per: number;
-	lasttime: number;
+	lasttime: number | null;
 	total: number;
 	iteration: number;
 	speed: number;
 	avg: number;
-	constructor(per) {
+	constructor(per: number) {
 		this.per = per;
 		this.lasttime = null;
 		this.total = 0;
@@ -17,7 +17,7 @@ export class Speedometer {
 		this.avg = 0;
 	}
 
-	update(data, callback) {
+	update(data: Buffer, callback: (speed: number, avg: number) => void) {
 		const now = Date.now();
 		if (this.lasttime === null) {
 			this.lasttime = now;
@@ -89,7 +89,7 @@ export class StreamSpeed extends events.EventEmitter {
 			throw Error('Stream already in group');
 		}
 
-		let passThroughStream;
+		let passThroughStream: stream.PassThrough;
 
 		const onReadable = () => {
 			const data = passThroughStream.read();

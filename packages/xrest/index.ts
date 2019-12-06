@@ -1,14 +1,11 @@
-import Logger from '@meteor-it/logger';
-
-import { EventEmitter } from 'events';
 import * as http from 'http';
 import * as https from 'https';
-import * as url from 'url';
+import * as iconv from 'iconv-lite';
 import * as querystring from 'querystring';
-import iconv from 'iconv-lite';
-import { IMultiPartData, sizeOf, DEFAULT_BOUNDARY, write } from "./multipart";
+import { Stream, Transform } from 'stream';
+import * as url from 'url';
 import * as zlib from 'zlib';
-import { Transform, Stream } from 'stream';
+import { DEFAULT_BOUNDARY, IMultiPartData, sizeOf, write } from "./multipart";
 
 export { IMultiPartData };
 
@@ -16,19 +13,11 @@ const USER_AGENT = '@meteor-it/xrest';
 
 // TODO: More assertions
 
-const decoders: Map<string, () => Transform> = new Map();
-decoders.set('gzip', () => zlib.createGunzip());
-decoders.set('deflate', () => zlib.createInflate());
-const parsers: Map<string, (data: string) => Promise<unknown>> = new Map<string, (data: string) => Promise<unknown>>();
-parsers.set('json', data => Promise.resolve(JSON.parse(data)));
+const compressors: Map<string, () => Transform> = new Map();
+compressors.set('gzip', () => zlib.createGunzip());
+compressors.set('deflate', () => zlib.createInflate());
 
 export type IRequestHeaders = { [key: string]: string | number };
-export type IRequestRepeatOptions = {
-    repeatIn?: number;
-    shouldRepeatOnTimeout?: boolean;
-    shouldRepeatBeIncrementing?: boolean;
-    maxRepeatIncrementMultipler?: number;
-}
 export type IRequestOptions = {
     /**
      * Additional headers to include with request
@@ -52,12 +41,6 @@ export type IRequestOptions = {
      */
     timeout?: number;
 
-    repeat?: IRequestRepeatOptions;
-    /**
-     * Parse body as JSON/XML/any
-     * @param data
-     */
-    parser?: string
     /**
      * Request query parameters
      */
@@ -66,8 +49,18 @@ export type IRequestOptions = {
      * Should data field to be handled as IMultiPartData
      */
     multipart?: boolean;
+
+    customTransformBeforeDecompression?: () => Transform;
+    skipDecompression?: boolean;
+    customTransformBeforeCharsetTransform?: () => Transform;
+    skipCharsetProcessing?: boolean;
+    customTransformBeforeDecoder?: () => Transform;
+
+    rawBody?: boolean;
+
     encoding?: "ascii" | "utf8" | "utf-8" | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex";
-    decoding?: string;
+    compressor?: string;
+
     rejectUnauthorized?: boolean;
     agent?: http.Agent;
     /**
@@ -94,19 +87,50 @@ export type IRequestOptions = {
      */
     streaming?: boolean;
 }
-export type IExtendedIncomingMessage = http.IncomingMessage & { body: any };
-class Request extends EventEmitter {
-    url: string;
-    parsedUrl: url.Url;
-    options: IRequestOptions;
-    headers: IRequestHeaders;
-    request: http.ClientRequest;
-    aborted: boolean;
-    timedout: boolean;
-
-    constructor(url: string, options: IRequestOptions) {
+export class TimeoutError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'TimeoutError';
+    }
+}
+export class BadResponseError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'BadResponseError';
+    }
+}
+export class AbortError extends Error {
+    constructor() {
         super();
-        this.prepare(url, options);
+        this.name = 'AbortError';
+    }
+}
+
+export class ExtendedIncomingMessage {
+    constructor(public raw: http.IncomingMessage) { }
+
+    rawBody?: Buffer;
+    body?: string;
+
+    get headers(): http.IncomingHttpHeaders {
+        return this.raw.headers;
+    }
+    get statusCode(): number | undefined {
+        return this.raw.statusCode;
+    }
+}
+
+class Request {
+    url?: string;
+    parsedUrl: url.Url;
+    headers?: IRequestHeaders;
+    request?: http.ClientRequest;
+    aborted?: boolean;
+    timedout?: boolean;
+
+    constructor(urlStr: string, public options: IRequestOptions, public resolve: (res: ExtendedIncomingMessage) => void, public reject: (err: Error) => void) {
+        this.parsedUrl = url.parse(urlStr);
+        this.prepare(urlStr, options);
     }
 
     prepare(urlStr: string, options: IRequestOptions) {
@@ -115,24 +139,21 @@ class Request extends EventEmitter {
         this.headers = {
             'Accept': '*/*',
             'User-Agent': USER_AGENT,
-            'Host': this.parsedUrl.host || 'none',
-            'Accept-Encoding': [...decoders.keys()].join(', '),
+            'Accept-Encoding': [...compressors.keys()].join(', '),
             ...options.headers
         };
+        if (this.parsedUrl.host && !this.headers['host'])
+            this.headers['host'] = this.parsedUrl.host;
 
         // set port and method defaults
         if (!this.parsedUrl.port)
             this.parsedUrl.port = (this.parsedUrl.protocol === 'https:') ? '443' : '80';
         if (!this.options.method)
             this.options.method = (this.options.data) ? 'POST' : 'GET';
-        if (typeof this.options.followRedirects === 'undefined')
+        if (this.options.followRedirects === undefined)
             this.options.followRedirects = true;
         if (this.options.timeout === undefined)
             this.options.timeout = 12000;
-        if (!this.options.parser && this.options.parser !== null)
-            this.options.parser = 'json';
-        else if (!parsers.has(this.options.parser) && this.options.parser !== null)
-            throw new Error(`parser ${this.options.parser} is not registered, registered parsers: ${[...parsers.keys()].join(', ')}. Did you forgot to call XRest.registerParser(name, parser)?`);
         if (this.options.method === 'GET' && this.options.data)
             throw new Error('GET requests doesn\'t supports request body!');
 
@@ -153,26 +174,22 @@ class Request extends EventEmitter {
             const multipartSize = sizeOf(this.options.data, DEFAULT_BOUNDARY);
             if (!isNaN(multipartSize))
                 this.headers['Content-Length'] = multipartSize;
-            else
-                throw new Error('Cannot get Content-Length!');
-        }
-        else {
+            else throw new Error('Cannot get Content-Length!');
+        } else {
             if (typeof this.options.data === 'object' && !Buffer.isBuffer(this.options.data)) {
                 this.options.data = querystring.stringify(this.options.data);
                 this.headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 this.headers['Content-Length'] = this.options.data.length;
-            }
-            if (typeof this.options.data === 'string') {
+            } else if (typeof this.options.data === 'string') {
                 const buffer = new Buffer(this.options.data, this.options.encoding || 'utf8');
                 this.options.data = buffer;
                 this.headers['Content-Length'] = buffer.length;
-            }
-            if (!this.options.data) {
+            } else if (!this.options.data) {
                 this.headers['Content-Length'] = 0;
             }
         }
 
-        const proto: any = (this.parsedUrl.protocol === 'https:') ? https : http;
+        const proto: typeof http | typeof https = (this.parsedUrl.protocol === 'https:') ? https : http;
 
         this.request = proto.request({
             host: this.parsedUrl.hostname,
@@ -190,7 +207,7 @@ class Request extends EventEmitter {
      * Test if response is a redirect to the another page
      * @param response
      */
-    static isRedirect(response: IExtendedIncomingMessage): boolean {
+    static isRedirect(response: http.IncomingMessage): boolean {
         if (!response.statusCode)
             return false;
         return ([301, 302, 303, 307, 308].includes(response.statusCode));
@@ -204,6 +221,7 @@ class Request extends EventEmitter {
     }
 
     applyAuth(): void {
+        if (!this.headers) throw new Error('request is not initialized yet');
         let authParts;
 
         if (this.parsedUrl.auth) {
@@ -221,11 +239,13 @@ class Request extends EventEmitter {
         }
     }
 
-    responseHandler(response: IExtendedIncomingMessage) {
+    responseHandler(response: http.IncomingMessage) {
+        if (!this.headers) throw new Error('request is not initialized yet');
+
         if (Request.isRedirect(response) && this.options.followRedirects) {
+            if (!response.headers['location'])
+                return this.fireError(new BadResponseError(`location header is missing in redirect (${response.statusCode}) response`));
             try {
-                if (!response.headers['location'])
-                    throw new Error('Location header is missing in response');
                 // 303 should redirect and retrieve content with the GET method
                 // http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.4
                 if (response.statusCode === 303) {
@@ -233,38 +253,41 @@ class Request extends EventEmitter {
                     this.options.method = 'GET';
                     delete this.options.data;
                     this.reRetry();
-                }
-                else {
+                } else {
                     this.parsedUrl = url.parse(url.resolve(this.parsedUrl!.href!, response.headers['location']));
                     this.reRetry();
-                    // TODO: Handle somehow infinite redirects
                 }
-            }
-            catch (err) {
+                // TODO: Handle somehow infinite redirects
+            } catch (err) {
                 err.message = `Failed to follow redirect: ${err.message}`;
-                this.fireError(err, response);
+                return this.fireError(err);
             }
-        }
-        else {
+        } else {
             let stream: Stream = response;
             stream.on('error', e => {
-                this.fireError(e, response);
+                this.fireError(e);
             });
-            const decoder = response.headers['content-encoding'];
-            const needsToBeDecoded = !!decoder;
-            const decodeable = decoder && decoders.has(decoder);
-            if (needsToBeDecoded && !decodeable)
-                logger.warn(`Stream possibly can't be decoded, unknown encoding: ${response.headers['content-encoding']}`);
-            if (decoder && decoders.has(decoder)) {
-                stream = stream.pipe(decoders.get(decoder)!());
+            if (this.options.customTransformBeforeDecompression)
+                stream = stream.pipe(this.options.customTransformBeforeDecompression());
+            if (!this.options.skipDecompression) {
+                const compressor = response.headers['content-encoding'];
+                const needsToBeDecompressed = !!compressor;
+                const decompressable = compressor && compressors.has(compressor);
+                if (needsToBeDecompressed && !decompressable)
+                    return this.fireError(new BadResponseError(`stream can't be decompressed, unknown encoding: ${response.headers['content-encoding']}; you can skip decompression via skipDecompression option`));
+                if (compressor && compressors.has(compressor)) {
+                    stream = stream.pipe(compressors.get(compressor)!());
+                }
             }
-            let contentType = response.headers['content-type'];
-            if (contentType) {
-                let charsetRegexpResult = /\bcharset=(.+)(?:;|$)/i.exec(contentType);
-                if (charsetRegexpResult) {
-                    let charset = charsetRegexpResult[1].trim().toUpperCase();
-                    if (charset !== 'UTF-8') {
-                        stream = stream.pipe(iconv.decodeStream(charset));
+            if (!this.options.skipCharsetProcessing) {
+                let contentType = response.headers['content-type'];
+                if (contentType) {
+                    let charsetRegexpResult = /\bcharset=(.+)(?:;|$)/i.exec(contentType);
+                    if (charsetRegexpResult) {
+                        let charset = charsetRegexpResult[1].trim().toUpperCase();
+                        if (charset !== 'UTF-8') {
+                            stream = stream.pipe(iconv.decodeStream(charset));
+                        }
                     }
                 }
             }
@@ -276,75 +299,46 @@ class Request extends EventEmitter {
                 });
                 stream.on('end', async () => {
                     const body = Buffer.concat(bodyParts);
-                    try {
-                        let encoded = await this.encode(body);
-                        this.fireSuccess(encoded, response);
-                    } catch (e) {
-                        this.fireError(e, response);
-                    }
+
+                    const result = new ExtendedIncomingMessage(response);
+                    result.rawBody = body;
+                    if (!this.options.rawBody)
+                        result.body = body.toString(this.options.encoding);
+                    this.fireSuccess(result);
                 });
             } else {
-                const incomingMessage: http.IncomingMessage = stream as http.IncomingMessage;
+                // because inner stream is transformed, but we still need to return valid incomming message
                 const { httpVersion, httpVersionMajor, httpVersionMinor, connection, headers, rawHeaders,
                     trailers, rawTrailers, statusCode, statusMessage, socket } = response;
-                Object.assign(incomingMessage, {
+                const incomingMessage: http.IncomingMessage = Object.assign(stream, {
                     httpVersion, httpVersionMajor, httpVersionMinor, connection, headers, rawHeaders,
                     trailers, rawTrailers, statusCode, statusMessage, socket
-                });
-                // Return stream
-                this.fireSuccess(null, incomingMessage as IExtendedIncomingMessage)
+                }) as http.IncomingMessage;
+                // return without decoding/reading anything
+                this.fireSuccess(new ExtendedIncomingMessage(incomingMessage));
             }
         }
     }
 
-    encode(body: Buffer): Promise<unknown> {
-        if (this.options.decoding === 'buffer') {
-            return Promise.resolve(body);
-        }
-        else {
-            let bodyString = body.toString(this.options.decoding);
-            if (this.options.parser) {
-                if (!parsers.has(this.options.parser))
-                    throw new Error(`Missing parser: ${this.options.parser}`);
-                return parsers.get(this.options.parser)!(bodyString);
-            }
-            else {
-                return Promise.resolve(body);
-            }
-        }
+    fireError(error: Error) {
+        this.cancelTimeout();
+        this.reject(error);
     }
 
-    fireError(err: Error, response?: IExtendedIncomingMessage) {
-        this.fireCancelTimeout();
-        this.emit('error', err, response);
-        this.emit('complete', err, response);
-    }
-
-    fireCancelTimeout() {
-        if (this.options.timeout) {
+    private cancelTimeout() {
+        if (this.options.timeoutFn)
             clearTimeout(this.options.timeoutFn);
-        }
     }
 
     fireTimeout(time: number) {
-        this.emit('timeout', new Error(`request isn't completed in ${time}ms`));
         this.aborted = true;
         this.timedout = true;
-        this.request.abort();
+        this.request!.abort();
+        this.fireError(new TimeoutError(`request isn't completed in ${time}ms`));
     }
 
-    fireSuccess(body: unknown, response: IExtendedIncomingMessage) {
-        if (!response.statusCode || response.statusCode >= 400) {
-            this.emit('fail', body, response);
-        }
-        else {
-            this.emit('success', body, response);
-        }
-        if (response.statusCode) {
-            this.emit(response.statusCode.toString().replace(/\d{2}$/, 'XX'), body, response);
-            this.emit(response.statusCode.toString(), body, response);
-        }
-        this.emit('complete', body, response);
+    fireSuccess(response: ExtendedIncomingMessage) {
+        this.resolve(response);
     }
 
     makeRequest() {
@@ -354,57 +348,45 @@ class Request extends EventEmitter {
                 this.fireTimeout(timeoutMs);
             }, timeoutMs);
         }
-        this.request.on('response', (response: IExtendedIncomingMessage) => {
-            this.fireCancelTimeout();
-            this.emit('response', response);
+        this.request!.on('response', (response: http.IncomingMessage) => {
+            this.cancelTimeout();
             this.responseHandler(response);
         }).on('error', (err: Error) => {
-            this.fireCancelTimeout();
+            this.cancelTimeout();
             if (!this.aborted) {
-                this.fireError(err, undefined);
+                this.fireError(err);
             }
         });
     }
 
-    reRetry() {
-        this.request.removeAllListeners().on('error', () => {
+    async reRetry() {
+        this.request!.removeAllListeners().on('error', () => {
         });
-        if (this.request.finished) {
-            this.request.abort();
+        if (this.request!.finished) {
+            this.request!.abort();
         }
         this.prepare(this.parsedUrl.href!, this.options); // reusing request object to handle recursive calls and remember listeners
-        this.run();
+        await this.run();
     }
 
     async run() {
         if (this.options.multipart) {
-            await write(this.options.encoding || 'binary', this.request, this.options.data as IMultiPartData);
-            this.request.end();
-        }
-        else {
-            if (this.options.data) {
-                this.request.write(this.options.data, this.options.encoding || 'utf8');
-            }
-            this.request.end();
+            await write(this.options.encoding ?? 'binary', this.request!, this.options.data as IMultiPartData);
+            this.request!.end();
+        } else {
+            if (this.options.data)
+                this.request!.write(this.options.data, this.options.encoding ?? 'utf8');
+            this.request!.end();
         }
 
         return this;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    abort(err: Error) {
-        this.request.on('close', () => {
-            if (err) {
-                this.fireError(err, undefined);
-            }
-            else {
-                this.emit('complete', null, null);
-            }
-        });
-
+    abort(err?: Error) {
         this.aborted = true;
-        this.request.abort();
-        this.emit('abort', err);
+        this.request!.abort();
+        this.fireError(err ?? new AbortError());
         return this;
     }
 
@@ -413,15 +395,12 @@ class Request extends EventEmitter {
         const fn = this.reRetry.bind(this);
         if (!isFinite(timeout) || timeout <= 0) {
             process.nextTick(fn, timeout);
-        }
-        else {
+        } else {
             setTimeout(fn, timeout);
         }
         return this;
     }
 }
-
-const logger = new Logger('xrest');
 
 function testMethod(method: string) {
     if (method.toUpperCase() !== method) {
@@ -432,76 +411,24 @@ function testMethod(method: string) {
     }
 }
 
-export function emitStreaming(method: string, path: string, options: IRequestOptions = {}): Promise<http.IncomingMessage> {
+export function emitStreaming(method: string, path: string, options: IRequestOptions = {}): Promise<ExtendedIncomingMessage> {
     testMethod(method);
     options.method = method;
     options.streaming = true;
-    const request = new Request(path, options);
+
     return new Promise((res, rej) => {
+        const request = new Request(path, options, res, rej);
         request.run();
-        let repeats = 0;
-        request.on('timeout', async (e: Error) => {
-            if (options.repeat && options.repeat.shouldRepeatOnTimeout) {
-                repeats++;
-                let repeatIn = options.repeat.repeatIn || 5000;
-                if (options.repeat.shouldRepeatBeIncrementing) {
-                    repeatIn *= Math.min(options.repeat.maxRepeatIncrementMultipler || 12, repeats);
-                }
-                logger.debug(`Timeout, repeat in ${repeatIn}ms`);
-                await new Promise(res => setTimeout(res, repeatIn));
-                try {
-                    let data = await emit(method, path, options);
-                    res(data);
-                } catch (e) {
-                    rej(e);
-                }
-            } else
-                rej(e);
-        });
-        request.on('complete', (result, response: http.IncomingMessage) => {
-            if (result instanceof Error) {
-                rej(result);
-                return;
-            }
-            res(response);
-        });
     });
 }
 
-export function emit(method: string, path: string, options: IRequestOptions = {}): Promise<IExtendedIncomingMessage> {
+export function emit(method: string, path: string, options: IRequestOptions = {}): Promise<ExtendedIncomingMessage> {
     testMethod(method);
     options.method = method;
     options.streaming = false;
-    const request = new Request(path, options);
     return new Promise((res, rej) => {
+        const request = new Request(path, options, res, rej);
         request.run();
-        let repeats = 0;
-        request.on('timeout', async (e: Error) => {
-            if (options.repeat && options.repeat.shouldRepeatOnTimeout) {
-                repeats++;
-                let repeatIn = options.repeat.repeatIn || 5000;
-                if (options.repeat.shouldRepeatBeIncrementing) {
-                    repeatIn *= Math.min(options.repeat.maxRepeatIncrementMultipler || 12, repeats);
-                }
-                logger.debug(`Timeout, repeat in ${repeatIn}ms`);
-                await new Promise(res => setTimeout(res, repeatIn));
-                try {
-                    let data = await emit(method, path, options);
-                    res(data);
-                } catch (e) {
-                    rej(e);
-                }
-            } else
-                rej(e);
-        });
-        request.on('complete', (result, response: IExtendedIncomingMessage) => {
-            if (result instanceof Error) {
-                rej(result);
-                return;
-            }
-            response.body = result;
-            res(response);
-        });
     });
 }
 
@@ -515,34 +442,24 @@ export default class XRest {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    emit(event: string, path: string, options: IRequestOptions): Promise<IExtendedIncomingMessage> {
+    emit(event: string, path: string, options: IRequestOptions): Promise<ExtendedIncomingMessage> {
         path = url.resolve(this.baseUrl, path);
         return emit(event, path, { ...this.defaultOptions, ...options });
     }
 
     // noinspection JSUnusedGlobalSymbols
-    emitStreaming(event: string, path: string, options: IRequestOptions): Promise<http.IncomingMessage> {
+    emitStreaming(event: string, path: string, options: IRequestOptions): Promise<ExtendedIncomingMessage> {
         path = url.resolve(this.baseUrl, path);
         return emitStreaming(event, path, { ...this.defaultOptions, ...options });
     }
 
     // noinspection JSUnusedGlobalSymbols
-    static emit(event: string, path: string, options: IRequestOptions): Promise<IExtendedIncomingMessage> {
+    static emit(event: string, path: string, options: IRequestOptions): Promise<ExtendedIncomingMessage> {
         return emit(event, path, options);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    static emitStreaming(event: string, path: string, options: IRequestOptions): Promise<http.IncomingMessage> {
+    static emitStreaming(event: string, path: string, options: IRequestOptions): Promise<ExtendedIncomingMessage> {
         return emitStreaming(event, path, options);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    static registerParser(name: string, parser: (data: string) => Promise<unknown>): void {
-        parsers.set(name, parser);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    static registerDecoder(name: string, decoder: () => Transform): void {
-        decoders.set(name, decoder);
     }
 }

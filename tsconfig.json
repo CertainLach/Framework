@@ -24,7 +24,6 @@
       "es7",
       "es2016",
       "es2017",
-      "esnext",
       "dom"
     ],
     "allowJs": false,
@@ -32,7 +31,8 @@
       "node_modules"
     ],
     "types": [
-      "node"
+      "node",
+      "jasmine"
     ],
     "baseUrl": "./",
     "paths": {

@@ -1,18 +1,22 @@
-import { IRouterContext } from "./";
 
-// TODO: Make function jump forward instead of deep (To prevent stackoverflow)
-export default function middleRun(middleware: Function | Function[]): (context: IRouterContext<any>) => () => Promise<void> {
+// C = IRouterContext<any>
+export type AbstractRouterContext<S> = {
+    state?: S,
+    next?: () => void | Promise<void>,
+}
+
+export default function middleRun<C extends AbstractRouterContext<any>>(middleware: Function | Function[]): (context: C) => () => Promise<void> {
     if (!(middleware instanceof Array)) {
         middleware = [middleware]
     }
     middleware = middleware as Function[];
 
-    return (parent: IRouterContext<any>) => {
+    return (parent: C) => {
         const state = (parent && parent.state) || {};
 
         async function loop(index: number, calledFromInside: boolean, resolveOne: () => void, pres: () => void, prej: (e: Error) => void) {
             if (index >= middleware.length) return pres();
-            const ctx: IRouterContext<any> = { ...parent, state };
+            const ctx: C = { ...parent, state };
             let nextPromise: Promise<any> | null = null;
             ctx.next = () => {
                 try {
@@ -50,6 +54,6 @@ export default function middleRun(middleware: Function | Function[]): (context: 
             }
 
             loop(0, false, resolveOne, pres, prej);
-        })
+        });
     }
 };

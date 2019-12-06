@@ -54,7 +54,6 @@ export function firstUppercase(str: string): string {
 }
 
 /**
- * @deprecated Extremally slow on Proxy/getters
  * @param x
  * @param y
  */
@@ -69,9 +68,25 @@ export function objectEquals(x: any, y: any): boolean {
         return x === y;
     }
     if (x instanceof RegExp) {
-        return x === y;
+        return x.source === y.source && x.source === y.source;
     }
     if (x === y || x.valueOf() === y.valueOf()) {
+        return true;
+    }
+    if (x instanceof Map) {
+        if (x.size !== y.size)
+            return false;
+        if (!objectEquals([...x.keys()].sort(), [...y.keys()].sort()))
+            return false;
+        if (!objectEquals([...x.values()].sort(), [...y.values()].sort()))
+            return false;
+        return true;
+    }
+    if (x instanceof Set) {
+        if (x.size !== y.size)
+            return false;
+        if (!objectEquals([...x.values()].sort(), [...y.values()].sort()))
+            return false;
         return true;
     }
     if (Array.isArray(x) && x.length !== y.length) {
@@ -210,29 +225,12 @@ export function sleep(time: number): Promise<void> {
  * @param iterable Array to process
  * @param cb Function to do with each element
  */
-export function asyncEach<T, R>(iterable: T[], cb: (v: T) => Promise<R>): R[] {
+export function asyncEach<T, R>(iterable: T[], cb: (v: T) => Promise<R>): Promise<R[]> {
     let waitings: any = [];
     iterable.forEach(iter => {
         waitings.push(cb(iter));
     });
-    return Promise.all(waitings) as any;
-}
-
-// noinspection JSUnusedGlobalSymbols
-/**
- * Convert callback function to async
- * @deprecated Existst in node utils
- * @param cbFunction Function to convert
- */
-export function cb2promise(cbFunction: any): (...d: any[]) => Promise<any> {
-    return (...args) => {
-        return new Promise((res, rej) => {
-            cbFunction(...args, (err: Error, result: any) => {
-                if (err) return rej(err);
-                res(result);
-            });
-        });
-    };
+    return Promise.all(waitings);
 }
 
 // noinspection JSUnusedGlobalSymbols
@@ -312,9 +310,9 @@ export function getGlobal(): any {
 
 declare var __non_webpack_require__: any;
 /**
- * Calls __non_webpack_require__ or plain require to work around webpack, 
+ * Calls __non_webpack_require__ or plain require to work around webpack,
  * and make still possible to use this in non-webpack code
- * @param module 
+ * @param module
  */
 export function externalRequire(module: string): any {
     const global = getGlobal();
@@ -368,4 +366,70 @@ export function isBrowserEnvironment(): boolean {
     if (isBrowserEnvironmentCache !== null)
         return isBrowserEnvironmentCache;
     return isBrowserEnvironmentCache = _isBrowserEnvironment();
+}
+
+export async function collectCallbacks<T>(cbProvider: (collector: (t: T) => void) => Promise<void>): Promise<T[]> {
+    const output: T[] = [];
+    const collector = (v: T) => output.push(v);
+    await cbProvider(collector);
+    return output;
+}
+
+export async function repeatBeforeSucceed<V>(fn: () => Promise<V>, maxRepeats: number, repeatIn: number, timeMultiplier: number = 1, maxTime?: number): Promise<V> {
+    let repeat = 0;
+    if (timeMultiplier < 1) throw new Error(`timeMultiplier (= ${timeMultiplier}) < 1 makes no sense`);
+    while (true) {
+        try {
+            return await fn();
+        } catch (e) {
+            if (repeat >= maxRepeats)
+                throw e;
+            if (repeat !== 0 && timeMultiplier != 1) {
+                repeatIn = Math.min(repeatIn * timeMultiplier, maxTime ?? Infinity);
+            }
+            await sleep(repeatIn);
+        }
+        repeat++;
+    }
+}
+
+export interface Listener<T> {
+    (event: T): any;
+}
+
+export interface Disposable {
+    dispose(): void;
+}
+
+export class TypedEvent<T> {
+    private listeners: Listener<T>[] = [];
+    private listenersOncer: Listener<T>[] = [];
+
+    on(listener: Listener<T>): Disposable {
+        this.listeners.push(listener);
+        return {
+            dispose: () => this.off(listener)
+        };
+    }
+
+    once(listener: Listener<T>): void {
+        this.listenersOncer.push(listener);
+    }
+
+    off(listener: Listener<T>) {
+        var callbackIndex = this.listeners.indexOf(listener);
+        if (callbackIndex > -1) this.listeners.splice(callbackIndex, 1);
+    }
+
+    emit(event: T) {
+        this.listeners.forEach((listener) => listener(event));
+        if (this.listenersOncer.length > 0) {
+            const toCall = this.listenersOncer;
+            this.listenersOncer = [];
+            toCall.forEach((listener) => listener(event));
+        }
+    }
+    pipe(te: TypedEvent<T>): Disposable {
+        return this.on((e) => te.emit(e));
+    }
 }

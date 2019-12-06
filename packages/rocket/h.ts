@@ -1,39 +1,63 @@
-import React, { Attributes, ComponentClass, FunctionComponent, ReactElement, ReactNode, RefAttributes } from "react";
 import { Observer } from 'mobx-react-lite';
+import React, { Component, ReactElement } from "react";
 
 export type IClassList = (string | null | false)[];
-export type IAttributes = {
+
+export type IReactAttributes = {
+    key?: string;
+}
+
+export type IVanillaAttributes = {
     class?: IClassList,
     className?: string
 };
 
+export type RocketElement = ReactElement<any, any> | null;
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+export type RocketConstructor<P> = ((props: P) => RocketElement) | (new () => Component<P>);
 type IH = {
-    (el: ReactNode): ReactNode,
+    /**
+     * Fragment creator
+     */
+    (children: RocketElement[]): RocketElement,
+    /**
+     * No props version
+     */
+    (constructor: RocketConstructor<{}>): RocketElement,
+    /**
+     * Only props version
+     */
+    <P>(constructor: RocketConstructor<P>, props: P & IReactAttributes): RocketElement,
+    /**
+     * Only props for vanilla elements
+     */
+    <P>(constructor: string, props: P & IVanillaAttributes): RocketElement,
+    /**
+     * Only children version
+     * Accepts only array children, to prevent ambiguity with only props version of h
+     */
+    <C extends Array<any>>(constructor: RocketConstructor<{ children: C }> | string, children: C): RocketElement,
+    /**
+     * Props&children version
+     */
+    <P, C>(constructor: RocketConstructor<P & { children: C }>, props: P, children: C): RocketElement,
+    /**
+     * Props&children version for vanilla elements
+     */
+    <P>(constructor: string, props: P & IVanillaAttributes, children: RocketElement[]): RocketElement,
+    /**
+     * Mobx observed tree creator
+     */
+    observed: (observee: () => RocketElement) => RocketElement,
+}
 
-    (el: () => (ReactNode | ReactNode[]) | (new () => (React.Component)) | React.ExoticComponent | string): ReactNode,
-
-    <P extends { [key: string]: unknown }>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & Omit<P, 'children'>): ReactNode,
-    <P extends { [key: string]: unknown }>(el: (new () => (React.Component<P>)) | React.ExoticComponent<P>, props: Attributes & IAttributes & Omit<P, 'children'>): ReactNode,
-    (el: string, props: Attributes & IAttributes & any): ReactNode,
-
-    (el: () => (ReactNode | ReactNode[]) | (new () => React.Component) | React.ExoticComponent | string, children: ReactNode[]): ReactNode,
-
-    <P extends { [key: string]: unknown }>(el: (o: P) => (ReactNode | ReactNode[]), props: RefAttributes<any> & Attributes & IAttributes & Omit<P, 'children'>, children: ReactNode[]): ReactNode,
-    <P extends { [key: string]: unknown }>(el: (new () => React.Component<P>), props: Attributes & IAttributes & Omit<P, 'children'>, children: ReactNode[]): ReactNode,
-    <P extends { [key: string]: unknown }>(el: React.ExoticComponent<P>, props: Attributes & IAttributes & Omit<P, 'children'>, children: ReactNode[]): ReactNode,
-
-    (el: string, props: Attributes & IAttributes & any, children: ReactNode[]): ReactNode
-};
-
-function processProps(props: IAttributes) {
+function processProps(props: IVanillaAttributes) {
     if (props.class) {
         props.className = props.class.filter(e => !!e).join(' ');
         delete props.class;
     }
 }
-// TODO: Optimizations (use keys where applicable)
+
 const h: IH = ((...args: any[]) => {
     if (args.length === 1) {
         if (args[0] instanceof Array) {
@@ -47,12 +71,12 @@ const h: IH = ((...args: any[]) => {
             while (el.length === 1 && el[0] instanceof Array) el = el[0];
             return React.createElement(args[0], null, ...el);
         } else {
-            if (!!args[1])
+            if (args[1])
                 processProps(args[1]);
             return React.createElement(args[0], args[1]);
         }
     } else {
-        if (!!args[1])
+        if (args[1])
             processProps(args[1]);
         let el = args[2];
         while (el.length === 1 && el[0] instanceof Array) el = el[0];
@@ -61,18 +85,11 @@ const h: IH = ((...args: any[]) => {
 }) as any;
 
 /**
- * Fragment with the props (i.e key)
- * @param p
- * @param el
- */
-const frag = (p: object, el: Array<ReactNode>) => {
-    return h(React.Fragment, {}, el);
-};
-/**
  * Observe a fragment of DOM tree, returning a node which will autoupdate of used store change
  * @param observee function which returns a dom tree which uses some store and rerenders on it's changes
  */
-function observed(observee: () => ReactNode): ReactNode {
-    return h(Observer as any, [observee])
+function observed(observee: () => RocketElement): RocketElement {
+    return h(Observer as any, [observee]);
 }
-export { h, frag, observed };
+h.observed = observed;
+export { h, observed };

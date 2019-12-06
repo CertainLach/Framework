@@ -1,9 +1,7 @@
+import { clearLine, flushBuffer, moveCursor, restore, save, startBuffering, writeStdout } from '@meteor-it/terminal';
 import util from 'util';
-import Logger, { LOGGER_ACTIONS, BasicReceiver } from '../';
-import {
-	writeStdout,
-	moveCursor, clearLine, save, restore, startBuffering, flushBuffer
-} from '@meteor-it/terminal';
+import Logger, { BasicReceiver, LOGGER_ACTIONS } from '../';
+import './consoleRedirect';
 
 const DEBUG = process.env.DEBUG || '';
 
@@ -38,7 +36,7 @@ const ansiColors: { [key: string]: number[] } = {
 	bgWhite: [47, 49]
 };
 
-function stringifyIdent(nameLimit: number, count: number, symbolNeeded: string = undefined) {
+function stringifyIdent(_nameLimit: number, count: number, symbolNeeded?: string) {
 	return `${'  '.repeat(count)}${symbolNeeded ? symbolNeeded : ' '}`;
 }
 // function writeDate(date) {
@@ -46,7 +44,7 @@ function stringifyIdent(nameLimit: number, count: number, symbolNeeded: string =
 // 	// writeStdout((new Date(date)).toLocaleTimeString());
 // 	// writeEscape('0m');
 // }
-function stringifyName(nameLimit: number, limit: number, name: string, escapeCode = '44m') {
+function stringifyName(nameLimit: number, _limit: number, name: string, escapeCode = '44m') {
 	return `\u001B[${escapeCode}\u001B[1m${nameLimit === 0 ? '' : name.toString().padStart(nameLimit, ' ')}\u001B[0m`;
 }
 // function writeRepeats(count, none = false) {
@@ -82,7 +80,7 @@ function stringifyTimeEndData(nameLimit: number, provider: NodeConsoleReceiver, 
 	// writeDate(data.time);
 	return `\u001B[35m${stringifyName(nameLimit, provider.nameLimit, data.name, '1m')}\u001B[34m${stringifyIdent(nameLimit, data.identationLength)} T Finished ${data.timeName}\u001B[1m in ${data.timeTime}ms\u001B[0m`;
 }
-function stringifyData(nameLimit: number, data: any) {
+function stringifyData(_nameLimit: number, data: any) {
 	let uncolored = util.format(data.line, ...data.params || []);
 	return uncolored.replace(/{(\/?)([^}]+)}/g, (...d: any[]) => {
 		if (!ansiColors[d[2]]) return d[0];
@@ -120,17 +118,17 @@ interface IProgressItem {
 	time: number
 }
 const progresses: { [key: string]: IProgressItem } = {};
-function progressStart(nameLimit: number, provider: NodeConsoleReceiver, data: any) {
+function progressStart(_nameLimit: number, _provider: NodeConsoleReceiver, data: any) {
 	progresses[data.name] = {
 		name: data.name,
 		progress: 0,
 		time: data.time
 	};
 }
-function progressEnd(nameLimit: number, provider: NodeConsoleReceiver, data: any) {
+function progressEnd(_nameLimit: number, _provider: NodeConsoleReceiver, data: any) {
 	delete progresses[data.name];
 }
-function progress(nameLimit: number, provider: NodeConsoleReceiver, data: any) {
+function progress(_nameLimit: number, _provider: NodeConsoleReceiver, data: any) {
 	if (!progresses[data.name])
 		return;
 	progresses[data.name].time = data.time;

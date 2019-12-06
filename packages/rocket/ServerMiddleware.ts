@@ -1,27 +1,23 @@
+import { readFile } from '@meteor-it/fs';
+import Router, { IRouterContext, MultiMiddleware, RoutingMiddleware } from "@meteor-it/router";
+import { asyncEach, isBrowserEnvironment } from "@meteor-it/utils";
+import { StaticMiddleware, XPressRouterContext } from '@meteor-it/xpress';
 import http2 from 'http2';
-import path from 'path';
-import url from 'url';
-import querystring from 'querystring';
 import { toJS } from 'mobx';
+import { useStaticRendering } from "mobx-react-lite";
+import querystring from 'querystring';
 import { ReactElement } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { useStaticRendering } from "mobx-react-lite";
-import { readFile } from '@meteor-it/fs';
-import { IRouterContext } from '@meteor-it/router';
-import { XPressRouterContext } from '@meteor-it/xpress';
-import { asyncEach } from "@meteor-it/utils";
-import Router, { MultiMiddleware, RoutingMiddleware } from "@meteor-it/router";
-import { StaticMiddleware } from "@meteor-it/xpress";
+import url from 'url';
+import { h } from './h';
+import HelmetStore from "./helmet/HelmetStore";
+import PreloadStore from './preload/PreloadStore';
 import { preloadAll } from './preload/TO_PRELOAD';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
-import { createOrDehydrateStore } from "./stores/useStore";
 import RouterStore from "./router/RouterStore";
-import HelmetStore from "./helmet/HelmetStore";
+import { createOrDehydrateStore } from "./stores/useStore";
 import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
-import { h, frag } from './h';
-import PreloadStore from './preload/PreloadStore';
-import { isBrowserEnvironment } from '@meteor-it/utils';
 
 const { renderToStaticMarkup, renderToString } = ReactDOMServer;
 
@@ -48,23 +44,23 @@ class HotHelperMiddleware extends RoutingMiddleware<XPressRouterContext, void, '
 
 // noinspection JSUnusedGlobalSymbols
 export default class ServerMiddleware extends MultiMiddleware {
-    private readonly rocket: Rocket;
     private readonly compiledClientDir?: string;
     private readonly compiledServerDir?: string;
     private cachedClientStats?: any = null;
     private cachedServerStats?: any = null;
     private statsLoaded: boolean = false;
-    private commentString?: string = null;
+    private commentString?: string;
 
-    constructor(rocket: Rocket, { compiledClientDir, compiledServerDir, commentString }: { compiledClientDir?: string, compiledServerDir?: string, commentString?: string }) {
+    constructor(public rocket: Rocket, { compiledClientDir, compiledServerDir, commentString }: { compiledClientDir?: string, compiledServerDir?: string, commentString?: string }) {
         super();
-        this.rocket = rocket;
         this.compiledClientDir = compiledClientDir;
         this.compiledServerDir = compiledServerDir;
         this.commentString = commentString;
-        this.staticMiddleware = new StaticMiddleware(compiledClientDir, { filter: /^(?!(?:report\.html|stats.json))/ });
-        if (process.env.NODE_ENV === 'production')
-            this.staticMiddleware.prepareCache();
+        if (compiledClientDir) {
+            this.staticMiddleware = new StaticMiddleware(compiledClientDir, { filter: /^(?!(?:report\.html|stats.json))/ });
+            if (process.env.NODE_ENV === 'production')
+                this.staticMiddleware.prepareCache();
+        }
         useStaticRendering(true);
     }
 
@@ -73,19 +69,17 @@ export default class ServerMiddleware extends MultiMiddleware {
      */
     private async handleRender(ctx: XPressRouterContext & IRouterContext<void>): Promise<void> {
         if (ctx.stream.hasDataSent) return;
-        const clientNeeded = !!this.compiledClientDir;
-        const serverNeeded = !!this.compiledServerDir;
 
         // Should do something only on first page load or in SSR, if code isn't shit
         await preloadAll();
         if (!this.statsLoaded || process.env.NODE_ENV === 'development') {
             this.statsLoaded = true;
-            if (clientNeeded)
+            if (this.compiledClientDir)
                 this.cachedClientStats = JSON.parse((await readFile(`${this.compiledClientDir}/stats.json`)).toString());
-            if (serverNeeded)
+            if (this.compiledServerDir)
                 this.cachedServerStats = JSON.parse((await readFile(`${this.compiledServerDir}/stats.json`)).toString());
         }
-        if (!clientNeeded && !serverNeeded)
+        if (!this.compiledClientDir && !this.compiledServerDir)
             throw new Error('At least one needed side is required');
 
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
@@ -95,7 +89,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         if (!Array.isArray(files))
             files = [files];
 
-        if (!serverNeeded) {
+        if (!this.compiledServerDir) {
             // Different routine for only-client rendering
             stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
                 h('html', [h([
@@ -111,7 +105,7 @@ export default class ServerMiddleware extends MultiMiddleware {
                 ])]) as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}${this.commentString ? `\n${this.commentString}` : ''}`);
             return;
         }
-        let currentState: IRocketRouterState = { drawTarget: null, redirectTarget: null, store: {} };
+        let currentState: IRocketRouterState = { store: {} };
         const routerStore = createOrDehydrateStore(currentState.store, RouterStore);
         await this.rocket.router.route(pathStr, ctx => {
             ctx.state = currentState;
@@ -162,7 +156,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         //  2. If main script isn't executed, then added script will also won't execute (NoScript)
         //  3. To prevent core monkeypatching (Antipattern)
 
-        if (clientNeeded) {
+        if (this.compiledClientDir) {
             // Update unneeded ids for head
             {
                 // Skip default meta
@@ -204,11 +198,11 @@ export default class ServerMiddleware extends MultiMiddleware {
 
         let stringStore = '';
 
-        if (clientNeeded) {
+        if (this.compiledClientDir) {
             // Stringify store for client, also cleanup store from unneeded data
             let safeStore: any = toJS(currentState.store, { exportMapsAsObjects: true, detectCycles: true });
             // Remove data which are not used on client rendering
-            stringStore = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* == STORE FOR CLIENT HYDRATION START == */\n' : ''}window.__SSR_STORE__=${JSON.stringify(safeStore, (key, value) => {
+            stringStore = `${nWhenDevelopment}${process.env.NODE_ENV === 'development' ? '/* == STORE FOR CLIENT HYDRATION START == */\n' : ''}window.__SSR_STORE__=${JSON.stringify(safeStore, (_key, value) => {
                 if (value === safeStore[IsomorphicStyleLoaderStore.id] || value === safeStore[HelmetStore.id].instances || value === safeStore[HelmetStore.id].ssrData.preloadModules)
                     return undefined;
                 return value;
@@ -216,10 +210,10 @@ export default class ServerMiddleware extends MultiMiddleware {
         }
 
         // HTTP2 server push
-        if (clientNeeded && stream.canPushStream) {
+        if (this.compiledClientDir && stream.canPushStream) {
             await asyncEach([...chunkList, ...neededEntryPointScripts], async (file: string) => {
                 const ts = await stream.pushStream(`/${file}`);
-                await this.staticMiddleware.serve(file, ts);
+                await this.staticMiddleware!.serve(file, ts);
             });
         }
 
@@ -228,13 +222,13 @@ export default class ServerMiddleware extends MultiMiddleware {
 
         // TODO: Full spec
         // https://www.w3.org/TR/preload/#dfn-preload-keyword
-        let availableForLink = helmetStore.link.filter(e => !!e.href);
+        let availableForLink = helmetStore.link.filter(e => !!e.props.href);
         if (availableForLink.length !== 0)
-            stream.resHeaders[http2.constants.HTTP2_HEADER_LINK] = availableForLink.map(l => `<${l.href}>; rel="${l.rel}"`).join(', ');
+            stream.resHeaders[http2.constants.HTTP2_HEADER_LINK] = availableForLink.map(l => `<${l.props.href}>; rel="${l.props.rel}"`).join(', ');
 
         // Finally send rendered data to user
         stream.status(200).send(`<!DOCTYPE html>${nWhenDevelopment}${renderToStaticMarkup(
-            h('html', helmetStore.htmlAttrs.props, [h([
+            h('html', Object.assign({}, ...helmetStore.htmlAttrs.map(e => e.props)), [h([
                 h('head', [
                     h('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
                     h('meta', { content: 'text/html;charset=utf-8', httpEquiv: 'Content-Type' }),
@@ -245,27 +239,28 @@ export default class ServerMiddleware extends MultiMiddleware {
                     helmetStore.style.map((p, key) => h('style', { key, dangerouslySetInnerHTML: { __html: p.body }, ...p.props })),
                     isomorphicStyleLoaderStore.styles.size > 0 && h('style', { dangerouslySetInnerHTML: { __html: [...isomorphicStyleLoaderStore.styles].join(nWhenDevelopment) } })
                 ]),
-                h('body', helmetStore.bodyAttrs.props, [
+                h('body', Object.assign({}, ...helmetStore.bodyAttrs.map(e => e.props)), [
                     h('div', { dangerouslySetInnerHTML: { __html } }),
-                    clientNeeded && h('script', { defer: true, dangerouslySetInnerHTML: { __html: stringStore } }),
-                    clientNeeded && chunkList.map((f, key) => h('script', { key, defer: true, src: `/${f}` })),
-                    clientNeeded && neededEntryPointScripts.map((f, key) => h('script', { key, defer: true, src: `/${f}` }))
+                    this.compiledClientDir && h('script', { defer: true, dangerouslySetInnerHTML: { __html: stringStore } }),
+                    this.compiledClientDir && chunkList.map((f, key) => h('script', { key, defer: true, src: `/${f}` })),
+                    this.compiledClientDir && neededEntryPointScripts.map((f, key) => h('script', { key, defer: true, src: `/${f}` }))
                 ])
             ])]) as ReactElement<any>)}${process.env.NODE_ENV === 'development' ? '\n<!--Meteor.Rocket is running in development mode!-->' : ''}`);
         // }
     }
 
     setupDone: boolean = false;
-    staticMiddleware: StaticMiddleware;
+    staticMiddleware?: StaticMiddleware;
 
     // Setup all routes
     setup(router: Router<XPressRouterContext & IRouterContext<void>, any, 'GET' | 'ALL'>, path: string | null): void {
         if (isBrowserEnvironment()) throw new Error('WTF are u doing?');
         if (this.setupDone) throw new Error('ServerMiddleware isn\'t reusable! Create new to use in new xpress instance');
         this.setupDone = true;
-        router.on('GET', path, this.staticMiddleware);
+        if (this.staticMiddleware)
+            router.on('GET', path, this.staticMiddleware);
         // Webpack, why?
-        if (process.env.NODE_ENV === 'development') {
+        if (this.compiledClientDir && process.env.NODE_ENV === 'development') {
             router.on('GET', path, new HotHelperMiddleware(this.compiledClientDir));
         }
         router.on('GET', path, async ctx => await this.handleRender(ctx));

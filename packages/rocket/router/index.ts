@@ -1,18 +1,17 @@
-import Router from '@meteor-it/router';
 import Logger from '@meteor-it/logger';
+import Router from '@meteor-it/router';
+import { ReactNode } from 'react';
+import { h } from "../h";
+import { createOrDehydrateStore, RocketStoreContext } from '../stores';
 import Store from "../stores/store";
 import RouterStore from "./RouterStore";
-import { RocketStoreContext } from '../stores';
-import { createOrDehydrateStore } from "../stores";
-import { h } from "../h";
-import { ReactNode } from 'react';
 
 export type IRocketRouterContext = {
     query: { [key: string]: string }
 };
 export type IRocketRouterState = {
-    drawTarget: ReactNode | null,
-    redirectTarget: string,
+    drawTarget?: ReactNode,
+    redirectTarget?: string,
     store: {}
 };
 export type IRocketRouterMethodList = any;

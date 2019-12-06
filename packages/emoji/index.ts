@@ -17,5 +17,5 @@ export function isEmoji(str: string): boolean {
 	return EMOJI_REGEX.test(str);
 }
 export function getEmojis(str: string): string[] {
-	return str.match(EMOJI_REGEX_GLOBAL);
+	return [...(str.match(EMOJI_REGEX_GLOBAL) ?? [])];
 }

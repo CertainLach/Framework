@@ -5,20 +5,21 @@ export class LoadingItem {
     /**
      * Indicates that item loading is errored
      */
-    isError: boolean;
+    isError!: boolean;
     /**
      * If SSR - then value is string
      */
-    error: Error | string;
-    errorType: ErrorType;
+    error?: Error | string;
+    errorType?: ErrorType;
     /**
      * Must be stringifyable
      */
-    value: object;
+    value?: object;
     static fromError(error: Error | string, type: ErrorType): LoadingItem {
         const item = new LoadingItem();
         item.isError = true;
         item.error = error;
+        item.errorType = type;
         return item;
     }
     static fromValue(value: object): LoadingItem {
@@ -32,10 +33,10 @@ export class LoadingItem {
 export default class PreloadStore {
     static id = '$$preload';
     /**
-     * Stores async data, 
-     * key = unique identifier of data 
+     * Stores async data,
+     * key = unique identifier of data
      * (specified by developer which uses useAsync)
-     * value = [is error, error string | data itself, needs to be valid for JSON.stringify() 
+     * value = [is error, error string | data itself, needs to be valid for JSON.stringify()
      * (which is used by rehydration process)]
      */
     items: { [key: string]: LoadingItem } = {};

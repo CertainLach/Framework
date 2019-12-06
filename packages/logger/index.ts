@@ -57,7 +57,7 @@ export type ProgressEndAction = {
 }
 export type ProgressAction = {
 	type: LOGGER_ACTIONS.PROGRESS,
-	info: string,
+	info?: string,
 	progress: number
 }
 export type LoggerAction = {
@@ -84,16 +84,16 @@ const REPEATABLE_ACTIONS = [
 	LOGGER_ACTIONS.PROGRESS_END
 ];
 
-let consoleLogger: Logger;
 let loggerLogger: Logger;
 
 export class BasicReceiver {
-	logger: typeof Logger;
+	logger?: typeof Logger;
 
 	setLogger(logger: typeof Logger) {
 		this.logger = logger;
 	}
-	write(data: LoggerAction) {
+
+	write(_data: LoggerAction) {
 		throw new Error('write(): Not implemented!');
 	}
 }
@@ -154,8 +154,8 @@ export default class Logger {
 		}
 		this._write({
 			type: LOGGER_ACTIONS.DEENT,
-			identName: this.identation.pop(),
-			identTime: new Date().getTime() - this.identationTime.pop()
+			identName: this.identation.pop()!,
+			identTime: new Date().getTime() - this.identationTime.pop()!
 		});
 	}
 	deentAll() {
@@ -210,8 +210,6 @@ export default class Logger {
 	}
 	// DEBUG
 	debug(...params: any[]) {
-		//if(DEBUG === '-')
-		//	return;
 		this._write({
 			type: LOGGER_ACTIONS.DEBUG,
 			line: params.shift(),
@@ -271,13 +269,15 @@ export default class Logger {
 			}
 			return;
 		}
-		if (Logger.isRepeating(what.name, what.line, what.type))
-			Logger.repeatCount++;
-		else
-			Logger.resetRepeating(what.name, what.line, what.type);
+		if (what.name && what.line) {
+			if (Logger.isRepeating(what.name, what.line, what.type))
+				Logger.repeatCount++;
+			else
+				Logger.resetRepeating(what.name, what.line, what.type);
+		}
 		if (REPEATABLE_ACTIONS.indexOf(what.type) === -1)
 			what.repeats = Logger.repeatCount;
-		what.repeated = what.repeats && what.repeats > 0;
+		what.repeated = (what?.repeats! ?? 0) > 0;
 		Logger.receivers.forEach(receiver => receiver.write(what));
 	}
 	private static resetRepeating(provider: string, message: string, type: LOGGER_ACTIONS) {
@@ -305,20 +305,8 @@ export default class Logger {
 	}
 }
 
-// Console monkey-patching
-// And named console support
-const OTHER_LOGGER_MARK = /^\[([a-zA-Z]+)\]/;
-
-consoleLogger = new Logger('console');
-(consoleLogger as any).___write = consoleLogger._write;
-consoleLogger._write = (data: any) => {
-	if (typeof data.line === 'string' && OTHER_LOGGER_MARK.test(data.line)) {
-		data.name = data.line.match(OTHER_LOGGER_MARK)[1];
-		data.line = data.line.replace(OTHER_LOGGER_MARK, '').trimStart();
-	}
-	return (consoleLogger as any).___write(data);
-}
 loggerLogger = new Logger('logger');
+
 export type logFunc = (...params: any[]) => undefined;
 declare global {
 	interface Console {
@@ -328,11 +316,4 @@ declare global {
 		_err: logFunc;
 		_warning: logFunc;
 	}
-}
-if (!(console as any)._patchedByLogger) {
-	for (let method of ['log', 'error', 'warn', 'err', 'warning', 'info']) {
-		(console as any)['_' + method] = (console as any)[method];
-		(console as any)[method] = (...args: any[]) => (consoleLogger as any)[method](...args);
-	}
-	(console as any)._patchedByLogger = true;
 }

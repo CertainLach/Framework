@@ -1,6 +1,6 @@
-import Store from '../stores/store';
-import { observable, computed } from 'mobx';
 import { isBrowserEnvironment } from '@meteor-it/utils';
+import { computed, observable } from 'mobx';
+import Store from '../stores/store';
 
 // TODO: Oh my...
 let forceRerender: () => void = () => { };
@@ -11,9 +11,9 @@ export function setForceRerender(func: () => void) {
 export default class RouterStore extends Store {
     static id = '$$router';
     @observable
-    private _query: { [key: string]: string };
+    private _query!: { [key: string]: string };
     @observable
-    private _path: string;
+    private _path!: string;
     private _hasRedirect: boolean = false;
     setDataNoRerender(path: string, qs: { [key: string]: string }) {
         this._path = path;

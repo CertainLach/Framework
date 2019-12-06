@@ -1,8 +1,8 @@
 
-export class HtmlSafeTag {
+export interface HtmlSafeTag {
     props: { [key: string]: string };
 }
-export class HtmlSafeTagWithBody {
+export interface HtmlSafeTagWithBody {
     props: { [key: string]: string };
     body: string;
 }
