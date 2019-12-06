@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/argv",
-  "version": "0.4.41",
+  "version": "0.4.42",
   "description": "Command line argument parser",
   "module": "index.mjs",
   "main": "index.js",
@@ -16,8 +16,8 @@
   "author": "CertainLach <iam@lach.pw>",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/logger": "^2.3.39",
-    "@meteor-it/utils": "^1.3.28"
+    "@meteor-it/logger": "^2.3.40",
+    "@meteor-it/utils": "^1.3.29"
   },
   "sideEffects": false,
   "publishConfig": {
