@@ -111,10 +111,14 @@ export class ExtendedIncomingMessage {
 
     rawBody?: Buffer;
     body?: string;
+
+    private _jsonBody?: any;
     get jsonBody(): any | undefined {
         if (this.body === undefined)
             return undefined;
-        return JSON.parse(this.body);
+        if (this._jsonBody !== undefined)
+            return this._jsonBody;
+        return this._jsonBody = JSON.parse(this.body);
     }
 
     get headers(): http.IncomingHttpHeaders {

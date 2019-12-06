@@ -1,10 +1,10 @@
-import path from 'path';
 import { open, read } from '@meteor-it/fs';
+import path from 'path';
 import { Readable as ReadableStream, Writable as WritableStream } from 'stream';
 
 const { basename } = path;
 
-export const DEFAULT_BOUNDARY = 'ce47607d67d74a658a058ba6697de227';
+export const DEFAULT_BOUNDARY = '---------------------------1066357816112781544545976810';
 export class File {
     path: string;
     filename: string;
@@ -54,16 +54,15 @@ export class Part {
         let header;
 
         if (this.value instanceof File) {
-            header = `Content-Disposition: form-data; name='${this.name}'; filename='${this.value.filename}'\r\nContent-Length: ${this.value.fileSize}\r\nContent-Type: ${this.value.contentType}`;
-        }
-        else if (this.value instanceof FileStream) {
-            header = `Content-Disposition: form-data; name='${this.name}'; filename='${this.value.filename}'\r\nContent-Length: ${this.value.fileSize}\r\nContent-Type: ${this.value.contentType}`;
-        }
-        else {
-            header = `Content-Disposition: form-data; name='${this.name}'`;
+            header = `Content-Disposition: form-data; name="${this.name}"; filename="${this.value.filename}"\r\nContent-Length: ${this.value.fileSize}\r\nContent-Type: ${this.value.contentType}`;
+        } else if (this.value instanceof FileStream) {
+            header = `Content-Disposition: form-data; name="${this.name}"; filename="${this.value.filename}"\r\nContent-Length: ${this.value.fileSize}\r\nContent-Type: ${this.value.contentType}`;
+        } else {
+            header = `Content-Disposition: form-data; name="${this.name}"`;
         }
 
-        return `--${this.boundary}\r\n${header}\r\n\r\n`;
+        header = `--${this.boundary}\r\n${header}\r\n\r\n`;
+        return header;
     }
 
     //calculates the size of the Part
@@ -85,45 +84,40 @@ export class Part {
     }
 
     // Writes the Part out to a writable stream that supports the write(data) method
-    write(stream: WritableStream): Promise<void> {
-        return new Promise(async (resolve) => {
-            //first write the Content-Disposition
-            stream.write(this.header());
+    async write(stream: WritableStream): Promise<void> {
+        //first write the Content-Disposition
+        stream.write(this.header());
 
-            //Now write out the body of the Part
-            if (this.value instanceof File) {
-                let fd = await open(this.value.path, 'r', '0666');
-                let position = 0;
-                let moreData = true;
-                while (moreData) {
-                    let chunk = new Buffer(4096);
-                    await read(fd, chunk, 0, 4096, position);
-                    stream.write(chunk);
-                    position += 4096;
-                    if (chunk) {
-                        moreData = true;
-                    }
-                    else {
-                        stream.write('\r\n');
-                        await fd.close();
-                        moreData = false;
-                        resolve();
-                    }
+        //Now write out the body of the Part
+        if (this.value instanceof File) {
+            let fd = await open(this.value.path, 'r', '0666');
+            let position = 0;
+            let moreData = true;
+            while (moreData) {
+                let chunk = new Buffer(4096);
+                await read(fd, chunk, 0, 4096, position);
+                stream.write(chunk);
+                position += 4096;
+                if (chunk) {
+                    moreData = true;
                 }
-            } else if (this.value instanceof FileStream) {
-                this.value.stream.on('end', () => {
-                    stream.write('\r\n');
-                    resolve();
-                });
-
-                this.value.stream.pipe(stream, {
-                    end: false // Do not end writing streams, may be there is more data incoming
-                });
-            } else {
-                stream.write(`${this.value}\r\n`);
-                resolve();
+                else {
+                    await fd.close();
+                    moreData = false;
+                }
             }
-        })
+        } else if (this.value instanceof FileStream) {
+            await new Promise(resolve => {
+                const value: FileStream = this.value as FileStream;
+                value.stream.on('end', () => {
+                    resolve();
+                })
+                value.stream.pipe(stream, { end: false });
+            });
+        } else {
+            stream.write(`${this.value}`);
+        }
+        stream.write('\r\n');
     }
 }
 
@@ -132,7 +126,7 @@ export class MultiPartRequest {
     encoding: string;
     boundary: string;
     data: IMultiPartData;
-    private _partNames: string[];
+    private _partNames?: string[];
 
     constructor(encoding: string = 'binary', data: IMultiPartData, boundary: string = DEFAULT_BOUNDARY) {
         this.encoding = encoding;
