@@ -4,14 +4,14 @@
     "clean": "npm run clean:src&&npm run clean:docs&&npm run clean:dependencies",
     "clean:src": "gulp clean",
     "clean:docs": "rm -rf docs",
-    "clean:dependencies": "lerna clean -y",
+    "clean:dependencies": "lerna clean -y --npm-client=yarn",
     "build": "npm run build:dependencies&&npm run build:src&&npm run build:docs",
     "build:src": "gulp compile",
     "build:docs": "cd packages&&typedoc --out ../docs --name Meteor.Framework --ignoreCompilerErrors --readme none --hideGenerator ./&&cd ..",
-    "build:dependencies": "lerna bootstrap",
+    "build:dependencies": "lerna bootstrap --npm-client=yarn",
     "dev": "npm run clean&&npm run dev:link&&npm run build:dependencies",
     "dev:link": "lerna exec yarn link",
-    "publish": "npm run clean&&npm run build&&lerna publish"
+    "publish": "npm run clean&&npm run build&&lerna publish --npm-client=yarn"
   },
   "devDependencies": {
     "@types/chokidar": "^2.1.3",
