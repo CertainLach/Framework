@@ -9,7 +9,7 @@ import { DEFAULT_BOUNDARY, IMultiPartData, sizeOf, write } from "./multipart";
 
 export { IMultiPartData };
 
-const USER_AGENT = '@meteor-it/xrest';
+const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0';
 
 // TODO: More assertions
 
