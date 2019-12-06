@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/queue",
-  "version": "2.0.42",
+  "version": "2.0.43",
   "description": "Queue decorator",
   "module": "index.mjs",
   "main": "index.js",
@@ -14,7 +14,7 @@
   "author": "CertainLach <iam@lach.pw>",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/logger": "^2.3.38"
+    "@meteor-it/logger": "^2.3.39"
   },
   "sideEffects": false,
   "publishConfig": {
