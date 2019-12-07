@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/logger",
-    "version": "2.3.41",
+    "version": "2.3.42",
     "description": "Most powerfull logger for node.js",
     "module": "index.mjs",
     "main": "index.js",
@@ -11,7 +11,7 @@
     "author": "CertainLach <iam@lach.pw>",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/terminal": "^0.5.24",
+        "@meteor-it/terminal": "^0.5.25",
         "@meteor-it/utils": "^1.3.30"
     },
     "sideEffects": [
