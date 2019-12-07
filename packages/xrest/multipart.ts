@@ -1,8 +1,6 @@
 import { open, read } from '@meteor-it/fs';
-import path from 'path';
+import { basename } from 'path';
 import { Readable as ReadableStream, Writable as WritableStream } from 'stream';
-
-const { basename } = path;
 
 export const DEFAULT_BOUNDARY = '---------------------------1066357816112781544545976810';
 export class File {

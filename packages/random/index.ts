@@ -1,9 +1,9 @@
-import seedrandom from 'seedrandom';
+import * as seedrandom from 'seedrandom';
 
 export default class Random {
 	wrapped: any;
 	constructor(seed?: string | number) {
-		this.wrapped = seedrandom(seed.toString());
+		this.wrapped = seedrandom(seed?.toString());
 	}
 	nextFloat(): number {
 		return this.wrapped();

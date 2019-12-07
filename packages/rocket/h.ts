@@ -1,5 +1,5 @@
 import { Observer } from 'mobx-react-lite';
-import React, { Component, ReactElement } from "react";
+import { Component, createElement, Fragment, ReactElement } from "react";
 
 export type IClassList = (string | null | false)[];
 
@@ -12,7 +12,7 @@ export type IVanillaAttributes = {
     className?: string
 };
 
-export type RocketElement = ReactElement<any, any> | null;
+export type RocketElement = ReactElement<any> | null;
 
 export type RocketConstructor<P> = ((props: P) => RocketElement) | (new () => Component<P>);
 type IH = {
@@ -61,26 +61,26 @@ function processProps(props: IVanillaAttributes) {
 const h: IH = ((...args: any[]) => {
     if (args.length === 1) {
         if (args[0] instanceof Array) {
-            return h(React.Fragment, {}, args[0]);
+            return h(Fragment, {}, args[0]);
         } else {
-            return React.createElement(args[0]);
+            return createElement(args[0]);
         }
     } else if (args.length === 2) {
         if (args[1] instanceof Array) {
             let el = args[1];
             while (el.length === 1 && el[0] instanceof Array) el = el[0];
-            return React.createElement(args[0], null, ...el);
+            return createElement(args[0], null, ...el);
         } else {
             if (args[1])
                 processProps(args[1]);
-            return React.createElement(args[0], args[1]);
+            return createElement(args[0], args[1]);
         }
     } else {
         if (args[1])
             processProps(args[1]);
         let el = args[2];
         while (el.length === 1 && el[0] instanceof Array) el = el[0];
-        return React.createElement(args[0], args[1], ...el);
+        return createElement(args[0], args[1], ...el);
     }
 }) as any;
 

@@ -1,9 +1,9 @@
-import path from 'path';
-import http2 from "http2";
-import fs from "fs";
-import { exists, stat, walkDir, readFile } from '@meteor-it/fs';
+import { exists, readFile, stat, walkDirArray } from '@meteor-it/fs';
 import { lookupByPath } from '@meteor-it/mime';
 import { IRouterContext, RoutingMiddleware } from '@meteor-it/router';
+import * as fs from "fs";
+import * as http2 from "http2";
+import * as path from 'path';
 import { XPressRouterContext, XpressRouterStream } from '..';
 
 function lookupMime(filename: string, gzipped: boolean) {
@@ -37,7 +37,7 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
      */
     async prepareCache() {
         if (process.env.DO_NOT_PREPARE_CACHE) return;
-        const fileList = (await walkDir(this.rootFolder)).map(e => path.relative(this.rootFolder, e));
+        const fileList = (await walkDirArray(this.rootFolder)).map(e => path.relative(this.rootFolder, e));
         const tasks = [];
         for (let file of fileList) {
             tasks.push((async () => {
@@ -73,7 +73,7 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
             if (stream.acceptsEncoding('gzip') && this.cached.has(pathname + '.gz')) {
                 pathname += '.gz';
             }
-            const cached = this.cached.get(pathname);
+            const cached = this.cached.get(pathname)!;
             if ((http2.constants.HTTP2_HEADER_IF_MODIFIED_SINCE in stream.reqHeaders) && (new Date(stream.reqHeaders[http2.constants.HTTP2_HEADER_IF_MODIFIED_SINCE] as string).getTime() - cached.timeModified) <= 0) {
                 stream.resHeaders[http2.constants.HTTP2_HEADER_STATUS] = 304;
                 stream.send(this.EMPTY_BUFFER);

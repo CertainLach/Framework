@@ -1,7 +1,6 @@
 import { IRouterContext } from "@meteor-it/router";
+import * as session from 'express-session';
 import { XPressRouterContext } from "../index";
-
-import session from 'express-session';
 
 export default function (store: (a: any) => new (a: any) => any, storeConfig: any = {}, secret: string, sessionField = 's') {
     let sessionParser = session({

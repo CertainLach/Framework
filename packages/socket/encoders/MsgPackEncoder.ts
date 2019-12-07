@@ -1,5 +1,5 @@
-import { IEncoder, IEncoderPacket, PacketType } from '../';
 import msgpack from 'msgpack-lite';
+import { IEncoder, IEncoderPacket, PacketType } from '../';
 
 // noinspection JSUnusedGlobalSymbols
 /**

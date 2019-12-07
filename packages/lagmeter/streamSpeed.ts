@@ -1,5 +1,6 @@
-import events from 'events';
-import stream, { Readable } from 'stream';
+import * as events from 'events';
+import * as stream from 'stream';
+import { Readable } from 'stream';
 
 export class Speedometer {
 	per: number;

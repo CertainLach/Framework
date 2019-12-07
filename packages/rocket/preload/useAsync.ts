@@ -1,12 +1,10 @@
-import { useStore } from "../stores";
-import PreloadStore, { LoadingItem } from "./PreloadStore";
-import LoadingState from './LoadingState';
-import React from 'react';
-import ErrorType from "./ErrorType";
-import useRerender from "../utils/useRerender";
 import { isBrowserEnvironment } from "@meteor-it/utils";
-
-const { useState, useEffect } = React;
+import { useEffect } from 'react';
+import { useStore } from "../stores";
+import useRerender from "../utils/useRerender";
+import ErrorType from "./ErrorType";
+import LoadingState from './LoadingState';
+import PreloadStore, { LoadingItem } from "./PreloadStore";
 
 export class SSRLoadingError extends Error { }
 

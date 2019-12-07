@@ -1,13 +1,10 @@
-import ReactDOM from 'react-dom';
-import querystring from 'querystring';
+import { parse as parseQuerystring } from 'querystring';
+import { ReactElement } from 'react';
+import { hydrate, render } from 'react-dom';
 import Rocket from './Rocket';
 import { IRocketRouterState } from './router';
-import { cleanUpBrowserStoreList, createOrDehydrateStore } from "./stores/useStore";
 import RouterStore, { setForceRerender } from "./router/RouterStore";
-import { ReactElement } from 'react';
-
-const { parse: parseQuerystring } = querystring;
-const { hydrate, render } = ReactDOM;
+import { cleanUpBrowserStoreList, createOrDehydrateStore } from "./stores/useStore";
 
 // Lazy initialized, because this code can be somehow processed
 // on server, but a regexp requires access to window

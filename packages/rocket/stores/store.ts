@@ -1,3 +1,3 @@
-export default class Store{
-    static id:string = null;
+export default class Store {
+    static id: string | null = null;
 }

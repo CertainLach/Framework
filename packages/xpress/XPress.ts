@@ -1,18 +1,19 @@
-import http2, { Http2ServerRequest, Http2ServerResponse, IncomingHttpHeaders, Http2Stream, ServerHttp2Stream } from 'http2';
-import http, { OutgoingHttpHeaders, ServerResponse, IncomingMessage } from 'http';
-import url from 'url';
-import path from 'path';
-import { Readable } from "stream";
-import { Socket } from 'net';
-import fs from "fs";
-
 import AJSON from '@meteor-it/ajson';
 import Logger from '@meteor-it/logger';
 import URouter from "@meteor-it/router";
-import { userErrorPage, developerErrorPage } from './errorPages';
-export { userErrorPage, developerErrorPage };
-
+import * as fs from "fs";
+import * as http from 'http';
+import { IncomingMessage, OutgoingHttpHeaders, ServerResponse } from 'http';
+import * as http2 from 'http2';
+import { Http2ServerRequest, Http2ServerResponse, IncomingHttpHeaders, ServerHttp2Stream } from 'http2';
+import { Socket } from 'net';
+import * as path from 'path';
+import { Readable } from "stream";
+import * as url from 'url';
 import { Server as WSServer } from 'ws';
+import { developerErrorPage, userErrorPage } from './errorPages';
+
+export { userErrorPage, developerErrorPage };
 
 export interface IClientOptions {
     protocol?: string;
@@ -32,10 +33,10 @@ export interface IClientOptions {
 
 
 export class XpressRouterStream {
-    req: Http2ServerRequest;
-    res: Http2ServerResponse;
-    stream: ServerHttp2Stream;
-    socket: WebSocket;
+    req?: Http2ServerRequest;
+    res?: Http2ServerResponse;
+    stream?: ServerHttp2Stream;
+    socket?: WebSocket;
     reqHeaders: IncomingHttpHeaders;
     resHeaders: OutgoingHttpHeaders;
 
@@ -61,8 +62,8 @@ export class XpressRouterStream {
             this.http2Stream.write(text);
             this.http2Stream.end();
         } else {
-            this.res.write(text);
-            this.res.end();
+            this.res!.write(text);
+            this.res!.end();
         }
     }
 
@@ -122,7 +123,7 @@ export class XpressRouterStream {
                 if (key !== http2.constants.HTTP2_HEADER_STATUS)
                     newHeaders[key] = this.resHeaders[key];
             }
-            this.res.writeHead(this.resHeaders[http2.constants.HTTP2_HEADER_STATUS] as number || 200, newHeaders);
+            this.res!.writeHead(this.resHeaders[http2.constants.HTTP2_HEADER_STATUS] as number || 200, newHeaders);
         }
     }
 
@@ -169,7 +170,7 @@ export class XpressRouterStream {
      * True - if response is not sent, and it's possible to call send()
      */
     get canSendMoreData(): boolean {
-        return !this.hasDataSent && !this.res.headersSent
+        return !this.hasDataSent && !this.res!.headersSent
     }
 
     /**
@@ -189,14 +190,16 @@ export class XpressRouterStream {
     /**
      * Is request sent via tls
      */
-    isSecure: boolean;
+    isSecure: boolean = false;
 
     get http2Stream(): ServerHttp2Stream {
-        return this.res && this.res.stream || this.stream;
+        return this.res?.stream ?? this.stream!;
     }
+
     get supportsHttp1Fallback(): boolean {
         return !!this.res;
     }
+
     get hasStream(): boolean {
         return !!this.http2Stream;
     }
@@ -286,7 +289,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 ctx.stream = wrappedMainStream;
                 ctx.socket = undefined;
             });
-            if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
+            if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res!.headersSent) {
                 wrappedMainStream.resHeaders = {};
                 wrappedMainStream.status(404).send(developerErrorPage('404: Page Not Found', `Page not found at ${pathname}`, process.env.NODE_ENV === 'production' ? undefined : new Error('Reference stack').stack));
             }
@@ -299,7 +302,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 }
             } else {
                 this.logger.error(e.stack);
-                if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res.headersSent) {
+                if (!wrappedMainStream.hasDataSent && !wrappedMainStream.res!.headersSent) {
                     wrappedMainStream.resHeaders = {};
                     wrappedMainStream.status(500).send(developerErrorPage('500: Internal Server Error', e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack));
                 }
@@ -408,7 +411,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     listenHttp(host = '0.0.0.0', port: number) {
         this.ensureWebSocketReady();
-        let server = http.createServer(this.requestHandler.bind(this, false));
+        let server = http.createServer({}, this.requestHandler.bind(this, false));
         server.on('upgrade', this.upgradeHandler.bind(this, false));
         return new Promise((res, rej) => {
             server.listen(port, host, () => {

@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 
 export const map: { [key: string]: string } = {
 	"123": "application/vnd.lotus-1-2-3",

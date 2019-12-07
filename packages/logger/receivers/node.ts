@@ -1,5 +1,5 @@
 import { clearLine, flushBuffer, moveCursor, restore, save, startBuffering, writeStdout } from '@meteor-it/terminal';
-import util from 'util';
+import * as util from 'util';
 import Logger, { BasicReceiver, LOGGER_ACTIONS } from '../';
 import './consoleRedirect';
 

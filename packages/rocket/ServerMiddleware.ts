@@ -2,13 +2,13 @@ import { readFile } from '@meteor-it/fs';
 import Router, { IRouterContext, MultiMiddleware, RoutingMiddleware } from "@meteor-it/router";
 import { asyncEach, isBrowserEnvironment } from "@meteor-it/utils";
 import { StaticMiddleware, XPressRouterContext } from '@meteor-it/xpress';
-import http2 from 'http2';
+import * as http2 from 'http2';
 import { toJS } from 'mobx';
 import { useStaticRendering } from "mobx-react-lite";
-import querystring from 'querystring';
+import * as querystring from 'querystring';
 import { ReactElement } from 'react';
-import ReactDOMServer from 'react-dom/server';
-import url from 'url';
+import { renderToStaticMarkup, renderToString } from 'react-dom/server';
+import * as url from 'url';
 import { h } from './h';
 import HelmetStore from "./helmet/HelmetStore";
 import PreloadStore from './preload/PreloadStore';
@@ -18,8 +18,6 @@ import { IRocketRouterState } from './router';
 import RouterStore from "./router/RouterStore";
 import { createOrDehydrateStore } from "./stores/useStore";
 import IsomorphicStyleLoaderStore from "./style/IsomorphicStyleLoaderStore";
-
-const { renderToStaticMarkup, renderToString } = ReactDOMServer;
 
 // Should be loaded only in development, parses stats file every time, so this middleware is very slow
 class HotHelperMiddleware extends RoutingMiddleware<XPressRouterContext, void, 'GET'>{

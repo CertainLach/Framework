@@ -1,10 +1,10 @@
-import Store from "./store";
-import React from "react";
-import { isObservableArray, isObservableMap } from "mobx";
-import RocketStoreContext from "./RocketStoreContext";
 import { isBrowserEnvironment } from "@meteor-it/utils";
+import { isObservableArray, isObservableMap } from "mobx";
 import remotedev from 'mobx-remotedev';
-const { useContext } = React;
+import { useContext } from "react";
+import RocketStoreContext from "./RocketStoreContext";
+import Store from "./store";
+
 /**
  * Helper function that supports merging maps
  * @param target
@@ -29,7 +29,7 @@ function mergeObservables(target: any, source: any) {
 /**
  * Stores from SSR (Pulled here by cleanUpBrowserStoreList)
  */
-let storeList: { [key: string]: any } = null;
+let storeList: { [key: string]: any } | null = null;
 
 /**
  * Pulls __SSR_STORE__ to internal variable, must be called on client init

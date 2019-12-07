@@ -1,6 +1,7 @@
 import { asyncEach, collectCallbacks } from '@meteor-it/utils';
-import fsNative, { Stats } from 'fs';
-import path from 'path';
+import * as fsNative from 'fs';
+import { Stats } from 'fs';
+import * as path from 'path';
 
 type FileHandle = fsNative.promises.FileHandle;
 /**

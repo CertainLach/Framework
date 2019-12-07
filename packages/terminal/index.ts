@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 
 // By default using writeSync and fsyncSync to log
 let useStdoutFallback = false;

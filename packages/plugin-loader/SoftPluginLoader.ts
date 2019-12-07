@@ -1,9 +1,9 @@
-import Logger from '@meteor-it/logger';
 import { readDir } from '@meteor-it/fs';
+import Logger from '@meteor-it/logger';
 import { asyncEach } from '@meteor-it/utils';
-import path from 'path';
-import chokidar from 'chokidar';
-import EventEmitter from "events";
+import * as chokidar from 'chokidar';
+import * as EventEmitter from "events";
+import * as path from 'path';
 import IPlugin from "./IPlugin";
 
 /**

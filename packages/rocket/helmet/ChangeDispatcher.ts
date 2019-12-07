@@ -1,9 +1,7 @@
-import React from 'react';
-import HelmetDataInstance from './HelmetDataInstance';
+import { useEffect } from 'react';
 import useStore from "../stores/useStore";
+import HelmetDataInstance from './HelmetDataInstance';
 import HelmetStore from "./HelmetStore";
-
-const { useEffect, useState } = React;
 
 export default (props: { data: HelmetDataInstance }): JSX.Element | null => {
     const helmetStore = useStore(HelmetStore);

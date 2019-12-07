@@ -1,6 +1,6 @@
 import { IRouterContext, RoutingMiddleware } from "@meteor-it/router";
+import * as http2 from 'http2';
 import { XPressRouterContext } from "../index";
-import http2 from 'http2';
 
 function createRedirectURL(hostname: string, url: string, securePort: number) {
     if (hostname.includes(':')) hostname = hostname.slice(0, hostname.indexOf(':'));

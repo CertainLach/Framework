@@ -6,7 +6,7 @@
     "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": false,
     "esModuleInterop": false,
     "sourceMap": true,
     "noEmit": false,
