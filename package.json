@@ -11,7 +11,8 @@
     "build:dependencies": "lerna bootstrap",
     "dev": "yarn run clean&&yarn run dev:link&&yarn run build:dependencies",
     "dev:link": "lerna exec yarn link",
-    "publish": "yarn run clean&&yarn run build&&lerna publish"
+    "publish": "yarn run clean&&yarn run build&&lerna publish",
+    "publish-force": "yarn run clean&&yarn run build&&lerna publish --force-publish"
   },
   "devDependencies": {
     "@types/chokidar": "^2.1.3",
