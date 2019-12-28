@@ -250,22 +250,22 @@ export default class Logger {
 	private static __write(what: LoggerAction) {
 		if (Logger.receivers.length === 0) {
 			if (!Logger.noReceiversWarned) {
-				console._log('No receivers are defined for logger!\nSee docs for @meteor-it/logger for more info!');
+				(console._log ?? console.log)('No receivers are defined for logger!\nSee docs for @meteor-it/logger for more info!');
 				Logger.noReceiversWarned = true;
 			}
 			switch (what.type) {
 				case LOGGER_ACTIONS.DEBUG:
 				case LOGGER_ACTIONS.LOG:
-					console._log(what.line, ...what.params);
+					(console._log ?? console.log)(what.line, ...what.params);
 					break;
 				case LOGGER_ACTIONS.ERROR:
-					console._error(what.line, ...what.params);
+					(console._error ?? console.error)(what.line, ...what.params);
 					break;
 				case LOGGER_ACTIONS.WARNING:
-					console._warn(what.line, ...what.params);
+					(console._warn ?? console.warn)(what.line, ...what.params);
 					break;
 				default:
-					console._log(what);
+					(console._log ?? console.log)(what);
 			}
 			return;
 		}

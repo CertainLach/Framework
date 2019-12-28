@@ -335,7 +335,7 @@ function _isNodeEnvironment(): boolean {
                 return true;
         } catch (e) { }
     }
-    return !!((typeof process !== 'undefined') && process.env && (process.env.NODE || ((typeof global !== 'undefined' && typeof (global as any).require !== 'undefined'))));
+    return (typeof process !== 'undefined') && (!!process?.versions?.node);
 }
 let isNodeEnvironmentCache: any = null;
 /**

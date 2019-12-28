@@ -63,25 +63,25 @@ export default class BrowserConsoleReceiver extends BasicReceiver {
 				console.groupEnd();
 				break;
 			case LOGGER_ACTIONS.LOG:
-				console._log(...line);
+				(console._log ?? console.log)(...line);
 				break;
 			case LOGGER_ACTIONS.ERROR:
-				console._error(...line);
+				(console._error ?? console.error)(...line);
 				break;
 			case LOGGER_ACTIONS.WARNING:
-				console._error(...line);
+				(console._error ?? console.error)(...line);
 				break;
 			case LOGGER_ACTIONS.DEBUG:
-				console._log(...line);
+				(console._log ?? console.log)(...line);
 				break;
 			case LOGGER_ACTIONS.TIME_START:
-				console._log('TIME_START');
+				(console._log ?? console.log)('TIME_START');
 				break;
 			case LOGGER_ACTIONS.TIME_END:
-				console._log('TIME_END');
+				(console._log ?? console.log)('TIME_END');
 				break;
 			default:
-				console._error('ERROR', data.type, LOGGER_ACTIONS);
+				(console._error ?? console.error)('ERROR', data.type, LOGGER_ACTIONS);
 		}
 		//console._log(data);
 	}
