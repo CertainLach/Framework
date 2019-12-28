@@ -27,7 +27,7 @@ class HotHelperMiddleware extends RoutingMiddleware<XPressRouterContext, void, '
         this.compiledClientDir = compiledClientDir;
     }
     async handle({ stream, path }: any): Promise<void> {
-        if (!stream.hasDataSent && path.endsWith('.hot.json')) {
+        if (!stream.hasDataSent && path.endsWith('.hot-update.json')) {
             try {
                 // Test if valid json (Webpack finished writing)
                 const buf = (await readFile(`${this.compiledClientDir}${path}`)).toString();
@@ -83,9 +83,7 @@ export default class ServerMiddleware extends MultiMiddleware {
         let nWhenDevelopment = process.env.NODE_ENV === 'development' ? '\n' : '';
 
         const { path: pathStr, stream, query } = ctx;
-        let files: string | string[] = this.cachedClientStats.assetsByChunkName.main;
-        if (!Array.isArray(files))
-            files = [files];
+        let files: string[] = this.cachedClientStats.entrypoints.main.assets;
 
         if (!this.compiledServerDir) {
             // Different routine for only-client rendering

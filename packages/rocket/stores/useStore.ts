@@ -1,6 +1,6 @@
 import { isBrowserEnvironment } from "@meteor-it/utils";
 import { isObservableArray, isObservableMap } from "mobx";
-import remotedev from 'mobx-remotedev';
+import * as remotedev from 'mobx-remotedev';
 import { useContext } from "react";
 import RocketStoreContext from "./RocketStoreContext";
 import Store from "./store";
@@ -67,7 +67,7 @@ export function createOrDehydrateStore<T extends Store>(context: any, e: new () 
         const store = new (e as any)();
         (context as { [key: string]: Store })[id] = store;
         if (process.env.NODE_ENV === 'development') {
-            remotedev(store);
+            (remotedev as any)(store);
         }
     }
     if (storeList !== null && id in storeList) {

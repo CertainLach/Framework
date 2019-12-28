@@ -48,7 +48,7 @@ async function rerunRoute(rocket: Rocket, initial: boolean) {
     });
     lastClick--;
 
-    if (currentState!.redirectTarget !== null) {
+    if (currentState!.redirectTarget) {
         history.replaceState(history.state, null, currentState!.redirectTarget);
         setTimeout(() => rerunRoute(rocket, initial), 1);
         return;
