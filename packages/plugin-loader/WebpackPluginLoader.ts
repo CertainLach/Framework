@@ -29,8 +29,17 @@ class WebpackPluginLoaderQueueProcessor extends QueueProcessor<ReloadData, void>
  * HMR Plugin Loader
  * Example:
  * new WebpackPluginLoader('openPlugins',
- *      () => require.context(__dirname + '/publicPlugins', false, /Plugin\/index\.js$/),
- *      (acceptor, getContext) => module.hot.accept(getContext().id, acceptor));
+ *    () => require.context(__dirname + '/publicPlugins', false, /Plugin\/index\.js$/),
+ *    (acceptor, getContext) => {
+ *        if (module.hot) {
+ *            module.hot.accept(getContext().id, acceptor);
+ *        }
+ *    }
+ * );
+ *
+ * These arguments have required code and can't be extracted to library,
+ * because code needs to be preprocessed by webpack (in case of require.context) or
+ * captures needed webpack processed contexts (module)
  */
 export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     plugins: P[] = [];
@@ -146,15 +155,13 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
             this.reloadQueue.runTask({ key, module, reloaded: false });
         });
 
-        if (module.hot) {
-            this.acceptor(() => {
-                let reloadedContext = this.requireContextGetter();
-                reloadedContext.keys().map(key => [key, reloadedContext(key)]).filter(reloadedModule => modules[reloadedModule[0]] !== reloadedModule[1]).forEach((module) => {
-                    modules[module[0]] = module[1];
-                    this.reloadQueue.runTask({ key: module[0], module: module[1], reloaded: true });
-                });
-            }, this.requireContextGetter as any);
-        }
+        this.acceptor(() => {
+            let reloadedContext = this.requireContextGetter();
+            reloadedContext.keys().map(key => [key, reloadedContext(key)]).filter(reloadedModule => modules[reloadedModule[0]] !== reloadedModule[1]).forEach((module) => {
+                modules[module[0]] = module[1];
+                this.reloadQueue.runTask({ key: module[0], module: module[1], reloaded: true });
+            });
+        }, this.requireContextGetter as any);
 
         return this.plugins;
     }
