@@ -109,7 +109,7 @@ function writeWarningData(nameLimit: number, provider: NodeConsoleReceiver, data
 	writeStdout(stringifyCommonData(nameLimit, '33m', provider, data) + '\n');
 }
 function writeDebugData(nameLimit: number, provider: NodeConsoleReceiver, data: any) {
-	writeStdout(stringifyCommonData(nameLimit, '90m', provider, data) + '\n');
+	writeStdout(stringifyCommonData(nameLimit, '39m', provider, data) + '\n');
 }
 
 interface IProgressItem {
