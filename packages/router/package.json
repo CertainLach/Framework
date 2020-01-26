@@ -1,6 +1,6 @@
 {
     "name": "@meteor-it/router",
-    "version": "2.1.46",
+    "version": "2.1.47",
     "description": "Test router",
     "module": "index.mjs",
     "main": "index.js",
@@ -12,7 +12,7 @@
     "author": "CertainLach <iam@lach.pw>",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/logger": "^2.3.43",
+        "@meteor-it/logger": "^2.3.44",
         "@meteor-it/utils": "^1.3.31",
         "path-to-regexp": "6.1.0"
     },
