@@ -127,7 +127,8 @@ export default class ServerMiddleware extends MultiMiddleware {
                 search: querystring.stringify(routerStore.query)
             });
             stream.respond();
-            stream.res.end();
+            stream.stream?.end();
+            stream.res?.end();
             return;
         }
 

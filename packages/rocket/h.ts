@@ -38,13 +38,13 @@ type IH = {
      */
     <C extends Array<any>>(constructor: RocketConstructor<{ children: C }> | string, children: C): RocketElement,
     /**
-     * Props&children version
-     */
-    <P, C>(constructor: RocketConstructor<P & { children: C }>, props: P, children: C): RocketElement,
-    /**
      * Props&children version for vanilla elements
      */
     <P>(constructor: string, props: P & IVanillaAttributes, children: RocketElement[]): RocketElement,
+    /**
+     * Props&children version
+     */
+    <P, C>(constructor: RocketConstructor<P & { children: C }>, props: P, children: C): RocketElement,
     /**
      * Mobx observed tree creator
      */
