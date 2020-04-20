@@ -1,18 +1,18 @@
 {
-    "name": "@meteor-it/utils",
-    "version": "1.3.31",
-    "description": "Many useful utils",
-    "module": "index.mjs",
-    "main": "index.js",
-    "keywords": [
-        "meteor-it",
-        "utils"
-    ],
-    "author": "CertainLach <iam@lach.pw>",
-    "license": "MIT",
-    "sideEffects": false,
-    "publishConfig": {
-        "access": "public"
-    },
-    "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
+	"name": "@meteor-it/utils",
+	"version": "1.3.32",
+	"description": "Many useful utils",
+	"module": "index.mjs",
+	"main": "index.js",
+	"keywords": [
+		"meteor-it",
+		"utils"
+	],
+	"author": "CertainLach <iam@lach.pw>",
+	"license": "MIT",
+	"sideEffects": false,
+	"publishConfig": {
+		"access": "public"
+	},
+	"gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
 }
