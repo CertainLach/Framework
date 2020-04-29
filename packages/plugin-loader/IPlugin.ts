@@ -7,6 +7,8 @@ export default interface IPlugin {
     description?: string;
     file: string;
 
-    init?(): Promise<void>
-    deinit?(): Promise<void>
+    loaderData: any;
+
+    init?(): Promise<void>;
+    deinit?(): Promise<void>;
 }
