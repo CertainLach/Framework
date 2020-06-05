@@ -1,13 +1,11 @@
 {
   "name": "@meteor-it/all",
   "scripts": {
-    "clean": "yarn run clean:src&&yarn run clean:docs&&yarn run clean:dependencies",
+    "clean": "yarn run clean:src&&yarn run clean:dependencies",
     "clean:src": "gulp clean",
-    "clean:docs": "rm -rf docs",
     "clean:dependencies": "lerna clean -y",
-    "build": "yarn run build:dependencies&&yarn run build:src&&yarn run build:docs",
+    "build": "yarn run build:dependencies&&yarn run build:src",
     "build:src": "gulp compile",
-    "build:docs": "cd packages&&typedoc --out ../docs --name Meteor.Framework --ignoreCompilerErrors --readme none --hideGenerator ./&&cd ..",
     "build:dependencies": "lerna bootstrap",
     "dev": "yarn run clean&&yarn run dev:link&&yarn run build:dependencies",
     "dev:link": "lerna exec yarn link",
@@ -16,19 +14,18 @@
   },
   "devDependencies": {
     "@types/chokidar": "^2.1.3",
-    "@types/webpack-env": "^1.14.1",
+    "@types/jasmine": "^3.5.10",
+    "@types/webpack-env": "^1.15.2",
     "gulp": "^4.0.2",
     "gulp-clean-fix": "^0.3.4",
-    "gulp-cli": "^2.2.0",
-    "gulp-rename": "^1.4.0",
+    "gulp-cli": "^2.3.0",
+    "gulp-rename": "^2.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^6.0.0-alpha.1",
-    "lerna": "^3.19.0",
-    "rimraf": "^3.0.0",
-    "typedoc": "^0.15.3",
-    "@types/jasmine": "^3.5.0",
     "jasmine": "^3.5.0",
-    "typescript": "^3.7.3"
+    "lerna": "^3.22.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
   },
   "version": "0.0.0"
 }
