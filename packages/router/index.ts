@@ -1,5 +1,4 @@
 import { Key, pathToRegexp } from "path-to-regexp";
-import * as url from 'url';
 import middleRun from './middleRun';
 
 const cachedPaths = new Set();
@@ -102,13 +101,13 @@ export function wrapMiddleware(method: string | null, matchPath: string | null, 
  * Object, which will be passed through middleware chain
  */
 export type IRouterContext<S, M = any> = {
-    url: url.Url;
+    url: URL;
     path: string;
-    method: M;
+    method?: M;
     params: { [key: string]: string };
-    state: S;
+    state?: S;
     router: Router<any, S>;
-    next: (err?: Error) => Promise<void> | void;
+    next?: (err?: Error) => Promise<void> | void;
     requestId: number;
 };
 
@@ -127,11 +126,7 @@ export abstract class RoutingMiddleware<E, S, M> {
 }
 
 export default class Router<E, S, M = any> {
-    private readonly defaultState: (() => S) | null;
-
-    constructor(defaultState: (() => S) | null = null) {
-        this.defaultState = defaultState;
-    }
+    constructor(public readonly defaultState?: () => S) { }
 
     middleware: (((ctx: E & IRouterContext<S, M | 'ALL' | null>) => void) | Router<any, S> | SinglePathMiddleware<any, S, M> | RoutingMiddleware<any, S, M>)[] = [];
 
@@ -156,15 +151,15 @@ export default class Router<E, S, M = any> {
 
     async route(path: string, fillContext: (ctx: E & IRouterContext<S, M | 'ALL' | null>) => void): Promise<void | {}> {
         requestId++;
-        const urlStr = url.parse(path, true);
+        const urlStr = new URL(path, 'base:');
         const context: IRouterContext<S, M | 'ALL' | null> = {
             requestId,
             url: urlStr,
             path: urlStr.pathname,
             params: {},
-            state: this.defaultState === null ? null : this.defaultState(),
+            state: this.defaultState?.(),
             router: this
-        } as any;
+        };
         fillContext(context as E & IRouterContext<S, M | 'ALL' | null>);
         return await middleRun(this.middleware as any)(context)();
     }

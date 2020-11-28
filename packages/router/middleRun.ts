@@ -5,11 +5,16 @@ export type AbstractRouterContext<S> = {
     next?: () => void | Promise<void>,
 }
 
-export default function middleRun<C extends AbstractRouterContext<any>>(middleware: Function | Function[]): (context: C) => () => Promise<void> {
-    if (!(middleware instanceof Array)) {
-        middleware = [middleware]
+export type MiddlewareFunction<C> = (ctx: C) => void | Promise<void>;
+
+export default function middleRun<C extends AbstractRouterContext<unknown>>(middlewareOrList: MiddlewareFunction<C> | MiddlewareFunction<C>[]): (context: C) => () => Promise<void> {
+    let middleware: MiddlewareFunction<C>[];
+    if (middlewareOrList instanceof Array) {
+        middleware = middlewareOrList;
+    } else {
+        middleware = [middlewareOrList];
     }
-    middleware = middleware as Function[];
+
 
     return (parent: C) => {
         const state = (parent && parent.state) || {};
@@ -17,7 +22,7 @@ export default function middleRun<C extends AbstractRouterContext<any>>(middlewa
         async function loop(index: number, calledFromInside: boolean, resolveOne: () => void, pres: () => void, prej: (e: Error) => void) {
             if (index >= middleware.length) return pres();
             const ctx: C = { ...parent, state };
-            let nextPromise: Promise<any> | null = null;
+            let nextPromise: Promise<void> | null = null;
             ctx.next = () => {
                 try {
                     if (nextPromise === null) {
@@ -29,7 +34,7 @@ export default function middleRun<C extends AbstractRouterContext<any>>(middlewa
                 }
                 return nextPromise;
             };
-            const current = (middleware as Function[])[index++];
+            const current = middleware[index++];
             try {
                 await current(ctx);
                 resolveOne();
