@@ -1,6 +1,6 @@
 {
   "name": "@meteor-it/plugin-loader",
-  "version": "1.7.0",
+  "version": "2.0.0",
   "description": "Plugin loader for all porposes",
   "module": "index.mjs",
   "main": "index.js",
@@ -14,15 +14,13 @@
   "author": "CertainLach <iam@lach.pw>",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/fs": "^1.2.20",
-    "@meteor-it/logger": "^2.3.45",
-    "@meteor-it/queue": "^2.0.49",
-    "@meteor-it/utils": "^1.3.33",
-    "chokidar": "^3.3.0"
+    "@meteor-it/fs": "workspace:2.0.0",
+    "@meteor-it/queue": "workspace:2.0.50",
+    "@meteor-it/utils": "workspace:2.0.0",
+    "winston": "^3.3.3"
   },
   "sideEffects": false,
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "cb3baad75ddedd6d3f188a796f7e3a2f5ccaa043"
+  }
 }

@@ -1,5 +1,5 @@
-import SoftPluginLoader from "./SoftPluginLoader";
-import WebpackPluginLoader from "./WebpackPluginLoader";
 import IPlugin from "./IPlugin";
+import WebpackPluginLoader from "./WebpackPluginLoader";
 
-export { SoftPluginLoader, WebpackPluginLoader, IPlugin };
+export { WebpackPluginLoader, IPlugin };
+

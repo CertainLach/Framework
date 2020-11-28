@@ -1,9 +1,9 @@
 ///<reference types="webpack-env" />
 
-import Logger from '@meteor-it/logger';
-import IPlugin from './IPlugin';
 import { QueueProcessor } from '@meteor-it/queue';
 import { assert } from 'console';
+import { Logger } from 'winston';
+import IPlugin from './IPlugin';
 
 type RequireContext = __WebpackModuleApi.RequireContext;
 
@@ -45,15 +45,13 @@ class WebpackPluginLoaderQueueProcessor extends QueueProcessor<ReloadData, void>
  */
 export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     plugins: P[] = [];
-    logger: Logger;
     reloadQueue: QueueProcessor<ReloadData, void>;
     constructor(
-        name: string | Logger,
+        private logger: Logger,
         private pluginContext: C | null = null,
         private requireContextGetter: IRequireContextGetter,
         private moduleHot: ModuleHot,
     ) {
-        this.logger = Logger.from(name);
         this.reloadQueue = new WebpackPluginLoaderQueueProcessor(this);
     }
 
@@ -68,9 +66,9 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     private async callInit(plugin: P) {
         await (this.onPreInit(plugin));
         if (!plugin.init) {
-            this.logger.log('Plugin has no init() method, skipping call');
+            this.logger.debug('Plugin has no init() method, skipping call');
         } else {
-            this.logger.log('Calling init()');
+            this.logger.debug('Calling init()');
             await plugin.init();
         }
         await (this.onPostInit(plugin));
@@ -79,9 +77,9 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     private async callDeinit(plugin: P) {
         await (this.onPreDeinit(plugin));
         if (!plugin.deinit) {
-            this.logger.log('Plugin has no deinit() method, skipping call');
+            this.logger.debug('Plugin has no deinit() method, skipping call');
         } else {
-            this.logger.log('Calling deinit()');
+            this.logger.debug('Calling deinit()');
             await plugin.deinit();
         }
         await (this.onPostDeinit(plugin));
@@ -99,7 +97,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
     }
 
     public async queuedCustomReloadLogic(data: ReloadData) {
-        this.logger.ident(`${data.reloaded ? 'Reloading' : 'Loading'} ${data.key}`);
+        let startedAt = this.logger.startTimer();
         if (!data.reloaded) {
             try {
                 const plugin = await this.constructPluginInstance(data);
@@ -123,7 +121,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                 if (alreadyLoaded.length === 0) {
                     this.logger.warn('This plugin wasn\'t loaded before');
                 } else {
-                    this.logger.log('Plugin was loaded before, unloading old instances');
+                    this.logger.info('Plugin was loaded before, unloading old instances');
                     let instances = this.plugins.length;
                     for (let alreadyLoadedPlugin of alreadyLoaded) {
                         try {
@@ -138,7 +136,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                     let newInstances = this.plugins.length;
                     assert(instances - newInstances === 1, 'More than 1 instance was found loaded in memory');
                     oldLoaderData = alreadyLoaded[0].loaderData;
-                    this.logger.log('Plugin unloaded');
+                    this.logger.info('Plugin unloaded');
                 }
                 try {
                     await this.callInit(plugin);
@@ -155,7 +153,7 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                 this.logger.error(e.stack);
             }
         }
-        this.logger.deent();
+        startedAt.done();
     }
 
     async load() {
