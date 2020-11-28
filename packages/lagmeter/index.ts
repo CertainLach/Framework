@@ -19,7 +19,7 @@ const checkInterval = setInterval(() => {
 	lag = (lag < interval) ? 0 : lag - interval;
 	currentLag = (lag + (currentLag * (AVG_DECAY_FACTOR - 1))) / AVG_DECAY_FACTOR;
 	lastTime = now;
-}, interval);
+}, interval) as any;
 
 if ('unref' in checkInterval) {
 	// Don't keep process open just for this timer.
