@@ -1,7 +1,3 @@
-import Logger from '@meteor-it/logger';
-
-const queueLogger = new Logger('queue');
-
 type IQueueItem<I, O> = {
     data: I;
     reject: (e: Error) => void;
