@@ -27,7 +27,7 @@ export function readStreamToBuffer(stream: Readable, maxSize: number = 0): Promi
 
 export interface IMultiStreamOptions {
     highWaterMark?: number;
-    encoding?: string;
+    encoding?: BufferEncoding;
 }
 
 export class MultiStream extends Readable {
@@ -97,121 +97,6 @@ export function objectEquals(x: any, y: any): boolean {
     return Object.keys(y).every(i => p.indexOf(i) !== -1) && p.every(i => objectEquals(x[i], y[i]));
 }
 
-/**
- * Flattens array
- * @param array
- * @param result
- */
-export function flatten(array: any[], result: any[] = []): any[] {
-    for (let i = 0; i < array.length; i++) {
-        const value = array[i];
-
-        if (Array.isArray(value)) {
-            flatten(value, result);
-        }
-        else {
-            result.push(value);
-        }
-    }
-
-    return result;
-}
-
-/**
- * @deprecated
- * @param array
- */
-export function removeDuplicates<T>(array: T[]): T[] {
-    return Array.from(new Set(array));
-}
-
-/**
- * @deprecated
- * @param array1
- * @param array2
- */
-export function mix(array1: any[] | Object, array2: any[] | Object): any {
-    let out: any;
-    if (array1 instanceof Array) {
-        out = [];
-        for (let index in array1) {
-            out.push([array1[index], (array2 as any)[index]]);
-        }
-        return out;
-    } else {
-        out = {};
-        for (let key in array1) {
-            // noinspection JSUnfilteredForInLoop
-            out[key] = (array1 as any)[key];
-        }
-        for (let key in array2) {
-            // noinspection JSUnfilteredForInLoop
-            out[key] = (array2 as any)[key];
-        }
-        return out;
-    }
-}
-
-/**
- * @deprecated
- * @param values
- */
-export function createPrivateEnum(...values: string[]): { [key: string]: Symbol } {
-    let returnObj: any = {};
-    values.map(value => value.toUpperCase());
-    values.forEach(value => returnObj[value] = Symbol(value));
-    return returnObj;
-}
-
-/**
- * @deprecated
- * @param string
- * @param length
- * @param insertPre
- * @param symbol
- */
-// noinspection JSUnusedGlobalSymbols
-export function fixLength(string: string, length: number, insertPre = false, symbol = ' ') {
-    return insertPre ? string.padStart(length, symbol) : string.padEnd(length, symbol);
-}
-
-declare global {
-    // noinspection JSUnusedGlobalSymbols
-    interface ObjectConstructor {
-        values(object: any): any;
-    }
-}
-
-// noinspection JSUnusedGlobalSymbols
-/**
- * @deprecated Object.entrys
- * @param object
- * @param cb
- */
-export function objectMap(object: any, cb: (a: any, b: any, c: any) => any): any {
-    let ret = [];
-    let keys = Object.keys(object);
-    let values = Object.values(object);
-    for (let i = 0; i < keys.length; i++)
-        ret.push(cb(values[i], keys[i], object));
-    return ret;
-}
-
-// noinspection JSUnusedGlobalSymbols
-/**
- * @deprecated Object.entrys
- * @param keys
- * @param values
- */
-export function arrayKVObject(keys: string[], values: any[]): any {
-    let len = keys.length;
-    if (len !== values.length)
-        throw new Error('Both arrays must have same length!');
-    let result: any = {};
-    for (let i = 0; i < len; i++)
-        result[keys[i]] = values[i];
-    return result;
-}
 export function sleep(time: number): Promise<void> {
     return new Promise((res) => {
         setTimeout(res, time);
@@ -483,11 +368,11 @@ export abstract class PromiseMap<K, V> {
 
     getAll: (keys: K[]) => MaybePromise<(V | null)[]> = this._getAll;
 
-	/**
-	 * Works great with collapsing queue
-	 *
-	 * @param keys
-	 */
+    /**
+     * Works great with collapsing queue
+     *
+     * @param keys
+     */
     protected _getAll(keys: K[]): MaybePromise<(V | null)[]> {
         const promises: Promise<void>[] = [];
         const results: (V | null | undefined)[] = new Array(keys.length);
