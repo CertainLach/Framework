@@ -1,7 +1,7 @@
 import * as seedrandom from 'seedrandom';
 
 export default class Random {
-	wrapped: any;
+	wrapped: seedrandom.prng;
 	constructor(seed?: string | number) {
 		this.wrapped = seedrandom(seed?.toString());
 	}
@@ -17,7 +17,7 @@ export default class Random {
 		max = +max;
 		return Math.floor(min + this.nextFloat() * (max + 1 - min));
 	}
-	randomArrayElement(array: Array<any>): any {
+	randomArrayElement<T>(array: Array<T>): T {
 		return array[Math.floor(this.nextFloat() * array.length)];
 	}
 	randomColor(): string {
