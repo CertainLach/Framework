@@ -22,7 +22,7 @@ export default class ForceHttpsMiddleware extends RoutingMiddleware<XPressRouter
     async handle({ stream }: XPressRouterContext & IRouterContext<void, any>): Promise<void> {
         if (stream.isSecure)
             return
-        stream.resHeaders[http2.constants.HTTP2_HEADER_LOCATION] = createRedirectURL(stream.reqHeaders[http2.constants.HTTP2_HEADER_HOST] as string, stream.req.url, this.securePort);
+        stream.resHeaders[http2.constants.HTTP2_HEADER_LOCATION] = createRedirectURL(stream.reqHeaders[http2.constants.HTTP2_HEADER_HOST] as string, stream.req!.url, this.securePort);
         stream.status(301);
         stream.send('Redirecting to https');
     }

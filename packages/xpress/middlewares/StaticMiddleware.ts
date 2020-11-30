@@ -1,7 +1,8 @@
-import { exists, readFile, stat, walkDirArray } from '@meteor-it/fs';
+import { exists, walkDirArray } from '@meteor-it/fs';
 import { lookupByPath } from '@meteor-it/mime';
 import { IRouterContext, RoutingMiddleware } from '@meteor-it/router';
-import * as fs from "fs";
+import { createReadStream, Stats } from 'fs';
+import { readFile, stat } from 'fs/promises';
 import * as http2 from "http2";
 import * as path from 'path';
 import { XPressRouterContext, XpressRouterStream } from '..';
@@ -55,7 +56,7 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
         this.hasCachePrepared = true;
     }
 
-    fillHeader(headers: any, filename: string, gzippedFound: boolean, stats: fs.Stats) {
+    fillHeader(headers: any, filename: string, gzippedFound: boolean, stats: Stats) {
         let type = lookupMime(filename, gzippedFound);
         let charset = /^text\/|^application\/(javascript|json)/.test(type as string) ? 'UTF-8' : false;
         headers[http2.constants.HTTP2_HEADER_LAST_MODIFIED] = stats.mtime.toISOString();
@@ -99,7 +100,7 @@ export default class StaticMiddleware extends RoutingMiddleware<XPressRouterCont
                     return;
                 }
                 this.fillHeader(stream.resHeaders, filename, gzippedFound, stats);
-                stream.sendStream(fs.createReadStream(filename));
+                stream.sendStream(createReadStream(filename));
             } catch (e) {
                 // Next is not needed
                 if (e.code !== 'ENOENT') throw e;

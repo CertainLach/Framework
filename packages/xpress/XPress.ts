@@ -1,4 +1,3 @@
-import AJSON from '@meteor-it/ajson';
 import Logger from '@meteor-it/logger';
 import URouter from "@meteor-it/router";
 import * as fs from "fs";
@@ -9,8 +8,7 @@ import { Http2ServerRequest, Http2ServerResponse, IncomingHttpHeaders, ServerHtt
 import { Socket } from 'net';
 import * as path from 'path';
 import { Readable } from "stream";
-import * as url from 'url';
-import { Server as WSServer } from 'ws';
+import * as WebSocket from 'ws';
 import { developerErrorPage, userErrorPage } from './errorPages';
 
 export { userErrorPage, developerErrorPage };
@@ -70,11 +68,6 @@ export class XpressRouterStream {
     sendJSON(object: any, space?: number) {
         this.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'application/json; charset=utf-8';
         this.send(JSON.stringify(object, null, space));
-    }
-
-    sendAJSON(object: any, space?: number) {
-        this.resHeaders[http2.constants.HTTP2_HEADER_CONTENT_TYPE] = 'application/json; charset=utf-8';
-        this.send(AJSON.stringify(object, null, space));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -213,7 +206,7 @@ export class XpressRouterStream {
 }
 
 export interface XPressRouterContext {
-    query: { [key: string]: string };
+    searchParams: URLSearchParams;
     socket?: WebSocket;
     stream: XpressRouterStream;
 }
@@ -244,7 +237,7 @@ export class HttpError extends Error {
  * Read docs of Router
  */
 export class Router<S> extends URouter<XPressRouterContext, S> {
-    constructor(defaultState: (() => S) | null = null) {
+    constructor(defaultState?: () => S) {
         super(defaultState);
     }
 }
@@ -258,7 +251,7 @@ let PATH_SEP_REGEXP = new RegExp(`\\${path.sep}`, 'g');
 export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'WS'> {
     logger: Logger;
 
-    constructor(name: string | Logger, defaultState: (() => S) | null = null) {
+    constructor(name: string | Logger, defaultState?: () => S) {
         super(defaultState);
         this.logger = Logger.from(name);
     }
@@ -272,7 +265,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     private async streamHandler(isSecure: boolean, stream: ServerHttp2Stream, headers: IncomingHttpHeaders, flags: number) {
         const urlStr = headers[http2.constants.HTTP2_HEADER_PATH] as string;
-        let { pathname, query } = url.parse(urlStr, true);
+        let { pathname, searchParams } = new URL(urlStr, 'base:');
         if (pathname === undefined) {
             stream.end();
             return;
@@ -284,7 +277,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         wrappedMainStream.stream = stream;
         try {
             await this.route(pathname, ctx => {
-                ctx.query = query as { [key: string]: string };
+                ctx.searchParams = searchParams;
                 ctx.method = method as any;
                 ctx.stream = wrappedMainStream;
                 ctx.socket = undefined;
@@ -318,7 +311,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      */
     private async requestHandler(isSecure: boolean, req: Http2ServerRequest, res: Http2ServerResponse) {
         const urlString = req.url as string || req.headers[http2.constants.HTTP2_HEADER_PATH] as string;
-        let { pathname, query } = url.parse(urlString, true);
+        let { pathname, searchParams } = new URL(urlString, 'base:');
         if (pathname === undefined) {
             res.stream.destroy();
             return;
@@ -331,7 +324,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         wrappedMainStream.res = res;
         try {
             await this.route(pathname, ctx => {
-                ctx.query = query as { [key: string]: string };
+                ctx.searchParams = searchParams;
                 ctx.method = method as any;
                 ctx.stream = wrappedMainStream;
                 ctx.socket = undefined;
@@ -363,14 +356,14 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param socket
      * @param head
      */
-    private async upgradeHandler(isSecure: boolean, request: IncomingMessage, socket: Socket, head: ArrayBuffer) {
+    private async upgradeHandler(isSecure: boolean, request: IncomingMessage, socket: Socket, head: Buffer) {
         const headers = request.headers;
         const urlString = request.url;
         if (urlString === undefined) {
             socket.destroy();
             return;
         }
-        let { pathname, query } = url.parse(urlString, true);
+        let { pathname, searchParams } = new URL(urlString, 'base:');
         if (pathname === undefined) {
             socket.destroy();
             return;
@@ -379,12 +372,12 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         const method = request.method;
         const upgradeType = headers[http2.constants.HTTP2_HEADER_UPGRADE];
         if (upgradeType === 'websocket' && method === 'GET') {
-            this.wsServer.handleUpgrade(request, socket, head, async (ws: WebSocket) => {
+            this.wsServer!.handleUpgrade(request, socket, head, async (ws: WebSocket) => {
                 const wrapperMainStream = new XpressRouterStream(headers, {});
                 wrapperMainStream.isSecure = isSecure;
                 wrapperMainStream.socket = ws;
                 await this.route(pathname as string, ctx => {
-                    ctx.query = query as { [key: string]: string };
+                    ctx.searchParams = searchParams;
                     ctx.method = 'WS';
                     ctx.stream = wrapperMainStream;
                     ctx.socket = ws;
@@ -409,14 +402,15 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param host host to bind on
      * @param port port to bind on
      */
-    listenHttp(host = '0.0.0.0', port: number) {
+    listenHttp(port: number, host?: string) {
         this.ensureWebSocketReady();
-        let server = http.createServer({}, this.requestHandler.bind(this, false));
+        let server = http.createServer();
+        server.on('connection', this.requestHandler.bind(this, false))
         server.on('upgrade', this.upgradeHandler.bind(this, false));
-        return new Promise((res, rej) => {
+        return new Promise((res, _rej) => {
             server.listen(port, host, () => {
                 this.logger.debug('Listening (http) on %s:%d...', host, port);
-                res();
+                res(server);
             });
         });
     }
@@ -428,13 +422,13 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
      * @param host host to bind on
      * @param port port to bind on
      */
-    listenHttp2(host = '0.0.0.0', port: number) {
+    listenHttp2(port: number, host?: string) {
         this.ensureWebSocketReady();
         let server = http2.createServer();
         // There is no ALPN negotigation for HTTP/1 over TLS
         server.on('stream', this.streamHandler.bind(this, false));
         server.on('upgrade', this.upgradeHandler.bind(this, false));
-        return new Promise((res, rej) => {
+        return new Promise((res, _rej) => {
             server.listen(port, host, () => {
                 this.logger.debug('Listening (http) on %s:%d...', host, port);
                 res();
@@ -442,78 +436,10 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         });
     }
 
-    private static parseCaString(ca?: Buffer): Buffer[] | undefined {
-        let caList: Buffer[] | undefined = undefined;
-        if (ca) {
-            let parsedCa = ca.toString().match(/-----BEGIN CERTIFICATE-----[a-zA-Z0-9/+\n=]+-----END CERTIFICATE-----/gm);
-            if (parsedCa === null)
-                throw new Error('Bad CA format');
-            caList = parsedCa.map(e => Buffer.from(e));
-        }
-        return caList;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * bind()
-     * @param host host to bind on
-     * @param port port to bind on
-     * @param options settings
-     */
-    listenHttps(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca?: Buffer }): Promise<void> {
-        this.ensureWebSocketReady();
-        let caList = XPress.parseCaString(ca);
-        let server = http2.createSecureServer({
-            key, cert, ca: caList,
-            allowHTTP1: true
-        }, this.requestHandler.bind(this, true));
-        server.on('upgrade', this.upgradeHandler.bind(this, true));
-        return new Promise((res, rej) => {
-            server.listen(port, host, () => {
-                this.logger.debug('Listening (https) on %s:%d...', host, port);
-                res();
-            });
-        });
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * bind()
-     * @param host host to bind on
-     * @param port port to bind on
-     * @param options settings
-     */
-    listenHttps2(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca: Buffer }): Promise<void> {
-        this.ensureWebSocketReady();
-        let caList = XPress.parseCaString(ca);
-        let server = http2.createSecureServer({
-            key, cert, ca: caList,
-            allowHTTP1: false
-        });
-        server.on('stream', this.streamHandler.bind(this, true));
-        server.on('upgrade', this.upgradeHandler.bind(this, true));
-        return new Promise((res, rej) => {
-            server.listen(port, host, () => {
-                this.logger.debug('Listening (https) on %s:%d...', host, port);
-                res();
-            });
-        });
-    }
-
-    /**
-     * reserved bind() for quic (HTTP/3)
-     * @param host
-     * @param port
-     * @param param2
-     */
-    listenQuic(host = '0.0.0.0', port: number, { key, cert, ca }: { key: Buffer, cert: Buffer, ca: Buffer }): Promise<void> {
-        throw new Error('reserved');
-    }
-
-    wsServer: any;
+    wsServer?: WebSocket.Server;
 
     private ensureWebSocketReady() {
         if (this.wsServer) return;
-        this.wsServer = new WSServer({ noServer: true });
+        this.wsServer = new WebSocket.Server({ noServer: true });
     }
 }
