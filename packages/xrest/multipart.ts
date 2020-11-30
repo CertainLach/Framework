@@ -1,4 +1,4 @@
-import { open, read } from '@meteor-it/fs';
+import { open, read } from 'fs/promises';
 import { basename } from 'path';
 import { Readable as ReadableStream, Writable as WritableStream } from 'stream';
 
