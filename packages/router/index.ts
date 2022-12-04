@@ -118,11 +118,11 @@ export abstract class MultiMiddleware {
 }
 
 export abstract class SinglePathMiddleware<E, S, M> {
-    abstract async handle(ctx: E & IRouterContext<S, M | 'ALL' | null>): Promise<void>;
+    abstract handle(ctx: E & IRouterContext<S, M | 'ALL' | null>): Promise<void>;
 }
 
 export abstract class RoutingMiddleware<E, S, M> {
-    abstract async handle(ctx: E & IRouterContext<S, M | 'ALL' | null>): Promise<void>;
+    abstract handle(ctx: E & IRouterContext<S, M | 'ALL' | null>): Promise<void>;
 }
 
 export default class Router<E, S, M = any> {

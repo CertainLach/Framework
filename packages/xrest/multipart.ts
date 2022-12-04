@@ -1,4 +1,4 @@
-import { open, read } from 'fs/promises';
+import { open } from 'fs/promises';
 import { basename } from 'path';
 import { Readable as ReadableStream, Writable as WritableStream } from 'stream';
 
@@ -92,8 +92,8 @@ export class Part {
             let position = 0;
             let moreData = true;
             while (moreData) {
-                let chunk = new Buffer(4096);
-                await read(fd, chunk, 0, 4096, position);
+                let chunk = Buffer.alloc(4096);
+                await fd.read(chunk, 0, 4096, position);
                 stream.write(chunk);
                 position += 4096;
                 if (chunk) {
@@ -108,7 +108,7 @@ export class Part {
             await new Promise(resolve => {
                 const value: FileStream = this.value as FileStream;
                 value.stream.on('end', () => {
-                    resolve();
+                    resolve(null);
                 })
                 value.stream.pipe(stream, { end: false });
             });

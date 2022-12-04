@@ -1,9 +1,9 @@
 {
   "name": "@meteor-it/fs",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Wrappers for native fs module",
-  "module": "index.mjs",
   "main": "index.js",
+  "type": "module",
   "keywords": [
     "meteor-it",
     "fs"
@@ -11,7 +11,7 @@
   "author": "CertainLach <iam@lach.pw>",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/utils": "workspace:2.0.0"
+    "@meteor-it/utils": "workspace:*"
   },
   "sideEffects": false,
   "publishConfig": {

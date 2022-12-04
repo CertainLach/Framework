@@ -186,11 +186,11 @@ class Request {
             else throw new Error('Cannot get Content-Length!');
         } else {
             if (typeof this.options.data === 'object' && !Buffer.isBuffer(this.options.data)) {
-                this.options.data = querystring.stringify(this.options.data);
+                this.options.data = querystring.stringify(this.options.data as any);
                 this.headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 this.headers['Content-Length'] = this.options.data.length;
             } else if (typeof this.options.data === 'string') {
-                const buffer = new Buffer(this.options.data, this.options.encoding || 'utf8');
+                const buffer = Buffer.from(this.options.data, this.options.encoding || 'utf8');
                 this.options.data = buffer;
                 this.headers['Content-Length'] = buffer.length;
             } else if (!this.options.data) {

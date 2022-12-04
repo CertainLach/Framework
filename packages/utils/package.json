@@ -1,9 +1,9 @@
 {
 	"name": "@meteor-it/utils",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"description": "Many useful utils",
-	"module": "index.mjs",
 	"main": "index.js",
+	"type": "module",
 	"keywords": [
 		"meteor-it",
 		"utils"

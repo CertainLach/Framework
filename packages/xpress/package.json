@@ -1,9 +1,9 @@
 {
     "name": "@meteor-it/xpress",
-    "version": "4.2.67",
+    "version": "4.3.0",
     "description": "The most powerfull express.js alternative",
-    "module": "index.mjs",
     "main": "index.js",
+    "type": "module",
     "keywords": [
         "meteor-it",
         "rest",
@@ -13,17 +13,15 @@
     "author": "CertainLach <iam@lach.pw>",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/fs": "workspace:2.0.0",
-        "@meteor-it/mime": "workspace:0.4.23",
-        "@meteor-it/router": "workspace:3.0.0",
-        "@meteor-it/utils": "workspace:2.0.0",
-        "@types/express-session": "^1.17.3",
-        "express-session": "^1.17.1",
-        "winston": "3.3.3",
-        "ws": "^7.4.0"
+        "@meteor-it/fs": "workspace:*",
+        "@meteor-it/mime": "workspace:*",
+        "@meteor-it/router": "workspace:*",
+        "@meteor-it/utils": "workspace:*",
+        "winston": "3.8.2",
+        "ws": "^8.11.0"
     },
     "devDependencies": {
-        "@types/ws": "^7.4.0"
+        "@types/ws": "^8.5.3"
     },
     "sideEffects": false,
     "publishConfig": {

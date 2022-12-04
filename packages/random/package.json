@@ -1,9 +1,9 @@
 {
   "name": "@meteor-it/random",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Random util",
-  "module": "index.mjs",
   "main": "index.js",
+  "type": "module",
   "keywords": [
     "meteor-it",
     "random"
@@ -11,8 +11,8 @@
   "author": "CertainLach <iam@lach.pw>",
   "license": "MIT",
   "dependencies": {
-    "@meteor-it/utils": "workspace:2.0.0",
-    "@types/seedrandom": "^2.4.28",
+    "@meteor-it/utils": "workspace:*",
+    "@types/seedrandom": "^3.0.2",
     "seedrandom": "^3.0.5"
   },
   "sideEffects": false,

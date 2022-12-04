@@ -54,7 +54,7 @@ export abstract class QueueProcessor<I, O> implements IQueueProcessor<I, O>{
                 task.reject(data);
             else
                 task.resolve(data);
-        } catch (e) {
+        } catch (e: any) {
             task.reject(e);
         }
 
@@ -147,7 +147,7 @@ export abstract class CollapseQueueProcessor<I, O> implements IQueueProcessor<I,
                 else
                     task.resolve(ret);
             });
-        } catch (e) {
+        } catch (e: any) {
             willBeExecuted.forEach(task => task.reject(e));
         }
         if (this.queued.length > 0) {

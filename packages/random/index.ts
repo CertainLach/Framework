@@ -1,7 +1,7 @@
 import * as seedrandom from 'seedrandom';
 
 export default class Random {
-	wrapped: seedrandom.prng;
+	wrapped: seedrandom.PRNG;
 	constructor(seed?: string | number) {
 		this.wrapped = seedrandom(seed?.toString());
 	}

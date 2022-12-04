@@ -1,4 +1,3 @@
-import Logger from '@meteor-it/logger';
 import URouter from "@meteor-it/router";
 import * as fs from "fs";
 import * as http from 'http';
@@ -10,6 +9,7 @@ import * as path from 'path';
 import { Readable } from "stream";
 import * as WebSocket from 'ws';
 import { developerErrorPage, userErrorPage } from './errorPages';
+import { Logger } from 'winston';
 
 export { userErrorPage, developerErrorPage };
 
@@ -28,7 +28,6 @@ export interface IClientOptions {
     ciphers?: string;
     rejectUnauthorized?: boolean;
 }
-
 
 export class XpressRouterStream {
     req?: Http2ServerRequest;
@@ -251,9 +250,9 @@ let PATH_SEP_REGEXP = new RegExp(`\\${path.sep}`, 'g');
 export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'WS'> {
     logger: Logger;
 
-    constructor(name: string | Logger, defaultState?: () => S) {
+    constructor(logger: Logger, defaultState?: () => S) {
         super(defaultState);
-        this.logger = Logger.from(name);
+        this.logger = logger;
     }
 
     /**
@@ -286,7 +285,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
                 wrappedMainStream.resHeaders = {};
                 wrappedMainStream.status(404).send(developerErrorPage('404: Page Not Found', `Page not found at ${pathname}`, process.env.NODE_ENV === 'production' ? undefined : new Error('Reference stack').stack));
             }
-        } catch (e) {
+        } catch (e: any) {
             if (e instanceof HttpError) {
                 if (wrappedMainStream.canSendMoreData) {
                     wrappedMainStream.status(e.code).send(developerErrorPage(`${e.code}: ${http.STATUS_CODES[e.code]}`, e.message, process.env.NODE_ENV === 'production' ? undefined : e.stack))
@@ -431,7 +430,7 @@ export default class XPress<S> extends URouter<XPressRouterContext, S, 'GET' | '
         return new Promise((res, _rej) => {
             server.listen(port, host, () => {
                 this.logger.debug('Listening (http) on %s:%d...', host, port);
-                res();
+                res(null);
             });
         });
     }

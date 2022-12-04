@@ -17,8 +17,8 @@ export async function copyWalk(from: string, to: string, options?: IWalkOptions)
 		} catch (e) { }
 		try {
 			await asyncEach(await walkDirArray(from), f => options && options.filter && !options.filter(f) && Promise.resolve(true) as any as Promise<void> || copyWalk(f, f.replace(from, to)));
-		} catch (e) {
-			if (e.code !== 'ENOENT') throw e;
+		} catch (e: any) {
+			if (e?.code !== 'ENOENT') throw e;
 		}
 		return;
 	}

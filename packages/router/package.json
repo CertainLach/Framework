@@ -1,9 +1,9 @@
 {
     "name": "@meteor-it/router",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "description": "Routing library",
-    "module": "index.mjs",
     "main": "index.js",
+    "type": "module",
     "keywords": [
         "meteor-it",
         "rest",
@@ -12,8 +12,8 @@
     "author": "CertainLach <iam@lach.pw>",
     "license": "MIT",
     "dependencies": {
-        "@meteor-it/utils": "workspace:2.0.0",
-        "path-to-regexp": "6.2.0"
+        "@meteor-it/utils": "workspace:*",
+        "path-to-regexp": "6.2.1"
     },
     "sideEffects": false,
     "publishConfig": {

@@ -55,13 +55,13 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
         this.reloadQueue = new WebpackPluginLoaderQueueProcessor(this);
     }
 
-    abstract async onPreInit(module: P): Promise<void>;
-    abstract async onPostInit(module: P): Promise<void>;
+    abstract onPreInit(module: P): Promise<void>;
+    abstract onPostInit(module: P): Promise<void>;
 
-    abstract async onPreDeinit(module: P): Promise<void>;
-    abstract async onPostDeinit(module: P): Promise<void>;
+    abstract onPreDeinit(module: P): Promise<void>;
+    abstract onPostDeinit(module: P): Promise<void>;
 
-    abstract async onUnload(module: P): Promise<void>;
+    abstract onUnload(module: P): Promise<void>;
 
     private async callInit(plugin: P) {
         await (this.onPreInit(plugin));
@@ -106,12 +106,12 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                     this.plugins.push(plugin);
                 } catch (e) {
                     this.logger.error(`Load failed on init()`);
-                    this.logger.error(e.stack);
+                    this.logger.error(e);
                     await this.callDeinit(plugin);
                 }
             } catch (e) {
                 this.logger.error(`Load failed on early init`);
-                this.logger.error(e.stack);
+                this.logger.error(e);
             }
         } else {
             try {
@@ -126,9 +126,9 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                     for (let alreadyLoadedPlugin of alreadyLoaded) {
                         try {
                             await this.callDeinit(alreadyLoadedPlugin);
-                        } catch (e) {
+                        } catch (e: any) {
                             this.logger.error(`Unload failed on deinit()`);
-                            this.logger.error(e.stack);
+                            this.logger.error(e);
                         }
                         // Remove from list
                         this.plugins.splice(this.plugins.indexOf(alreadyLoadedPlugin), 1);
@@ -143,14 +143,14 @@ export default abstract class WebpackPluginLoader<C, P extends IPlugin> {
                     this.plugins.push(plugin);
                 } catch (e) {
                     this.logger.error(`Reload failed on init(), trying to load old plugin again`);
-                    this.logger.error(e.stack);
+                    this.logger.error(e);
                     if (oldLoaderData) {
                         await this.queuedCustomReloadLogic({ key: oldLoaderData.key, module: oldLoaderData.module, reloaded: false });
                     }
                 }
             } catch (e) {
                 this.logger.error(`Reload failed on early init`);
-                this.logger.error(e.stack);
+                this.logger.error(e);
             }
         }
         startedAt.done();

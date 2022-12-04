@@ -40,7 +40,7 @@ export default function middleRun<C extends AbstractRouterContext<unknown>>(midd
                 resolveOne();
                 if (!nextPromise)
                     await ctx.next();
-            } catch (e) {
+            } catch (e: any) {
                 if (calledFromInside) {
                     throw e;
                 } else
